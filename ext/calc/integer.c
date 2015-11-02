@@ -57,6 +57,38 @@ VALUE cz_initialize_copy(VALUE copy, VALUE orig) {
   return copy;
 }
 
+/* used to implement <=>, ==, < and >
+ * TODO: won't work if bignum param is > MAX_LONG
+ * returns:
+ *  0 if values are the same
+ *  -1 if self is < other
+ *  +1 if self is > other
+ */
+int _cz_zrel(VALUE self, VALUE other) {
+  ZVALUE *zv_self, *zv_tmp, zv_other;
+  int result;
+
+  Data_Get_Struct(self, ZVALUE, zv_self);
+  if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+    itoz(NUM2LONG(other), &zv_other);
+    result = zrel(*zv_self, zv_other);
+    zfree(zv_other);
+  }
+  else if (ISZVALUE(other)) {
+    Data_Get_Struct(other, ZVALUE, zv_tmp);
+    result = zrel(*zv_self, *zv_tmp);
+  }
+  else {
+    rb_raise(rb_eTypeError, "expected Fixnum, Bignum or Calc::Z");
+  }
+
+  return result;
+}
+
+VALUE cz_equal(VALUE self, VALUE other) {
+  return _cz_zrel(self, other) == 0 ? Qtrue : Qfalse;
+}
+
 VALUE cz_to_s(VALUE self) {
   ZVALUE *z;
   char *s;
