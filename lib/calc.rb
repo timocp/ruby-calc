@@ -2,5 +2,11 @@ require "calc/version"
 require "calc/calc"
 
 module Calc
-  # Your code goes here...
+
+  class Z
+    def modulo(other)
+      divmod(other)[1]
+    end
+  end
+
 end

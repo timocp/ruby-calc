@@ -86,7 +86,7 @@ class TestInteger < Minitest::Test
   end
 
   def test_divide
-    skip "division not tested until Calc::Q implpemented"
+    skip "division not tested until Calc::Q implemented"
   end
 
   def test_divmod
@@ -105,6 +105,16 @@ class TestInteger < Minitest::Test
     assert_equal [-4, -3], Calc::Z.new(13).divmod(-4)
     assert_equal [-4,  3], Calc::Z.new(-13).divmod(4)
     assert_equal [ 3, -1], Calc::Z.new(-13).divmod(-4)
+  end
+
+  def test_modulo
+    assert_instance_of Calc::Z, Calc::Z.new(13).modulo(Calc::Z.new(4))
+    assert_instance_of Calc::Z, Calc::Z.new(13).modulo(4)
+
+    assert_equal  1, Calc::Z.new(13).modulo(4)
+    assert_equal -3, Calc::Z.new(13).modulo(-4)
+    assert_equal  3, Calc::Z.new(-13).modulo(4)
+    assert_equal -1, Calc::Z.new(-13).modulo(-4)
   end
   
   def test_to_s
