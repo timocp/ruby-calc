@@ -72,6 +72,12 @@ class TestInteger < Minitest::Test
     assert_equal 10, Calc::Z.new(4) + Calc::Z.new(6)
     assert_equal 12, Calc::Z.new(5) + 7
   end
+
+  def test_subtract
+    assert_instance_of Calc::Z, Calc::Z.new(1) - Calc::Z.new(2)
+    assert_equal -1, Calc::Z.new(1) - Calc::Z.new(2)
+    assert_equal -1, Calc::Z.new(3) - 4
+  end
   
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s

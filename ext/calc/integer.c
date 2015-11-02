@@ -107,6 +107,11 @@ VALUE cz_add(VALUE self, VALUE other)
     return numeric_operation(self, other, &zadd, NULL);
 }
 
+VALUE cz_subtract(VALUE self, VALUE other)
+{
+    return numeric_operation(self, other, &zsub, NULL);
+}
+
 /* used to implement <=>, ==, < and >
  * TODO: won't work if bignum param is > MAX_LONG
  * returns:
@@ -211,5 +216,7 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, ">=", cz_gte, 1);
     rb_define_method(cZ, "<", cz_lt, 1);
     rb_define_method(cZ, "<=", cz_lte, 1);
+    rb_define_method(cZ, "-", cz_subtract, 1);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
+
 }
