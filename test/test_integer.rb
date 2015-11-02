@@ -140,4 +140,9 @@ class TestInteger < Minitest::Test
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
     assert_equal "42",                  Calc::Z.new(Calc::Z.new(42)).to_s
   end
+
+  def test_inspect
+    assert_equal "Calc::Z(42)",  Calc::Z.new(42).inspect
+    assert_equal "Calc::Z(-42)", Calc::Z.new(-42).inspect
+  end
 end
