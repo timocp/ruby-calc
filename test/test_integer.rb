@@ -78,6 +78,12 @@ class TestInteger < Minitest::Test
     assert_equal -1, Calc::Z.new(1) - Calc::Z.new(2)
     assert_equal -1, Calc::Z.new(3) - 4
   end
+
+  def test_multiply
+    assert_instance_of Calc::Z, Calc::Z.new(1) * Calc::Z.new(2)
+    assert_equal 12, Calc::Z.new(3) * Calc::Z.new(4)
+    assert_equal 30, Calc::Z.new(5) * 6
+  end
   
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
