@@ -13,7 +13,8 @@ extern void libcalc_call_me_first(void);
 
 /* functions in integer.c */
 VALUE cz_alloc(VALUE klass);
-VALUE cz_init(VALUE self, VALUE param);
+VALUE cz_initialize(VALUE self, VALUE param);
+VALUE cz_initialize_copy(VALUE copy, VALUE orig);
 void cz_free(void *p);
 
 VALUE cz_to_s(VALUE self);

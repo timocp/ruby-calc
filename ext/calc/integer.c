@@ -17,7 +17,7 @@ VALUE cz_alloc(VALUE klass) {
   return obj;
 }
 
-VALUE cz_init(VALUE self, VALUE param) {
+VALUE cz_initialize(VALUE self, VALUE param) {
   ZVALUE *z, *zother;
 
   Data_Get_Struct(self, ZVALUE, z);
@@ -34,7 +34,27 @@ VALUE cz_init(VALUE self, VALUE param) {
   else {
     rb_raise(rb_eTypeError, "expected Fixnum or Bignum");
   }
+
   return self;
+}
+
+/* intialize_copy is used by dupp/clone.  ruby provided version won't work
+ * because the underlying ZVALUEs can't be shared. */
+VALUE cz_initialize_copy(VALUE copy, VALUE orig) {
+  ZVALUE *z1, *z2;
+
+  if (copy == orig) {
+    return copy;
+  }
+  if (!ISZVALUE(orig)) {
+    rb_raise(rb_eTypeError, "wrong argument type");
+  }
+
+  Data_Get_Struct(orig, ZVALUE, z1);
+  Data_Get_Struct(copy, ZVALUE, z2);
+  zcopy(*z1, z2);
+
+  return copy;
 }
 
 VALUE cz_to_s(VALUE self) {
@@ -48,5 +68,6 @@ VALUE cz_to_s(VALUE self) {
   s = math_getdivertedio();
   rs = rb_str_new2(s);
   free(s);
+
   return rs;
 }
