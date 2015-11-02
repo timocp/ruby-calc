@@ -11,4 +11,6 @@ Init_calc(void)
   rb_mCalc = rb_define_module("Calc");
 
   cZ = rb_define_class_under(rb_mCalc, "Z", rb_cObject);
+  rb_define_alloc_func(cZ, zvalue_alloc);
+  rb_define_method(cZ, "initialize",      zvalue_init, 1);
 }

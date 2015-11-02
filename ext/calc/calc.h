@@ -11,4 +11,8 @@ extern void libcalc_call_me_first(void);
 #include <calc/cmath.h>
 #include <calc/lib_calc.h>
 
+/* functions in integer.c */
+VALUE zvalue_alloc(VALUE klass);
+VALUE zvalue_init(VALUE self, VALUE param);
+
 #endif /* CALC_H */
