@@ -122,6 +122,31 @@ VALUE cz_divide(VALUE self, VALUE other)
     rb_raise(rb_eNotImpError, "division not implemented yet");
 }
 
+VALUE cz_mod(VALUE self, VALUE other)
+{
+    ZVALUE *zself, *zother, ztmp, *zresult;
+    VALUE result;
+
+    result = cz_alloc(cZ);
+    Data_Get_Struct(self, ZVALUE, zself);
+    Data_Get_Struct(result, ZVALUE, zresult);
+
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        itoz(NUM2LONG(other), &ztmp);
+        zmod(*zself, ztmp, zresult, 0); /* remainder sign ignored */
+        zfree(ztmp);
+    }
+    else if (ISZVALUE(other)) {
+        Data_Get_Struct(other, ZVALUE, zother);
+        zmod(*zself, *zother, zresult, 0);      /* remainder sign ignored */
+    }
+    else {
+        rb_raise(rb_eArgError, "number expected");
+    }
+
+    return result;
+}
+
 /* used to implement <=>, ==, < and >
  * TODO: won't work if bignum param is > MAX_LONG
  * returns:
@@ -257,9 +282,11 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, ">=", cz_gte, 1);
     rb_define_method(cZ, "<", cz_lt, 1);
     rb_define_method(cZ, "<=", cz_lte, 1);
+    rb_define_method(cZ, "%", cz_mod, 1);
     rb_define_method(cZ, "*", cz_multiply, 1);
     rb_define_method(cZ, "-", cz_subtract, 1);
     rb_define_method(cZ, "divmod", cz_divmod, 1);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
 
+    rb_define_alias(cZ, "modulo", "%");
 }

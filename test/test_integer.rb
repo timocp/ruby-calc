@@ -89,6 +89,15 @@ class TestInteger < Minitest::Test
     skip "division not tested until Calc::Q implemented"
   end
 
+  def test_mod
+    assert_instance_of Calc::Z, Calc::Z.new(13) % Calc::Z.new(4)
+    assert_instance_of Calc::Z, Calc::Z.new(13) % 4
+    assert_equal  1, Calc::Z.new( 13) %  4
+    assert_equal -3, Calc::Z.new( 13) % -4
+    assert_equal  3, Calc::Z.new(-13) %  4
+    assert_equal -1, Calc::Z.new(-13) % -4
+  end
+
   def test_divmod
     r = Calc::Z.new(13).divmod(Calc::Z.new(4))
     assert_instance_of Array, r
