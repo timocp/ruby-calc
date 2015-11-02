@@ -134,6 +134,11 @@ VALUE cz_multiply(VALUE self, VALUE other)
     return numeric_operation(self, other, &zmul, &zmuli);
 }
 
+VALUE cz_and(VALUE self, VALUE other)
+{
+    return numeric_operation(self, other, &zand, NULL);
+}
+
 VALUE cz_divide(VALUE self, VALUE other)
 {
     rb_raise(rb_eNotImpError, "division not implemented yet");
@@ -292,6 +297,7 @@ void define_calc_z(VALUE m)
 
     /* instance methods on Calc::Z */
     rb_define_method(cZ, "+", cz_add, 1);
+    rb_define_method(cZ, "&", cz_and, 1);
     rb_define_method(cZ, "<=>", cz_comparison, 1);
     rb_define_method(cZ, "/", cz_divide, 1);
     rb_define_method(cZ, "==", cz_equal, 1);

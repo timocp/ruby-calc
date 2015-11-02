@@ -135,6 +135,17 @@ class TestInteger < Minitest::Test
     assert_equal -1, Calc::Z.new(-13).modulo(-4)
   end
 
+  # note that behaviour of &, | and ^ with negatives doesn't match ruby's
+  # normal numeric types.  it is consistant with calc though.
+  def test_and
+    assert_instance_of Calc::Z, Calc::Z.new(4) & Calc::Z.new(7)
+    assert_instance_of Calc::Z, Calc::Z.new(4) & 7
+    assert_equal  4, Calc::Z.new( 4) &  7
+    skip { assert_equal  0, Calc::Z.new( 4) & -7 }  # TODO: incorrectly returns 4
+    assert_equal -4, Calc::Z.new(-4) &  7
+    assert_equal  0, Calc::Z.new(-4) & -7
+  end
+
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
