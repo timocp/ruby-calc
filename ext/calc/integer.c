@@ -1,5 +1,7 @@
 #include "calc.h"
 
+VALUE cZ;                       /* Calc::Z class */
+
 /* freeh() is provided by libcalc, pointer version of zfree() */
 void cz_free(void *p)
 {
@@ -59,6 +61,50 @@ VALUE cz_initialize_copy(VALUE copy, VALUE orig)
     zcopy(*z1, z2);
 
     return copy;
+}
+
+/* used to implement +, -, etc
+ * f1 is compulsory, the normal form of numeric operations
+ *      void f(ZVALUE, ZVALUE, ZVALUE *)
+ * f2 is optional, when libcalc provides a "short" version that allows
+ * a long parameter instead of a ZVALUE
+ *      void f(ZVALUE, long, ZVALUE *)
+ */
+VALUE numeric_operation(VALUE self, VALUE other,
+                        void (*f1) (ZVALUE, ZVALUE, ZVALUE *),
+                        void (*f2) (ZVALUE, long, ZVALUE *))
+{
+    ZVALUE *zself, *zother, ztmp, *zresult;
+    VALUE result;
+
+    result = cz_alloc(cZ);
+    Data_Get_Struct(self, ZVALUE, zself);
+    Data_Get_Struct(result, ZVALUE, zresult);
+
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        if (f2) {
+            (*f2) (*zself, NUM2LONG(other), zresult);
+        }
+        else {
+            itoz(NUM2LONG(other), &ztmp);
+            (*f1) (*zself, ztmp, zresult);
+            zfree(ztmp);
+        }
+    }
+    else if (ISZVALUE(other)) {
+        Data_Get_Struct(other, ZVALUE, zother);
+        (*f1) (*zself, *zother, zresult);
+    }
+    else {
+        rb_raise(rb_eArgError, "expected number");
+    }
+
+    return result;
+}
+
+VALUE cz_add(VALUE self, VALUE other)
+{
+    return numeric_operation(self, other, &zadd, NULL);
 }
 
 /* used to implement <=>, ==, < and >
@@ -152,12 +198,13 @@ VALUE cz_to_s(VALUE self)
 /* called from Init_calc, defines the Calc::Z class */
 void define_calc_z(VALUE m)
 {
-    VALUE cZ = rb_define_class_under(m, "Z", rb_cObject);
+    cZ = rb_define_class_under(m, "Z", rb_cObject);
     rb_define_alloc_func(cZ, cz_alloc);
     rb_define_method(cZ, "initialize", cz_initialize, 1);
     rb_define_method(cZ, "initialize_copy", cz_initialize_copy, 1);
 
     /* instance methods on Calc::Z */
+    rb_define_method(cZ, "+", cz_add, 1);
     rb_define_method(cZ, "<=>", cz_comparison, 1);
     rb_define_method(cZ, "==", cz_equal, 1);
     rb_define_method(cZ, ">", cz_gt, 1);
