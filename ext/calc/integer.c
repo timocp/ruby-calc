@@ -85,6 +85,10 @@ int _cz_zrel(VALUE self, VALUE other) {
   return result;
 }
 
+VALUE cz_comparison(VALUE self, VALUE other) {
+  return INT2FIX(_cz_zrel(self, other));
+}
+
 VALUE cz_equal(VALUE self, VALUE other) {
   return _cz_zrel(self, other) == 0 ? Qtrue : Qfalse;
 }

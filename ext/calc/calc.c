@@ -18,6 +18,7 @@ Init_calc(void)
   rb_define_method(cZ, "initialize_copy", cz_initialize_copy, 1);
 
   /* instance methods on Calc::Z */
-  rb_define_method(cZ, "==", cz_equal, 1);
-  rb_define_method(cZ, "to_s", cz_to_s, 0);
+  rb_define_method(cZ, "<=>",   cz_comparison, 1);
+  rb_define_method(cZ, "==",    cz_equal, 1);
+  rb_define_method(cZ, "to_s",  cz_to_s, 0);
 }

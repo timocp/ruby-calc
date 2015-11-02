@@ -26,6 +26,15 @@ class TestInteger < Minitest::Test
     refute_equal Calc::Z.new(8), 9
     refute_equal 10, Calc::Z.new(11)
   end
+
+  def test_comparisons
+    assert_equal  0, Calc::Z.new(3) <=> Calc::Z.new(3)
+    assert_equal -1, Calc::Z.new(4) <=> Calc::Z.new(5)
+    assert_equal  1, Calc::Z.new(7) <=> Calc::Z.new(6)
+    assert_equal  0, Calc::Z.new(8) <=> 8
+    assert_equal -1, Calc::Z.new(9) <=> 10
+    assert_equal  1, Calc::Z.new(12) <=> 11
+  end
   
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
