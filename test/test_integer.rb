@@ -155,6 +155,15 @@ class TestInteger < Minitest::Test
     assert_equal   2, Calc::Z.new(-18) | -20
   end
 
+  def test_xor
+    assert_instance_of Calc::Z, Calc::Z.new(7) | Calc::Z.new(14)
+    assert_instance_of Calc::Z, Calc::Z.new(7) | 14
+    assert_equal   9, Calc::Z.new( 7) ^  14
+    skip { assert_equal -11, Calc::Z.new( 7) ^ -14 } # TODO: incorrectly returns 9
+    assert_equal  -9, Calc::Z.new(-7) ^  14
+    assert_equal  11, Calc::Z.new(-7) ^ -14
+  end
+
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
