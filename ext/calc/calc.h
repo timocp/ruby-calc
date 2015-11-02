@@ -28,4 +28,4 @@ VALUE cz_to_s(VALUE self);
 /* macro to test if a ruby VALUE is a ZVALUE */
 #define ISZVALUE(v) (TYPE(v) == T_DATA && RDATA(v)->dfree == cz_free)
 
-#endif /* CALC_H */
+#endif                          /* CALC_H */
