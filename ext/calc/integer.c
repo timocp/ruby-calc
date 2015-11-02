@@ -63,6 +63,23 @@ VALUE cz_initialize_copy(VALUE copy, VALUE orig)
     return copy;
 }
 
+VALUE cz_uplus(VALUE num)
+{
+    return num;
+}
+
+VALUE cz_uminus(VALUE num)
+{
+    ZVALUE *znum, *zresult;
+    VALUE result;
+
+    result = cz_alloc(cZ);
+    Data_Get_Struct(num, ZVALUE, znum);
+    Data_Get_Struct(result, ZVALUE, zresult);
+    zsub(_zero_, *znum, zresult);
+    return result;
+}
+
 /* used to implement +, -, etc
  * f1 is compulsory, the normal form of numeric operations
  *      void f(ZVALUE, ZVALUE, ZVALUE *)
@@ -285,6 +302,8 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "%", cz_mod, 1);
     rb_define_method(cZ, "*", cz_multiply, 1);
     rb_define_method(cZ, "-", cz_subtract, 1);
+    rb_define_method(cZ, "-@", cz_uminus, 0);
+    rb_define_method(cZ, "+@", cz_uplus, 0);
     rb_define_method(cZ, "divmod", cz_divmod, 1);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
 

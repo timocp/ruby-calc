@@ -66,6 +66,15 @@ class TestInteger < Minitest::Test
     end
   end
 
+  def test_unary
+    assert_instance_of Calc::Z, +Calc::Z.new(42)
+    assert_instance_of Calc::Z, -Calc::Z.new(42)
+    assert_equal  42, +Calc::Z.new( 42)
+    assert_equal -42, +Calc::Z.new(-42)
+    assert_equal -42, -Calc::Z.new( 42)
+    assert_equal  42, -Calc::Z.new(-42)
+  end
+
   def test_add
     assert_instance_of Calc::Z, Calc::Z.new(1) + Calc::Z.new(2)
     assert_instance_of Calc::Z, Calc::Z.new(3) + 4
@@ -125,7 +134,7 @@ class TestInteger < Minitest::Test
     assert_equal  3, Calc::Z.new(-13).modulo(4)
     assert_equal -1, Calc::Z.new(-13).modulo(-4)
   end
-  
+
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
