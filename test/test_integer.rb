@@ -59,6 +59,11 @@ class TestInteger < Minitest::Test
     assert_operator Calc::Z.new(31), :>=, 30
     assert_operator Calc::Z.new(32), :>=, 32
     refute_operator Calc::Z.new(33), :>=, 34
+
+    # check we can't compare to non-numbers
+    %i(< <= > >=).each do |op|
+      assert_raises(ArgumentError) { Calc::Z.new(40).send(op, "cat") }
+    end
   end
   
   def test_to_s

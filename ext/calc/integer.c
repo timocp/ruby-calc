@@ -87,6 +87,15 @@ int _cz_zrel(VALUE self, VALUE other) {
   return result;
 }
 
+/* calls _cz_zrel but raises an exception of other is non-numeric */
+int _cz_zrel_check_arg(VALUE self, VALUE other) {
+  int result = _cz_zrel(self, other);
+  if (result == -2) {
+    rb_raise(rb_eArgError, "comparison of Calc::Z to non-numeric failed");
+  }
+  return result;
+}
+
 VALUE cz_comparison(VALUE self, VALUE other) {
   int result = _cz_zrel(self, other);
   return result == -2 ? Qnil : INT2FIX(result);
@@ -97,19 +106,19 @@ VALUE cz_equal(VALUE self, VALUE other) {
 }
 
 VALUE cz_gte(VALUE self, VALUE other) {
-  return _cz_zrel(self, other) == -1 ? Qfalse : Qtrue;
+  return _cz_zrel_check_arg(self, other) == -1 ? Qfalse : Qtrue;
 }
 
 VALUE cz_gt(VALUE self, VALUE other) {
-  return _cz_zrel(self, other) == 1 ? Qtrue : Qfalse;
+  return _cz_zrel_check_arg(self, other) == 1 ? Qtrue : Qfalse;
 }
 
 VALUE cz_lte(VALUE self, VALUE other) {
-  return _cz_zrel(self, other) == 1 ? Qfalse : Qtrue;
+  return _cz_zrel_check_arg(self, other) == 1 ? Qfalse : Qtrue;
 }
 
 VALUE cz_lt(VALUE self, VALUE other) {
-  return _cz_zrel(self, other) == -1 ? Qtrue : Qfalse;
+  return _cz_zrel_check_arg(self, other) == -1 ? Qtrue : Qfalse;
 }
 
 VALUE cz_to_s(VALUE self) {
