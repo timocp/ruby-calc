@@ -84,6 +84,28 @@ class TestInteger < Minitest::Test
     assert_equal 12, Calc::Z.new(3) * Calc::Z.new(4)
     assert_equal 30, Calc::Z.new(5) * 6
   end
+
+  def test_divide
+    skip "division not tested until Calc::Q implpemented"
+  end
+
+  def test_divmod
+    r = Calc::Z.new(13).divmod(Calc::Z.new(4))
+    assert_instance_of Array, r
+    assert_equal 2, r.size
+    assert_instance_of Calc::Z, r.first
+    assert_instance_of Calc::Z, r.last
+    r = Calc::Z.new(13).divmod(4)
+    assert_instance_of Array, r
+    assert_equal 2, r.size
+    assert_instance_of Calc::Z, r.first
+    assert_instance_of Calc::Z, r.last
+
+    assert_equal [ 3,  1], Calc::Z.new(13).divmod(4)
+    assert_equal [-4, -3], Calc::Z.new(13).divmod(-4)
+    assert_equal [-4,  3], Calc::Z.new(-13).divmod(4)
+    assert_equal [ 3, -1], Calc::Z.new(-13).divmod(-4)
+  end
   
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s

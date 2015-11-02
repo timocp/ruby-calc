@@ -117,6 +117,11 @@ VALUE cz_multiply(VALUE self, VALUE other)
     return numeric_operation(self, other, &zmul, &zmuli);
 }
 
+VALUE cz_divide(VALUE self, VALUE other)
+{
+    rb_raise(rb_eNotImpError, "division not implemented yet");
+}
+
 /* used to implement <=>, ==, < and >
  * TODO: won't work if bignum param is > MAX_LONG
  * returns:
@@ -189,6 +194,36 @@ VALUE cz_lt(VALUE self, VALUE other)
     return _cz_zrel_check_arg(self, other) == -1 ? Qtrue : Qfalse;
 }
 
+VALUE cz_divmod(VALUE self, VALUE other)
+{
+    ZVALUE *zself, *zother, ztmp, *zquo, *zmod;
+    VALUE quo, mod, arr;
+
+    quo = cz_alloc(cZ);
+    mod = cz_alloc(cZ);
+    arr = rb_ary_new2(2);
+    Data_Get_Struct(self, ZVALUE, zself);
+    Data_Get_Struct(quo, ZVALUE, zquo);
+    Data_Get_Struct(mod, ZVALUE, zmod);
+
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        itoz(NUM2LONG(other), &ztmp);
+        zdiv(*zself, ztmp, zquo, zmod, 0);
+        zfree(ztmp);
+    }
+    else if (ISZVALUE(other)) {
+        Data_Get_Struct(other, ZVALUE, zother);
+        zdiv(*zself, *zother, zquo, zmod, 0);
+    }
+    else {
+        rb_raise(rb_eArgError, "number expected");
+    }
+    rb_ary_store(arr, 0, quo);
+    rb_ary_store(arr, 1, mod);
+
+    return arr;
+}
+
 VALUE cz_to_s(VALUE self)
 {
     ZVALUE *z;
@@ -216,6 +251,7 @@ void define_calc_z(VALUE m)
     /* instance methods on Calc::Z */
     rb_define_method(cZ, "+", cz_add, 1);
     rb_define_method(cZ, "<=>", cz_comparison, 1);
+    rb_define_method(cZ, "/", cz_divide, 1);
     rb_define_method(cZ, "==", cz_equal, 1);
     rb_define_method(cZ, ">", cz_gt, 1);
     rb_define_method(cZ, ">=", cz_gte, 1);
@@ -223,6 +259,7 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "<=", cz_lte, 1);
     rb_define_method(cZ, "*", cz_multiply, 1);
     rb_define_method(cZ, "-", cz_subtract, 1);
+    rb_define_method(cZ, "divmod", cz_divmod, 1);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
 
 }
