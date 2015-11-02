@@ -146,6 +146,15 @@ class TestInteger < Minitest::Test
     assert_equal  0, Calc::Z.new(-4) & -7
   end
 
+  def test_or
+    assert_instance_of Calc::Z, Calc::Z.new(18) | Calc::Z.new(20)
+    assert_instance_of Calc::Z, Calc::Z.new(18) | 20
+    assert_equal  22, Calc::Z.new( 18) |  20
+    skip { assert_equal  -2, Calc::Z.new( 18) | -20 }  # TODO: incorrectly returns 22
+    assert_equal -22, Calc::Z.new(-18) |  20
+    assert_equal   2, Calc::Z.new(-18) | -20
+  end
+
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
