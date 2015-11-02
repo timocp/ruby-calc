@@ -27,6 +27,10 @@ VALUE cz_init(VALUE self, VALUE param) {
   else if (TYPE(param) == T_BIGNUM) {
     itoz(NUM2LONG(param), z);
   }
+  else if (ISZVALUE(param)) {
+    Data_Get_Struct(param, ZVALUE, zother);
+    zcopy(*zother, z);
+  }
   else {
     rb_raise(rb_eTypeError, "expected Fixnum or Bignum");
   }
