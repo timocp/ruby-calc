@@ -25,6 +25,7 @@ class TestInteger < Minitest::Test
     refute_equal Calc::Z.new(6), Calc::Z.new(7)
     refute_equal Calc::Z.new(8), 9
     refute_equal 10, Calc::Z.new(11)
+    refute_equal Calc::Z.new(12), "dog"
   end
 
   def test_comparisons
@@ -34,6 +35,10 @@ class TestInteger < Minitest::Test
     assert_equal  0, Calc::Z.new(8) <=> 8
     assert_equal -1, Calc::Z.new(9) <=> 10
     assert_equal  1, Calc::Z.new(12) <=> 11
+
+    # <=> is supposed to return nil if objects aren't comparable
+    assert_nil Calc::Z.new(3) <=> "cat"
+    assert_nil "cat" <=> Calc::Z.new(4)
   end
   
   def test_to_s
