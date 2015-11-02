@@ -148,3 +148,21 @@ VALUE cz_to_s(VALUE self)
 
     return rs;
 }
+
+/* called from Init_calc, defines the Calc::Z class */
+void define_calc_z(VALUE m)
+{
+    VALUE cZ = rb_define_class_under(m, "Z", rb_cObject);
+    rb_define_alloc_func(cZ, cz_alloc);
+    rb_define_method(cZ, "initialize", cz_initialize, 1);
+    rb_define_method(cZ, "initialize_copy", cz_initialize_copy, 1);
+
+    /* instance methods on Calc::Z */
+    rb_define_method(cZ, "<=>", cz_comparison, 1);
+    rb_define_method(cZ, "==", cz_equal, 1);
+    rb_define_method(cZ, ">", cz_gt, 1);
+    rb_define_method(cZ, ">=", cz_gte, 1);
+    rb_define_method(cZ, "<", cz_lt, 1);
+    rb_define_method(cZ, "<=", cz_lte, 1);
+    rb_define_method(cZ, "to_s", cz_to_s, 0);
+}
