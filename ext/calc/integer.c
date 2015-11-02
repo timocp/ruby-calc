@@ -24,6 +24,9 @@ VALUE zvalue_init(VALUE self, VALUE param) {
   if (TYPE(param) == T_FIXNUM) {
     itoz(NUM2LONG(param), z);
   }
+  else if (TYPE(param) == T_BIGNUM) {
+    itoz(NUM2LONG(param), z);
+  }
   else {
     rb_raise(rb_eTypeError, "expected Fixnum");
   }
