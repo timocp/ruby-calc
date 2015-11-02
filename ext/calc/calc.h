@@ -15,4 +15,6 @@ extern void libcalc_call_me_first(void);
 VALUE cz_alloc(VALUE klass);
 VALUE cz_init(VALUE self, VALUE param);
 
+VALUE cz_to_s(VALUE self);
+
 #endif /* CALC_H */

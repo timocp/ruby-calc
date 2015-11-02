@@ -33,3 +33,16 @@ VALUE cz_init(VALUE self, VALUE param) {
   return self;
 }
 
+VALUE cz_to_s(VALUE self) {
+  ZVALUE *z;
+  char *s;
+  VALUE rs;
+
+  Data_Get_Struct(self, ZVALUE, z);
+  math_divertio();
+  zprintval(*z, 0, 0);
+  s = math_getdivertedio();
+  rs = rb_str_new2(s);
+  free(s);
+  return rs;
+}
