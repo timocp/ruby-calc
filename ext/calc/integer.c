@@ -319,6 +319,20 @@ VALUE cz_divmod(VALUE self, VALUE other)
     return arr;
 }
 
+VALUE cz_iseven(VALUE self)
+{
+    ZVALUE *zself;
+    Data_Get_Struct(self, ZVALUE, zself);
+    return ziseven(*zself) ? Qtrue : Qfalse;
+}
+
+VALUE cz_isodd(VALUE self)
+{
+    ZVALUE *zself;
+    Data_Get_Struct(self, ZVALUE, zself);
+    return zisodd(*zself) ? Qtrue : Qfalse;
+}
+
 VALUE cz_to_s(VALUE self)
 {
     ZVALUE *z;
@@ -364,6 +378,8 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "+@", cz_uplus, 0);
     rb_define_method(cZ, "^", cz_xor, 1);
     rb_define_method(cZ, "divmod", cz_divmod, 1);
+    rb_define_method(cZ, "even?", cz_iseven, 0);
+    rb_define_method(cZ, "odd?", cz_isodd, 0);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
 
     rb_define_alias(cZ, "modulo", "%");

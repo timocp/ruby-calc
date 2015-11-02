@@ -195,6 +195,13 @@ class TestInteger < Minitest::Test
     assert_equal "42",                  Calc::Z.new(Calc::Z.new(42)).to_s
   end
 
+  def test_even_odd
+    assert_instance_of TrueClass, Calc::Z.new(0).even?
+    assert_instance_of FalseClass, Calc::Z.new(1).even?
+    assert_instance_of TrueClass, Calc::Z.new(-1).odd?
+    assert_instance_of FalseClass, Calc::Z.new(-2).odd?
+  end
+
   def test_inspect
     assert_equal "Calc::Z(42)",  Calc::Z.new(42).inspect
     assert_equal "Calc::Z(-42)", Calc::Z.new(-42).inspect
