@@ -154,6 +154,11 @@ VALUE cz_divide(VALUE self, VALUE other)
     rb_raise(rb_eNotImpError, "division not implemented yet");
 }
 
+VALUE cz_power(VALUE self, VALUE other)
+{
+    return numeric_operation(self, other, &zpowi, NULL);
+}
+
 VALUE cz_mod(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
@@ -251,6 +256,39 @@ VALUE cz_lt(VALUE self, VALUE other)
     return _cz_zrel_check_arg(self, other) == -1 ? Qtrue : Qfalse;
 }
 
+VALUE shift(VALUE self, VALUE other, int sign)
+{
+    ZVALUE *zself, *zother, *zresult;
+    VALUE result;
+
+    result = cz_alloc(cZ);
+    Data_Get_Struct(self, ZVALUE, zself);
+    Data_Get_Struct(result, ZVALUE, zresult);
+
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        zshift(*zself, NUM2LONG(other) * sign, zresult);
+    }
+    else if (ISZVALUE(other)) {
+        Data_Get_Struct(other, ZVALUE, zother);
+        zshift(*zself, ztoi(*zother) * sign, zresult);
+    }
+    else {
+        rb_raise(rb_eArgError, "number expected");
+    }
+
+    return result;
+}
+
+VALUE cz_shift_left(VALUE self, VALUE other)
+{
+    return shift(self, other, 1);
+}
+
+VALUE cz_shift_right(VALUE self, VALUE other)
+{
+    return shift(self, other, -1);
+}
+
 VALUE cz_divmod(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp, *zquo, *zmod;
@@ -318,6 +356,9 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "%", cz_mod, 1);
     rb_define_method(cZ, "*", cz_multiply, 1);
     rb_define_method(cZ, "|", cz_or, 1);
+    rb_define_method(cZ, "**", cz_power, 1);
+    rb_define_method(cZ, "<<", cz_shift_left, 1);
+    rb_define_method(cZ, ">>", cz_shift_right, 1);
     rb_define_method(cZ, "-", cz_subtract, 1);
     rb_define_method(cZ, "-@", cz_uminus, 0);
     rb_define_method(cZ, "+@", cz_uplus, 0);

@@ -164,6 +164,31 @@ class TestInteger < Minitest::Test
     assert_equal  11, Calc::Z.new(-7) ^ -14
   end
 
+  def test_shift
+    assert_instance_of Calc::Z, Calc::Z.new(4) << Calc::Z.new(5)
+    assert_instance_of Calc::Z, Calc::Z.new(4) << 5
+    assert_instance_of Calc::Z, Calc::Z.new(100) >> Calc::Z.new(2)
+    assert_instance_of Calc::Z, Calc::Z.new(100) >> 2
+    assert_equal  128, Calc::Z.new(4) << 5
+    assert_equal    0, Calc::Z.new(4) >> 5
+    assert_equal  400, Calc::Z.new(100) << 2
+    assert_equal   25, Calc::Z.new(100) >> 2
+    assert_equal -320, Calc::Z.new(-20) << 4
+    assert_equal   -1, Calc::Z.new(-20) >> 4
+    assert_equal    1, Calc::Z.new(20) << -4
+    assert_equal  320, Calc::Z.new(20) >> -4
+    assert_equal  -12, Calc::Z.new(-50) << -2
+    assert_equal -200, Calc::Z.new(-50) >> -2
+  end
+
+  def test_power
+    assert_instance_of Calc::Z, Calc::Z.new(3) ** Calc::Z.new(19)
+    assert_instance_of Calc::Z, Calc::Z.new(3) ** 19
+    assert_equal  1162261467, Calc::Z.new(3) ** 19
+    assert_equal -1162261467, Calc::Z.new(-3) ** 19
+    skip "TODO: powers to negatives require Calc::Q"
+  end
+
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
