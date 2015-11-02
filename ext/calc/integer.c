@@ -28,7 +28,7 @@ VALUE zvalue_init(VALUE self, VALUE param) {
     itoz(NUM2LONG(param), z);
   }
   else {
-    rb_raise(rb_eTypeError, "expected Fixnum");
+    rb_raise(rb_eTypeError, "expected Fixnum or Bignum");
   }
   return self;
 }
