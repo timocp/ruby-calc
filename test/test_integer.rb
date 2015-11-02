@@ -39,6 +39,26 @@ class TestInteger < Minitest::Test
     # <=> is supposed to return nil if objects aren't comparable
     assert_nil Calc::Z.new(3) <=> "cat"
     assert_nil "cat" <=> Calc::Z.new(4)
+
+    assert_operator Calc::Z.new(13), :<, Calc::Z.new(14)
+    assert_operator Calc::Z.new(15), :<, 16
+    refute_operator Calc::Z.new(17), :<, 17
+    refute_operator Calc::Z.new(18), :<, 17
+
+    assert_operator Calc::Z.new(19), :<=, Calc::Z.new(20)
+    assert_operator Calc::Z.new(21), :<=, 22
+    assert_operator Calc::Z.new(23), :<=, 23
+    refute_operator Calc::Z.new(24), :<=, 23
+
+    assert_operator Calc::Z.new(25), :>, Calc::Z.new(24)
+    assert_operator Calc::Z.new(26), :>, 25
+    refute_operator Calc::Z.new(27), :>, 27
+    refute_operator Calc::Z.new(28), :>, 29
+
+    assert_operator Calc::Z.new(30), :>=, Calc::Z.new(29)
+    assert_operator Calc::Z.new(31), :>=, 30
+    assert_operator Calc::Z.new(32), :>=, 32
+    refute_operator Calc::Z.new(33), :>=, 34
   end
   
   def test_to_s

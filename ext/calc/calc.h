@@ -19,6 +19,10 @@ void cz_free(void *p);
 
 VALUE cz_comparison(VALUE self, VALUE other);
 VALUE cz_equal(VALUE self, VALUE other);
+VALUE cz_gte(VALUE self, VALUE other);
+VALUE cz_gt(VALUE self, VALUE other);
+VALUE cz_lte(VALUE self, VALUE other);
+VALUE cz_lt(VALUE self, VALUE other);
 VALUE cz_to_s(VALUE self);
 
 /* macro to test if a ruby VALUE is a ZVALUE */

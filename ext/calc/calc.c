@@ -20,5 +20,9 @@ Init_calc(void)
   /* instance methods on Calc::Z */
   rb_define_method(cZ, "<=>",   cz_comparison, 1);
   rb_define_method(cZ, "==",    cz_equal, 1);
+  rb_define_method(cZ, ">",     cz_gt, 1);
+  rb_define_method(cZ, ">=",    cz_gte, 1);
+  rb_define_method(cZ, "<",     cz_lt, 1);
+  rb_define_method(cZ, "<=",    cz_lte, 1);
   rb_define_method(cZ, "to_s",  cz_to_s, 0);
 }
