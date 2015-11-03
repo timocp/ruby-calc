@@ -265,6 +265,12 @@ class TestInteger < Minitest::Test
     assert_equal -6, Calc::Z.new(-6).floor
   end
 
+  def test_truncate
+    assert_instance_of Calc::Z, Calc::Z.new(42).truncate
+    assert_equal 10, Calc::Z.new(10).truncate
+    assert_equal -6, Calc::Z.new(-6).truncate
+  end
+
   def test_next
     assert_instance_of Calc::Z, Calc::Z.new(42).next
     assert_equal 2, Calc::Z.new(1).next

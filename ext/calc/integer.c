@@ -491,12 +491,12 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "odd?", cz_isodd, 0);
     rb_define_method(cZ, "to_i", cz_to_i, 0);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
+    rb_define_method(cZ, "truncate", cz_self, 0);
     rb_define_method(cZ, "zero?", cz_iszero, 0);
     rb_define_method(cZ, "|", cz_or, 1);
 
     rb_define_alias(cZ, "magnitude", "abs");
     rb_define_alias(cZ, "modulo", "%");
     rb_define_alias(cZ, "to_int", "to_i");
-    rb_define_alias(cZ, "truncate", "to_i");
     rb_define_alias(cZ, "succ", "next");
 }
