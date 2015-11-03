@@ -201,6 +201,13 @@ class TestInteger < Minitest::Test
     assert_equal 144, Calc::Z.new(-12).abs2
   end
 
+  # for integers, #ceil returns itself
+  def test_ceil
+    assert_instance_of Calc::Z, Calc::Z.new(42)
+    assert_equal 10, Calc::Z.new(10).ceil
+    assert_equal -6, Calc::Z.new(-6).ceil
+  end
+
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s

@@ -63,7 +63,7 @@ VALUE cz_initialize_copy(VALUE copy, VALUE orig)
     return copy;
 }
 
-VALUE cz_uplus(VALUE num)
+VALUE cz_self(VALUE num)
 {
     return num;
 }
@@ -386,6 +386,7 @@ void define_calc_z(VALUE m)
     /* instance methods on Calc::Z */
     rb_define_method(cZ, "abs2", cz_abs2, 0);
     rb_define_method(cZ, "abs", cz_abs, 0);
+    rb_define_method(cZ, "ceil", cz_self, 0);
     rb_define_method(cZ, "+", cz_add, 1);
     rb_define_method(cZ, "&", cz_and, 1);
     rb_define_method(cZ, "<=>", cz_comparison, 1);
@@ -399,11 +400,11 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "*", cz_multiply, 1);
     rb_define_method(cZ, "|", cz_or, 1);
     rb_define_method(cZ, "**", cz_power, 1);
+    rb_define_method(cZ, "+@", cz_self, 0);
     rb_define_method(cZ, "<<", cz_shift_left, 1);
     rb_define_method(cZ, ">>", cz_shift_right, 1);
     rb_define_method(cZ, "-", cz_subtract, 1);
     rb_define_method(cZ, "-@", cz_uminus, 0);
-    rb_define_method(cZ, "+@", cz_uplus, 0);
     rb_define_method(cZ, "^", cz_xor, 1);
     rb_define_method(cZ, "divmod", cz_divmod, 1);
     rb_define_method(cZ, "even?", cz_iseven, 0);
