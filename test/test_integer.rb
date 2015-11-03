@@ -123,6 +123,10 @@ class TestInteger < Minitest::Test
     assert_equal [-4, -3], Calc::Z.new(13).divmod(-4)
     assert_equal [-4,  3], Calc::Z.new(-13).divmod(4)
     assert_equal [ 3, -1], Calc::Z.new(-13).divmod(-4)
+
+    # divide by zero should raise ZeroDivisionError instead of CalcError
+    assert_raises(ZeroDivisionError) { Calc::Z.new(1).divmod(0) }
+    assert_raises(ZeroDivisionError) { Calc::Z.new(1).divmod(Calc::Z.new(0)) }
   end
 
   def test_modulo

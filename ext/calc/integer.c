@@ -319,6 +319,7 @@ VALUE cz_divmod(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp, *zquo, *zmod;
     VALUE quo, mod, arr;
+    long ltmp;
 
     quo = cz_alloc(cZ);
     mod = cz_alloc(cZ);
@@ -328,12 +329,19 @@ VALUE cz_divmod(VALUE self, VALUE other)
     Data_Get_Struct(mod, ZVALUE, zmod);
 
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        itoz(NUM2LONG(other), &ztmp);
+        ltmp = NUM2LONG(other);
+        if (ltmp == 0) {
+            rb_raise(rb_eZeroDivError, "division by zero in divmod");
+        }
+        itoz(ltmp, &ztmp);
         zdiv(*zself, ztmp, zquo, zmod, 0);
         zfree(ztmp);
     }
     else if (ISZVALUE(other)) {
         Data_Get_Struct(other, ZVALUE, zother);
+        if (ziszero(*zother)) {
+            rb_raise(rb_eZeroDivError, "division by zero in divmod");
+        }
         zdiv(*zself, *zother, zquo, zmod, 0);
     }
     else {
