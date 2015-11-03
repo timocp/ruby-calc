@@ -244,6 +244,7 @@ class TestInteger < Minitest::Test
     assert_instance_of Bignum, Calc::Z.new(0x4000000000000000).to_i
     assert_equal 42, Calc::Z.new(42).to_i
     assert_equal 4611686018427387904, Calc::Z.new(0x4000000000000000).to_i
+    assert_equal 0x8000000000000000, Calc::Z.new("0x8000000000000000").to_i
   end
 
   def test_to_s

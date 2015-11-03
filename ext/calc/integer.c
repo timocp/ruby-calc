@@ -81,7 +81,7 @@ VALUE cz_initialize_copy(VALUE copy, VALUE orig)
  *****************************************************************************/
 
 /* used to implement <=>, ==, < and >
- * TODO: won't work if bignum param is > MAX_LONG
+ * TODO: won't work if bignum param is > MAXLONG (9223372036854775807L)
  * returns:
  *  0 if values are the same
  *  -1 if self is < other
@@ -408,19 +408,35 @@ VALUE cz_iszero(VALUE self)
 VALUE cz_to_i(VALUE self)
 {
     ZVALUE *zself;
+    VALUE tmp;
+    char *s;
+
     Data_Get_Struct(self, ZVALUE, zself);
-    return LONG2NUM(ztoi(*zself));
+
+    if (zgtmaxlong(*zself)) {
+        /* too big to fit in a long, ztoi would return MAXLONG.  use a string
+         * intermediary. */
+        math_divertio();
+        zprintval(*zself, 0, 0);
+        s = math_getdivertedio();
+        tmp = rb_str_new2(s);
+        free(s);
+        return rb_funcall(tmp, rb_intern("to_i"), 0);
+    }
+    else {
+        return LONG2NUM(ztoi(*zself));
+    }
 }
 
 VALUE cz_to_s(VALUE self)
 {
-    ZVALUE *z;
+    ZVALUE *zself;
     char *s;
     VALUE rs;
 
-    Data_Get_Struct(self, ZVALUE, z);
+    Data_Get_Struct(self, ZVALUE, zself);
     math_divertio();
-    zprintval(*z, 0, 0);
+    zprintval(*zself, 0, 0);
     s = math_getdivertedio();
     rs = rb_str_new2(s);
     free(s);
