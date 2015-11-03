@@ -405,6 +405,13 @@ VALUE cz_iszero(VALUE self)
     return ziszero(*zself) ? Qtrue : Qfalse;
 }
 
+VALUE cz_to_i(VALUE self)
+{
+    ZVALUE *zself;
+    Data_Get_Struct(self, ZVALUE, zself);
+    return LONG2NUM(ztoi(*zself));
+}
+
 VALUE cz_to_s(VALUE self)
 {
     ZVALUE *z;
@@ -457,6 +464,8 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "even?", cz_iseven, 0);
     rb_define_method(cZ, "floor", cz_self, 0);
     rb_define_method(cZ, "odd?", cz_isodd, 0);
+    rb_define_method(cZ, "to_i", cz_to_i, 0);
+    rb_define_method(cZ, "to_int", cz_to_i, 0);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
     rb_define_method(cZ, "zero?", cz_iszero, 0);
     rb_define_method(cZ, "|", cz_or, 1);
