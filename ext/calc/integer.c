@@ -239,7 +239,7 @@ VALUE cz_xor(VALUE self, VALUE other)
 
 VALUE cz_divide(VALUE self, VALUE other)
 {
-    rb_raise(rb_eNotImpError, "division not implemented yet");
+    rb_notimplement();
 }
 
 VALUE cz_power(VALUE self, VALUE other)
