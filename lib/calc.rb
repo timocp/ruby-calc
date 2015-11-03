@@ -12,6 +12,11 @@ module Calc
     end
 
     # TODO: implement in C
+
+    def div(y)
+      self.divmod(y).first
+    end
+
     def remainder(y)
       z = self % y
       if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))

@@ -120,6 +120,22 @@ class TestInteger < Minitest::Test
     skip "division not tested until Calc::Q implemented"
   end
 
+  # integer division. TODO calc behaves differently to ruby when negatives are
+  # involved.  but our #div is implemented using #divmod.
+  # calc: 13//-4 == -3
+  # ruby: 13/-4 == -4
+  def test_div
+    assert_instance_of Calc::Z, Calc::Z.new(5).div(2)
+    assert_instance_of Calc::Z, Calc::Z.new(5).div(Calc::Z.new(2))
+    assert_equal  3, Calc::Z.new( 13).div( 4)
+    assert_equal -4, Calc::Z.new( 13).div(-4)
+    assert_equal -4, Calc::Z.new(-13).div( 4)
+    assert_equal  3, Calc::Z.new(-13).div(-4)
+
+    assert_raises(ZeroDivisionError) { Calc::Z.new(13).div(0) }
+    assert_raises(ZeroDivisionError) { Calc::Z.new(13).div(Calc::Z.new(0)) }
+  end
+
   def test_mod
     assert_instance_of Calc::Z, Calc::Z.new(13) % Calc::Z.new(4)
     assert_instance_of Calc::Z, Calc::Z.new(13) % 4
