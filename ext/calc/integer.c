@@ -40,7 +40,7 @@ VALUE cz_initialize(VALUE self, VALUE param)
         zcopy(*zother, z);
     }
     else {
-        rb_raise(rb_eTypeError, "expected Fixnum or Bignum");
+        rb_raise(rb_eTypeError, "expected Fixnum, Bignum or String");
     }
 
     return self;
