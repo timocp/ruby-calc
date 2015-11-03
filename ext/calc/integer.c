@@ -30,24 +30,24 @@ VALUE cz_alloc(VALUE klass)
 /* shorthand for creating a new uninitialized Calc::Z object */
 #define cz_new() cz_alloc(cZ)
 
-/* Calc::Z.new(param) */
-VALUE cz_initialize(VALUE self, VALUE param)
+/* Calc::Z.new(arg) */
+VALUE cz_initialize(VALUE self, VALUE arg)
 {
-    ZVALUE *z, *zother;
+    ZVALUE *zself, *zarg;
 
-    Data_Get_Struct(self, ZVALUE, z);
-    if (TYPE(param) == T_FIXNUM) {
-        itoz(NUM2LONG(param), z);
+    Data_Get_Struct(self, ZVALUE, zself);
+    if (TYPE(arg) == T_FIXNUM) {
+        itoz(NUM2LONG(arg), zself);
     }
-    else if (TYPE(param) == T_BIGNUM) {
-        itoz(NUM2LONG(param), z);
+    else if (TYPE(arg) == T_BIGNUM) {
+        itoz(NUM2LONG(arg), zself);
     }
-    else if (TYPE(param) == T_STRING) {
-        str2z(StringValueCStr(param), z);
+    else if (TYPE(arg) == T_STRING) {
+        str2z(StringValueCStr(arg), zself);
     }
-    else if (ISZVALUE(param)) {
-        Data_Get_Struct(param, ZVALUE, zother);
-        zcopy(*zother, z);
+    else if (ISZVALUE(arg)) {
+        Data_Get_Struct(arg, ZVALUE, zarg);
+        zcopy(*zarg, zself);
     }
     else {
         rb_raise(rb_eTypeError, "expected Fixnum, Bignum or String");
@@ -58,22 +58,22 @@ VALUE cz_initialize(VALUE self, VALUE param)
 
 /* intialize_copy is used by dup/clone.  ZVALUE's can't share their internals
  * so we have to override the default copying. */
-VALUE cz_initialize_copy(VALUE copy, VALUE orig)
+VALUE cz_initialize_copy(VALUE obj, VALUE orig)
 {
-    ZVALUE *z1, *z2;
+    ZVALUE *zobj, *zorig;
 
-    if (copy == orig) {
-        return copy;
+    if (obj == orig) {
+        return obj;
     }
     if (!ISZVALUE(orig)) {
         rb_raise(rb_eTypeError, "wrong argument type");
     }
 
-    Data_Get_Struct(orig, ZVALUE, z1);
-    Data_Get_Struct(copy, ZVALUE, z2);
-    zcopy(*z1, z2);
+    Data_Get_Struct(obj, ZVALUE, zobj);
+    Data_Get_Struct(orig, ZVALUE, zorig);
+    zcopy(*zorig, zobj);
 
-    return copy;
+    return obj;
 }
 
 /*****************************************************************************
@@ -91,18 +91,18 @@ VALUE cz_initialize_copy(VALUE copy, VALUE orig)
  */
 int _compare(VALUE self, VALUE other)
 {
-    ZVALUE *zv_self, *zv_tmp, zv_other;
+    ZVALUE *zself, *zother, ztmp;
     int result;
 
-    Data_Get_Struct(self, ZVALUE, zv_self);
+    Data_Get_Struct(self, ZVALUE, zself);
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        itoz(NUM2LONG(other), &zv_other);
-        result = zrel(*zv_self, zv_other);
-        zfree(zv_other);
+        itoz(NUM2LONG(other), &ztmp);
+        result = zrel(*zself, ztmp);
+        zfree(ztmp);
     }
     else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zv_tmp);
-        result = zrel(*zv_self, *zv_tmp);
+        Data_Get_Struct(other, ZVALUE, zother);
+        result = zrel(*zself, *zother);
     }
     else {
         result = -2;
