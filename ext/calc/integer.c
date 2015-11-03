@@ -30,12 +30,15 @@ VALUE cz_alloc(VALUE klass)
 /* shorthand for creating a new uninitialized Calc::Z object */
 #define cz_new() cz_alloc(cZ)
 
+/* shortcut for getting pointer to Calc::Z's ZVALUE */
+#define get_zvalue(ruby_var,c_var) { Data_Get_Struct(ruby_var, ZVALUE, c_var); }
+
 /* Calc::Z.new(arg) */
 VALUE cz_initialize(VALUE self, VALUE arg)
 {
     ZVALUE *zself, *zarg;
 
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
     if (TYPE(arg) == T_FIXNUM) {
         itoz(NUM2LONG(arg), zself);
     }
@@ -46,7 +49,7 @@ VALUE cz_initialize(VALUE self, VALUE arg)
         str2z(StringValueCStr(arg), zself);
     }
     else if (ISZVALUE(arg)) {
-        Data_Get_Struct(arg, ZVALUE, zarg);
+        get_zvalue(arg, zarg);
         zcopy(*zarg, zself);
     }
     else {
@@ -69,8 +72,8 @@ VALUE cz_initialize_copy(VALUE obj, VALUE orig)
         rb_raise(rb_eTypeError, "wrong argument type");
     }
 
-    Data_Get_Struct(obj, ZVALUE, zobj);
-    Data_Get_Struct(orig, ZVALUE, zorig);
+    get_zvalue(obj, zobj);
+    get_zvalue(orig, zorig);
     zcopy(*zorig, zobj);
 
     return obj;
@@ -94,14 +97,14 @@ int _compare(VALUE self, VALUE other)
     ZVALUE *zself, *zother, ztmp;
     int result;
 
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
         itoz(NUM2LONG(other), &ztmp);
         result = zrel(*zself, ztmp);
         zfree(ztmp);
     }
     else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zother);
+        get_zvalue(other, zother);
         result = zrel(*zself, *zother);
     }
     else {
@@ -135,8 +138,8 @@ VALUE _numeric_op(VALUE self, VALUE other,
     VALUE result;
 
     result = cz_new();
-    Data_Get_Struct(self, ZVALUE, zself);
-    Data_Get_Struct(result, ZVALUE, zresult);
+    get_zvalue(self, zself);
+    get_zvalue(result, zresult);
 
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
         if (f2) {
@@ -149,7 +152,7 @@ VALUE _numeric_op(VALUE self, VALUE other,
         }
     }
     else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zother);
+        get_zvalue(other, zother);
         (*f1) (*zself, *zother, zresult);
     }
     else {
@@ -166,14 +169,14 @@ VALUE _shift(VALUE self, VALUE other, int sign)
     VALUE result;
 
     result = cz_new();
-    Data_Get_Struct(self, ZVALUE, zself);
-    Data_Get_Struct(result, ZVALUE, zresult);
+    get_zvalue(self, zself);
+    get_zvalue(result, zresult);
 
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
         zshift(*zself, NUM2LONG(other) * sign, zresult);
     }
     else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zother);
+        get_zvalue(other, zother);
         zshift(*zself, ztoi(*zother) * sign, zresult);
     }
     else {
@@ -198,8 +201,8 @@ VALUE cz_uminus(VALUE num)
     VALUE result;
 
     result = cz_new();
-    Data_Get_Struct(num, ZVALUE, znum);
-    Data_Get_Struct(result, ZVALUE, zresult);
+    get_zvalue(num, znum);
+    get_zvalue(result, zresult);
     zsub(_zero_, *znum, zresult);
     return result;
 }
@@ -251,8 +254,8 @@ VALUE cz_mod(VALUE self, VALUE other)
     long ltmp;
 
     result = cz_new();
-    Data_Get_Struct(self, ZVALUE, zself);
-    Data_Get_Struct(result, ZVALUE, zresult);
+    get_zvalue(self, zself);
+    get_zvalue(result, zresult);
 
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
         ltmp = NUM2LONG(other);
@@ -264,7 +267,7 @@ VALUE cz_mod(VALUE self, VALUE other)
         zfree(ztmp);
     }
     else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zother);
+        get_zvalue(other, zother);
         if (ziszero(*zother)) {
             rb_raise(rb_eZeroDivError, "division by zero in mod");
         }
@@ -322,7 +325,7 @@ VALUE cz_abs(VALUE self)
 {
     ZVALUE *zself;
 
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
 
     if (zispos(*zself)) {
         return self;
@@ -338,8 +341,8 @@ VALUE cz_abs2(VALUE self)
     VALUE result;
 
     result = cz_new();
-    Data_Get_Struct(self, ZVALUE, zself);
-    Data_Get_Struct(result, ZVALUE, zresult);
+    get_zvalue(self, zself);
+    get_zvalue(result, zresult);
 
     zsquare(*zself, zresult);
 
@@ -355,9 +358,9 @@ VALUE cz_divmod(VALUE self, VALUE other)
     quo = cz_new();
     mod = cz_new();
     arr = rb_ary_new2(2);
-    Data_Get_Struct(self, ZVALUE, zself);
-    Data_Get_Struct(quo, ZVALUE, zquo);
-    Data_Get_Struct(mod, ZVALUE, zmod);
+    get_zvalue(self, zself);
+    get_zvalue(quo, zquo);
+    get_zvalue(mod, zmod);
 
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
         ltmp = NUM2LONG(other);
@@ -369,7 +372,7 @@ VALUE cz_divmod(VALUE self, VALUE other)
         zfree(ztmp);
     }
     else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zother);
+        get_zvalue(other, zother);
         if (ziszero(*zother)) {
             rb_raise(rb_eZeroDivError, "division by zero in divmod");
         }
@@ -387,21 +390,21 @@ VALUE cz_divmod(VALUE self, VALUE other)
 VALUE cz_iseven(VALUE self)
 {
     ZVALUE *zself;
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
     return ziseven(*zself) ? Qtrue : Qfalse;
 }
 
 VALUE cz_isodd(VALUE self)
 {
     ZVALUE *zself;
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
     return zisodd(*zself) ? Qtrue : Qfalse;
 }
 
 VALUE cz_iszero(VALUE self)
 {
     ZVALUE *zself;
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
     return ziszero(*zself) ? Qtrue : Qfalse;
 }
 
@@ -411,7 +414,7 @@ VALUE cz_to_i(VALUE self)
     VALUE tmp;
     char *s;
 
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
 
     if (zgtmaxlong(*zself)) {
         /* too big to fit in a long, ztoi would return MAXLONG.  use a string
@@ -434,7 +437,7 @@ VALUE cz_to_s(VALUE self)
     char *s;
     VALUE rs;
 
-    Data_Get_Struct(self, ZVALUE, zself);
+    get_zvalue(self, zself);
     math_divertio();
     zprintval(*zself, 0, 0);
     s = math_getdivertedio();
