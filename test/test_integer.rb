@@ -239,9 +239,16 @@ class TestInteger < Minitest::Test
 
   # for integers, #ceil returns itself
   def test_ceil
-    assert_instance_of Calc::Z, Calc::Z.new(42)
+    assert_instance_of Calc::Z, Calc::Z.new(42).ceil
     assert_equal 10, Calc::Z.new(10).ceil
     assert_equal -6, Calc::Z.new(-6).ceil
+  end
+
+  # same as ceil
+  def test_floor
+    assert_instance_of Calc::Z, Calc::Z.new(42).floor
+    assert_equal 10, Calc::Z.new(10).floor
+    assert_equal -6, Calc::Z.new(-6).floor
   end
 
   def test_to_s

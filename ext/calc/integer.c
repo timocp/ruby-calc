@@ -455,6 +455,7 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "ceil", cz_self, 0);
     rb_define_method(cZ, "divmod", cz_divmod, 1);
     rb_define_method(cZ, "even?", cz_iseven, 0);
+    rb_define_method(cZ, "floor", cz_self, 0);
     rb_define_method(cZ, "odd?", cz_isodd, 0);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
     rb_define_method(cZ, "zero?", cz_iszero, 0);
