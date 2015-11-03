@@ -18,6 +18,11 @@ class TestInteger < Minitest::Test
     assert_equal 1195503, Calc::Z.new("0x123def")
   end
 
+  def test_concise_initialization
+    assert_instance_of Calc::Z, Calc::Z(42)
+    assert_equal 42, Calc::Z(42)
+  end
+
   def test_dup
     z1 = Calc::Z.new(42)
     z2 = z1.dup

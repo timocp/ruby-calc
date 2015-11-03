@@ -2,6 +2,10 @@ require "calc/version"
 require "calc/calc"
 
 module Calc
+  def self.Z(p)
+    Z.new(p)
+  end
+
   class Z
     def inspect
       "Calc::Z(#{ to_s })"
