@@ -32,6 +32,9 @@ VALUE cz_initialize(VALUE self, VALUE param)
     else if (TYPE(param) == T_BIGNUM) {
         itoz(NUM2LONG(param), z);
     }
+    else if (TYPE(param) == T_STRING) {
+        str2z(StringValueCStr(param), z);
+    }
     else if (ISZVALUE(param)) {
         Data_Get_Struct(param, ZVALUE, zother);
         zcopy(*zother, z);
@@ -43,7 +46,7 @@ VALUE cz_initialize(VALUE self, VALUE param)
     return self;
 }
 
-/* intialize_copy is used by dupp/clone.  ruby provided version won't work
+/* intialize_copy is used by dup/clone.  ruby provided version won't work
  * because the underlying ZVALUEs can't be shared. */
 VALUE cz_initialize_copy(VALUE copy, VALUE orig)
 {

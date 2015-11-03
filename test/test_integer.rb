@@ -9,6 +9,13 @@ class TestInteger < Minitest::Test
     assert_instance_of Calc::Z, Calc::Z.new(42)                 # Fixnum
     assert_instance_of Calc::Z, Calc::Z.new(0x4000000000000000) # Bignum
     assert_instance_of Calc::Z, Calc::Z.new(Calc::Z.new(42))    # Calc::Z
+    assert_instance_of Calc::Z, Calc::Z.new("1234")             # String
+
+    # various string formats supported by calc
+    assert_equal 42,      Calc::Z.new("0b101010")
+    assert_equal 123456,  Calc::Z.new("123456")
+    assert_equal 256794,  Calc::Z.new("0765432")
+    assert_equal 1195503, Calc::Z.new("0x123def")
   end
 
   def test_dup
