@@ -21,6 +21,8 @@ VALUE cz_alloc(VALUE klass)
     return obj;
 }
 
+#define cz_new() cz_alloc(cZ)
+
 VALUE cz_initialize(VALUE self, VALUE param)
 {
     ZVALUE *z, *zother;
@@ -76,7 +78,7 @@ VALUE cz_uminus(VALUE num)
     ZVALUE *znum, *zresult;
     VALUE result;
 
-    result = cz_alloc(cZ);
+    result = cz_new();
     Data_Get_Struct(num, ZVALUE, znum);
     Data_Get_Struct(result, ZVALUE, zresult);
     zsub(_zero_, *znum, zresult);
@@ -97,7 +99,7 @@ VALUE numeric_operation(VALUE self, VALUE other,
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;
 
-    result = cz_alloc(cZ);
+    result = cz_new();
     Data_Get_Struct(self, ZVALUE, zself);
     Data_Get_Struct(result, ZVALUE, zresult);
 
@@ -168,7 +170,7 @@ VALUE cz_mod(VALUE self, VALUE other)
     VALUE result;
     long ltmp;
 
-    result = cz_alloc(cZ);
+    result = cz_new();
     Data_Get_Struct(self, ZVALUE, zself);
     Data_Get_Struct(result, ZVALUE, zresult);
 
@@ -272,7 +274,7 @@ VALUE shift(VALUE self, VALUE other, int sign)
     ZVALUE *zself, *zother, *zresult;
     VALUE result;
 
-    result = cz_alloc(cZ);
+    result = cz_new();
     Data_Get_Struct(self, ZVALUE, zself);
     Data_Get_Struct(result, ZVALUE, zresult);
 
@@ -319,7 +321,7 @@ VALUE cz_abs2(VALUE self)
     ZVALUE *zself, *zresult;
     VALUE result;
 
-    result = cz_alloc(cZ);
+    result = cz_new();
     Data_Get_Struct(self, ZVALUE, zself);
     Data_Get_Struct(result, ZVALUE, zresult);
 
@@ -334,8 +336,8 @@ VALUE cz_divmod(VALUE self, VALUE other)
     VALUE quo, mod, arr;
     long ltmp;
 
-    quo = cz_alloc(cZ);
-    mod = cz_alloc(cZ);
+    quo = cz_new();
+    mod = cz_new();
     arr = rb_ary_new2(2);
     Data_Get_Struct(self, ZVALUE, zself);
     Data_Get_Struct(quo, ZVALUE, zquo);
