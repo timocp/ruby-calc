@@ -289,6 +289,32 @@ VALUE cz_shift_right(VALUE self, VALUE other)
     return shift(self, other, -1);
 }
 
+VALUE cz_abs(VALUE self) {
+    ZVALUE *zself;
+
+    Data_Get_Struct(self, ZVALUE, zself);
+
+    if (zispos(*zself)) {
+        return self;
+    }
+    else {
+        return cz_uminus(self);
+    }
+}
+
+VALUE cz_abs2(VALUE self) {
+    ZVALUE *zself, *zresult;
+    VALUE result;
+
+    result = cz_alloc(cZ);
+    Data_Get_Struct(self, ZVALUE, zself);
+    Data_Get_Struct(result, ZVALUE, zresult);
+
+    zsquare(*zself, zresult);
+
+    return result;
+}
+
 VALUE cz_divmod(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp, *zquo, *zmod;
@@ -358,6 +384,8 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "initialize_copy", cz_initialize_copy, 1);
 
     /* instance methods on Calc::Z */
+    rb_define_method(cZ, "abs2", cz_abs2, 0);
+    rb_define_method(cZ, "abs", cz_abs, 0);
     rb_define_method(cZ, "+", cz_add, 1);
     rb_define_method(cZ, "&", cz_and, 1);
     rb_define_method(cZ, "<=>", cz_comparison, 1);

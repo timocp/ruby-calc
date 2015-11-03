@@ -188,6 +188,18 @@ class TestInteger < Minitest::Test
     assert_equal -1162261467, Calc::Z.new(-3) ** 19
     skip "TODO: powers to negatives require Calc::Q"
   end
+  
+  def test_abs
+    assert_instance_of Calc::Z, Calc::Z.new(12).abs
+    assert_equal 12, Calc::Z.new(12).abs
+    assert_equal 12, Calc::Z.new(-12).abs
+  end
+
+  def test_abs2
+    assert_instance_of Calc::Z, Calc::Z.new(12).abs2
+    assert_equal 144, Calc::Z.new(12).abs2
+    assert_equal 144, Calc::Z.new(-12).abs2
+  end
 
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
