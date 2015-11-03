@@ -488,6 +488,7 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "zero?", cz_iszero, 0);
     rb_define_method(cZ, "|", cz_or, 1);
 
+    rb_define_alias(cZ, "magnitude", "abs");
     rb_define_alias(cZ, "modulo", "%");
     rb_define_alias(cZ, "to_int", "to_i");
     rb_define_alias(cZ, "truncate", "to_i");
