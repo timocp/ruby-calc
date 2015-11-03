@@ -105,6 +105,9 @@ class TestInteger < Minitest::Test
     assert_equal -3, Calc::Z.new( 13) % -4
     assert_equal  3, Calc::Z.new(-13) %  4
     assert_equal -1, Calc::Z.new(-13) % -4
+
+    assert_raises(ZeroDivisionError) { Calc::Z.new(13) % 0 }
+    assert_raises(ZeroDivisionError) { Calc::Z.new(13) % Calc::Z.new(0) }
   end
 
   def test_divmod
@@ -137,6 +140,23 @@ class TestInteger < Minitest::Test
     assert_equal -3, Calc::Z.new(13).modulo(-4)
     assert_equal  3, Calc::Z.new(-13).modulo(4)
     assert_equal -1, Calc::Z.new(-13).modulo(-4)
+    assert_equal  0, Calc::Z.new(0).modulo(5)
+    assert_equal  0, Calc::Z.new(0).modulo(-5)
+  end
+
+  def test_remainder
+    assert_instance_of Calc::Z, Calc::Z.new(13).remainder(Calc::Z.new(4))
+    assert_instance_of Calc::Z, Calc::Z.new(13).remainder(4)
+
+    assert_equal  1, Calc::Z.new( 13).remainder( 4)
+    assert_equal  1, Calc::Z.new( 13).remainder(-4)
+    assert_equal -1, Calc::Z.new(-13).remainder( 4)
+    assert_equal -1, Calc::Z.new(-13).remainder(-4)
+    assert_equal  0, Calc::Z.new(0).remainder(5)
+    assert_equal  0, Calc::Z.new(0).remainder(-5)
+
+    assert_raises(ZeroDivisionError) { Calc::Z.new(1).remainder(0) }
+    assert_raises(ZeroDivisionError) { Calc::Z.new(1).remainder(Calc::Z.new(0)) }
   end
 
   # note that behaviour of &, | and ^ with negatives doesn't match ruby's
@@ -216,6 +236,11 @@ class TestInteger < Minitest::Test
     assert_equal "42",                  Calc::Z.new(42).to_s
     assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
     assert_equal "42",                  Calc::Z.new(Calc::Z.new(42)).to_s
+  end
+
+  def test_zero
+    assert_instance_of TrueClass, Calc::Z.new(0).zero?
+    assert_instance_of FalseClass, Calc::Z.new(1).zero?
   end
 
   def test_even_odd

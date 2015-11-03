@@ -163,18 +163,26 @@ VALUE cz_mod(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;
+    long ltmp;
 
     result = cz_alloc(cZ);
     Data_Get_Struct(self, ZVALUE, zself);
     Data_Get_Struct(result, ZVALUE, zresult);
 
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        itoz(NUM2LONG(other), &ztmp);
+        ltmp = NUM2LONG(other);
+        if (ltmp == 0) {
+            rb_raise(rb_eZeroDivError, "division by zero in mod");
+        }
+        itoz(ltmp, &ztmp);
         zmod(*zself, ztmp, zresult, 0); /* remainder sign ignored */
         zfree(ztmp);
     }
     else if (ISZVALUE(other)) {
         Data_Get_Struct(other, ZVALUE, zother);
+        if (ziszero(*zother)) {
+            rb_raise(rb_eZeroDivError, "division by zero in mod");
+        }
         zmod(*zself, *zother, zresult, 0);      /* remainder sign ignored */
     }
     else {
@@ -289,7 +297,8 @@ VALUE cz_shift_right(VALUE self, VALUE other)
     return shift(self, other, -1);
 }
 
-VALUE cz_abs(VALUE self) {
+VALUE cz_abs(VALUE self)
+{
     ZVALUE *zself;
 
     Data_Get_Struct(self, ZVALUE, zself);
@@ -302,7 +311,8 @@ VALUE cz_abs(VALUE self) {
     }
 }
 
-VALUE cz_abs2(VALUE self) {
+VALUE cz_abs2(VALUE self)
+{
     ZVALUE *zself, *zresult;
     VALUE result;
 
@@ -383,6 +393,13 @@ VALUE cz_to_s(VALUE self)
     return rs;
 }
 
+VALUE cz_iszero(VALUE self)
+{
+    ZVALUE *zself;
+    Data_Get_Struct(self, ZVALUE, zself);
+    return ziszero(*zself) ? Qtrue : Qfalse;
+}
+
 /* called from Init_calc, defines the Calc::Z class */
 void define_calc_z(VALUE m)
 {
@@ -417,6 +434,7 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "even?", cz_iseven, 0);
     rb_define_method(cZ, "odd?", cz_isodd, 0);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
+    rb_define_method(cZ, "zero?", cz_iszero, 0);
     rb_define_method(cZ, "|", cz_or, 1);
 
     rb_define_alias(cZ, "modulo", "%");
