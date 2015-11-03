@@ -144,18 +144,6 @@ class TestInteger < Minitest::Test
     assert_raises(ZeroDivisionError) { Calc::Z.new(1).divmod(Calc::Z.new(0)) }
   end
 
-  def test_modulo
-    assert_instance_of Calc::Z, Calc::Z.new(13).modulo(Calc::Z.new(4))
-    assert_instance_of Calc::Z, Calc::Z.new(13).modulo(4)
-
-    assert_equal  1, Calc::Z.new(13).modulo(4)
-    assert_equal -3, Calc::Z.new(13).modulo(-4)
-    assert_equal  3, Calc::Z.new(-13).modulo(4)
-    assert_equal -1, Calc::Z.new(-13).modulo(-4)
-    assert_equal  0, Calc::Z.new(0).modulo(5)
-    assert_equal  0, Calc::Z.new(0).modulo(-5)
-  end
-
   def test_remainder
     assert_instance_of Calc::Z, Calc::Z.new(13).remainder(Calc::Z.new(4))
     assert_instance_of Calc::Z, Calc::Z.new(13).remainder(4)
@@ -256,13 +244,6 @@ class TestInteger < Minitest::Test
     assert_instance_of Bignum, Calc::Z.new(0x4000000000000000).to_i
     assert_equal 42, Calc::Z.new(42).to_i
     assert_equal 4611686018427387904, Calc::Z.new(0x4000000000000000).to_i
-  end
-
-  def test_to_int
-    assert_instance_of Fixnum, Calc::Z.new(42).to_int
-    assert_instance_of Bignum, Calc::Z.new(0x4000000000000000).to_int
-    assert_equal 42, Calc::Z.new(42).to_int
-    assert_equal 4611686018427387904, Calc::Z.new(0x4000000000000000).to_int
   end
 
   def test_to_s
