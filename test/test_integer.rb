@@ -18,6 +18,16 @@ class TestInteger < Minitest::Test
     assert_equal 1195503, Calc::Z.new("0x123def")
   end
 
+  def test_large_initialization
+    # TODO: won't work because NUM2LONG will raise exception.  some ideas for
+    # fix but not sure it's high priority (how often will you do this?). work-
+    # around is to use a string.
+    skip { assert_instance_of Calc::Z, Calc::Z.new(0x8000000000000000) }
+    skip { assert_instance_of Calc::Z, Calc::Z.new(-0x8000000000000001) }
+    assert_instance_of Calc::Z, Calc::Z.new("0x8000000000000000")
+    assert_instance_of Calc::Z, Calc::Z.new("-0x8000000000000001")
+  end
+
   def test_concise_initialization
     assert_instance_of Calc::Z, Calc::Z(42)
     assert_equal 42, Calc::Z(42)
