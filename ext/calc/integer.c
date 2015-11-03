@@ -2,12 +2,18 @@
 
 VALUE cZ;                       /* Calc::Z class */
 
-/* freeh() is provided by libcalc, pointer version of zfree() */
+/*****************************************************************************
+ * functions related to memory allocation and object initialization          *
+ *****************************************************************************/
+
+/* freeh() is provided by libcalc, pointer version of zfree().  it is a macro,
+ * so it can't be directly used in Data_Make_Struct */
 void cz_free(void *p)
 {
     freeh(p);
 }
 
+/* tells ruby to allocate memory for a new object which wraps a ZVALUE */
 VALUE cz_alloc(VALUE klass)
 {
     ZVALUE *z;
@@ -21,8 +27,10 @@ VALUE cz_alloc(VALUE klass)
     return obj;
 }
 
+/* shorthand for creating a new uninitialized Calc::Z object */
 #define cz_new() cz_alloc(cZ)
 
+/* Calc::Z.new(param) */
 VALUE cz_initialize(VALUE self, VALUE param)
 {
     ZVALUE *z, *zother;
@@ -48,8 +56,8 @@ VALUE cz_initialize(VALUE self, VALUE param)
     return self;
 }
 
-/* intialize_copy is used by dup/clone.  ruby provided version won't work
- * because the underlying ZVALUEs can't be shared. */
+/* intialize_copy is used by dup/clone.  ZVALUE's can't share their internals
+ * so we have to override the default copying. */
 VALUE cz_initialize_copy(VALUE copy, VALUE orig)
 {
     ZVALUE *z1, *z2;
@@ -68,20 +76,48 @@ VALUE cz_initialize_copy(VALUE copy, VALUE orig)
     return copy;
 }
 
-VALUE cz_self(VALUE num)
+/*****************************************************************************
+ * private functions used by instance methods                                *
+ *****************************************************************************/
+
+/* used to implement <=>, ==, < and >
+ * TODO: won't work if bignum param is > MAX_LONG
+ * returns:
+ *  0 if values are the same
+ *  -1 if self is < other
+ *  +1 if self is > other
+ *
+ * returns -2 if 'other' is not a number.
+ */
+int _compare(VALUE self, VALUE other)
 {
-    return num;
+    ZVALUE *zv_self, *zv_tmp, zv_other;
+    int result;
+
+    Data_Get_Struct(self, ZVALUE, zv_self);
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        itoz(NUM2LONG(other), &zv_other);
+        result = zrel(*zv_self, zv_other);
+        zfree(zv_other);
+    }
+    else if (ISZVALUE(other)) {
+        Data_Get_Struct(other, ZVALUE, zv_tmp);
+        result = zrel(*zv_self, *zv_tmp);
+    }
+    else {
+        result = -2;
+    }
+
+    return result;
 }
 
-VALUE cz_uminus(VALUE num)
+/* calls _compare but raises an exception of other is non-numeric */
+int _compare_check_arg(VALUE self, VALUE other)
 {
-    ZVALUE *znum, *zresult;
-    VALUE result;
-
-    result = cz_new();
-    Data_Get_Struct(num, ZVALUE, znum);
-    Data_Get_Struct(result, ZVALUE, zresult);
-    zsub(_zero_, *znum, zresult);
+    int result = _compare(self, other);
+    if (result == -2) {
+        rb_raise(rb_eArgError, "comparison of Calc::Z to non-numeric failed");
+    }
     return result;
 }
 
@@ -92,9 +128,8 @@ VALUE cz_uminus(VALUE num)
  * a long parameter instead of a ZVALUE
  *      void f(ZVALUE, long, ZVALUE *)
  */
-VALUE numeric_operation(VALUE self, VALUE other,
-                        void (*f1) (ZVALUE, ZVALUE, ZVALUE *),
-                        void (*f2) (ZVALUE, long, ZVALUE *))
+VALUE _numeric_op(VALUE self, VALUE other,
+                  void (*f1) (ZVALUE, ZVALUE, ZVALUE *), void (*f2) (ZVALUE, long, ZVALUE *))
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;
@@ -124,34 +159,79 @@ VALUE numeric_operation(VALUE self, VALUE other,
     return result;
 }
 
+/* implements left shift (positive sign) and right shift (negative sign) */
+VALUE _shift(VALUE self, VALUE other, int sign)
+{
+    ZVALUE *zself, *zother, *zresult;
+    VALUE result;
+
+    result = cz_new();
+    Data_Get_Struct(self, ZVALUE, zself);
+    Data_Get_Struct(result, ZVALUE, zresult);
+
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        zshift(*zself, NUM2LONG(other) * sign, zresult);
+    }
+    else if (ISZVALUE(other)) {
+        Data_Get_Struct(other, ZVALUE, zother);
+        zshift(*zself, ztoi(*zother) * sign, zresult);
+    }
+    else {
+        rb_raise(rb_eArgError, "number expected");
+    }
+
+    return result;
+}
+
+/*****************************************************************************
+ * instance method implementations                                           *
+ *****************************************************************************/
+
+VALUE cz_self(VALUE num)
+{
+    return num;
+}
+
+VALUE cz_uminus(VALUE num)
+{
+    ZVALUE *znum, *zresult;
+    VALUE result;
+
+    result = cz_new();
+    Data_Get_Struct(num, ZVALUE, znum);
+    Data_Get_Struct(result, ZVALUE, zresult);
+    zsub(_zero_, *znum, zresult);
+    return result;
+}
+
 VALUE cz_add(VALUE self, VALUE other)
 {
-    return numeric_operation(self, other, &zadd, NULL);
+    return _numeric_op(self, other, &zadd, NULL);
 }
 
 VALUE cz_subtract(VALUE self, VALUE other)
 {
-    return numeric_operation(self, other, &zsub, NULL);
+    return _numeric_op(self, other, &zsub, NULL);
 }
 
 VALUE cz_multiply(VALUE self, VALUE other)
 {
-    return numeric_operation(self, other, &zmul, &zmuli);
+    return _numeric_op(self, other, &zmul, &zmuli);
 }
 
 VALUE cz_and(VALUE self, VALUE other)
 {
-    return numeric_operation(self, other, &zand, NULL);
+    return _numeric_op(self, other, &zand, NULL);
 }
 
 VALUE cz_or(VALUE self, VALUE other)
 {
-    return numeric_operation(self, other, &zor, NULL);
+    return _numeric_op(self, other, &zor, NULL);
 }
 
 VALUE cz_xor(VALUE self, VALUE other)
 {
-    return numeric_operation(self, other, &zxor, NULL);
+    return _numeric_op(self, other, &zxor, NULL);
 }
 
 VALUE cz_divide(VALUE self, VALUE other)
@@ -161,7 +241,7 @@ VALUE cz_divide(VALUE self, VALUE other)
 
 VALUE cz_power(VALUE self, VALUE other)
 {
-    return numeric_operation(self, other, &zpowi, NULL);
+    return _numeric_op(self, other, &zpowi, NULL);
 }
 
 VALUE cz_mod(VALUE self, VALUE other)
@@ -197,109 +277,45 @@ VALUE cz_mod(VALUE self, VALUE other)
     return result;
 }
 
-/* used to implement <=>, ==, < and >
- * TODO: won't work if bignum param is > MAX_LONG
- * returns:
- *  0 if values are the same
- *  -1 if self is < other
- *  +1 if self is > other
- *
- * returns -2 if 'other' is not a number.
- */
-int _cz_zrel(VALUE self, VALUE other)
-{
-    ZVALUE *zv_self, *zv_tmp, zv_other;
-    int result;
-
-    Data_Get_Struct(self, ZVALUE, zv_self);
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        itoz(NUM2LONG(other), &zv_other);
-        result = zrel(*zv_self, zv_other);
-        zfree(zv_other);
-    }
-    else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zv_tmp);
-        result = zrel(*zv_self, *zv_tmp);
-    }
-    else {
-        result = -2;
-    }
-
-    return result;
-}
-
-/* calls _cz_zrel but raises an exception of other is non-numeric */
-int _cz_zrel_check_arg(VALUE self, VALUE other)
-{
-    int result = _cz_zrel(self, other);
-    if (result == -2) {
-        rb_raise(rb_eArgError, "comparison of Calc::Z to non-numeric failed");
-    }
-    return result;
-}
-
 VALUE cz_comparison(VALUE self, VALUE other)
 {
-    int result = _cz_zrel(self, other);
+    int result = _compare(self, other);
     return result == -2 ? Qnil : INT2FIX(result);
 }
 
 VALUE cz_equal(VALUE self, VALUE other)
 {
-    return _cz_zrel(self, other) == 0 ? Qtrue : Qfalse;
+    return _compare(self, other) == 0 ? Qtrue : Qfalse;
 }
 
 VALUE cz_gte(VALUE self, VALUE other)
 {
-    return _cz_zrel_check_arg(self, other) == -1 ? Qfalse : Qtrue;
+    return _compare_check_arg(self, other) == -1 ? Qfalse : Qtrue;
 }
 
 VALUE cz_gt(VALUE self, VALUE other)
 {
-    return _cz_zrel_check_arg(self, other) == 1 ? Qtrue : Qfalse;
+    return _compare_check_arg(self, other) == 1 ? Qtrue : Qfalse;
 }
 
 VALUE cz_lte(VALUE self, VALUE other)
 {
-    return _cz_zrel_check_arg(self, other) == 1 ? Qfalse : Qtrue;
+    return _compare_check_arg(self, other) == 1 ? Qfalse : Qtrue;
 }
 
 VALUE cz_lt(VALUE self, VALUE other)
 {
-    return _cz_zrel_check_arg(self, other) == -1 ? Qtrue : Qfalse;
-}
-
-VALUE shift(VALUE self, VALUE other, int sign)
-{
-    ZVALUE *zself, *zother, *zresult;
-    VALUE result;
-
-    result = cz_new();
-    Data_Get_Struct(self, ZVALUE, zself);
-    Data_Get_Struct(result, ZVALUE, zresult);
-
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        zshift(*zself, NUM2LONG(other) * sign, zresult);
-    }
-    else if (ISZVALUE(other)) {
-        Data_Get_Struct(other, ZVALUE, zother);
-        zshift(*zself, ztoi(*zother) * sign, zresult);
-    }
-    else {
-        rb_raise(rb_eArgError, "number expected");
-    }
-
-    return result;
+    return _compare_check_arg(self, other) == -1 ? Qtrue : Qfalse;
 }
 
 VALUE cz_shift_left(VALUE self, VALUE other)
 {
-    return shift(self, other, 1);
+    return _shift(self, other, 1);
 }
 
 VALUE cz_shift_right(VALUE self, VALUE other)
 {
-    return shift(self, other, -1);
+    return _shift(self, other, -1);
 }
 
 VALUE cz_abs(VALUE self)
@@ -382,6 +398,13 @@ VALUE cz_isodd(VALUE self)
     return zisodd(*zself) ? Qtrue : Qfalse;
 }
 
+VALUE cz_iszero(VALUE self)
+{
+    ZVALUE *zself;
+    Data_Get_Struct(self, ZVALUE, zself);
+    return ziszero(*zself) ? Qtrue : Qfalse;
+}
+
 VALUE cz_to_s(VALUE self)
 {
     ZVALUE *z;
@@ -398,14 +421,9 @@ VALUE cz_to_s(VALUE self)
     return rs;
 }
 
-VALUE cz_iszero(VALUE self)
-{
-    ZVALUE *zself;
-    Data_Get_Struct(self, ZVALUE, zself);
-    return ziszero(*zself) ? Qtrue : Qfalse;
-}
-
-/* called from Init_calc, defines the Calc::Z class */
+/*****************************************************************************
+ * class definition, called once from Init_calc when library is loaded       *
+ *****************************************************************************/
 void define_calc_z(VALUE m)
 {
     cZ = rb_define_class_under(m, "Z", rb_cObject);
