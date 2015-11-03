@@ -265,6 +265,12 @@ class TestInteger < Minitest::Test
     assert_equal -6, Calc::Z.new(-6).floor
   end
 
+  def test_next
+    assert_instance_of Calc::Z, Calc::Z.new(42).next
+    assert_equal 2, Calc::Z.new(1).next
+    assert_equal 0, Calc::Z.new(-1).next
+  end
+
   def test_to_i
     assert_instance_of Fixnum, Calc::Z.new(42).to_i
     assert_instance_of Bignum, Calc::Z.new(0x4000000000000000).to_i

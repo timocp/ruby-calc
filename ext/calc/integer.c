@@ -408,6 +408,11 @@ VALUE cz_iszero(VALUE self)
     return ziszero(*zself) ? Qtrue : Qfalse;
 }
 
+VALUE cz_next(VALUE self)
+{
+    return cz_add(self, INT2FIX(1));
+}
+
 VALUE cz_to_i(VALUE self)
 {
     ZVALUE *zself;
@@ -482,6 +487,7 @@ void define_calc_z(VALUE m)
     rb_define_method(cZ, "divmod", cz_divmod, 1);
     rb_define_method(cZ, "even?", cz_iseven, 0);
     rb_define_method(cZ, "floor", cz_self, 0);
+    rb_define_method(cZ, "next", cz_next, 0);
     rb_define_method(cZ, "odd?", cz_isodd, 0);
     rb_define_method(cZ, "to_i", cz_to_i, 0);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
@@ -492,4 +498,5 @@ void define_calc_z(VALUE m)
     rb_define_alias(cZ, "modulo", "%");
     rb_define_alias(cZ, "to_int", "to_i");
     rb_define_alias(cZ, "truncate", "to_i");
+    rb_define_alias(cZ, "succ", "next");
 }
