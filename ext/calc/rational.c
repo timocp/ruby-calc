@@ -37,8 +37,6 @@ VALUE cq_alloc(VALUE klass)
 
 #define cq_new() cq_alloc(cQ)
 
-/*
-VALUE cq_initialize(VALUE self, VALUE num, VALUE den)*/
 VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qself;
@@ -48,7 +46,6 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
 
     if (rb_scan_args(argc, argv, "11", &arg1, &arg2) == 1) {
         /* single param */
-        printf("single param version\n");
         if (TYPE(arg1) == T_FIXNUM) {
             qself = itoq(NUM2LONG(arg1));
         }
