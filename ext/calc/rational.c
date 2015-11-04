@@ -77,6 +77,10 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
         qself->num = znum;
         qself->den = zden;
     }
+    if (ziszero(qself->den)) {
+        qfree(qself);
+        rb_raise(rb_eZeroDivError, "division by zero in initialize");
+    }
     DATA_PTR(self) = qself;
 
     return self;

@@ -20,6 +20,13 @@ class TestRational < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q.new(Rational(1,3))
   end
 
+  def test_intialization_div_zero
+    assert_raises(ZeroDivisionError) { Calc::Q.new(5, 0) }
+    assert_raises(ZeroDivisionError) { Calc::Q.new(5, "0") }
+    assert_raises(ZeroDivisionError) { Calc::Q.new(5, Calc::Z(0)) }
+    assert_raises(ZeroDivisionError) { Calc::Q.new("5/0") }
+  end
+
   def test_concise_initialization
     assert_instance_of Calc::Q, Calc::Q(1, 3)
     assert_instance_of Calc::Q, Calc::Q(42)
