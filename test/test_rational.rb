@@ -31,6 +31,13 @@ class TestRational < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q(1, 3)
     assert_instance_of Calc::Q, Calc::Q(42)
   end
+  
+  def test_dup
+    q1 = Calc::Q(13, 4)
+    q2 = q1.dup
+    assert_equal "3.25", q2.to_s
+    refute_equal q1.object_id, q2.object_id
+  end
 
   def test_add
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + 4

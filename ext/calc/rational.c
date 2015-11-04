@@ -86,6 +86,24 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
     return self;
 }
 
+VALUE cq_initialize_copy(VALUE obj, VALUE orig)
+{
+    NUMBER *qorig, *qobj;
+
+    if (obj == orig) {
+        return obj;
+    }
+    if (!ISQVALUE(orig)) {
+        rb_raise(rb_eTypeError, "wrong argument type");
+    }
+
+    qorig = DATA_PTR(orig);
+    qobj = qlink(qorig);
+    DATA_PTR(obj) = qobj;
+
+    return obj;
+}
+
 /*****************************************************************************
  * private functions used by instance methods                                *
  *****************************************************************************/
@@ -156,6 +174,7 @@ void define_calc_q(VALUE m)
     cQ = rb_define_class_under(m, "Q", rb_cData);
     rb_define_alloc_func(cQ, cq_alloc);
     rb_define_method(cQ, "initialize", cq_initialize, -1);
+    rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);
 
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
