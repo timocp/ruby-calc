@@ -19,9 +19,6 @@ VALUE cz_alloc(VALUE klass)
     ZVALUE *z;
     VALUE obj;
 
-    /* use Make, not Wrap.  Make will zero the space allocated.  Probably this
-     * is just for ZVALUEs, since NUMBER and COMPLEX have their own allocation
-     * functions */
     obj = Data_Make_Struct(klass, ZVALUE, 0, cz_free, z);
 
     return obj;
@@ -30,32 +27,12 @@ VALUE cz_alloc(VALUE klass)
 /* shorthand for creating a new uninitialized Calc::Z object */
 #define cz_new() cz_alloc(cZ)
 
-/* shortcut for getting pointer to Calc::Z's ZVALUE */
-#define get_zvalue(ruby_var,c_var) { Data_Get_Struct(ruby_var, ZVALUE, c_var); }
-
 /* Calc::Z.new(arg) */
 VALUE cz_initialize(VALUE self, VALUE arg)
 {
-    ZVALUE *zself, *zarg;
-
+    ZVALUE *zself;
     get_zvalue(self, zself);
-    if (TYPE(arg) == T_FIXNUM) {
-        itoz(NUM2LONG(arg), zself);
-    }
-    else if (TYPE(arg) == T_BIGNUM) {
-        itoz(NUM2LONG(arg), zself);
-    }
-    else if (TYPE(arg) == T_STRING) {
-        str2z(StringValueCStr(arg), zself);
-    }
-    else if (ISZVALUE(arg)) {
-        get_zvalue(arg, zarg);
-        zcopy(*zarg, zself);
-    }
-    else {
-        rb_raise(rb_eTypeError, "expected Fixnum, Bignum or String");
-    }
-
+    *zself = value_to_zvalue(arg);
     return self;
 }
 
@@ -499,4 +476,31 @@ void define_calc_z(VALUE m)
     rb_define_alias(cZ, "modulo", "%");
     rb_define_alias(cZ, "to_int", "to_i");
     rb_define_alias(cZ, "succ", "next");
+}
+
+/* returns a ZVALUE given a fixnum/bignum/string param.  this is public
+ * bacuse Calc::Q initialization uses it too. */
+ZVALUE value_to_zvalue(VALUE arg)
+{
+    ZVALUE *zarg;
+    ZVALUE result;
+
+    if (TYPE(arg) == T_FIXNUM) {
+        itoz(NUM2LONG(arg), &result);
+    }
+    else if (TYPE(arg) == T_BIGNUM) {
+        itoz(NUM2LONG(arg), &result);
+    }
+    else if (TYPE(arg) == T_STRING) {
+        str2z(StringValueCStr(arg), &result);
+    }
+    else if (ISZVALUE(arg)) {
+        get_zvalue(arg, zarg);
+        zcopy(*zarg, &result);
+    }
+    else {
+        rb_raise(rb_eTypeError, "expected Fixnum, Bignum, Calc::Z or String");
+    }
+
+    return result;
 }

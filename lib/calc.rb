@@ -25,4 +25,10 @@ module Calc
       return z
     end
   end
+
+  class Q
+    def inspect
+      "Calc::Q(#{ to_s })"
+    end
+  end
 end

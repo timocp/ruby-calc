@@ -7,4 +7,5 @@ void Init_calc(void)
 
     m = rb_define_module("Calc");
     define_calc_z(m);
+    define_calc_q(m);
 }
