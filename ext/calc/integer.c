@@ -219,7 +219,7 @@ VALUE cz_xor(VALUE self, VALUE other)
 
 VALUE cz_divide(VALUE self, VALUE other)
 {
-    rb_notimplement();
+    return rb_funcall(cQ, rb_intern("new"), 2, self, other);
 }
 
 VALUE cz_power(VALUE self, VALUE other)

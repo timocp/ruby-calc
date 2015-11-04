@@ -3,6 +3,7 @@
 
 extern void define_calc_q();
 
+extern VALUE cQ;
 extern const rb_data_type_t calc_q_type;
 
 /* macro to test if a ruby VALUE is a Calc::Q object */

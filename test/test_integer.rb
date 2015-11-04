@@ -117,7 +117,11 @@ class TestInteger < Minitest::Test
   end
 
   def test_divide
-    skip "division not tested until Calc::Q implemented"
+    # returns a rational number
+    assert_instance_of Calc::Q, Calc::Z(10) / Calc::Z(5)
+    assert_instance_of Calc::Q, Calc::Z(10) / 5 
+
+    skip "add more when Q#== implemented"
   end
 
   # integer division. TODO calc behaves differently to ruby when negatives are
