@@ -14,9 +14,7 @@ class TestRational < MiniTest::Test
 
   def test_add
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + 4
-    skip {
-      assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Z(4)
-    }
+    assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Z(4)
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
   end
 

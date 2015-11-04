@@ -75,15 +75,13 @@ VALUE cq_add(VALUE self, VALUE other)
     else if (TYPE(other) == T_BIGNUM) {
         qresult = qqadd(qself, itoq(NUM2LONG(other)));
     }
-    /* need to fix ISZVALUE, it can't see cz_free here
     else if (ISZVALUE(other)) {
         get_zvalue(other, zother);
         qtmp = qalloc();
         zcopy(*zother, &qtmp->num);
-        qresult = 
+        qresult = qqadd(qself, qtmp);
         qfree(qtmp);
     }
-    */
     else if (ISQVALUE(other)) {
         qresult = qqadd(qself, DATA_PTR(other));
     }
