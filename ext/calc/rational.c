@@ -37,16 +37,49 @@ VALUE cq_alloc(VALUE klass)
 
 #define cq_new() cq_alloc(cQ)
 
-VALUE cq_initialize(VALUE self, VALUE num, VALUE den)
+/*
+VALUE cq_initialize(VALUE self, VALUE num, VALUE den)*/
+VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qself;
+    VALUE arg1, arg2;
     ZVALUE znum, zden;
+    ZVALUE *zarg1;
 
-    znum = value_to_zvalue(num);
-    zden = value_to_zvalue(den);
-    qself = qalloc();
-    qself->num = znum;
-    qself->den = zden;
+    if (rb_scan_args(argc, argv, "11", &arg1, &arg2) == 1) {
+        /* single param */
+        printf("single param version\n");
+        if (TYPE(arg1) == T_FIXNUM) {
+            qself = itoq(NUM2LONG(arg1));
+        }
+        else if (TYPE(arg1) == T_BIGNUM) {
+            qself = itoq(NUM2LONG(arg1));
+        }
+        else if (ISZVALUE(arg1)) {
+            get_zvalue(arg1, zarg1);
+            qself = qalloc();
+            zcopy(*zarg1, &qself->num);
+        }
+        else if (TYPE(arg1) == T_STRING) {
+            qself = str2q(StringValueCStr(arg1));
+        }
+        else if (TYPE(arg1) == T_RATIONAL) {
+            qself = iitoq(rb_funcall(arg1, rb_intern("numerator"), 0),
+                          rb_funcall(arg1, rb_intern("denominator"), 0));
+
+        }
+        else {
+            rb_raise(rb_eArgError, "expected number");
+        }
+    }
+    else {
+        /* 2 params. both can be anything Calc::Z.new would allow */
+        znum = value_to_zvalue(arg1);
+        zden = value_to_zvalue(arg2);
+        qself = qalloc();
+        qself->num = znum;
+        qself->den = zden;
+    }
     DATA_PTR(self) = qself;
 
     return self;
@@ -70,10 +103,14 @@ VALUE cq_add(VALUE self, VALUE other)
 
     if (TYPE(other) == T_FIXNUM) {
         /* got strange results using qaddi, use qqadd instead */
-        qresult = qqadd(qself, itoq(NUM2LONG(other)));
+        qtmp = itoq(NUM2LONG(other));
+        qresult = qqadd(qself, qtmp);
+        qfree(qtmp);
     }
     else if (TYPE(other) == T_BIGNUM) {
-        qresult = qqadd(qself, itoq(NUM2LONG(other)));
+        qtmp = itoq(NUM2LONG(other));
+        qresult = qqadd(qself, qtmp);
+        qfree(qtmp);
     }
     else if (ISZVALUE(other)) {
         get_zvalue(other, zother);
@@ -117,7 +154,7 @@ void define_calc_q(VALUE m)
 {
     cQ = rb_define_class_under(m, "Q", rb_cData);
     rb_define_alloc_func(cQ, cq_alloc);
-    rb_define_method(cQ, "initialize", cq_initialize, 2);       /* TODO: change to -1 */
+    rb_define_method(cQ, "initialize", cq_initialize, -1);
 
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "to_s", cq_to_s, 0);

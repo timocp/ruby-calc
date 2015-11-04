@@ -6,10 +6,18 @@ class TestRational < MiniTest::Test
   end
 
   def test_initialization
+    # num/den versions (anything accepted by Calc::Z.new is allowed)
     assert_instance_of Calc::Q, Calc::Q.new(1, 3)
     assert_instance_of Calc::Q, Calc::Q.new(0x4000000000000000, 0x4000000000000001)
     assert_instance_of Calc::Q, Calc::Q.new("1", "3")
     assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(1), Calc::Z(3))
+
+    # single param version
+    assert_instance_of Calc::Q, Calc::Q.new(1)
+    assert_instance_of Calc::Q, Calc::Q.new(0x4000000000000000)
+    assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(42))
+    assert_instance_of Calc::Q, Calc::Q.new("1/3")
+    assert_instance_of Calc::Q, Calc::Q.new(Rational(1,3))
   end
 
   def test_add
