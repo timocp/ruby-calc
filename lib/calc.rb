@@ -6,6 +6,10 @@ module Calc
     Z.new(p)
   end
 
+  def self.Q(*args)
+    Q.new(*args)
+  end
+
   class Z
     def inspect
       "Calc::Z(#{ to_s })"

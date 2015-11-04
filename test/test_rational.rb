@@ -20,6 +20,11 @@ class TestRational < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q.new(Rational(1,3))
   end
 
+  def test_concise_initialization
+    assert_instance_of Calc::Q, Calc::Q(1, 3)
+    assert_instance_of Calc::Q, Calc::Q(42)
+  end
+
   def test_add
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + 4
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Z(4)
