@@ -13,15 +13,18 @@ void cz_free(void *p)
     freeh(p);
 }
 
+const rb_data_type_t calc_z_type = {
+    "Calc::Z",
+    {0, cz_free, 0},
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
 /* tells ruby to allocate memory for a new object which wraps a ZVALUE */
 VALUE cz_alloc(VALUE klass)
 {
     ZVALUE *z;
-    VALUE obj;
-
-    obj = Data_Make_Struct(klass, ZVALUE, 0, cz_free, z);
-
-    return obj;
+    return TypedData_Make_Struct(klass, ZVALUE, &calc_z_type, z);
 }
 
 /* shorthand for creating a new uninitialized Calc::Z object */
