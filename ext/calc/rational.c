@@ -117,7 +117,7 @@ VALUE cq_to_s(VALUE self)
  *****************************************************************************/
 void define_calc_q(VALUE m)
 {
-    cQ = rb_define_class_under(m, "Q", rb_cObject);
+    cQ = rb_define_class_under(m, "Q", rb_cData);
     rb_define_alloc_func(cQ, cq_alloc);
     rb_define_method(cQ, "initialize", cq_initialize, 2);       /* TODO: change to -1 */
 

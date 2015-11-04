@@ -437,7 +437,7 @@ VALUE cz_to_s(VALUE self)
  *****************************************************************************/
 void define_calc_z(VALUE m)
 {
-    cZ = rb_define_class_under(m, "Z", rb_cObject);
+    cZ = rb_define_class_under(m, "Z", rb_cData);
     rb_define_alloc_func(cZ, cz_alloc);
     rb_define_method(cZ, "initialize", cz_initialize, 1);
     rb_define_method(cZ, "initialize_copy", cz_initialize_copy, 1);
