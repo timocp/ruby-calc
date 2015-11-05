@@ -72,7 +72,7 @@ VALUE cz_initialize_copy(VALUE obj, VALUE orig)
  *
  * returns -2 if 'other' is not a number.
  */
-int _compare(VALUE self, VALUE other)
+static int _compare(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp;
     int result;
@@ -95,7 +95,7 @@ int _compare(VALUE self, VALUE other)
 }
 
 /* calls _compare but raises an exception of other is non-numeric */
-int _compare_check_arg(VALUE self, VALUE other)
+static int _compare_check_arg(VALUE self, VALUE other)
 {
     int result = _compare(self, other);
     if (result == -2) {
@@ -111,7 +111,7 @@ int _compare_check_arg(VALUE self, VALUE other)
  * a long parameter instead of a ZVALUE
  *      void f(ZVALUE, long, ZVALUE *)
  */
-VALUE _numeric_op(VALUE self, VALUE other,
+static VALUE _numeric_op(VALUE self, VALUE other,
                   void (*f1) (ZVALUE, ZVALUE, ZVALUE *), void (*f2) (ZVALUE, long, ZVALUE *))
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
@@ -143,7 +143,7 @@ VALUE _numeric_op(VALUE self, VALUE other,
 }
 
 /* implements left shift (positive sign) and right shift (negative sign) */
-VALUE _shift(VALUE self, VALUE other, int sign)
+static VALUE _shift(VALUE self, VALUE other, int sign)
 {
     ZVALUE *zself, *zother, *zresult;
     VALUE result;
