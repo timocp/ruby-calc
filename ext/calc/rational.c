@@ -61,8 +61,8 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
             qself = str2q(StringValueCStr(arg1));
         }
         else if (TYPE(arg1) == T_RATIONAL) {
-            qself = iitoq(rb_funcall(arg1, rb_intern("numerator"), 0),
-                          rb_funcall(arg1, rb_intern("denominator"), 0));
+            qself = iitoq(NUM2LONG(rb_funcall(arg1, rb_intern("numerator"), 0)),
+                          NUM2LONG(rb_funcall(arg1, rb_intern("denominator"), 0)));
 
         }
         else {
@@ -108,6 +108,62 @@ VALUE cq_initialize_copy(VALUE obj, VALUE orig)
  * private functions used by instance methods                                *
  *****************************************************************************/
 
+/* compares a Calc::Q with another numeric value
+ * returns:
+ *  0 if values are the same
+ *  -1 if self is < other
+ *  +1 if self is > other
+ *  -2 if 'other' is not a number
+ *XXX qcmp and qrel
+ */
+static int _compare(VALUE self, VALUE other)
+{
+    NUMBER *qself, *qother;
+    ZVALUE *zother;
+    int result;
+
+    qself = DATA_PTR(self);
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        result = qreli(qself, NUM2LONG(other));
+    }
+    else if (ISZVALUE(other)) {
+        /* if it is a small ZVALUE, convert it to a long and use qreli.
+         * otherwise make a new NUMBER. */
+        get_zvalue(other, zother);
+        if (zgtmaxlong(*zother)) {
+            /* TODO too big for long, convert to a NUMBER */
+            rb_notimplement();
+        }
+        else {
+            result = qreli(qself, ztolong(*zother));
+        }
+    }
+    else if (TYPE(other) == T_RATIONAL) {
+        qother = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
+                       NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
+        result = qrel(qself, qother);
+        qfree(qother);
+    }
+    else if (ISQVALUE(other)) {
+        qother = DATA_PTR(other);
+        result = qrel(qself, qother);
+    }
+    else {
+        result = -2;
+    }
+
+    return result;
+}
+
+static int compare_check_arg(VALUE self, VALUE other)
+{
+    int result = _compare(self, other);
+    if (result == -2) {
+        rb_raise(rb_eArgError, "comparison of Calc::Q to non-numeric failed");
+    }
+    return result;
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -151,6 +207,11 @@ VALUE cq_add(VALUE self, VALUE other)
     return result;
 }
 
+VALUE cq_equal(VALUE self, VALUE other)
+{
+    return _compare(self, other) == 0 ? Qtrue : Qfalse;
+}
+
 VALUE cq_to_s(VALUE self)
 {
     NUMBER *qself = DATA_PTR(self);
@@ -177,5 +238,6 @@ void define_calc_q(VALUE m)
     rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);
 
     rb_define_method(cQ, "+", cq_add, 1);
+    rb_define_method(cQ, "==", cq_equal, 1);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
 }
