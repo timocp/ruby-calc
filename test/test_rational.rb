@@ -59,10 +59,36 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(2,3) != "dog"
   end
 
+  def test_reduction
+    assert_equal 2, Calc::Q(4, 6).numerator
+    assert_equal 3, Calc::Q(4, 6).denominator
+    assert_equal 2, Calc::Q("4/6").numerator
+    assert_equal 3, Calc::Q("4/6").denominator
+    assert_equal 2, Calc::Q(Rational(4,6)).numerator
+    assert_equal 3, Calc::Q(Rational(4,6)).denominator
+
+    assert_equal 1, Calc::Q(1, 3).numerator
+    assert_equal 3, Calc::Q(1, 3).denominator
+    assert_equal 1, Calc::Q("1/3").numerator
+    assert_equal 3, Calc::Q("1/3").denominator
+    assert_equal 1, Calc::Q(Rational(1, 3)).numerator
+    assert_equal 3, Calc::Q(Rational(1, 3)).denominator
+  end
+
   def test_add
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + 4
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Z(4)
     assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
+  end
+
+  def test_denominator
+    assert_equal  4, Calc::Q(13,  4).denominator
+    assert_equal -4, Calc::Q(13, -4).denominator
+  end
+
+  def test_numerator
+    assert_equal  13, Calc::Q( 13, 4).numerator
+    assert_equal -13, Calc::Q(-13, 4).numerator
   end
 
   # currently just using default calc (prints decimal approximation).  needs
@@ -77,7 +103,7 @@ class TestRational < MiniTest::Test
     assert_equal "42", Calc::Q.new("0x2a").to_s
     assert_equal "0.25", Calc::Q.new(Rational(1, 4)).to_s
     assert_equal "0.25", Calc::Q.new(1, 4).to_s
-    assert_equal "2305843009213693952.0", Calc::Q.new(BIG, 2).to_s
+    assert_equal "2305843009213693952", Calc::Q.new(BIG, 2).to_s
     assert_equal "0.25", Calc::Q.new(Calc::Z.new(1), Calc::Z.new(4)).to_s
     assert_equal "0.25", Calc::Q.new("1", "4").to_s
   end

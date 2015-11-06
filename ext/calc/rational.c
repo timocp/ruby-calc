@@ -41,7 +41,7 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qself;
     VALUE arg1, arg2;
-    ZVALUE znum, zden;
+    ZVALUE znum, zden, z_gcd, zignored;
     ZVALUE *zarg1;
 
     if (rb_scan_args(argc, argv, "11", &arg1, &arg2) == 1) {
@@ -71,11 +71,19 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
     }
     else {
         /* 2 params. both can be anything Calc::Z.new would allow */
+        qself = qalloc();
         znum = value_to_zvalue(arg1);
         zden = value_to_zvalue(arg2);
-        qself = qalloc();
-        qself->num = znum;
-        qself->den = zden;
+        zgcd(znum, zden, &z_gcd);
+        if (zisone(z_gcd)) {
+            qself->num = znum;
+            qself->den = zden;
+        }
+        else {
+            /* divide both by common greatest divisor */
+            zdiv(znum, z_gcd, &qself->num, &zignored, 0);
+            zdiv(zden, z_gcd, &qself->den, &zignored, 0);
+        }
     }
     if (ziszero(qself->den)) {
         qfree(qself);
@@ -212,6 +220,26 @@ VALUE cq_equal(VALUE self, VALUE other)
     return _compare(self, other) == 0 ? Qtrue : Qfalse;
 }
 
+VALUE cq_denominator(VALUE self)
+{
+    VALUE result;
+
+    result = cq_new();
+    DATA_PTR(result) = qden(DATA_PTR(self));
+
+    return result;
+}
+
+VALUE cq_numerator(VALUE self)
+{
+    VALUE result;
+
+    result = cq_new();
+    DATA_PTR(result) = qnum(DATA_PTR(self));
+
+    return result;
+}
+
 VALUE cq_to_s(VALUE self)
 {
     NUMBER *qself = DATA_PTR(self);
@@ -239,5 +267,7 @@ void define_calc_q(VALUE m)
 
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "==", cq_equal, 1);
+    rb_define_method(cQ, "denominator", cq_denominator, 0);
+    rb_define_method(cQ, "numerator", cq_numerator, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
 }
