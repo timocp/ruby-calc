@@ -1,0 +1,48 @@
+--- Makefile.orig	2015-11-06 17:52:22.984273873 +1030
++++ Makefile	2015-11-06 18:00:02.632273873 +1030
+@@ -610,25 +610,25 @@
+ #	LIBDIR= /usr/lib
+ #	CALC_SHAREDIR= /usr/share/calc
+ #
+-#BINDIR= /usr/local/bin
++BINDIR= /usr/local/bin
+ #BINDIR= /dev/env/DJDIR/bin
+-BINDIR= /usr/bin
++#BINDIR= /usr/bin
+ 
+-#LIBDIR= /usr/local/lib
++LIBDIR= /usr/local/lib
+ #LIBDIR= /dev/env/DJDIR/lib
+-LIBDIR= /usr/lib
++#LIBDIR= /usr/lib
+ 
+-#CALC_SHAREDIR= /usr/local/lib/calc
++CALC_SHAREDIR= /usr/local/lib/calc
+ #CALC_SHAREDIR= /dev/env/DJDIR/share/calc
+-CALC_SHAREDIR= /usr/share/calc
++#CALC_SHAREDIR= /usr/share/calc
+ 
+ # NOTE: Do not set CALC_INCDIR to /usr/include or /usr/local/include!!!
+ #	Always be sure that the CALC_INCDIR path ends in /calc to avoid
+ #	conflicts with system or other application include files!!!
+ #
+-#CALC_INCDIR= /usr/local/include/calc
++CALC_INCDIR= /usr/local/include/calc
+ #CALC_INCDIR= /dev/env/DJDIR/include/calc
+-CALC_INCDIR= ${INCDIR}/calc
++#CALC_INCDIR= ${INCDIR}/calc
+ 
+ # By default, these values are based CALC_SHAREDIR, INCDIR, BINDIR
+ # ---------------------------------------------------------------
+@@ -696,9 +696,9 @@
+ # Use MANDIR= to disable installation of the calc man (source) page.
+ #
+ #MANDIR=
+-#MANDIR= /usr/local/man/man1
++MANDIR= /usr/local/man/man1
+ #MANDIR= /usr/man/man1
+-MANDIR= /usr/share/man/man1
++#MANDIR= /usr/share/man/man1
+ #MANDIR= /dev/env/DJDIR/man/man1
+ #MANDIR= /usr/man/u_man/man1
+ #MANDIR= /usr/contrib/man/man1
