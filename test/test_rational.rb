@@ -56,6 +56,7 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(3) != 4
     assert Calc::Q.new(BIG) != BIG + 1
     assert Calc::Q.new(2,3) != Rational(3,4)
+    assert Calc::Q.new(2,3) != "dog"
   end
 
   def test_add
