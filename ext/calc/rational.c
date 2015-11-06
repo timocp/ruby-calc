@@ -82,7 +82,23 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
         else {
             /* divide both by common greatest divisor */
             zdiv(znum, z_gcd, &qself->num, &zignored, 0);
+            zfree(znum);
+            zfree(zignored)
             zdiv(zden, z_gcd, &qself->den, &zignored, 0);
+            zfree(zden);
+            zfree(zignored)
+        }
+        /* make sure sign is in numerator */
+        /* sign: 1 is negative, 0 is positive (is this actually safe to do?) */
+        if (zispos(qself->num) && zisneg(qself->den)) {
+            /* only denominator negative - swap them */
+            qself->num.sign = 1;
+            qself->den.sign = 0;
+        }
+        else if (zisneg(qself->num) && zisneg(qself->den)) {
+            /* both negative - make both positive */
+            qself->num.sign = 0;
+            qself->den.sign = 0;
         }
     }
     if (ziszero(qself->den)) {

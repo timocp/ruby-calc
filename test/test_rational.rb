@@ -73,6 +73,16 @@ class TestRational < MiniTest::Test
     assert_equal 3, Calc::Q("1/3").denominator
     assert_equal 1, Calc::Q(Rational(1, 3)).numerator
     assert_equal 3, Calc::Q(Rational(1, 3)).denominator
+
+    # check sign is always in numerator
+    assert_equal  1, Calc::Q.new( 1,  3).numerator
+    assert_equal  3, Calc::Q.new( 1,  3).denominator
+    assert_equal -1, Calc::Q.new(-1,  3).numerator
+    assert_equal  3, Calc::Q.new(-1,  3).denominator
+    assert_equal -1, Calc::Q.new( 1, -3).numerator
+    assert_equal  3, Calc::Q.new( 1, -3).denominator
+    assert_equal  1, Calc::Q.new(-1, -3).numerator
+    assert_equal  3, Calc::Q.new(-1, -3).denominator
   end
 
   def test_add
@@ -82,13 +92,17 @@ class TestRational < MiniTest::Test
   end
 
   def test_denominator
-    assert_equal  4, Calc::Q(13,  4).denominator
-    assert_equal -4, Calc::Q(13, -4).denominator
+    assert_equal 4, Calc::Q( 13,  4).denominator
+    assert_equal 4, Calc::Q( 13, -4).denominator
+    assert_equal 4, Calc::Q(-13, -4).denominator
+    assert_equal 4, Calc::Q(-13, -4).denominator
   end
 
   def test_numerator
-    assert_equal  13, Calc::Q( 13, 4).numerator
-    assert_equal -13, Calc::Q(-13, 4).numerator
+    assert_equal  13, Calc::Q( 13,  4).numerator
+    assert_equal -13, Calc::Q(-13,  4).numerator
+    assert_equal -13, Calc::Q( 13, -4).numerator
+    assert_equal  13, Calc::Q(-13, -4).numerator
   end
 
   # currently just using default calc (prints decimal approximation).  needs
