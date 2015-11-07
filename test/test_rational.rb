@@ -86,9 +86,17 @@ class TestRational < MiniTest::Test
   end
 
   def test_add
-    assert_instance_of Calc::Q, Calc::Q.new(1, 3) + 4
-    assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Z(4)
-    assert_instance_of Calc::Q, Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
+    assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + 4
+    assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + Calc::Z(4)
+    assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
+    assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Rational(1, 4)
+  end
+
+  def test_subtract
+    assert_rational_and_equal Calc::Q(-1,6), Calc::Q(1,3) - Calc::Q(1,2)
+    assert_rational_and_equal Calc::Q(-2,3), Calc::Q(1,3) - 1
+    assert_rational_and_equal Calc::Q(-5,3), Calc::Q(1,3) - Calc::Z(2)
+    assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) - Rational(1,4)
   end
 
   def test_denominator

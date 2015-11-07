@@ -188,38 +188,38 @@ static int compare_check_arg(VALUE self, VALUE other)
     return result;
 }
 
-/*****************************************************************************
- * instance method implementations                                           *
- *****************************************************************************/
-
-VALUE cq_add(VALUE self, VALUE other)
+static VALUE numeric_op(VALUE self, VALUE other,
+    NUMBER * (*fqq) (NUMBER *, NUMBER*), NUMBER * (*fql) (NUMBER*, long))
 {
     NUMBER *qself, *qresult, *qtmp;
     ZVALUE *zother;
     VALUE result;
 
     qself = DATA_PTR(self);
-
-    if (TYPE(other) == T_FIXNUM) {
-        /* got strange results using qaddi, use qqadd instead */
-        qtmp = itoq(NUM2LONG(other));
-        qresult = qqadd(qself, qtmp);
-        qfree(qtmp);
-    }
-    else if (TYPE(other) == T_BIGNUM) {
-        qtmp = itoq(NUM2LONG(other));
-        qresult = qqadd(qself, qtmp);
-        qfree(qtmp);
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        if (fql) {
+            qresult = (*fql)(qself, NUM2LONG(other));
+        } else {
+            qtmp = itoq(NUM2LONG(other));
+            qresult = (*fqq)(qself, qtmp);
+            qfree(qtmp);
+        }
     }
     else if (ISZVALUE(other)) {
         get_zvalue(other, zother);
         qtmp = qalloc();
         zcopy(*zother, &qtmp->num);
-        qresult = qqadd(qself, qtmp);
+        qresult = (*fqq)(qself, qtmp);
         qfree(qtmp);
     }
     else if (ISQVALUE(other)) {
-        qresult = qqadd(qself, DATA_PTR(other));
+        qresult = (*fqq)(qself, DATA_PTR(other));
+    }
+    else if (TYPE(other) == T_RATIONAL) {
+        qtmp = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
+                     NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
+        qresult = (*fqq)(qself, qtmp);
+        qfree(qtmp);
     }
     else {
         rb_raise(rb_eArgError, "expected number");
@@ -227,8 +227,21 @@ VALUE cq_add(VALUE self, VALUE other)
 
     result = cq_new();
     DATA_PTR(result) = qresult;
-
     return result;
+}
+
+/*****************************************************************************
+ * instance method implementations                                           *
+ *****************************************************************************/
+
+VALUE cq_add(VALUE self, VALUE other)
+{
+    return numeric_op(self, other, &qqadd, &qaddi);
+}
+
+VALUE cq_subtract(VALUE self, VALUE other)
+{
+    return numeric_op(self, other, &qsub, NULL);
 }
 
 VALUE cq_equal(VALUE self, VALUE other)
@@ -282,6 +295,7 @@ void define_calc_q(VALUE m)
     rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);
 
     rb_define_method(cQ, "+", cq_add, 1);
+    rb_define_method(cQ, "-", cq_subtract, 1);
     rb_define_method(cQ, "==", cq_equal, 1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
