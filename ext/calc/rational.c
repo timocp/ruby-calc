@@ -6,7 +6,8 @@ VALUE cQ;                       /* Calc::Q class */
  * functions related to memory allocation and object initialization          *
  *****************************************************************************/
 
-void cq_free(void *p)
+void
+cq_free(void *p)
 {
     qfree((NUMBER *) p);
 }
@@ -30,14 +31,16 @@ const rb_data_type_t calc_q_type = {
  */
 
 /* no additional allocation beyond normal ruby alloc is required */
-VALUE cq_alloc(VALUE klass)
+static VALUE
+cq_alloc(VALUE klass)
 {
     return TypedData_Wrap_Struct(klass, &calc_q_type, 0);
 }
 
 #define cq_new() cq_alloc(cQ)
 
-VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
+static VALUE
+cq_initialize(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qself;
     VALUE arg1, arg2;
@@ -83,10 +86,10 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
             /* divide both by common greatest divisor */
             zdiv(znum, z_gcd, &qself->num, &zignored, 0);
             zfree(znum);
-            zfree(zignored)
+            zfree(zignored);
             zdiv(zden, z_gcd, &qself->den, &zignored, 0);
             zfree(zden);
-            zfree(zignored)
+            zfree(zignored);
         }
         /* make sure sign is in numerator */
         /* sign: 1 is negative, 0 is positive (is this actually safe to do?) */
@@ -110,7 +113,8 @@ VALUE cq_initialize(int argc, VALUE * argv, VALUE self)
     return self;
 }
 
-VALUE cq_initialize_copy(VALUE obj, VALUE orig)
+static VALUE
+cq_initialize_copy(VALUE obj, VALUE orig)
 {
     NUMBER *qorig, *qobj;
 
@@ -140,7 +144,8 @@ VALUE cq_initialize_copy(VALUE obj, VALUE orig)
  *  -2 if 'other' is not a number
  *XXX qcmp and qrel
  */
-static int _compare(VALUE self, VALUE other)
+static int
+_compare(VALUE self, VALUE other)
 {
     NUMBER *qself, *qother;
     ZVALUE *zother;
@@ -179,7 +184,8 @@ static int _compare(VALUE self, VALUE other)
     return result;
 }
 
-static int compare_check_arg(VALUE self, VALUE other)
+static int
+compare_check_arg(VALUE self, VALUE other)
 {
     int result = _compare(self, other);
     if (result == -2) {
@@ -188,8 +194,9 @@ static int compare_check_arg(VALUE self, VALUE other)
     return result;
 }
 
-static VALUE numeric_op(VALUE self, VALUE other,
-    NUMBER * (*fqq) (NUMBER *, NUMBER*), NUMBER * (*fql) (NUMBER*, long))
+static VALUE
+numeric_op(VALUE self, VALUE other,
+           NUMBER * (*fqq) (NUMBER *, NUMBER *), NUMBER * (*fql) (NUMBER *, long))
 {
     NUMBER *qself, *qresult, *qtmp;
     ZVALUE *zother;
@@ -198,10 +205,11 @@ static VALUE numeric_op(VALUE self, VALUE other,
     qself = DATA_PTR(self);
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
         if (fql) {
-            qresult = (*fql)(qself, NUM2LONG(other));
-        } else {
+            qresult = (*fql) (qself, NUM2LONG(other));
+        }
+        else {
             qtmp = itoq(NUM2LONG(other));
-            qresult = (*fqq)(qself, qtmp);
+            qresult = (*fqq) (qself, qtmp);
             qfree(qtmp);
         }
     }
@@ -209,16 +217,16 @@ static VALUE numeric_op(VALUE self, VALUE other,
         get_zvalue(other, zother);
         qtmp = qalloc();
         zcopy(*zother, &qtmp->num);
-        qresult = (*fqq)(qself, qtmp);
+        qresult = (*fqq) (qself, qtmp);
         qfree(qtmp);
     }
     else if (ISQVALUE(other)) {
-        qresult = (*fqq)(qself, DATA_PTR(other));
+        qresult = (*fqq) (qself, DATA_PTR(other));
     }
     else if (TYPE(other) == T_RATIONAL) {
         qtmp = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
                      NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
-        qresult = (*fqq)(qself, qtmp);
+        qresult = (*fqq) (qself, qtmp);
         qfree(qtmp);
     }
     else {
@@ -230,7 +238,8 @@ static VALUE numeric_op(VALUE self, VALUE other,
     return result;
 }
 
-static VALUE shift(VALUE self, VALUE other, int sign)
+static VALUE
+shift(VALUE self, VALUE other, int sign)
 {
     NUMBER *qself, *qother;
     ZVALUE *zother;
@@ -272,47 +281,56 @@ static VALUE shift(VALUE self, VALUE other, int sign)
  * instance method implementations                                           *
  *****************************************************************************/
 
-VALUE cq_add(VALUE self, VALUE other)
+static VALUE
+cq_add(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qqadd, &qaddi);
 }
 
-VALUE cq_subtract(VALUE self, VALUE other)
+static VALUE
+cq_subtract(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qsub, NULL);
 }
 
-VALUE cq_multiply(VALUE self, VALUE other)
+static VALUE
+cq_multiply(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qmul, &qmuli);
 }
 
-VALUE cq_power(VALUE self, VALUE other)
+static VALUE
+cq_power(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qpowi, NULL);
 }
 
-VALUE cq_divide(VALUE self, VALUE other)
+static VALUE
+cq_divide(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qqdiv, &qdivi);
 }
 
-VALUE cq_shift_left(VALUE self, VALUE other)
+static VALUE
+cq_shift_left(VALUE self, VALUE other)
 {
     return shift(self, other, 1);
 }
 
-VALUE cq_shift_right(VALUE self, VALUE other)
+static VALUE
+cq_shift_right(VALUE self, VALUE other)
 {
     return shift(self, other, -1);
 }
 
-VALUE cq_equal(VALUE self, VALUE other)
+static VALUE
+cq_equal(VALUE self, VALUE other)
 {
     return _compare(self, other) == 0 ? Qtrue : Qfalse;
 }
 
-VALUE cq_denominator(VALUE self)
+static VALUE
+cq_denominator(VALUE self)
 {
     VALUE result;
 
@@ -322,7 +340,8 @@ VALUE cq_denominator(VALUE self)
     return result;
 }
 
-VALUE cq_numerator(VALUE self)
+static VALUE
+cq_numerator(VALUE self)
 {
     VALUE result;
 
@@ -332,7 +351,8 @@ VALUE cq_numerator(VALUE self)
     return result;
 }
 
-VALUE cq_to_s(VALUE self)
+static VALUE
+cq_to_s(VALUE self)
 {
     NUMBER *qself = DATA_PTR(self);
     char *s;
@@ -350,7 +370,8 @@ VALUE cq_to_s(VALUE self)
 /*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *
  *****************************************************************************/
-void define_calc_q(VALUE m)
+void
+define_calc_q(VALUE m)
 {
     cQ = rb_define_class_under(m, "Q", rb_cData);
     rb_define_alloc_func(cQ, cq_alloc);

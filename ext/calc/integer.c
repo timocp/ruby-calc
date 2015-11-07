@@ -8,7 +8,8 @@ VALUE cZ;                       /* Calc::Z class */
 
 /* freeh() is provided by libcalc, pointer version of zfree().  it is a macro,
  * so it can't be directly used in Data_Make_Struct */
-void cz_free(void *p)
+static void
+cz_free(void *p)
 {
     freeh(p);
 }
@@ -21,7 +22,8 @@ const rb_data_type_t calc_z_type = {
 };
 
 /* tells ruby to allocate memory for a new object which wraps a ZVALUE */
-VALUE cz_alloc(VALUE klass)
+static VALUE
+cz_alloc(VALUE klass)
 {
     ZVALUE *z;
     return TypedData_Make_Struct(klass, ZVALUE, &calc_z_type, z);
@@ -31,7 +33,8 @@ VALUE cz_alloc(VALUE klass)
 #define cz_new() cz_alloc(cZ)
 
 /* Calc::Z.new(arg) */
-VALUE cz_initialize(VALUE self, VALUE arg)
+static VALUE
+cz_initialize(VALUE self, VALUE arg)
 {
     ZVALUE *zself;
     get_zvalue(self, zself);
@@ -41,7 +44,8 @@ VALUE cz_initialize(VALUE self, VALUE arg)
 
 /* intialize_copy is used by dup/clone.  ZVALUE's can't share their internals
  * so we have to override the default copying. */
-VALUE cz_initialize_copy(VALUE obj, VALUE orig)
+static VALUE
+cz_initialize_copy(VALUE obj, VALUE orig)
 {
     ZVALUE *zobj, *zorig;
 
@@ -72,7 +76,8 @@ VALUE cz_initialize_copy(VALUE obj, VALUE orig)
  *
  * returns -2 if 'other' is not a number.
  */
-static int _compare(VALUE self, VALUE other)
+static int
+compare(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp;
     int result;
@@ -94,10 +99,11 @@ static int _compare(VALUE self, VALUE other)
     return result;
 }
 
-/* calls _compare but raises an exception of other is non-numeric */
-static int _compare_check_arg(VALUE self, VALUE other)
+/* calls compare but raises an exception of other is non-numeric */
+static int
+compare_check_arg(VALUE self, VALUE other)
 {
-    int result = _compare(self, other);
+    int result = compare(self, other);
     if (result == -2) {
         rb_raise(rb_eArgError, "comparison of Calc::Z to non-numeric failed");
     }
@@ -111,8 +117,9 @@ static int _compare_check_arg(VALUE self, VALUE other)
  * a long parameter instead of a ZVALUE
  *      void f(ZVALUE, long, ZVALUE *)
  */
-static VALUE _numeric_op(VALUE self, VALUE other,
-                  void (*f1) (ZVALUE, ZVALUE, ZVALUE *), void (*f2) (ZVALUE, long, ZVALUE *))
+static VALUE
+numeric_op(VALUE self, VALUE other,
+            void (*f1) (ZVALUE, ZVALUE, ZVALUE *), void (*f2) (ZVALUE, long, ZVALUE *))
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;
@@ -143,7 +150,8 @@ static VALUE _numeric_op(VALUE self, VALUE other,
 }
 
 /* implements left shift (positive sign) and right shift (negative sign) */
-static VALUE _shift(VALUE self, VALUE other, int sign)
+static VALUE
+shift(VALUE self, VALUE other, int sign)
 {
     ZVALUE *zself, *zother, *zresult;
     VALUE result;
@@ -170,12 +178,14 @@ static VALUE _shift(VALUE self, VALUE other, int sign)
  * instance method implementations                                           *
  *****************************************************************************/
 
-VALUE cz_self(VALUE num)
+static VALUE
+cz_self(VALUE num)
 {
     return num;
 }
 
-VALUE cz_uminus(VALUE num)
+static VALUE
+cz_uminus(VALUE num)
 {
     ZVALUE *znum, *zresult;
     VALUE result;
@@ -187,47 +197,56 @@ VALUE cz_uminus(VALUE num)
     return result;
 }
 
-VALUE cz_add(VALUE self, VALUE other)
+static VALUE
+cz_add(VALUE self, VALUE other)
 {
-    return _numeric_op(self, other, &zadd, NULL);
+    return numeric_op(self, other, &zadd, NULL);
 }
 
-VALUE cz_subtract(VALUE self, VALUE other)
+static VALUE
+cz_subtract(VALUE self, VALUE other)
 {
-    return _numeric_op(self, other, &zsub, NULL);
+    return numeric_op(self, other, &zsub, NULL);
 }
 
-VALUE cz_multiply(VALUE self, VALUE other)
+static VALUE
+cz_multiply(VALUE self, VALUE other)
 {
-    return _numeric_op(self, other, &zmul, &zmuli);
+    return numeric_op(self, other, &zmul, &zmuli);
 }
 
-VALUE cz_and(VALUE self, VALUE other)
+static VALUE
+cz_and(VALUE self, VALUE other)
 {
-    return _numeric_op(self, other, &zand, NULL);
+    return numeric_op(self, other, &zand, NULL);
 }
 
-VALUE cz_or(VALUE self, VALUE other)
+static VALUE
+cz_or(VALUE self, VALUE other)
 {
-    return _numeric_op(self, other, &zor, NULL);
+    return numeric_op(self, other, &zor, NULL);
 }
 
-VALUE cz_xor(VALUE self, VALUE other)
+static VALUE
+cz_xor(VALUE self, VALUE other)
 {
-    return _numeric_op(self, other, &zxor, NULL);
+    return numeric_op(self, other, &zxor, NULL);
 }
 
-VALUE cz_divide(VALUE self, VALUE other)
+static VALUE
+cz_divide(VALUE self, VALUE other)
 {
     return rb_funcall(cQ, rb_intern("new"), 2, self, other);
 }
 
-VALUE cz_power(VALUE self, VALUE other)
+static VALUE
+cz_power(VALUE self, VALUE other)
 {
-    return _numeric_op(self, other, &zpowi, NULL);
+    return numeric_op(self, other, &zpowi, NULL);
 }
 
-VALUE cz_mod(VALUE self, VALUE other)
+static VALUE
+cz_mod(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;
@@ -260,48 +279,57 @@ VALUE cz_mod(VALUE self, VALUE other)
     return result;
 }
 
-VALUE cz_comparison(VALUE self, VALUE other)
+static VALUE
+cz_comparison(VALUE self, VALUE other)
 {
-    int result = _compare(self, other);
+    int result = compare(self, other);
     return result == -2 ? Qnil : INT2FIX(result);
 }
 
-VALUE cz_equal(VALUE self, VALUE other)
+static VALUE
+cz_equal(VALUE self, VALUE other)
 {
-    return _compare(self, other) == 0 ? Qtrue : Qfalse;
+    return compare(self, other) == 0 ? Qtrue : Qfalse;
 }
 
-VALUE cz_gte(VALUE self, VALUE other)
+static VALUE
+cz_gte(VALUE self, VALUE other)
 {
-    return _compare_check_arg(self, other) == -1 ? Qfalse : Qtrue;
+    return compare_check_arg(self, other) == -1 ? Qfalse : Qtrue;
 }
 
-VALUE cz_gt(VALUE self, VALUE other)
+static VALUE
+cz_gt(VALUE self, VALUE other)
 {
-    return _compare_check_arg(self, other) == 1 ? Qtrue : Qfalse;
+    return compare_check_arg(self, other) == 1 ? Qtrue : Qfalse;
 }
 
-VALUE cz_lte(VALUE self, VALUE other)
+static VALUE
+cz_lte(VALUE self, VALUE other)
 {
-    return _compare_check_arg(self, other) == 1 ? Qfalse : Qtrue;
+    return compare_check_arg(self, other) == 1 ? Qfalse : Qtrue;
 }
 
-VALUE cz_lt(VALUE self, VALUE other)
+static VALUE
+cz_lt(VALUE self, VALUE other)
 {
-    return _compare_check_arg(self, other) == -1 ? Qtrue : Qfalse;
+    return compare_check_arg(self, other) == -1 ? Qtrue : Qfalse;
 }
 
-VALUE cz_shift_left(VALUE self, VALUE other)
+static VALUE
+cz_shift_left(VALUE self, VALUE other)
 {
-    return _shift(self, other, 1);
+    return shift(self, other, 1);
 }
 
-VALUE cz_shift_right(VALUE self, VALUE other)
+static VALUE
+cz_shift_right(VALUE self, VALUE other)
 {
-    return _shift(self, other, -1);
+    return shift(self, other, -1);
 }
 
-VALUE cz_abs(VALUE self)
+static VALUE
+cz_abs(VALUE self)
 {
     ZVALUE *zself;
 
@@ -315,7 +343,8 @@ VALUE cz_abs(VALUE self)
     }
 }
 
-VALUE cz_abs2(VALUE self)
+static VALUE
+cz_abs2(VALUE self)
 {
     ZVALUE *zself, *zresult;
     VALUE result;
@@ -329,7 +358,8 @@ VALUE cz_abs2(VALUE self)
     return result;
 }
 
-VALUE cz_divmod(VALUE self, VALUE other)
+static VALUE
+cz_divmod(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp, *zquo, *zmod;
     VALUE quo, mod, arr;
@@ -367,33 +397,38 @@ VALUE cz_divmod(VALUE self, VALUE other)
     return arr;
 }
 
-VALUE cz_iseven(VALUE self)
+static VALUE
+cz_iseven(VALUE self)
 {
     ZVALUE *zself;
     get_zvalue(self, zself);
     return ziseven(*zself) ? Qtrue : Qfalse;
 }
 
-VALUE cz_isodd(VALUE self)
+static VALUE
+cz_isodd(VALUE self)
 {
     ZVALUE *zself;
     get_zvalue(self, zself);
     return zisodd(*zself) ? Qtrue : Qfalse;
 }
 
-VALUE cz_iszero(VALUE self)
+static VALUE
+cz_iszero(VALUE self)
 {
     ZVALUE *zself;
     get_zvalue(self, zself);
     return ziszero(*zself) ? Qtrue : Qfalse;
 }
 
-VALUE cz_next(VALUE self)
+static VALUE
+cz_next(VALUE self)
 {
     return cz_add(self, INT2FIX(1));
 }
 
-VALUE cz_to_i(VALUE self)
+static VALUE
+cz_to_i(VALUE self)
 {
     ZVALUE *zself;
     VALUE tmp;
@@ -416,7 +451,8 @@ VALUE cz_to_i(VALUE self)
     }
 }
 
-VALUE cz_to_s(VALUE self)
+static VALUE
+cz_to_s(VALUE self)
 {
     ZVALUE *zself;
     char *s;
@@ -435,7 +471,8 @@ VALUE cz_to_s(VALUE self)
 /*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *
  *****************************************************************************/
-void define_calc_z(VALUE m)
+void
+define_calc_z(VALUE m)
 {
     cZ = rb_define_class_under(m, "Z", rb_cData);
     rb_define_alloc_func(cZ, cz_alloc);
@@ -483,7 +520,8 @@ void define_calc_z(VALUE m)
 
 /* returns a ZVALUE given a fixnum/bignum/string param.  this is public
  * bacuse Calc::Q initialization uses it too. */
-ZVALUE value_to_zvalue(VALUE arg)
+ZVALUE
+value_to_zvalue(VALUE arg)
 {
     ZVALUE *zarg;
     ZVALUE result;

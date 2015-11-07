@@ -1,6 +1,7 @@
 #include "calc.h"
 
-void Init_calc(void)
+void
+Init_calc(void)
 {
     VALUE m;
     libcalc_call_me_first();

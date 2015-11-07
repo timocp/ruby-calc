@@ -18,6 +18,6 @@ task test: :compile
 task default: :test
 
 task :indent do
-  system("indent -kr -l95 -nut -nce ext/calc/*.[hc]")
+  system("indent -kr -l95 -nut -nce -psl ext/calc/*.[hc]")
   system("rm ext/calc/*.[hc]~")
 end
