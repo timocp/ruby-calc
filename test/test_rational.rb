@@ -106,6 +106,13 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(1,5),  Calc::Q(1,3) * Rational(3,5)
   end
 
+  def test_divide
+    assert_rational_and_equal Calc::Q(4,3),  Calc::Q(1,3) / Calc::Q(1,4)
+    assert_rational_and_equal Calc::Q(1,6),  Calc::Q(1,3) / 2
+    assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) / Calc::Z(4)
+    assert_rational_and_equal Calc::Q(5,3),  Calc::Q(1,3) / Rational(1,5)
+  end
+
   def test_denominator
     assert_equal 4, Calc::Q( 13,  4).denominator
     assert_equal 4, Calc::Q( 13, -4).denominator

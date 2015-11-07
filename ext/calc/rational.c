@@ -249,6 +249,11 @@ VALUE cq_multiply(VALUE self, VALUE other)
     return numeric_op(self, other, &qmul, &qmuli);
 }
 
+VALUE cq_divide(VALUE self, VALUE other)
+{
+    return numeric_op(self, other, &qqdiv, &qdivi);
+}
+
 VALUE cq_equal(VALUE self, VALUE other)
 {
     return _compare(self, other) == 0 ? Qtrue : Qfalse;
@@ -302,6 +307,7 @@ void define_calc_q(VALUE m)
     rb_define_method(cQ, "*", cq_multiply, 1);
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "-", cq_subtract, 1);
+    rb_define_method(cQ, "/", cq_divide, 1);
     rb_define_method(cQ, "==", cq_equal, 1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
