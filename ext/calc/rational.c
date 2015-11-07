@@ -452,6 +452,22 @@ cq_to_s(VALUE self)
 }
 
 /*****************************************************************************
+ * module method implementations                                             *
+ *****************************************************************************/
+
+static VALUE
+cq_pi(VALUE klass, VALUE epsilon)
+{
+    VALUE result;
+
+    Check_TypedStruct(epsilon, &calc_q_type);
+    result = cq_new();
+    DATA_PTR(result) = qpi(DATA_PTR(epsilon));
+
+    return result;
+}
+
+/*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *
  *****************************************************************************/
 void
@@ -481,4 +497,6 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
+
+    rb_define_module_function(cQ, "pi", cq_pi, 1);
 }

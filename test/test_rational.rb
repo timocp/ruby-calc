@@ -231,4 +231,21 @@ class TestRational < MiniTest::Test
     assert_equal "0.25", Calc::Q.new("1", "4").to_s
   end
 
+  def test_pi
+    # test with calc's default epsilon
+    epsilon = Calc::Q(1) / Calc::Q("1e20")
+    pi = Calc::Q.pi(epsilon)
+    assert_instance_of Calc::Q, pi
+    assert_equal "3.14159265358979323846", pi.to_s
+    assert_equal "157079632679489661923", pi.numerator.to_s
+    assert_equal "50000000000000000000", pi.denominator.to_s
+
+    # test with lower precision
+    epsilon = Calc::Q(1) / Calc::Q("1e5")
+    pi = Calc::Q.pi(epsilon)
+    assert_equal "3.14159", pi.to_s
+    assert_equal "314159", pi.numerator.to_s
+    assert_equal "100000", pi.denominator.to_s
+  end
+
 end
