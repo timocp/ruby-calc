@@ -10,11 +10,11 @@ For information about calc, see: http://www.isthe.com/chongo/tech/comp/calc/inde
 
 Calc must be installed.
 
-OS | Instructions
--- | ------------
+OS  | Instructions
+--- | ------------
 Fedora | `sudo yum install calc calc-libs calc-devel`
 OS X | Install [Homebrew](http://brew.sh), then `brew install calc`
-Debian/Ubuntu | Calc is packaged as "apcalc", but because it doesn't include a shared library it won't work, so refer to "other"
+Debian/Ubuntu | Calc is packaged as "apcalc", but because it doesn't include a shared library it won't work, so see instructions under "Manual"
 Manual | Download and install calc yourself by referring to the calc website, or using `bin/install_calc` from this repository
 
 Add this line to your application's Gemfile:
@@ -47,6 +47,7 @@ Calc::Z.new(x)
 
 ### Integers
 
+```ruby
 # creating integers (following are all equivalent)
 z1 = Calc::Z(42)            # fixnum or bignum argument
 z2 = Calc::Z(z1)            # another Z argument
