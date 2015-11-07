@@ -113,6 +113,17 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(5,3),  Calc::Q(1,3) / Rational(1,5)
   end
 
+  def test_power
+    # TODO: skips because qpowi requires and integer power (i guess because the
+    # result wouldn't necessarily be a rational number). calc has qpower which
+    # calculates a rational result to an arbitray precision, but having a
+    # second argument to ** would be weird. need to think about this.
+    skip { assert_rational_and_equal Calc::Q(3),    Calc::Q(81) ** Calc::Q(1,4) }
+    assert_rational_and_equal Calc::Q(1,9),  Calc::Q(1,3) ** 2
+    assert_rational_and_equal Calc::Q(1,27), Calc::Q(1,3) ** Calc::Z(3)
+    skip { assert_rational_and_equal Calc::Q(2),    Calc::Q(8) ** Rational(2,3) }
+  end
+
   def test_denominator
     assert_equal 4, Calc::Q( 13,  4).denominator
     assert_equal 4, Calc::Q( 13, -4).denominator

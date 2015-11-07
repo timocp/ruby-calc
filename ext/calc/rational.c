@@ -249,6 +249,11 @@ VALUE cq_multiply(VALUE self, VALUE other)
     return numeric_op(self, other, &qmul, &qmuli);
 }
 
+VALUE cq_power(VALUE self, VALUE other)
+{
+    return numeric_op(self, other, &qpowi, NULL);
+}
+
 VALUE cq_divide(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qqdiv, &qdivi);
@@ -305,6 +310,7 @@ void define_calc_q(VALUE m)
     rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);
 
     rb_define_method(cQ, "*", cq_multiply, 1);
+    rb_define_method(cQ, "**", cq_power, 1);
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "-", cq_subtract, 1);
     rb_define_method(cQ, "/", cq_divide, 1);
