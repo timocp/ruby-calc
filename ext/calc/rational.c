@@ -299,7 +299,8 @@ cq_uminus(VALUE self)
 static VALUE
 cq_add(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &qqadd, &qaddi);
+    /* fourth arg was &qaddi, but this segfaults with ruby 2.1.x */
+    return numeric_op(self, other, &qqadd, NULL);
 }
 
 static VALUE
