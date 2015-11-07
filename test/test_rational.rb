@@ -119,6 +119,13 @@ class TestRational < MiniTest::Test
     assert_raises(ArgumentError) { Calc::Q(1,3) >= "cat" }
   end
 
+  def test_unary
+    assert_rational_and_equal  42, +Calc::Q( 42)
+    assert_rational_and_equal -42, +Calc::Q(-42)
+    assert_rational_and_equal -42, -Calc::Q( 42)
+    assert_rational_and_equal  42, -Calc::Q(-42)
+  end
+
   def test_add
     assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + 4
     assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + Calc::Z(4)

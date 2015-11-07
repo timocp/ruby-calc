@@ -282,6 +282,22 @@ shift(VALUE self, VALUE other, int sign)
  *****************************************************************************/
 
 static VALUE
+cq_uplus(VALUE self)
+{
+    return self;
+}
+
+static VALUE
+cq_uminus(VALUE self)
+{
+    VALUE result;
+
+    result = cq_new();
+    DATA_PTR(result) = qsub(&_qzero_, DATA_PTR(self));
+    return result;
+}
+
+static VALUE
 cq_add(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qqadd, &qaddi);
@@ -412,7 +428,9 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "*", cq_multiply, 1);
     rb_define_method(cQ, "**", cq_power, 1);
     rb_define_method(cQ, "+", cq_add, 1);
+    rb_define_method(cQ, "+@", cq_uplus, 0);
     rb_define_method(cQ, "-", cq_subtract, 1);
+    rb_define_method(cQ, "-@", cq_uminus, 0);
     rb_define_method(cQ, "/", cq_divide, 1);
     rb_define_method(cQ, "<", cq_lt, 1);
     rb_define_method(cQ, "<<", cq_shift_left, 1);
