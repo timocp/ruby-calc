@@ -119,7 +119,7 @@ compare_check_arg(VALUE self, VALUE other)
  */
 static VALUE
 numeric_op(VALUE self, VALUE other,
-            void (*f1) (ZVALUE, ZVALUE, ZVALUE *), void (*f2) (ZVALUE, long, ZVALUE *))
+           void (*f1) (ZVALUE, ZVALUE, ZVALUE *), void (*f2) (ZVALUE, long, ZVALUE *))
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;

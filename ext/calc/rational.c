@@ -174,8 +174,7 @@ compare(VALUE self, VALUE other)
         qfree(qother);
     }
     else if (ISQVALUE(other)) {
-        qother = DATA_PTR(other);
-        result = qrel(qself, qother);
+        result = qrel(qself, DATA_PTR(other));
     }
     else {
         result = -2;
@@ -328,6 +327,43 @@ cq_divide(VALUE self, VALUE other)
 }
 
 static VALUE
+cq_mod(VALUE self, VALUE other)
+{
+    NUMBER *qself, *qother;
+    ZVALUE *zother;
+    VALUE result;
+
+    qself = DATA_PTR(self);
+    result = cq_new();
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        qother = itoq(NUM2LONG(other));
+        DATA_PTR(result) = qmod(qself, qother, 0);
+        qfree(qother);
+    }
+    else if (ISZVALUE(other)) {
+        get_zvalue(other, zother);
+        qother = qalloc();
+        zcopy(*zother, &qother->num);
+        DATA_PTR(result) = qmod(qself, qother, 0);
+        qfree(qother);
+    }
+    else if (ISQVALUE(other)) {
+        DATA_PTR(result) = qmod(qself, DATA_PTR(other), 0);
+    }
+    else if (TYPE(other) == T_RATIONAL) {
+        qother = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
+                       NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
+        DATA_PTR(result) = qmod(qself, qother, 0);
+        qfree(qother);
+    }
+    else {
+        rb_raise(rb_eArgError, "number expected");
+    }
+
+    return result;
+}
+
+static VALUE
 cq_shift_left(VALUE self, VALUE other)
 {
     return shift(self, other, 1);
@@ -348,8 +384,8 @@ cq_equal(VALUE self, VALUE other)
 static VALUE
 cq_comparison(VALUE self, VALUE other)
 {
-   int result = compare(self, other);
-   return result == -2 ? Qnil : INT2FIX(result);
+    int result = compare(self, other);
+    return result == -2 ? Qnil : INT2FIX(result);
 }
 
 static VALUE
@@ -425,6 +461,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "initialize", cq_initialize, -1);
     rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);
 
+    rb_define_method(cQ, "%", cq_mod, 1);
     rb_define_method(cQ, "*", cq_multiply, 1);
     rb_define_method(cQ, "**", cq_power, 1);
     rb_define_method(cQ, "+", cq_add, 1);

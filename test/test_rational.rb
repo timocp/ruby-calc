@@ -154,6 +154,21 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(5,3),  Calc::Q(1,3) / Rational(1,5)
   end
 
+  def test_mod
+    assert_rational_and_equal Calc::Q( 3,28), Calc::Q( 1,4) % Calc::Q( 1,7)
+    assert_rational_and_equal Calc::Q( 1,28), Calc::Q(-1,4) % Calc::Q( 1,7)
+    assert_rational_and_equal Calc::Q(-1,28), Calc::Q( 1,4) % Calc::Q(-1,7)
+    assert_rational_and_equal Calc::Q(-3,28), Calc::Q(-1,4) % Calc::Q(-1,7)
+
+    # other arg types
+    assert_rational_and_equal Calc::Q(3,4),  Calc::Q(11,4) % Calc::Z(2)
+    assert_rational_and_equal Calc::Q(3,4),  Calc::Q(11,4) % 2
+    assert_rational_and_equal Calc::Q(1,12), Calc::Q(11,4) % Rational(1,3)
+
+    # unlike Z and ruby, q % 0 == q
+    assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % 0
+  end
+
   def test_power
     # TODO: skips because qpowi requires and integer power (i guess because the
     # result wouldn't necessarily be a rational number). calc has qpower which
