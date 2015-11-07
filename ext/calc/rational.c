@@ -145,7 +145,7 @@ cq_initialize_copy(VALUE obj, VALUE orig)
  *XXX qcmp and qrel
  */
 static int
-_compare(VALUE self, VALUE other)
+compare(VALUE self, VALUE other)
 {
     NUMBER *qself, *qother;
     ZVALUE *zother;
@@ -187,7 +187,7 @@ _compare(VALUE self, VALUE other)
 static int
 compare_check_arg(VALUE self, VALUE other)
 {
-    int result = _compare(self, other);
+    int result = compare(self, other);
     if (result == -2) {
         rb_raise(rb_eArgError, "comparison of Calc::Q to non-numeric failed");
     }
@@ -326,7 +326,38 @@ cq_shift_right(VALUE self, VALUE other)
 static VALUE
 cq_equal(VALUE self, VALUE other)
 {
-    return _compare(self, other) == 0 ? Qtrue : Qfalse;
+    return compare(self, other) == 0 ? Qtrue : Qfalse;
+}
+
+static VALUE
+cq_comparison(VALUE self, VALUE other)
+{
+   int result = compare(self, other);
+   return result == -2 ? Qnil : INT2FIX(result);
+}
+
+static VALUE
+cq_lt(VALUE self, VALUE other)
+{
+    return compare_check_arg(self, other) == -1 ? Qtrue : Qfalse;
+}
+
+static VALUE
+cq_lte(VALUE self, VALUE other)
+{
+    return compare_check_arg(self, other) == 1 ? Qfalse : Qtrue;
+}
+
+static VALUE
+cq_gt(VALUE self, VALUE other)
+{
+    return compare_check_arg(self, other) == 1 ? Qtrue : Qfalse;
+}
+
+static VALUE
+cq_gte(VALUE self, VALUE other)
+{
+    return compare_check_arg(self, other) == -1 ? Qfalse : Qtrue;
 }
 
 static VALUE
@@ -383,8 +414,13 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "-", cq_subtract, 1);
     rb_define_method(cQ, "/", cq_divide, 1);
+    rb_define_method(cQ, "<", cq_lt, 1);
     rb_define_method(cQ, "<<", cq_shift_left, 1);
+    rb_define_method(cQ, "<=", cq_lte, 1);
+    rb_define_method(cQ, "<=>", cq_comparison, 1);
     rb_define_method(cQ, "==", cq_equal, 1);
+    rb_define_method(cQ, ">", cq_gt, 1);
+    rb_define_method(cQ, ">=", cq_gte, 1);
     rb_define_method(cQ, ">>", cq_shift_right, 1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "numerator", cq_numerator, 0);

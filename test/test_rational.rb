@@ -85,6 +85,40 @@ class TestRational < MiniTest::Test
     assert_equal  3, Calc::Q.new(-1, -3).denominator
   end
 
+  def test_comparisons
+    [
+      [ Calc::Q(1,3), Calc::Q(1,4),  Calc::Q(1,3),  Calc::Q(1,2)  ],
+      [ Calc::Q(2),   Calc::Z(1),    Calc::Z(2),    Calc::Z(3)    ],
+      [ Calc::Q(3),   2,             3,             4             ],
+      [ Calc::Q(1,3), Rational(1,4), Rational(1,3), Rational(1,2) ],
+    ].each do |thing, other_lt, other_eq, other_gt|
+      assert_equal -1, thing <=> other_gt
+      assert_equal  0, thing <=> other_eq
+      assert_equal  1, thing <=> other_lt
+
+      assert_operator thing, :<,  other_gt
+      assert_operator thing, :<=, other_gt
+      assert_operator thing, :<=, other_eq
+      assert_operator thing, :>=, other_lt
+      assert_operator thing, :>=, other_eq
+      assert_operator thing, :>,  other_lt
+
+      refute_operator thing, :<,  other_lt
+      refute_operator thing, :<,  other_eq
+      refute_operator thing, :<=, other_lt
+      refute_operator thing, :>=, other_gt
+      refute_operator thing, :>,  other_gt
+      refute_operator thing, :>,  other_eq
+    end
+
+    assert_nil Calc::Q(1,3) <=> "cat"
+    assert_nil "cat" <=> Calc::Q(1,3)
+    assert_raises(ArgumentError) { Calc::Q(1,3) <  "cat" }
+    assert_raises(ArgumentError) { Calc::Q(1,3) <= "cat" }
+    assert_raises(ArgumentError) { Calc::Q(1,3) >  "cat" }
+    assert_raises(ArgumentError) { Calc::Q(1,3) >= "cat" }
+  end
+
   def test_add
     assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + 4
     assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + Calc::Z(4)
