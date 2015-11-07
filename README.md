@@ -1,6 +1,4 @@
-# ruby-calc
-
-[![Build Status](https://travis-ci.org/timpeters/ruby-calc.svg?branch=master)](https://travis-ci.org/timpeters/ruby-calc)
+# ruby-calc [![Build Status](https://travis-ci.org/timpeters/ruby-calc.svg?branch=master)](https://travis-ci.org/timpeters/ruby-calc)
 
 ruby-calc provides ruby bindings for calc, a c-style arbitrary precision calculator.
 
@@ -33,17 +31,17 @@ Or install it yourself as:
 
 ## Usage
 
-This library is currently very incomplete.
+The library provides 3 classes
 
-```ruby
-require 'calc'
+Ruby class | Represents
+---------- | ----------
+Calc::Z    | Integers
+Calc::Q    | Rational numbers (fractions)
+Calc::C    | Complex numbers
 
-# there are 3 classes, Z (integers), Q (rational numbers) and C (complex
-# numbers).  For each class,
-Calc::Z(x)
-# is equivalent to
-Calc::Z.new(x)
-```
+In calc, all 3 types of numbers can be arbitrarily large/precise.  But ruby Bignum/Rational already do this.  Calc is useful for its rich collection of numeric functions, as well as being able to calculate transcendental functions to arbitrary accuracy.
+
+While incomplete, this library intends to implement the ruby Numeric interface on each class, and also provide wrappers for all numerical functions provided by the calc library.
 
 ### Integers
 
@@ -63,7 +61,7 @@ z1 - z2  # => Calc::Z(0)
 z1 ** z2 # => Calc::Z(150130937545296572356771972164254457814047970568738777235893533016064)
 
 # division of integers will return a rational number:
-z1 / 4   # => Calc::Q(10.50)
+z1 / 4   # => Calc::Q(10.5)
 
 # if you wanted integer division, use #div
 z1.div(4) # => Calc::Z(10)
@@ -78,7 +76,23 @@ z1.div(4) # => Calc::Z(10)
 q1 = Calc::Q(42)  # equivalent to Calc::Q(42, 1)
 
 # you can also pass a single argument of a plain ruby Rational number:
-q1 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
+q2 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
+
+# arithmetic on rational numbers is what you'd expect.  You can provide ruby numbers
+# or other Calc classes as arguments to most operators.
+
+q1 + q2   # => Calc::Q(45.25)
+q1 - q2   # => Calc::Q(38.75)
+q1 * q2   # => Calc::Q(136.5)
+q1 / q2   # => Calc::Q(~12.92307692307692307692)
+
+# note that although #insect displays a decimal approximation, it really is still a
+# rational number.  #numerator and #denominator can be retrieved separately:
+(q1 / q2).numerator    # => Calc::Q(168)
+(q1 / q2).denominator  # => Calc::Q(13)
+
+# rationals can be raised to a power (TODO: currently has to be an integral power)
+q2 ** 99  # => Calc::Q(~474736623830116805330500187186262092725721145665614.09013661611970205470)
 ```
 
 ### Complex numbers
