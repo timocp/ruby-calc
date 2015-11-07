@@ -124,6 +124,26 @@ class TestRational < MiniTest::Test
     skip { assert_rational_and_equal Calc::Q(2),    Calc::Q(8) ** Rational(2,3) }
   end
 
+  def test_shift
+    # both arguments have to be integers
+    assert_rational_and_equal  128, Calc::Q(4) << Calc::Q(5)
+    assert_rational_and_equal    0, Calc::Q(4) >> 5
+    assert_rational_and_equal  400, Calc::Q(100) << Calc::Z(2)
+    assert_rational_and_equal   25, Calc::Q(100) >> Rational(2,1)
+    assert_rational_and_equal -320, Calc::Q(-20) << 4
+    assert_rational_and_equal   -1, Calc::Q(-20) >> 4
+    assert_rational_and_equal    1, Calc::Q(20) << -4
+    assert_rational_and_equal  320, Calc::Q(20) >> -4
+    assert_rational_and_equal  -12, Calc::Q(-50) << -2
+    assert_rational_and_equal -200, Calc::Q(-50) >> -2
+
+    assert_raises(ArgumentError) { Calc::Q.new(2) << Calc::Q(1,3) }
+    assert_raises(ArgumentError) { Calc::Q.new(2) << Rational(1,3) }
+
+    # this need proper exception handling, will just exit with math_error atm
+    skip { assert_raises("SomethingError") { Calc::Q.new(1,3) << 1 } }
+  end
+
   def test_denominator
     assert_equal 4, Calc::Q( 13,  4).denominator
     assert_equal 4, Calc::Q( 13, -4).denominator

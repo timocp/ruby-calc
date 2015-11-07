@@ -230,6 +230,44 @@ static VALUE numeric_op(VALUE self, VALUE other,
     return result;
 }
 
+static VALUE shift(VALUE self, VALUE other, int sign)
+{
+    NUMBER *qself, *qother;
+    ZVALUE *zother;
+    VALUE result;
+    long n;
+
+    qself = DATA_PTR(self);
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        n = NUM2LONG(other);
+    }
+    else if (ISZVALUE(other)) {
+        get_zvalue(other, zother);
+        n = ztoi(*zother);
+    }
+    else if (ISQVALUE(other)) {
+        qother = DATA_PTR(other);
+        if (!qisint(qother)) {
+            rb_raise(rb_eArgError, "shift by non-integer");
+        }
+        n = ztoi(qother->num);
+    }
+    else if (TYPE(other) == T_RATIONAL) {
+        n = NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0));
+        if (n != 1) {
+            rb_raise(rb_eArgError, "shift by non-integer");
+        }
+        n = NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0));
+    }
+    else {
+        rb_raise(rb_eArgError, "integer number expected");
+    }
+
+    result = cq_new();
+    DATA_PTR(result) = qshift(qself, n * sign);
+    return result;
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -257,6 +295,16 @@ VALUE cq_power(VALUE self, VALUE other)
 VALUE cq_divide(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qqdiv, &qdivi);
+}
+
+VALUE cq_shift_left(VALUE self, VALUE other)
+{
+    return shift(self, other, 1);
+}
+
+VALUE cq_shift_right(VALUE self, VALUE other)
+{
+    return shift(self, other, -1);
 }
 
 VALUE cq_equal(VALUE self, VALUE other)
@@ -314,7 +362,9 @@ void define_calc_q(VALUE m)
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "-", cq_subtract, 1);
     rb_define_method(cQ, "/", cq_divide, 1);
+    rb_define_method(cQ, "<<", cq_shift_left, 1);
     rb_define_method(cQ, "==", cq_equal, 1);
+    rb_define_method(cQ, ">>", cq_shift_right, 1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
