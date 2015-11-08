@@ -197,7 +197,7 @@ class TestRational < MiniTest::Test
     assert_raises(ArgumentError) { Calc::Q.new(2) << Rational(1,3) }
 
     # this need proper exception handling, will just exit with math_error atm
-    skip { assert_raises("SomethingError") { Calc::Q.new(1,3) << 1 } }
+    assert_raises(Calc::MathError) { Calc::Q.new(1,3) << 1 }
   end
 
   def test_denominator

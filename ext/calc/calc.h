@@ -11,6 +11,7 @@ extern void libcalc_call_me_first(void);
 #include <calc/cmath.h>
 #include <calc/lib_calc.h>
 
+#include "math_error.h"
 #include "integer.h"
 #include "rational.h"
 
