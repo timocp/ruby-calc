@@ -38,7 +38,7 @@ class TestRational < MiniTest::Test
   def test_dup
     q1 = Calc::Q(13, 4)
     q2 = q1.dup
-    assert_equal "3.25", q2.to_s
+    assert_equal "13/4", q2.to_s
     refute_equal q1.object_id, q2.object_id
   end
 
@@ -224,11 +224,11 @@ class TestRational < MiniTest::Test
     assert_equal "42", Calc::Q.new("0b101010").to_s
     assert_equal "42", Calc::Q.new("052").to_s
     assert_equal "42", Calc::Q.new("0x2a").to_s
-    assert_equal "0.25", Calc::Q.new(Rational(1, 4)).to_s
-    assert_equal "0.25", Calc::Q.new(1, 4).to_s
+    assert_equal "1/4", Calc::Q.new(Rational(1, 4)).to_s
+    assert_equal "1/4", Calc::Q.new(1, 4).to_s
     assert_equal "2305843009213693952", Calc::Q.new(BIG, 2).to_s
-    assert_equal "0.25", Calc::Q.new(Calc::Z.new(1), Calc::Z.new(4)).to_s
-    assert_equal "0.25", Calc::Q.new("1", "4").to_s
+    assert_equal "1/4", Calc::Q.new(Calc::Z.new(1), Calc::Z.new(4)).to_s
+    assert_equal "1/4", Calc::Q.new("1", "4").to_s
   end
 
   def test_pi
@@ -236,16 +236,12 @@ class TestRational < MiniTest::Test
     epsilon = Calc::Q(1) / Calc::Q("1e20")
     pi = Calc::Q.pi(epsilon)
     assert_instance_of Calc::Q, pi
-    assert_equal "3.14159265358979323846", pi.to_s
-    assert_equal "157079632679489661923", pi.numerator.to_s
-    assert_equal "50000000000000000000", pi.denominator.to_s
+    assert_equal "157079632679489661923/50000000000000000000", pi.to_s
 
     # test with lower precision
     epsilon = Calc::Q(1) / Calc::Q("1e5")
     pi = Calc::Q.pi(epsilon)
-    assert_equal "3.14159", pi.to_s
-    assert_equal "314159", pi.numerator.to_s
-    assert_equal "100000", pi.denominator.to_s
+    assert_equal "314159/100000", pi.to_s
   end
 
 end

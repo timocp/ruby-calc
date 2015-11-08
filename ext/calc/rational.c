@@ -445,7 +445,7 @@ cq_to_s(VALUE self)
     VALUE rs;
 
     math_divertio();
-    qprintnum(qself, MODE_DEFAULT);
+    qprintnum(qself, MODE_FRAC);
     s = math_getdivertedio();
     rs = rb_str_new2(s);
     free(s);

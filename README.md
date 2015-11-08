@@ -66,7 +66,7 @@ z1 ** z2 # => Calc::Z(1501309375452965723567719721642544578140479705687387772358
 z1 / 4   # => Calc::Z(10)
 
 # if you actually wanted a rational number, say:
-Calc::Q(z1, 4) # => Calc::Q(10.5)
+Calc::Q(z1, 4) # => Calc::Q(21/2)
 ```
 
 ### Rational Numbers
@@ -78,7 +78,16 @@ Calc::Q(z1, 4) # => Calc::Q(10.5)
 q1 = Calc::Q(42)  # equivalent to Calc::Q(42, 1)
 
 # you can also pass a single argument of a plain ruby Rational number:
-q1 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
+q2 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
+
+# rational arithmetic:
+q1 + q2   # => Calc::Q(181/4)
+q1 - q2   # => Calc::Q(155/4)
+q1 * q2   # => Calc::Q(273/2)
+q1 / q2   # => Calc::Q(168/13)
+
+# raise to integer power (fractional powers are todo)
+q2 ** q1  # => Calc::Q(61040881526285814362156628321386486455989674569/19342813113834066795298816)
 ```
 
 ### Trancendental functions
@@ -88,11 +97,11 @@ In calc, transcendental functions such as sin, cos and pi, cannot be evaluated e
 ```ruby
 # calculate pi to 10 decimal places:
 epsilon = Calc::Q(1) / Calc::Q("1e10")
-Calc::Q.pi(epsilon)  # => Calc::Q(3.1415926536)
+Calc::Q.pi(epsilon)  # => Calc::Q(3926990817/1250000000)
 
 # calculate pi to 200 decimal places:
 epsilon = Calc::Q(1) / Calc::Q("1e200")
-Calc::Q.pi(epsilon)  # => very long answer omited
+Calc::Q.pi(epsilon)  # => 401 character fraction omitted
 ```
 
 ### Complex numbers
