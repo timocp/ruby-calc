@@ -62,11 +62,11 @@ z1 * z2  # => Calc::Z(1764)
 z1 - z2  # => Calc::Z(0)
 z1 ** z2 # => Calc::Z(150130937545296572356771972164254457814047970568738777235893533016064)
 
-# division of integers will return a rational number:
-z1 / 4   # => Calc::Q(10.50)
+# division in the Z class is integer division.
+z1 / 4   # => Calc::Z(10)
 
-# if you wanted integer division, use #div
-z1.div(4) # => Calc::Z(10)
+# if you actually wanted a rational number, say:
+Calc::Q(z1, 4) # => Calc::Q(10.5)
 ```
 
 ### Rational Numbers

@@ -118,26 +118,13 @@ class TestInteger < Minitest::Test
 
   def test_divide
     # returns a rational number
-    assert_instance_of Calc::Q, Calc::Z(10) / Calc::Z(5)
-    assert_instance_of Calc::Q, Calc::Z(10) / 5 
+    assert_integral_and_equal  3, Calc::Z( 13) / Calc::Z( 4)
+    assert_integral_and_equal -4, Calc::Z( 13) / Calc::Z(-4)
+    assert_integral_and_equal -4, Calc::Z(-13) / Calc::Z( 4)
+    assert_integral_and_equal  3, Calc::Z(-13) / Calc::Z(-4)
 
-    skip "add more when Q#== implemented"
-  end
-
-  # integer division. TODO calc behaves differently to ruby when negatives are
-  # involved.  but our #div is implemented using #divmod.
-  # calc: 13//-4 == -3
-  # ruby: 13/-4 == -4
-  def test_div
-    assert_instance_of Calc::Z, Calc::Z.new(5).div(2)
-    assert_instance_of Calc::Z, Calc::Z.new(5).div(Calc::Z.new(2))
-    assert_equal  3, Calc::Z.new( 13).div( 4)
-    assert_equal -4, Calc::Z.new( 13).div(-4)
-    assert_equal -4, Calc::Z.new(-13).div( 4)
-    assert_equal  3, Calc::Z.new(-13).div(-4)
-
-    assert_raises(ZeroDivisionError) { Calc::Z.new(13).div(0) }
-    assert_raises(ZeroDivisionError) { Calc::Z.new(13).div(Calc::Z.new(0)) }
+    # other arg types
+    assert_integral_and_equal 3, Calc::Z(9) / 3
   end
 
   def test_mod

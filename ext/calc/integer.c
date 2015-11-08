@@ -236,12 +236,6 @@ cz_xor(VALUE self, VALUE other)
 }
 
 static VALUE
-cz_divide(VALUE self, VALUE other)
-{
-    return rb_funcall(cQ, rb_intern("new"), 2, self, other);
-}
-
-static VALUE
 cz_power(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &zpowi, NULL);
@@ -490,7 +484,6 @@ define_calc_z(VALUE m)
     rb_define_method(cZ, "+@", cz_self, 0);
     rb_define_method(cZ, "-", cz_subtract, 1);
     rb_define_method(cZ, "-@", cz_uminus, 0);
-    rb_define_method(cZ, "/", cz_divide, 1);
     rb_define_method(cZ, "<", cz_lt, 1);
     rb_define_method(cZ, "<<", cz_shift_left, 1);
     rb_define_method(cZ, "<=", cz_lte, 1);

@@ -17,7 +17,7 @@ module Calc
 
     # TODO: implement in C
 
-    def div(y)
+    def /(y)
       self.divmod(y).first
     end
 
