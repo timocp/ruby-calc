@@ -81,6 +81,20 @@ q1 = Calc::Q(42)  # equivalent to Calc::Q(42, 1)
 q1 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
 ```
 
+### Trancendental functions
+
+In calc, transcendental functions such as sin, cos and pi, cannot be evaluated exactly as fractions.  Their ruby-calc wrapers take an extra argument which is the accuracy of the result.  The result will be a rational number within that quantity of the correct value (usually an absolute difference).
+
+```ruby
+# calculate pi to 10 decimal places:
+epsilon = Calc::Q(1) / Calc::Q("1e10")
+Calc::Q.pi(epsilon)  # => Calc::Q(3.1415926536)
+
+# calculate pi to 200 decimal places:
+epsilon = Calc::Q(1) / Calc::Q("1e200")
+Calc::Q.pi(epsilon)  # => very long answer omited
+```
+
 ### Complex numbers
 
 Not added yet.
