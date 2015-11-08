@@ -1,6 +1,4 @@
-# ruby-calc
-
-[![Build Status](https://travis-ci.org/timpeters/ruby-calc.svg?branch=master)](https://travis-ci.org/timpeters/ruby-calc)
+# ruby-calc [![Build Status](https://travis-ci.org/timpeters/ruby-calc.svg?branch=master)](https://travis-ci.org/timpeters/ruby-calc)
 
 ruby-calc provides ruby bindings for calc, a c-style arbitrary precision calculator.
 
@@ -33,17 +31,17 @@ Or install it yourself as:
 
 ## Usage
 
-This library is currently very incomplete.
+The library provides 3 classes
 
-```ruby
-require 'calc'
+Ruby class | Represents
+---------- | ----------
+Calc::Z    | Integers
+Calc::Q    | Rational numbers (fractions)
+Calc::C    | Complex numbers
 
-# there are 3 classes, Z (integers), Q (rational numbers) and C (complex
-# numbers).  For each class,
-Calc::Z(x)
-# is equivalent to
-Calc::Z.new(x)
-```
+In calc, all 3 types of numbers can be arbitrarily large/precise.  But ruby Bignum/Rational already do this.  Calc is useful for its rich collection of numeric functions, as well as being able to calculate transcendental functions to arbitrary accuracy.
+
+While incomplete, this library intends to implement the ruby Numeric interface on each class, and also provide wrappers for all numerical functions provided by the calc library.
 
 ### Integers
 
@@ -80,7 +78,8 @@ q1 = Calc::Q(42)  # equivalent to Calc::Q(42, 1)
 # you can also pass a single argument of a plain ruby Rational number:
 q2 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
 
-# rational arithmetic:
+# rational arithmetic.  you can provide ruby numbers or other calc classes as
+# arguments to most operators
 q1 + q2   # => Calc::Q(181/4)
 q1 - q2   # => Calc::Q(155/4)
 q1 * q2   # => Calc::Q(273/2)
@@ -110,7 +109,7 @@ Not added yet.
 
 ## Development
 
-ruby-calc currently requires ruby 2.1 or newer.
+ruby-calc requires ruby 2.0.0 or newer.
 
 Make sure you have calc development headers installed (yum install calc-dev / apt-get install apcalc-devel, or have manually installed calc).
 
