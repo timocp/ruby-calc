@@ -15,8 +15,10 @@ cq_free(void *p)
 const rb_data_type_t calc_q_type = {
     "Calc::Q",
     {0, cq_free, 0},            /* TODO: 3rd param is optional dsize */
-    0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    0, 0
+#ifdef RUBY_TYPED_FREE_IMMEDATELY
+    , RUBY_TYPED_FREE_IMMEDIATELY   /* flags is in 2.1+ */
+#endif
 };
 
 /* because the true type of rationals in calc is (NUMBER*), we don't do any

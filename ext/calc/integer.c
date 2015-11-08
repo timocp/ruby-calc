@@ -17,8 +17,10 @@ cz_free(void *p)
 const rb_data_type_t calc_z_type = {
     "Calc::Z",
     {0, cz_free, 0},
-    0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    0, 0
+#ifdef RUBY_TYPED_FREE_IMMEDIATELY
+    , RUBY_TYPED_FREE_IMMEDIATELY   /* flags is in 2.1+ */
+#endif
 };
 
 /* tells ruby to allocate memory for a new object which wraps a ZVALUE */
