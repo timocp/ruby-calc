@@ -6,12 +6,14 @@ VALUE cZ;                       /* Calc::Z class */
  * functions related to memory allocation and object initialization          *
  *****************************************************************************/
 
-/* freeh() is provided by libcalc, pointer version of zfree().  it is a macro,
- * so it can't be directly used in Data_Make_Struct */
+/* p is a pointer to a ZVALUE which was allocated during cz_alloc.  we need to
+ * use zfree() to dealloc the actual value, then normal free() to dealloc the
+ * space for the ZVALUE */
 static void
 cz_free(void *p)
 {
-    freeh(p);
+    zfree(*(ZVALUE *)p);
+    free(p);
 }
 
 const rb_data_type_t calc_z_type = {
