@@ -7,7 +7,7 @@ VALUE cZ;                       /* Calc::Z class */
  *****************************************************************************/
 
 /* p is a pointer to a ZVALUE which was allocated during cz_alloc.  we need to
- * use zfree() to dealloc the actual value, then zfree() on the pointer (since
+ * use zfree() to dealloc the actual value, then xfree() on the pointer (since
  * that was allocated by ruby) */
 static void
 cz_free(void *p)
