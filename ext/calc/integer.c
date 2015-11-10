@@ -7,13 +7,13 @@ VALUE cZ;                       /* Calc::Z class */
  *****************************************************************************/
 
 /* p is a pointer to a ZVALUE which was allocated during cz_alloc.  we need to
- * use zfree() to dealloc the actual value, then normal free() to dealloc the
- * space for the ZVALUE */
+ * use zfree() to dealloc the actual value, then zfree() on the pointer (since
+ * that was allocated by ruby) */
 static void
 cz_free(void *p)
 {
     zfree(*(ZVALUE *)p);
-    free(p);
+    xfree(p);
 }
 
 /* used to calculate the size used by this typed data object. */
