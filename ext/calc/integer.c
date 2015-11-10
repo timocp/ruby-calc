@@ -16,9 +16,21 @@ cz_free(void *p)
     free(p);
 }
 
+/* used to calculate the size used by this typed data object. */
+static size_t
+cz_memsize(const void *p)
+{
+    const ZVALUE *z = p;
+    if (z) {
+        return sizeof(*z) + z->len * sizeof(*z->v);
+    } else {
+        return 0;
+    }
+}
+
 const rb_data_type_t calc_z_type = {
     "Calc::Z",
-    {0, cz_free, 0},
+    {0, cz_free, cz_memsize,},
     0, 0
 #ifdef RUBY_TYPED_FREE_IMMEDIATELY
     , RUBY_TYPED_FREE_IMMEDIATELY   /* flags is in 2.1+ */
