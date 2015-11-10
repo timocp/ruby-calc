@@ -1,8 +1,7 @@
 #ifndef INTEGER_H
 #define INTEGER_H 1
 
-extern void define_calc_z();
-extern ZVALUE value_to_zvalue(VALUE arg);
+extern void define_calc_z(VALUE m);
 
 extern const rb_data_type_t calc_z_type;
 

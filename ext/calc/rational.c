@@ -47,39 +47,20 @@ cq_initialize(int argc, VALUE * argv, VALUE self)
     NUMBER *qself;
     VALUE arg1, arg2;
     ZVALUE znum, zden, z_gcd, zignored;
-    ZVALUE *zarg1;
 
     if (rb_scan_args(argc, argv, "11", &arg1, &arg2) == 1) {
         /* single param */
-        if (TYPE(arg1) == T_FIXNUM) {
-            qself = itoq(NUM2LONG(arg1));
-        }
-        else if (TYPE(arg1) == T_BIGNUM) {
-            qself = itoq(NUM2LONG(arg1));
-        }
-        else if (ISZVALUE(arg1)) {
-            get_zvalue(arg1, zarg1);
-            qself = qalloc();
-            zcopy(*zarg1, &qself->num);
-        }
-        else if (TYPE(arg1) == T_STRING) {
-            qself = str2q(StringValueCStr(arg1));
-        }
-        else if (TYPE(arg1) == T_RATIONAL) {
-            qself = iitoq(NUM2LONG(rb_funcall(arg1, rb_intern("numerator"), 0)),
-                          NUM2LONG(rb_funcall(arg1, rb_intern("denominator"), 0)));
-
-        }
-        else {
-            rb_raise(rb_eArgError, "expected number");
-        }
+        qself = value_to_number(arg1, 1);
     }
     else {
         /* 2 params. both can be anything Calc::Z.new would allow */
-        qself = qalloc();
-        znum = value_to_zvalue(arg1);
-        zden = value_to_zvalue(arg2);
+        zden = value_to_zvalue(arg2, 1);
+        if (ziszero(zden)) {
+            rb_raise(rb_eZeroDivError, "division by zero");
+        }
+        znum = value_to_zvalue(arg1, 1);
         zgcd(znum, zden, &z_gcd);
+        qself = qalloc();
         if (zisone(z_gcd)) {
             qself->num = znum;
             qself->den = zden;
@@ -105,10 +86,6 @@ cq_initialize(int argc, VALUE * argv, VALUE self)
             qself->num.sign = 0;
             qself->den.sign = 0;
         }
-    }
-    if (ziszero(qself->den)) {
-        qfree(qself);
-        rb_raise(rb_eZeroDivError, "division by zero in initialize");
     }
     DATA_PTR(self) = qself;
 
@@ -468,6 +445,7 @@ cq_pi(VALUE klass, VALUE epsilon)
 
     return result;
 }
+
 
 /*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *

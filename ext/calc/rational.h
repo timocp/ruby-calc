@@ -1,7 +1,7 @@
 #ifndef RATIONAL_H
 #define RATIONAL_H 1
 
-extern void define_calc_q();
+extern void define_calc_q(VALUE m);
 
 extern VALUE cQ;
 extern const rb_data_type_t calc_q_type;

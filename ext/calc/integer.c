@@ -54,7 +54,7 @@ cz_initialize(VALUE self, VALUE arg)
 {
     ZVALUE *zself;
     get_zvalue(self, zself);
-    *zself = value_to_zvalue(arg);
+    *zself = value_to_zvalue(arg, 1);
     return self;
 }
 
@@ -525,32 +525,4 @@ define_calc_z(VALUE m)
     rb_define_alias(cZ, "modulo", "%");
     rb_define_alias(cZ, "to_int", "to_i");
     rb_define_alias(cZ, "succ", "next");
-}
-
-/* returns a ZVALUE given a fixnum/bignum/string param.  this is public
- * bacuse Calc::Q initialization uses it too. */
-ZVALUE
-value_to_zvalue(VALUE arg)
-{
-    ZVALUE *zarg;
-    ZVALUE result;
-
-    if (TYPE(arg) == T_FIXNUM) {
-        itoz(NUM2LONG(arg), &result);
-    }
-    else if (TYPE(arg) == T_BIGNUM) {
-        itoz(NUM2LONG(arg), &result);
-    }
-    else if (TYPE(arg) == T_STRING) {
-        str2z(StringValueCStr(arg), &result);
-    }
-    else if (ISZVALUE(arg)) {
-        get_zvalue(arg, zarg);
-        zcopy(*zarg, &result);
-    }
-    else {
-        rb_raise(rb_eTypeError, "expected Fixnum, Bignum, Calc::Z or String");
-    }
-
-    return result;
 }

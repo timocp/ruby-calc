@@ -15,4 +15,8 @@ extern void libcalc_call_me_first(void);
 #include "integer.h"
 #include "rational.h"
 
+/* functions in convert.c */
+extern ZVALUE value_to_zvalue(VALUE arg, int string_allowed);
+extern NUMBER* value_to_number(VALUE arg, int string_allowed);
+
 #endif                          /* CALC_H */
