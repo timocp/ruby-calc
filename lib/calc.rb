@@ -34,5 +34,12 @@ module Calc
     def inspect
       "Calc::Q(#{ to_s })"
     end
+
+    # instance versions of trig functions
+    %i(sin cos tan).each do |f|
+      define_method f do |*args|
+        Calc::Q.__send__(f, self, *args)
+      end
+    end
   end
 end

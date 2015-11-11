@@ -117,6 +117,10 @@ Calc::Q.cos(1)          # => Calc::Q(2701511529340698587/5000000000000000000)
 Calc::Q.cos(Calc::Q.pi) # => Calc::Q(-1)
 Calc::Q.tan(Calc::Q.pi) # => Calc::Q(0)
 Calc::Q.tan(1)          # => Calc::Q(155740772465490223051/100000000000000000000)
+
+# you can also call these functions with instance receivers
+Calc::Q(0).sin    # => Calc::Q(0)
+Calc::Q(0).cos    # => Calc::Q(1)
 ```
 
 ### Complex numbers
