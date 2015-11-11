@@ -270,6 +270,11 @@ class TestRational < MiniTest::Test
       [ -1, "5403/10000", "2701511529340698587/5000000000000000000" ],
       [  0, "1", "1" ],
       [  1, "5403/10000", "2701511529340698587/5000000000000000000" ],
+    ],
+    tan: [
+      [ -1, "-155741/100000", "-155740772465490223051/100000000000000000000" ],
+      [  0, "0", "0" ],
+      [  1, "155741/100000", "155740772465490223051/100000000000000000000" ],
     ]
   }
 
@@ -278,6 +283,8 @@ class TestRational < MiniTest::Test
       tests.each do |input, eps5_expected, eps20_expected|
         assert_equal eps5_expected, Calc::Q.send(method, input, EPS5).to_s
         assert_equal eps20_expected, Calc::Q.send(method, input, EPS20).to_s
+        assert_equal eps5_expected, Calc::Q.new(input).send(method, EPS5).to_s
+        assert_equal eps20_expected, Calc::Q.new(input).send(method, EPS20).to_s
       end
     end
   end
