@@ -259,6 +259,33 @@ shift(VALUE self, VALUE other, int sign)
     return result;
 }
 
+static VALUE
+trig_function(int argc, VALUE *argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *))
+{
+    NUMBER *qepsilon, *qnumber;
+    VALUE number, epsilon, result;
+    int epsilon_given;
+
+    result = cq_new();
+    if (rb_scan_args(argc, argv, "11", &number, &epsilon) == 1) {
+        epsilon_given = 0;
+    }
+    else {
+        epsilon_given = 1;
+        qepsilon = value_to_number(epsilon, 0);
+    }
+    qnumber = value_to_number(number, 0);
+    if (epsilon_given) {
+        qepsilon = value_to_number(epsilon, 0);
+    }
+    DATA_PTR(result) = (*f) (qnumber, epsilon_given ? qepsilon : cq_default_epsilon);
+    qfree(qnumber);
+    if (epsilon_given) {
+        qfree(qepsilon);
+    }
+    return result;
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -439,6 +466,12 @@ cq_to_s(VALUE self)
  *****************************************************************************/
 
 static VALUE
+cq_cos(int argc, VALUE *argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qcos);
+}
+
+static VALUE
 cq_get_default_epsilon(VALUE klass)
 {
     VALUE result;
@@ -456,7 +489,6 @@ cq_pi(int argc, VALUE *argv, VALUE self)
 
     result = cq_new();
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        /* no params */
         DATA_PTR(result) = qpi(cq_default_epsilon);
     }
     else {
@@ -476,6 +508,11 @@ cq_set_default_epsilon(VALUE klass, VALUE epsilon)
     return Qnil;
 }
 
+static VALUE
+cq_sin(int argc, VALUE *argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qsin);
+}
 
 /*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *
@@ -508,9 +545,11 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "numerator", cq_numerator, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
 
+    rb_define_module_function(cQ, "cos", cq_cos, -1);
     rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
+    rb_define_module_function(cQ, "sin", cq_sin, -1);
 
     /* default epsilon is 1e-20 */
     cq_default_epsilon = str2q((char *)"0.00000000000000000001");

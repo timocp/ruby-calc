@@ -243,6 +243,10 @@ class TestRational < MiniTest::Test
     with_epsilon(EPS4) do
       assert_equal "1/10000", Calc::Q.get_default_epsilon.to_s
       assert_equal "3927/1250", Calc::Q.pi.to_s
+      assert_equal "0", Calc::Q.sin(0).to_s
+      assert_equal "1683/2000", Calc::Q.sin(1).to_s
+      assert_equal "1", Calc::Q.cos(0).to_s
+      assert_equal "5403/10000", Calc::Q.cos(1).to_s
     end
   end
 
@@ -253,6 +257,29 @@ class TestRational < MiniTest::Test
 
     pi = Calc::Q.pi(EPS5)
     assert_equal "314159/100000", pi.to_s
+  end
+
+  # 
+  TRIG_TESTS = {
+    sin: [
+      [ -1, "-84147/100000", "-16829419696157930133/20000000000000000000" ],
+      [  0, "0", "0" ],
+      [  1, "84147/100000",  "16829419696157930133/20000000000000000000" ],
+    ],
+    cos: [
+      [ -1, "5403/10000", "2701511529340698587/5000000000000000000" ],
+      [  0, "1", "1" ],
+      [  1, "5403/10000", "2701511529340698587/5000000000000000000" ],
+    ]
+  }
+
+  def test_trig
+    TRIG_TESTS.each_pair do |method, tests|
+      tests.each do |input, eps5_expected, eps20_expected|
+        assert_equal eps5_expected, Calc::Q.send(method, input, EPS5).to_s
+        assert_equal eps20_expected, Calc::Q.send(method, input, EPS20).to_s
+      end
+    end
   end
 
 end

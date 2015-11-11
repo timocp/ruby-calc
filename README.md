@@ -109,6 +109,12 @@ Calc::Q.pi(epsilon)  # => 401 character fraction omitted
 Calc::Q.get_default_epsilon # => Calc::Q(1/100000000000000000000)
 Calc::Q.set_default_epsilon(1, 1000)
 Calc::Q.pi   # => Calc::Q(1571/500)
+
+# other functions available:
+Calc::Q.sin(0)          # => Calc::Q(0)
+Calc::Q.sin(1)          # => Calc::Q(16829419696157930133/20000000000000000000)
+Calc::Q.cos(1)          # => Calc::Q(2701511529340698587/5000000000000000000)
+Calc::Q.cos(Calc::Q.pi) # => Calc::Q(-1)
 ```
 
 ### Complex numbers
