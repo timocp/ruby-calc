@@ -11,12 +11,33 @@ extern void libcalc_call_me_first(void);
 #include <calc/cmath.h>
 #include <calc/lib_calc.h>
 
-#include "math_error.h"
-#include "integer.h"
-#include "rational.h"
-
-/* functions in convert.c */
+/* convert.c */
 extern ZVALUE value_to_zvalue(VALUE arg, int string_allowed);
 extern NUMBER* value_to_number(VALUE arg, int string_allowed);
+
+/* math_error.c */
+extern VALUE e_MathError;
+
+extern void define_calc_math_error();
+
+/* integer.c */
+extern const rb_data_type_t calc_z_type;
+
+extern void define_calc_z(VALUE m);
+
+/* rational.h */
+extern const rb_data_type_t calc_q_type;
+extern VALUE cQ;
+
+extern void define_calc_q(VALUE m);
+
+/*** macros ***/
+
+/* test ruby values match our TypedData classes */
+#define ISZVALUE(v) (rb_typeddata_is_kind_of((v), &calc_z_type))
+#define ISQVALUE(v) (rb_typeddata_is_kind_of((v), &calc_q_type))
+
+/* shortcut for getting pointer to Calc::Z's ZVALUE */
+#define get_zvalue(ruby_var,c_var) { TypedData_Get_Struct(ruby_var, ZVALUE, &calc_z_type, c_var); }
 
 #endif                          /* CALC_H */
