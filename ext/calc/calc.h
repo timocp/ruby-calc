@@ -13,7 +13,7 @@ extern void libcalc_call_me_first(void);
 
 /* convert.c */
 extern ZVALUE value_to_zvalue(VALUE arg, int string_allowed);
-extern NUMBER* value_to_number(VALUE arg, int string_allowed);
+extern NUMBER *value_to_number(VALUE arg, int string_allowed);
 
 /* math_error.c */
 extern VALUE e_MathError;

@@ -12,7 +12,7 @@ VALUE cZ;                       /* Calc::Z class */
 static void
 cz_free(void *p)
 {
-    zfree(*(ZVALUE *)p);
+    zfree(*(ZVALUE *) p);
     xfree(p);
 }
 
@@ -23,7 +23,8 @@ cz_memsize(const void *p)
     const ZVALUE *z = p;
     if (z) {
         return sizeof(*z) + z->len * sizeof(*z->v);
-    } else {
+    }
+    else {
         return 0;
     }
 }
@@ -33,7 +34,7 @@ const rb_data_type_t calc_z_type = {
     {0, cz_free, cz_memsize,},
     0, 0
 #ifdef RUBY_TYPED_FREE_IMMEDIATELY
-    , RUBY_TYPED_FREE_IMMEDIATELY   /* flags is in 2.1+ */
+        , RUBY_TYPED_FREE_IMMEDIATELY   /* flags is in 2.1+ */
 #endif
 };
 

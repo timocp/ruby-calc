@@ -21,7 +21,7 @@ const rb_data_type_t calc_q_type = {
     {0, cq_free, 0},            /* TODO: 3rd param is optional dsize */
     0, 0
 #ifdef RUBY_TYPED_FREE_IMMEDATELY
-    , RUBY_TYPED_FREE_IMMEDIATELY   /* flags is in 2.1+ */
+        , RUBY_TYPED_FREE_IMMEDIATELY   /* flags is in 2.1+ */
 #endif
 };
 
@@ -260,7 +260,7 @@ shift(VALUE self, VALUE other, int sign)
 }
 
 static VALUE
-trig_function(int argc, VALUE *argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *))
+trig_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *))
 {
     NUMBER *qepsilon, *qnumber;
     VALUE number, epsilon, result;
@@ -466,7 +466,7 @@ cq_to_s(VALUE self)
  *****************************************************************************/
 
 static VALUE
-cq_cos(int argc, VALUE *argv, VALUE self)
+cq_cos(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qcos);
 }
@@ -482,7 +482,7 @@ cq_get_default_epsilon(VALUE klass)
 }
 
 static VALUE
-cq_pi(int argc, VALUE *argv, VALUE self)
+cq_pi(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qepsilon;
     VALUE epsilon, result;
@@ -509,7 +509,7 @@ cq_set_default_epsilon(VALUE klass, VALUE epsilon)
 }
 
 static VALUE
-cq_sin(int argc, VALUE *argv, VALUE self)
+cq_sin(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qsin);
 }
@@ -552,5 +552,5 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "sin", cq_sin, -1);
 
     /* default epsilon is 1e-20 */
-    cq_default_epsilon = str2q((char *)"0.00000000000000000001");
+    cq_default_epsilon = str2q((char *) "0.00000000000000000001");
 }
