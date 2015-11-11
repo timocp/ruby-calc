@@ -91,7 +91,7 @@ q2 ** q1  # => Calc::Q(61040881526285814362156628321386486455989674569/193428131
 
 ### Trancendental functions
 
-In calc, transcendental functions such as sin, cos and pi, cannot be evaluated exactly as fractions.  Their ruby-calc wrapers take an extra argument which is the accuracy of the result.  The result will be a rational number within that quantity of the correct value (usually an absolute difference).
+Transcendental functions such as sin, cos and pi, cannot be evaluated exactly as fractions.  Their ruby-calc wrapers take an extra argument which is the accuracy of the result.  The result will be a rational number within that quantity of the correct value (usually an absolute difference).
 
 ```ruby
 # calculate pi to 10 decimal places:
@@ -101,6 +101,14 @@ Calc::Q.pi(epsilon)  # => Calc::Q(3926990817/1250000000)
 # calculate pi to 200 decimal places:
 epsilon = Calc::Q(1) / Calc::Q("1e200")
 Calc::Q.pi(epsilon)  # => 401 character fraction omitted
+
+# the epsilon value can be omitted, in which case a default (1e-20) is used.
+# this is a global variable in the Calc::Q module, and can be modified with
+# readers/writers Calc::Q.get_default_epsilon and Calc::Q.set_default_epsilon(e)
+
+Calc::Q.get_default_epsilon # => Calc::Q(1/100000000000000000000)
+Calc::Q.set_default_epsilon(1, 1000)
+Calc::Q.pi   # => Calc::Q(1571/500)
 ```
 
 ### Complex numbers

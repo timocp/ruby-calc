@@ -25,4 +25,12 @@ module Minitest::Assertions
     refute_equal expected, actual
   end
 
+  def with_epsilon(eps)
+    old_eps = Calc::Q.get_default_epsilon
+    Calc::Q.set_default_epsilon(eps)
+    yield
+  ensure
+    Calc::Q.set_default_epsilon(old_eps)
+  end
+
 end

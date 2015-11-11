@@ -3,6 +3,9 @@ require 'minitest_helper'
 class TestRational < MiniTest::Test
 
   BIG = 0x4000000000000000  # first BigNum
+  EPS20 = Calc::Q(1) / Calc::Q("1e20")
+  EPS5  = Calc::Q(1) / Calc::Q("1e5")
+  EPS4  = Calc::Q(1) / Calc::Q("1e4")
 
   def test_class_exists
     refute_nil Calc::Q
@@ -231,16 +234,24 @@ class TestRational < MiniTest::Test
     assert_equal "1/4", Calc::Q.new("1", "4").to_s
   end
 
+  def test_epsilon
+    # check the default matches expected value
+    assert_equal "1/100000000000000000000", Calc::Q.get_default_epsilon.to_s
+
+    # check we can change it and doing so affects the transcendental functions
+    # when called with no epsilon argument
+    with_epsilon(EPS4) do
+      assert_equal "1/10000", Calc::Q.get_default_epsilon.to_s
+      assert_equal "3927/1250", Calc::Q.pi.to_s
+    end
+  end
+
   def test_pi
-    # test with calc's default epsilon
-    epsilon = Calc::Q(1) / Calc::Q("1e20")
-    pi = Calc::Q.pi(epsilon)
+    pi = Calc::Q.pi(EPS20)
     assert_instance_of Calc::Q, pi
     assert_equal "157079632679489661923/50000000000000000000", pi.to_s
 
-    # test with lower precision
-    epsilon = Calc::Q(1) / Calc::Q("1e5")
-    pi = Calc::Q.pi(epsilon)
+    pi = Calc::Q.pi(EPS5)
     assert_equal "314159/100000", pi.to_s
   end
 

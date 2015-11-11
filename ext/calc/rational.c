@@ -2,6 +2,10 @@
 
 VALUE cQ;                       /* Calc::Q class */
 
+/* this global is the default epsilon used for transcendental functions if one
+ * is not specified by the caller. */
+static NUMBER *cq_default_epsilon;
+
 /*****************************************************************************
  * functions related to memory allocation and object initialization          *
  *****************************************************************************/
@@ -435,15 +439,41 @@ cq_to_s(VALUE self)
  *****************************************************************************/
 
 static VALUE
-cq_pi(VALUE klass, VALUE epsilon)
+cq_get_default_epsilon(VALUE klass)
 {
     VALUE result;
 
-    Check_TypedStruct(epsilon, &calc_q_type);
     result = cq_new();
-    DATA_PTR(result) = qpi(DATA_PTR(epsilon));
+    DATA_PTR(result) = qlink(cq_default_epsilon);
+    return result;
+}
+
+static VALUE
+cq_pi(int argc, VALUE *argv, VALUE self)
+{
+    NUMBER *qepsilon;
+    VALUE epsilon, result;
+
+    result = cq_new();
+    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
+        /* no params */
+        DATA_PTR(result) = qpi(cq_default_epsilon);
+    }
+    else {
+        qepsilon = value_to_number(epsilon, 0);
+        DATA_PTR(result) = qpi(qepsilon);
+        qfree(qepsilon);
+    }
 
     return result;
+}
+
+static VALUE
+cq_set_default_epsilon(VALUE klass, VALUE epsilon)
+{
+    cq_default_epsilon = value_to_number(epsilon, 1);
+
+    return Qnil;
 }
 
 
@@ -478,5 +508,10 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "numerator", cq_numerator, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
 
-    rb_define_module_function(cQ, "pi", cq_pi, 1);
+    rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
+    rb_define_module_function(cQ, "pi", cq_pi, -1);
+    rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
+
+    /* default epsilon is 1e-20 */
+    cq_default_epsilon = str2q((char *)"0.00000000000000000001");
 }
