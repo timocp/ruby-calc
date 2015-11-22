@@ -15,8 +15,6 @@ module Calc
       "Calc::Z(#{ to_s })"
     end
 
-    # TODO: implement in C
-
     def /(y)
       self.divmod(y).first
     end
@@ -27,6 +25,14 @@ module Calc
         return z - y
       end
       return z
+    end
+
+    def to_f
+      self.to_r.to_f
+    end
+
+    def to_r
+      Rational(self.to_i, 1)
     end
   end
 

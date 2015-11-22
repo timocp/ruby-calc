@@ -131,7 +131,8 @@ Not added yet.
 
 Method | Result
 ------ | ------
-to_i   | Converts to ruby Fixnum or Bignum (for Q, discards remainder)
+to_f   | Converts to a ruby Float (for Q, precision can be lost!)
+to_i   | Converts to a ruby Fixnum or Bignum (for Q, discards remainder)
 to_r   | Converts to a ruby Rational
 to_s   | Converts to a ruby String
 
