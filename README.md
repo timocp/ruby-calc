@@ -127,6 +127,14 @@ Calc::Q(0).cos    # => Calc::Q(1)
 
 Not added yet.
 
+### Converting to core ruby classes
+
+Method | Result
+------ | ------
+to_i   | Converts to ruby Fixnum or Bignum (for Q, discards remainder)
+to_r   | Converts to a ruby Rational
+to_s   | Converts to a ruby String
+
 ## Development
 
 ruby-calc requires ruby 2.0.0 or newer.
