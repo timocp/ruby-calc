@@ -35,6 +35,13 @@ module Calc
       "Calc::Q(#{ to_s })"
     end
 
+    # libcalc has no concept of floating point numbers.  so we use ruby's
+    # Rational#to_f
+    def to_f
+      self.to_r.to_f
+    end
+
+    # convert to a core ruby Rational
     def to_r
       Rational(self.numerator.to_i, self.denominator.to_i)
     end
