@@ -217,6 +217,23 @@ class TestRational < MiniTest::Test
     assert_equal  13, Calc::Q(-13, -4).numerator
   end
 
+  def test_to_i
+    assert_instance_of Fixnum, Calc::Q(1,4).to_i
+    assert_instance_of Fixnum, Calc::Q(5,1).to_i
+    assert_equal 0, Calc::Q(1,4).to_i
+    assert_equal 5, Calc::Q(5,1).to_i
+
+    # numbers larger than MAXLONG
+    assert_equal 90438207500880449001, (Calc::Q(99,2) ** 10).numerator.to_i
+    assert_equal 1024,                 (Calc::Q(99,2) ** 10).denominator.to_i
+  end
+
+  def test_to_r
+    assert_instance_of Rational, Calc::Q(1,4).to_r
+    assert_equal 1, Calc::Q(1,4).to_r.numerator
+    assert_equal 4, Calc::Q(1,4).to_r.denominator
+  end
+
   # currently just using default calc (prints decimal approximation).  needs
   # more options.
   def test_to_s

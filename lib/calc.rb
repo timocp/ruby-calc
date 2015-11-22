@@ -35,6 +35,10 @@ module Calc
       "Calc::Q(#{ to_s })"
     end
 
+    def to_r
+      Rational(self.numerator.to_i, self.denominator.to_i)
+    end
+
     # instance versions of trig functions
     %i(sin cos tan).each do |f|
       define_method f do |*args|

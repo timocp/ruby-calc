@@ -446,6 +446,38 @@ cq_numerator(VALUE self)
 }
 
 static VALUE
+cq_to_i(VALUE self)
+{
+  NUMBER *qself;
+  ZVALUE ztmp;
+  VALUE string, result;
+  char *s;
+
+  qself = DATA_PTR(self);
+  if (qisint(qself)) {
+    zcopy(qself->num, &ztmp);
+  }
+  else {
+    zquo(qself->num, qself->den, &ztmp, 0);
+  }
+  if (zgtmaxlong(ztmp)) {
+    /* too big to fit in a long, ztoi would return MAXLONG.  use a string
+     * intermediary */
+    math_divertio();
+    zprintval(ztmp, 0, 0);
+    s = math_getdivertedio();
+    string = rb_str_new2(s);
+    free(s);
+    result = rb_funcall(string, rb_intern("to_i"), 0);
+  }
+  else {
+    result = LONG2NUM(ztoi(ztmp));
+  }
+  zfree(ztmp);
+  return result;
+}
+
+static VALUE
 cq_to_s(VALUE self)
 {
     NUMBER *qself = DATA_PTR(self);
@@ -549,6 +581,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, ">>", cq_shift_right, 1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
+    rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
 
     rb_define_module_function(cQ, "cos", cq_cos, -1);
