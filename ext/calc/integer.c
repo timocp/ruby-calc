@@ -253,6 +253,7 @@ cz_xor(VALUE self, VALUE other)
 static VALUE
 cz_power(VALUE self, VALUE other)
 {
+    setup_math_error();
     return numeric_op(self, other, &zpowi, NULL);
 }
 

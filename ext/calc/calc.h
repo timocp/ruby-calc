@@ -3,10 +3,11 @@
 
 #include "ruby.h"
 
-/* cannot include calc/calc.h, which contains many things we need, because it
+/* cannot include calc/calc.h, which contains some things we need, because it
  * includes calc/value.h which defines VALUE, a name already used by ruby.
  * copying things we need here for now. */
 extern void libcalc_call_me_first(void);
+extern void reinitialize(void);
 
 #include <calc/cmath.h>
 #include <calc/lib_calc.h>
@@ -17,8 +18,23 @@ extern NUMBER *value_to_number(VALUE arg, int string_allowed);
 
 /* math_error.c */
 extern VALUE e_MathError;
-
 extern void define_calc_math_error();
+
+#ifdef SETJMP_ON_MATH_ERROR
+#define setup_math_error()                                  \
+    do {                                                    \
+        int _error;                                         \
+        VALUE _mesg;                                        \
+        if ((_error = setjmp(calc_matherr_jmpbuf)) != 0) {  \
+            _mesg = rb_str_new2(calc_err_msg);              \
+            reinitialize();                                 \
+            rb_exc_raise(rb_exc_new3(e_MathError, _mesg));  \
+        }                                                   \
+        calc_use_matherr_jmpbuf = 1;                        \
+    } while (0)
+#else
+#define setup_math_error()
+#endif
 
 /* integer.c */
 extern const rb_data_type_t calc_z_type;

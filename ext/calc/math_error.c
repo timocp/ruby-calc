@@ -3,6 +3,8 @@
 
 VALUE e_MathError;
 
+#ifndef SETJMP_ON_MATH_ERROR
+
 /* provide our own version of math_error which raises a ruby exception
  * instead of exiting.
  *
@@ -11,9 +13,6 @@ VALUE e_MathError;
  * so this just does what rb_raise does internally.
  *
  * TODO: test coverage of an error with a parameter.
- *
- * since this depends on ruby internal implementation, this might need
- * attention with different versions.  works on 2.1, 2.2.
  */
 void
 math_error(char *fmt, ...)
@@ -26,6 +25,8 @@ math_error(char *fmt, ...)
     va_end(args);
     rb_exc_raise(rb_exc_new3(e_MathError, mesg));
 }
+
+#endif /* SETJMP_ON_MATH_ERROR */
 
 void
 define_calc_math_error(VALUE m)
