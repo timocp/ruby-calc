@@ -65,6 +65,7 @@ static VALUE
 cz_initialize_copy(VALUE obj, VALUE orig)
 {
     ZVALUE *zobj, *zorig;
+    setup_math_error();
 
     if (obj == orig) {
         return obj;
@@ -98,6 +99,7 @@ compare(VALUE self, VALUE other)
 {
     ZVALUE *zself, *zother, ztmp;
     int result;
+    setup_math_error();
 
     get_zvalue(self, zself);
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
@@ -140,6 +142,7 @@ numeric_op(VALUE self, VALUE other,
 {
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;
+    setup_math_error();
 
     result = cz_new();
     get_zvalue(self, zself);
@@ -172,6 +175,7 @@ shift(VALUE self, VALUE other, int sign)
 {
     ZVALUE *zself, *zother, *zresult;
     VALUE result;
+    setup_math_error();
 
     result = cz_new();
     get_zvalue(self, zself);
@@ -206,6 +210,7 @@ cz_uminus(VALUE num)
 {
     ZVALUE *znum, *zresult;
     VALUE result;
+    setup_math_error();
 
     result = cz_new();
     get_zvalue(num, znum);
@@ -253,7 +258,6 @@ cz_xor(VALUE self, VALUE other)
 static VALUE
 cz_power(VALUE self, VALUE other)
 {
-    setup_math_error();
     return numeric_op(self, other, &zpowi, NULL);
 }
 
@@ -263,6 +267,7 @@ cz_mod(VALUE self, VALUE other)
     ZVALUE *zself, *zother, ztmp, *zresult;
     VALUE result;
     long ltmp;
+    setup_math_error();
 
     result = cz_new();
     get_zvalue(self, zself);
@@ -360,6 +365,7 @@ cz_abs2(VALUE self)
 {
     ZVALUE *zself, *zresult;
     VALUE result;
+    setup_math_error();
 
     result = cz_new();
     get_zvalue(self, zself);
@@ -376,6 +382,7 @@ cz_divmod(VALUE self, VALUE other)
     ZVALUE *zself, *zother, ztmp, *zquo, *zmod;
     VALUE quo, mod, arr;
     long ltmp;
+    setup_math_error();
 
     quo = cz_new();
     mod = cz_new();
@@ -445,6 +452,7 @@ cz_to_i(VALUE self)
     ZVALUE *zself;
     VALUE tmp;
     char *s;
+    setup_math_error();
 
     get_zvalue(self, zself);
 
@@ -469,6 +477,7 @@ cz_to_s(VALUE self)
     ZVALUE *zself;
     char *s;
     VALUE rs;
+    setup_math_error();
 
     get_zvalue(self, zself);
     math_divertio();

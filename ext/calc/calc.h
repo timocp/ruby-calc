@@ -20,18 +20,8 @@ extern NUMBER *value_to_number(VALUE arg, int string_allowed);
 extern VALUE e_MathError;
 extern void define_calc_math_error();
 
-#ifdef SETJMP_ON_MATH_ERROR
-#define setup_math_error()                                  \
-    do {                                                    \
-        int _error;                                         \
-        VALUE _mesg;                                        \
-        if ((_error = setjmp(calc_matherr_jmpbuf)) != 0) {  \
-            _mesg = rb_str_new2(calc_err_msg);              \
-            reinitialize();                                 \
-            rb_exc_raise(rb_exc_new3(e_MathError, _mesg));  \
-        }                                                   \
-        calc_use_matherr_jmpbuf = 1;                        \
-    } while (0)
+#ifdef JUMP_ON_MATH_ERROR
+extern void setup_math_error();
 #else
 #define setup_math_error()
 #endif

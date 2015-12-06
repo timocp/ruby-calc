@@ -11,6 +11,7 @@ value_to_zvalue(VALUE arg, int string_allowed)
 {
     ZVALUE *zarg;
     ZVALUE result;
+    setup_math_error();
 
     if (TYPE(arg) == T_FIXNUM) {
         itoz(NUM2LONG(arg), &result);
@@ -53,6 +54,7 @@ value_to_number(VALUE arg, int string_allowed)
 {
     NUMBER *qresult;
     ZVALUE *zarg;
+    setup_math_error();
 
     if (TYPE(arg) == T_FIXNUM || TYPE(arg) == T_BIGNUM) {
         qresult = itoq(NUM2LONG(arg));

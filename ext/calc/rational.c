@@ -51,6 +51,7 @@ cq_initialize(int argc, VALUE * argv, VALUE self)
     NUMBER *qself;
     VALUE arg1, arg2;
     ZVALUE znum, zden, z_gcd, zignored;
+    setup_math_error();
 
     if (rb_scan_args(argc, argv, "11", &arg1, &arg2) == 1) {
         /* single param */
@@ -125,7 +126,6 @@ cq_initialize_copy(VALUE obj, VALUE orig)
  *  -1 if self is < other
  *  +1 if self is > other
  *  -2 if 'other' is not a number
- *XXX qcmp and qrel
  */
 static int
 compare(VALUE self, VALUE other)
@@ -133,6 +133,7 @@ compare(VALUE self, VALUE other)
     NUMBER *qself, *qother;
     ZVALUE *zother;
     int result;
+    setup_math_error();
 
     qself = DATA_PTR(self);
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
@@ -183,6 +184,7 @@ numeric_op(VALUE self, VALUE other,
     NUMBER *qself, *qresult, *qtmp;
     ZVALUE *zother;
     VALUE result;
+    setup_math_error();
 
     qself = DATA_PTR(self);
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
@@ -227,6 +229,7 @@ shift(VALUE self, VALUE other, int sign)
     ZVALUE *zother;
     VALUE result;
     long n;
+    setup_math_error();
 
     qself = DATA_PTR(self);
     if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
@@ -265,6 +268,7 @@ trig_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBE
     NUMBER *qepsilon, *qnumber;
     VALUE number, epsilon, result;
     int epsilon_given;
+    setup_math_error();
 
     result = cq_new();
     if (rb_scan_args(argc, argv, "11", &number, &epsilon) == 1) {
@@ -300,6 +304,7 @@ static VALUE
 cq_uminus(VALUE self)
 {
     VALUE result;
+    setup_math_error();
 
     result = cq_new();
     DATA_PTR(result) = qsub(&_qzero_, DATA_PTR(self));
@@ -343,6 +348,7 @@ cq_mod(VALUE self, VALUE other)
     NUMBER *qself, *qother;
     ZVALUE *zother;
     VALUE result;
+    setup_math_error();
 
     qself = DATA_PTR(self);
     result = cq_new();
@@ -427,6 +433,7 @@ static VALUE
 cq_denominator(VALUE self)
 {
     VALUE result;
+    setup_math_error();
 
     result = cq_new();
     DATA_PTR(result) = qden(DATA_PTR(self));
@@ -438,6 +445,7 @@ static VALUE
 cq_numerator(VALUE self)
 {
     VALUE result;
+    setup_math_error();
 
     result = cq_new();
     DATA_PTR(result) = qnum(DATA_PTR(self));
@@ -452,6 +460,7 @@ cq_to_i(VALUE self)
   ZVALUE ztmp;
   VALUE string, result;
   char *s;
+  setup_math_error();
 
   qself = DATA_PTR(self);
   if (qisint(qself)) {
@@ -483,6 +492,7 @@ cq_to_s(VALUE self)
     NUMBER *qself = DATA_PTR(self);
     char *s;
     VALUE rs;
+    setup_math_error();
 
     math_divertio();
     qprintnum(qself, MODE_FRAC);
@@ -518,6 +528,7 @@ cq_pi(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qepsilon;
     VALUE epsilon, result;
+    setup_math_error();
 
     result = cq_new();
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
