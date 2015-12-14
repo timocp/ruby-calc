@@ -532,6 +532,12 @@ cq_cot(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_csc(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qcsc);
+}
+
+static VALUE
 cq_get_default_epsilon(VALUE klass)
 {
     VALUE result;
@@ -622,6 +628,7 @@ define_calc_q(VALUE m)
 
     rb_define_module_function(cQ, "cos", cq_cos, -1);
     rb_define_module_function(cQ, "cot", cq_cot, -1);
+    rb_define_module_function(cQ, "csc", cq_csc, -1);
     rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
