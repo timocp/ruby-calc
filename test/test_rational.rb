@@ -24,6 +24,7 @@ class TestRational < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(42))
     assert_instance_of Calc::Q, Calc::Q.new("1/3")
     assert_instance_of Calc::Q, Calc::Q.new(Rational(1,3))
+    assert_instance_of Calc::Q, Calc::Q.new(0.3)
   end
 
   def test_intialization_div_zero
@@ -173,14 +174,13 @@ class TestRational < MiniTest::Test
   end
 
   def test_power
-    # TODO: skips because qpowi requires and integer power (i guess because the
-    # result wouldn't necessarily be a rational number). calc has qpower which
-    # calculates a rational result to an arbitray precision, but having a
-    # second argument to ** would be weird. need to think about this.
-    skip { assert_rational_and_equal Calc::Q(3),    Calc::Q(81) ** Calc::Q(1,4) }
-    assert_rational_and_equal Calc::Q(1,9),  Calc::Q(1,3) ** 2
-    assert_rational_and_equal Calc::Q(1,27), Calc::Q(1,3) ** Calc::Z(3)
-    skip { assert_rational_and_equal Calc::Q(2),    Calc::Q(8) ** Rational(2,3) }
+    assert_rational_and_equal Calc::Q(3),    Calc::Q(81) ** Calc::Q(1,4)
+    assert_in_epsilon Calc::Q(1,9).to_f,  (Calc::Q(1,3) ** 2).to_f
+    assert_in_epsilon Calc::Q(1,27).to_f, (Calc::Q(1,3) ** Calc::Z(3)).to_f
+    assert_rational_and_equal Calc::Q(4),    Calc::Q(8) ** Rational(2,3)
+
+    assert_instance_of Calc::Q, Calc::Q.power(1.2345, 10)
+    assert_in_epsilon 8.2207405646327461795, Calc::Q.power(1.2345, 10).to_f
   end
 
   def test_shift

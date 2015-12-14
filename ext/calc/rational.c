@@ -363,12 +363,6 @@ cq_multiply(VALUE self, VALUE other)
 }
 
 static VALUE
-cq_power(VALUE self, VALUE other)
-{
-    return numeric_op(self, other, &qpowi, NULL);
-}
-
-static VALUE
 cq_divide(VALUE self, VALUE other)
 {
     return numeric_op(self, other, &qqdiv, &qdivi);
@@ -660,6 +654,12 @@ cq_pi(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_power(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function2(argc, argv, self, &qpower);
+}
+
+static VALUE
 cq_sec(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qsec);
@@ -698,7 +698,6 @@ define_calc_q(VALUE m)
 
     rb_define_method(cQ, "%", cq_mod, 1);
     rb_define_method(cQ, "*", cq_multiply, 1);
-    rb_define_method(cQ, "**", cq_power, 1);
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "+@", cq_uplus, 0);
     rb_define_method(cQ, "-", cq_subtract, 1);
@@ -733,6 +732,7 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "ln", cq_ln, -1);
     rb_define_module_function(cQ, "log", cq_log, -1);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
+    rb_define_module_function(cQ, "power", cq_power, -1);
     rb_define_module_function(cQ, "sec", cq_sec, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
     rb_define_module_function(cQ, "sin", cq_sin, -1);

@@ -37,6 +37,10 @@ module Calc
   end
 
   class Q
+    def **(other)
+      Calc::Q.power(self, other)
+    end
+
     def inspect
       "Calc::Q(#{ to_s })"
     end
