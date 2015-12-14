@@ -58,7 +58,7 @@ math_error(char *fmt, ...)
     rb_exc_raise(rb_exc_new3(e_MathError, mesg));
 }
 
-#endif /* JUMP_ON_MATH_ERROR */
+#endif                          /* JUMP_ON_MATH_ERROR */
 
 void
 define_calc_math_error(VALUE m)

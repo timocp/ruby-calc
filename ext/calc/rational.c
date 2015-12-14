@@ -468,34 +468,34 @@ cq_numerator(VALUE self)
 static VALUE
 cq_to_i(VALUE self)
 {
-  NUMBER *qself;
-  ZVALUE ztmp;
-  VALUE string, result;
-  char *s;
-  setup_math_error();
+    NUMBER *qself;
+    ZVALUE ztmp;
+    VALUE string, result;
+    char *s;
+    setup_math_error();
 
-  qself = DATA_PTR(self);
-  if (qisint(qself)) {
-    zcopy(qself->num, &ztmp);
-  }
-  else {
-    zquo(qself->num, qself->den, &ztmp, 0);
-  }
-  if (zgtmaxlong(ztmp)) {
-    /* too big to fit in a long, ztoi would return MAXLONG.  use a string
-     * intermediary */
-    math_divertio();
-    zprintval(ztmp, 0, 0);
-    s = math_getdivertedio();
-    string = rb_str_new2(s);
-    free(s);
-    result = rb_funcall(string, rb_intern("to_i"), 0);
-  }
-  else {
-    result = LONG2NUM(ztoi(ztmp));
-  }
-  zfree(ztmp);
-  return result;
+    qself = DATA_PTR(self);
+    if (qisint(qself)) {
+        zcopy(qself->num, &ztmp);
+    }
+    else {
+        zquo(qself->num, qself->den, &ztmp, 0);
+    }
+    if (zgtmaxlong(ztmp)) {
+        /* too big to fit in a long, ztoi would return MAXLONG.  use a string
+         * intermediary */
+        math_divertio();
+        zprintval(ztmp, 0, 0);
+        s = math_getdivertedio();
+        string = rb_str_new2(s);
+        free(s);
+        result = rb_funcall(string, rb_intern("to_i"), 0);
+    }
+    else {
+        result = LONG2NUM(ztoi(ztmp));
+    }
+    zfree(ztmp);
+    return result;
 }
 
 static VALUE
