@@ -300,8 +300,16 @@ class TestRational < MiniTest::Test
     %i(sin cos tan).each do |method|
       [-1, 0, 1].each do |input|
         assert_in_epsilon(Math.send(method, input), Calc::Q.send(method, input).to_f)
+        assert_in_epsilon(Math.send(method, input), Calc::Q(input).send(method).to_f)
       end
     end
+  end
+
+  def test_cot
+    assert_instance_of Calc::Q, Calc::Q.cot(1)
+    assert_in_epsilon 0.64209261593433070301, Calc::Q.cot(1).to_f
+    assert_in_epsilon 0.64209261593433070301, Calc::Q(1).cot.to_f
+    assert_raises(Calc::MathError) { Calc::Q.cot(0) }
   end
 
 end

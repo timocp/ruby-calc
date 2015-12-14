@@ -129,6 +129,16 @@ Calc::Q(0).sin    # => Calc::Q(0)
 Calc::Q(0).cos    # => Calc::Q(1)
 ```
 
+All available transcendental functions on Calc::Q:
+
+Method | Arguments | Description
+------ | --------- | -----------
+cos    | x         | cosine of x
+cot    | x         | cotangent of x
+pi     | none      | value of π
+sin    | x         | sin of x
+tan    | x         | tangent of x
+
 ### Complex numbers
 
 Not added yet.
