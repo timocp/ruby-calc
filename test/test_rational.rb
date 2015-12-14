@@ -292,38 +292,16 @@ class TestRational < MiniTest::Test
     assert_equal "314159/100000", pi.to_s
   end
 
-  TRIG_TESTS = {
-    sin: [
-      [ -1, "-84147/100000", "-16829419696157930133/20000000000000000000" ],
-      [  0, "0", "0" ],
-      [  1, "84147/100000",  "16829419696157930133/20000000000000000000" ],
-    ],
-    cos: [
-      [ -1, "5403/10000", "2701511529340698587/5000000000000000000" ],
-      [  0, "1", "1" ],
-      [  1, "5403/10000", "2701511529340698587/5000000000000000000" ],
-    ],
-    tan: [
-      [ -1, "-155741/100000", "-155740772465490223051/100000000000000000000" ],
-      [  0, "0", "0" ],
-      [  1, "155741/100000", "155740772465490223051/100000000000000000000" ],
-    ]
-  }
-
   def test_trig
-    # skipping these tests. they are not reliable because the functions might
-    # return slightly different (but still correct!) rational numbers.
-    # TODO: to do this properly we should implement Q#to_f and use #assert_in_epsilon
-    skip {
-      TRIG_TESTS.each_pair do |method, tests|
-        tests.each do |input, eps5_expected, eps20_expected|
-          assert_equal eps5_expected, Calc::Q.send(method, input, EPS5).to_s
-          assert_equal eps20_expected, Calc::Q.send(method, input, EPS20).to_s
-          assert_equal eps5_expected, Calc::Q.new(input).send(method, EPS5).to_s
-          assert_equal eps20_expected, Calc::Q.new(input).send(method, EPS20).to_s
-        end
+    # these are a bit hard to test, since test_in_epsilon is for floats; our
+    # results are more accurate than floats can hold.
+    # to ensure results are at least close to expected values convert to float
+    # and compare to ruby Math implementations
+    %i(sin cos tan).each do |method|
+      [-1, 0, 1].each do |input|
+        assert_in_epsilon(Math.send(method, input), Calc::Q.send(method, input).to_f)
       end
-    }
+    end
   end
 
 end
