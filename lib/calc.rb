@@ -52,8 +52,8 @@ module Calc
       Rational(self.numerator.to_i, self.denominator.to_i)
     end
 
-    # instance versions of trig functions
-    %i(acos acot acsc asec asin atan cos cot csc sec sin tan).each do |f|
+    # instance versions of trans functions
+    %i(acos acot acsc asec asin atan cos cot csc exp sec sin tan).each do |f|
       define_method f do |*args|
         Calc::Q.__send__(f, self, *args)
       end
