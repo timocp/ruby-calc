@@ -293,11 +293,10 @@ class TestRational < MiniTest::Test
   end
 
   def test_trig
-    # these are a bit hard to test, since test_in_epsilon is for floats; our
-    # results are more accurate than floats can hold.
-    # to ensure results are at least close to expected values convert to float
-    # and compare to ruby Math implementations
-    %i(sin cos tan).each do |method|
+    # test trig functions which are also in ruby Math by comparing our result
+    # to theirs.  note that our results lose precision when converting to
+    # float, so this is just testing values are roughly right.
+    %i(asin cos sin tan).each do |method|
       [-1, 0, 1].each do |input|
         assert_in_epsilon(Math.send(method, input), Calc::Q.send(method, input).to_f)
         assert_in_epsilon(Math.send(method, input), Calc::Q(input).send(method).to_f)

@@ -133,6 +133,7 @@ All available transcendental functions on Calc::Q:
 
 Method | Arguments | Description
 ------ | --------- | -----------
+asin   | x         | arcsine of x
 csc    | x         | cosecant of x
 cos    | x         | cosine of x
 cot    | x         | cotangent of x

@@ -520,6 +520,12 @@ cq_to_s(VALUE self)
  *****************************************************************************/
 
 static VALUE
+cq_asin(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qasin);
+}
+
+static VALUE
 cq_cos(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qcos);
@@ -626,6 +632,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
 
+    rb_define_module_function(cQ, "asin", cq_asin, -1);
     rb_define_module_function(cQ, "cos", cq_cos, -1);
     rb_define_module_function(cQ, "cot", cq_cot, -1);
     rb_define_module_function(cQ, "csc", cq_csc, -1);
