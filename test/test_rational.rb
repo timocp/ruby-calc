@@ -304,6 +304,14 @@ class TestRational < MiniTest::Test
     end
   end
 
+  def test_acot
+    assert_instance_of Calc::Q, Calc::Q.acot(1)
+    assert_instance_of Calc::Q, Calc::Q(1).acot
+    assert_in_epsilon 2.35619449019234492885, Calc::Q(-1).acot.to_f
+    assert_in_epsilon 1.57079632679489661923, Calc::Q(0).acot.to_f
+    assert_in_epsilon 0.78539816339744830962, Calc::Q(1).acot.to_f
+  end
+
   def test_acsc
     assert_instance_of Calc::Q, Calc::Q.acsc(1)
     assert_instance_of Calc::Q, Calc::Q(1).acsc
