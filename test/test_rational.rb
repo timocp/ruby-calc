@@ -360,6 +360,24 @@ class TestRational < MiniTest::Test
     assert_in_epsilon Math.exp(2), Calc::Q.exp(2).to_f
   end
 
+  # libcalc ln is equivalent to Math.log
+  def test_ln
+    assert_instance_of Calc::Q, Calc::Q.ln(1)
+    assert_instance_of Calc::Q, Calc::Q(1).ln
+    assert_raises(Calc::MathError) { Calc::Q.ln(0) }
+    assert_equal 0, Calc::Q.ln(1)
+    assert_in_epsilon Math.log(2), Calc::Q.ln(2).to_f
+  end
+
+  # libcalc log is equivalent to Math.log10 or Math.log(x, 10)
+  def test_log
+    assert_instance_of Calc::Q, Calc::Q.log(1)
+    assert_instance_of Calc::Q, Calc::Q(1).log
+    assert_raises(Calc::MathError) { Calc::Q.log(0) }
+    assert_equal 0, Calc::Q.log(1)
+    assert_in_epsilon Math.log10(2), Calc::Q.log(2).to_f
+  end
+
   def test_sec
     assert_instance_of Calc::Q, Calc::Q.sec(0)
     assert_in_epsilon 1.85081571768092561791, Calc::Q.sec(1).to_f

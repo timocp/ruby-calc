@@ -628,6 +628,18 @@ cq_get_default_epsilon(VALUE klass)
 }
 
 static VALUE
+cq_ln(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qln);
+}
+
+static VALUE
+cq_log(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qlog);
+}
+
+static VALUE
 cq_pi(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qepsilon;
@@ -718,6 +730,8 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "csc", cq_csc, -1);
     rb_define_module_function(cQ, "exp", cq_exp, -1);
     rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
+    rb_define_module_function(cQ, "ln", cq_ln, -1);
+    rb_define_module_function(cQ, "log", cq_log, -1);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
     rb_define_module_function(cQ, "sec", cq_sec, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);

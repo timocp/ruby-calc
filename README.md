@@ -144,6 +144,8 @@ csc    | x         | cosecant of x
 cos    | x         | cosine of x
 cot    | x         | cotangent of x
 exp    | x         | exponential function of x
+ln     | x         | natural logarithm of x (like Math.log)
+log    | x         | base 10 logarithm of x (like Math.log10)
 pi     | none      | value of π
 sec    | x         | secant of x
 sin    | x         | sin of x
