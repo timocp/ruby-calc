@@ -217,6 +217,17 @@ class TestRational < MiniTest::Test
     assert_equal  13, Calc::Q(-13, -4).numerator
   end
 
+  def test_fact
+    assert_instance_of Calc::Q, Calc::Q(42).fact
+    assert_equal 1, Calc::Q(0).fact
+    assert_equal 1, Calc::Q(1).fact
+    assert_equal 2, Calc::Q(2).fact
+    assert_equal 120, Calc::Q(5).fact
+    assert_equal 3628800, Calc::Q(10).fact
+    assert_raises(Calc::MathError) { Calc::Q(-1).fact }
+    assert_raises(Calc::MathError) { Calc::Q(1,4).fact }
+  end
+
   def test_to_f
     assert_instance_of Float, Calc::Q(99,2).to_f
     assert_equal 49.5, Calc::Q(99,2).to_f

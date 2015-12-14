@@ -442,6 +442,18 @@ cq_denominator(VALUE self)
 }
 
 static VALUE
+cq_fact(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+
+    result = cq_new();
+    DATA_PTR(result) = qfact(DATA_PTR(self));
+
+    return result;
+}
+
+static VALUE
 cq_numerator(VALUE self)
 {
     VALUE result;
@@ -591,6 +603,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, ">=", cq_gte, 1);
     rb_define_method(cQ, ">>", cq_shift_right, 1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
+    rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);

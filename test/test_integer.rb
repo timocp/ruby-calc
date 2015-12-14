@@ -268,6 +268,16 @@ class TestInteger < Minitest::Test
     assert_equal 0, Calc::Z.new(-1).next
   end
 
+  def test_fact
+    assert_instance_of Calc::Z, Calc::Z(42).fact
+    assert_equal 1, Calc::Z(0).fact
+    assert_equal 1, Calc::Z(1).fact
+    assert_equal 2, Calc::Z(2).fact
+    assert_equal 120, Calc::Z(5).fact
+    assert_equal 3628800, Calc::Z(10).fact
+    assert_raises(Calc::MathError) { Calc::Z(-1).fact }
+  end
+
   def test_to_f
     assert_instance_of Float, Calc::Z(42).to_f
     assert_equal 42.0, Calc::Z(42).to_f

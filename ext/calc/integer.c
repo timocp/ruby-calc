@@ -417,6 +417,22 @@ cz_divmod(VALUE self, VALUE other)
 }
 
 static VALUE
+cz_fact(VALUE self)
+{
+    ZVALUE *zself, *zresult;
+    VALUE result;
+    setup_math_error();
+
+    result = cz_new();
+    get_zvalue(self, zself);
+    get_zvalue(result, zresult);
+
+    zfact(*zself, zresult);
+
+    return result;
+}
+
+static VALUE
 cz_iseven(VALUE self)
 {
     ZVALUE *zself;
@@ -523,6 +539,7 @@ define_calc_z(VALUE m)
     rb_define_method(cZ, "ceil", cz_self, 0);
     rb_define_method(cZ, "divmod", cz_divmod, 1);
     rb_define_method(cZ, "even?", cz_iseven, 0);
+    rb_define_method(cZ, "fact", cz_fact, 0);
     rb_define_method(cZ, "floor", cz_self, 0);
     rb_define_method(cZ, "next", cz_next, 0);
     rb_define_method(cZ, "odd?", cz_isodd, 0);

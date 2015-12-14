@@ -65,6 +65,9 @@ z1 / 4   # => Calc::Z(10)
 
 # if you actually wanted a rational number, say:
 Calc::Q(z1, 4) # => Calc::Q(21/2)
+
+# factorials of non-negative numbers:
+Calc::Z(10).fact    # => Calc::Z(3628800)
 ```
 
 ### Rational Numbers
@@ -87,6 +90,9 @@ q1 / q2   # => Calc::Q(168/13)
 
 # raise to integer power (fractional powers are todo)
 q2 ** q1  # => Calc::Q(61040881526285814362156628321386486455989674569/19342813113834066795298816)
+
+# factorials of non-negative whole numbers:
+Calc::Q(10).fact    # => Calc::Q(3628800)
 ```
 
 ### Trancendental functions
