@@ -53,7 +53,7 @@ module Calc
     end
 
     # instance versions of trig functions
-    %i(asin cos cot csc sec sin tan).each do |f|
+    %i(acos asin atan cos cot csc sec sin tan).each do |f|
       define_method f do |*args|
         Calc::Q.__send__(f, self, *args)
       end
