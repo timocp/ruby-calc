@@ -562,6 +562,12 @@ cq_pi(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_sec(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qsec);
+}
+
+static VALUE
 cq_sin(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qsin);
@@ -619,6 +625,7 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
+    rb_define_module_function(cQ, "sec", cq_sec, -1);
     rb_define_module_function(cQ, "sin", cq_sin, -1);
     rb_define_module_function(cQ, "tan", cq_tan, -1);
 

@@ -136,6 +136,7 @@ Method | Arguments | Description
 cos    | x         | cosine of x
 cot    | x         | cotangent of x
 pi     | none      | value of π
+sec    | x         | secant of x
 sin    | x         | sin of x
 tan    | x         | tangent of x
 
