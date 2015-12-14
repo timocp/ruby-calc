@@ -290,6 +290,38 @@ trig_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBE
     return result;
 }
 
+/* same as trig_function(), except for functions where there are 2 NUMBER*
+ * arguments, eg atan2 */
+static VALUE
+trig_function2(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *, NUMBER *))
+{
+    NUMBER *qepsilon, *qnumbery, *qnumberx;
+    VALUE numbery, numberx, epsilon, result;
+    int epsilon_given;
+    setup_math_error();
+
+    result = cq_new();
+    if (rb_scan_args(argc, argv, "21", &numbery, &numberx, &epsilon) == 2) {
+        epsilon_given = 0;
+    }
+    else {
+        epsilon_given = 1;
+        qepsilon = value_to_number(epsilon, 0);
+    }
+    qnumbery = value_to_number(numbery, 0);
+    qnumberx = value_to_number(numberx, 0);
+    if (epsilon_given) {
+        qepsilon = value_to_number(epsilon, 0);
+    }
+    DATA_PTR(result) = (*f) (qnumbery, qnumberx, epsilon_given ? qepsilon : cq_default_epsilon);
+    qfree(qnumbery);
+    qfree(qnumberx);
+    if (epsilon_given) {
+        qfree(qepsilon);
+    }
+    return result;
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -550,6 +582,12 @@ cq_asin(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_atan2(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function2(argc, argv, self, &qatan2);
+}
+
+static VALUE
 cq_atan(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qatan);
@@ -667,14 +705,15 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "acsc", cq_acsc, -1);
     rb_define_module_function(cQ, "asec", cq_asec, -1);
     rb_define_module_function(cQ, "asin", cq_asin, -1);
+    rb_define_module_function(cQ, "atan2", cq_atan2, -1);
     rb_define_module_function(cQ, "atan", cq_atan, -1);
     rb_define_module_function(cQ, "cos", cq_cos, -1);
     rb_define_module_function(cQ, "cot", cq_cot, -1);
     rb_define_module_function(cQ, "csc", cq_csc, -1);
     rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
-    rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
     rb_define_module_function(cQ, "sec", cq_sec, -1);
+    rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
     rb_define_module_function(cQ, "sin", cq_sin, -1);
     rb_define_module_function(cQ, "tan", cq_tan, -1);
 
