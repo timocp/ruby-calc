@@ -152,7 +152,8 @@ log    | x         | base 10 logarithm of x (like Math.log10)
 pi     | none      | value of π
 root   | x, n      | nth root of x
 sec    | x         | secant of x
-sin    | x         | sin of x
+sech   | x         | hyperbolic secant
+sin    | x         | sine of x
 sinh   | x         | hyperbolic sine of x
 sqrt   | x         | square root of x
 tan    | x         | tangent of x

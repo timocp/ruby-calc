@@ -692,6 +692,12 @@ cq_sec(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_sech(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qsech);
+}
+
+static VALUE
 cq_sin(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qsin);
@@ -775,6 +781,7 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "power", cq_power, -1);
     rb_define_module_function(cQ, "root", cq_root, -1);
     rb_define_module_function(cQ, "sec", cq_sec, -1);
+    rb_define_module_function(cQ, "sech", cq_sech, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
     rb_define_module_function(cQ, "sin", cq_sin, -1);
     rb_define_module_function(cQ, "sinh", cq_sinh, -1);

@@ -418,4 +418,11 @@ class TestRational < MiniTest::Test
     assert_equal 1, Calc::Q.sec(0)
   end
 
+  def test_sech
+    assert_instance_of Calc::Q, Calc::Q.sech(0)
+    assert_instance_of Calc::Q, Calc::Q(0).sech
+    assert_equal 1, Calc::Q.sech(0)
+    assert_in_epsilon 0.64805427366388539958, Calc::Q.sech(1).to_f
+  end
+
 end
