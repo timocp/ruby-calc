@@ -136,8 +136,11 @@ Method | Arguments | Description
 acos   | x         | arccosine of x
 acosh  | x         | hyperbolic arccosine of x
 acot   | x         | inverse cotangent of x
+acoth  | x         | inverse hyperbolic cotangent of x
 acsc   | x         | inverse cosecant of x
+acsch  | x         | inverse hyperbolic cosecant of x
 asec   | x         | inverse secant of x
+asech  | x         | inverse hyperbolic secant of x
 asin   | x         | arcsine of x
 asinh  | x         | hyperbolic arcsine of x
 atan   | x         | arctangent of x

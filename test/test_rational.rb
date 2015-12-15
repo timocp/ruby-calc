@@ -326,11 +326,26 @@ class TestRational < MiniTest::Test
     assert_in_epsilon 0.78539816339744830962, Calc::Q(1).acot.to_f
   end
 
+  def test_acoth
+    assert_instance_of Calc::Q, Calc::Q.acoth(2)
+    assert_instance_of Calc::Q, Calc::Q(2).acoth
+    assert_in_epsilon 0.5493061443340548457, Calc::Q.acoth(2).to_f
+    assert_raises(Calc::MathError) { Calc::Q.acoth(0) }
+    assert_raises(Calc::MathError) { Calc::Q.acoth(1) }
+  end
+
   def test_acsc
     assert_instance_of Calc::Q, Calc::Q.acsc(1)
     assert_instance_of Calc::Q, Calc::Q(1).acsc
     assert_in_epsilon 1.57079632679489661923, Calc::Q(1).acsc.to_f
     assert_raises(Calc::MathError) { Calc::Q(0).acsc }
+  end
+
+  def test_acsch
+    assert_instance_of Calc::Q, Calc::Q.acsch(1)
+    assert_instance_of Calc::Q, Calc::Q(1).acsch
+    assert_in_epsilon 0.88137358701954302523, Calc::Q(1).acsch.to_f
+    assert_raises(Calc::MathError) { Calc::Q(0).acsch }
   end
 
   def test_asec
@@ -339,6 +354,14 @@ class TestRational < MiniTest::Test
     assert_in_epsilon 3.14159265358979323846, Calc::Q(-1).asec.to_f
     assert_equal 0, Calc::Q(1).asec
     assert_raises(Calc::MathError) { Calc::Q(0).asec }
+  end
+
+  def test_asech
+    assert_instance_of Calc::Q, Calc::Q.asech(1)
+    assert_instance_of Calc::Q, Calc::Q(1).asech
+    assert_equal 0, Calc::Q.asech(1)
+    assert_in_epsilon 1.31695789692481670862, Calc::Q.asech(0.5).to_f
+    assert_raises(Calc::MathError) { Calc::Q(0).asech }
   end
 
   # atan2 has no instance version (which param would be the receiver?)

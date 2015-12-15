@@ -57,8 +57,9 @@ module Calc
     end
 
     # instance versions of trans functions
-    %i(acos acosh acot acsc asec asin asinh atan atanh cbrt cos cosh cot coth
-       csc csch exp ln log root sec sech sin sinh sqrt tan tanh).each do |f|
+    %i(acos acosh acot acoth acsc acsch asec asech asin asinh atan atanh cbrt
+       cos cosh cot coth csc csch exp ln log root sec sech sin sinh sqrt tan
+       tanh).each do |f|
       define_method f do |*args|
         Calc::Q.__send__(f, self, *args)
       end
