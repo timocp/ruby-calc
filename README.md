@@ -134,6 +134,7 @@ All available transcendental functions on Calc::Q follow.  They all take an extr
 Method | Arguments | Description
 ------ | --------- | -----------
 acos   | x         | arccosine of x
+acosh  | x         | hyperbolic arccosine of x
 acot   | x         | inverse cotangent of x
 acsc   | x         | inverse cosecant of x
 asec   | x         | inverse secant of x

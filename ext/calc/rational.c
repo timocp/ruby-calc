@@ -560,6 +560,12 @@ cq_acos(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_acosh(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qacosh);
+}
+
+static VALUE
 cq_acot(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qacot);
@@ -768,6 +774,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "to_s", cq_to_s, 0);
 
     rb_define_module_function(cQ, "acos", cq_acos, -1);
+    rb_define_module_function(cQ, "acosh", cq_acosh, -1);
     rb_define_module_function(cQ, "acot", cq_acot, -1);
     rb_define_module_function(cQ, "acsc", cq_acsc, -1);
     rb_define_module_function(cQ, "asec", cq_asec, -1);
