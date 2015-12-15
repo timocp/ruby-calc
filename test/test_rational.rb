@@ -365,6 +365,13 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q.csc(0) }
   end
 
+  def test_csch
+    assert_instance_of Calc::Q, Calc::Q.csch(1)
+    assert_instance_of Calc::Q, Calc::Q(1).csch
+    assert_in_epsilon 0.85091812823932154513, Calc::Q.csch(1).to_f
+    assert_raises(Calc::MathError) { Calc::Q.csch(0) }
+  end
+
   def test_exp
     assert_instance_of Calc::Q, Calc::Q.exp(1)
     assert_instance_of Calc::Q, Calc::Q(1).exp

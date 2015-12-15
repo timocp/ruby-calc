@@ -146,6 +146,7 @@ cosh   | x         | hyperbolic cosine of x
 cot    | x         | cotangent of x
 coth   | x         | hyperbolic cotangent of x
 csc    | x         | cosecant of x
+csch   | x         | hyperbolic cosecant of x
 exp    | x         | exponential function of x
 ln     | x         | natural logarithm of x (like Math.log)
 log    | x         | base 10 logarithm of x (like Math.log10)
