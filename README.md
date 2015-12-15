@@ -155,6 +155,7 @@ sin    | x         | sin of x
 sinh   | x         | hyperbolic sine of x
 sqrt   | x         | square root of x
 tan    | x         | tangent of x
+tanh   | x         | hyperbolic tangent of x
 
 ### Complex numbers
 

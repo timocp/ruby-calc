@@ -711,6 +711,12 @@ cq_tan(int argc, VALUE * argv, VALUE self)
     return trig_function(argc, argv, self, &qtan);
 }
 
+static VALUE
+cq_tanh(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qtanh);
+}
+
 /*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *
  *****************************************************************************/
@@ -766,6 +772,7 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "sin", cq_sin, -1);
     rb_define_module_function(cQ, "sinh", cq_sinh, -1);
     rb_define_module_function(cQ, "tan", cq_tan, -1);
+    rb_define_module_function(cQ, "tanh", cq_tanh, -1);
 
     /* default epsilon is 1e-20 */
     cq_default_epsilon = str2q((char *) "0.00000000000000000001");
