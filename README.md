@@ -139,6 +139,7 @@ acot   | x         | inverse cotangent of x
 acsc   | x         | inverse cosecant of x
 asec   | x         | inverse secant of x
 asin   | x         | arcsine of x
+asinh  | x         | hyperbolic arcsine of x
 atan   | x         | arctangent of x
 atan2  | y, x      | angle determined by the point (x,y)
 cbrt   | x         | cube root of x
