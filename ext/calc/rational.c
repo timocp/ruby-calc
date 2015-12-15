@@ -132,6 +132,7 @@ compare(VALUE self, VALUE other)
 {
     NUMBER *qself, *qother;
     ZVALUE *zother;
+    VALUE tmp;
     int result;
     setup_math_error();
 
@@ -154,6 +155,13 @@ compare(VALUE self, VALUE other)
     else if (TYPE(other) == T_RATIONAL) {
         qother = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
                        NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
+        result = qrel(qself, qother);
+        qfree(qother);
+    }
+    else if (TYPE(other) == T_FLOAT) {
+        tmp = rb_funcall(other, rb_intern("to_r"), 0);
+        qother = iitoq(NUM2LONG(rb_funcall(tmp, rb_intern("numerator"), 0)),
+                       NUM2LONG(rb_funcall(tmp, rb_intern("denominator"), 0)));
         result = qrel(qself, qother);
         qfree(qother);
     }

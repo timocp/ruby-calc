@@ -53,6 +53,7 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(3) == 3                  # Q == Fixnum
     assert Calc::Q.new(BIG) == BIG              # Q == Bignum
     assert Calc::Q.new(2,3) == Rational(2,3)    # Q == Rational
+    assert Calc::Q.new(0.5) == 0.5              # Q == Float
 
     assert Calc::Q.new(3) != Calc::Q.new(4)
     assert Calc::Q.new(3) != Calc::Z.new(4)
@@ -60,6 +61,7 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(3) != 4
     assert Calc::Q.new(BIG) != BIG + 1
     assert Calc::Q.new(2,3) != Rational(3,4)
+    assert Calc::Q.new(0.3) != 0.301
     assert Calc::Q.new(2,3) != "dog"
   end
 
@@ -70,6 +72,8 @@ class TestRational < MiniTest::Test
     assert_equal 3, Calc::Q("4/6").denominator
     assert_equal 2, Calc::Q(Rational(4,6)).numerator
     assert_equal 3, Calc::Q(Rational(4,6)).denominator
+    assert_equal 1, Calc::Q(0.5).numerator
+    assert_equal 2, Calc::Q(0.5).denominator
 
     assert_equal 1, Calc::Q(1, 3).numerator
     assert_equal 3, Calc::Q(1, 3).denominator
@@ -95,6 +99,7 @@ class TestRational < MiniTest::Test
       [ Calc::Q(2),   Calc::Z(1),    Calc::Z(2),    Calc::Z(3)    ],
       [ Calc::Q(3),   2,             3,             4             ],
       [ Calc::Q(1,3), Rational(1,4), Rational(1,3), Rational(1,2) ],
+      [ Calc::Q(0.3), 0.299,         0.3,           0.301         ],
     ].each do |thing, other_lt, other_eq, other_gt|
       assert_equal -1, thing <=> other_gt
       assert_equal  0, thing <=> other_eq
@@ -204,6 +209,7 @@ class TestRational < MiniTest::Test
   end
 
   def test_denominator
+    assert_instance_of Calc::Q, Calc::Q(1, 2).denominator
     assert_equal 4, Calc::Q( 13,  4).denominator
     assert_equal 4, Calc::Q( 13, -4).denominator
     assert_equal 4, Calc::Q(-13, -4).denominator
@@ -211,6 +217,7 @@ class TestRational < MiniTest::Test
   end
 
   def test_numerator
+    assert_instance_of Calc::Q, Calc::Q(1, 2).numerator
     assert_equal  13, Calc::Q( 13,  4).numerator
     assert_equal -13, Calc::Q(-13,  4).numerator
     assert_equal -13, Calc::Q( 13, -4).numerator
