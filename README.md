@@ -142,6 +142,7 @@ asin   | x         | arcsine of x
 asinh  | x         | hyperbolic arcsine of x
 atan   | x         | arctangent of x
 atan2  | y, x      | angle determined by the point (x,y)
+atanh  | x         | hyperbolic arctangent of x
 cbrt   | x         | cube root of x
 cos    | x         | cosine of x
 cosh   | x         | hyperbolic cosine of x

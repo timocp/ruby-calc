@@ -596,15 +596,27 @@ cq_asinh(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_atan(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qatan);
+}
+
+static VALUE
 cq_atan2(int argc, VALUE * argv, VALUE self)
 {
     return trig_function2(argc, argv, self, &qatan2);
 }
 
 static VALUE
-cq_atan(int argc, VALUE * argv, VALUE self)
+cq_atanh(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qatan);
+    /* qatanh doesn't raise math error if x is <= -1 or >= 1, but it
+     * returns NULL.  this will cause a segfault later */
+    VALUE result = trig_function(argc, argv, self, &qatanh);
+    if (!DATA_PTR(result)) {
+        rb_raise(e_MathError, "Error computing atanh");
+    }
+    return result;
 }
 
 static VALUE
@@ -788,6 +800,7 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "asinh", cq_asinh, -1);
     rb_define_module_function(cQ, "atan", cq_atan, -1);
     rb_define_module_function(cQ, "atan2", cq_atan2, -1);
+    rb_define_module_function(cQ, "atanh", cq_atanh, -1);
     rb_define_module_function(cQ, "cos", cq_cos, -1);
     rb_define_module_function(cQ, "cosh", cq_cosh, -1);
     rb_define_module_function(cQ, "cot", cq_cot, -1);
