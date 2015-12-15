@@ -385,6 +385,25 @@ class TestRational < MiniTest::Test
     assert_in_epsilon Math.log10(2), Calc::Q.log(2).to_f
   end
 
+  def test_root
+    assert_instance_of Calc::Q, Calc::Q.root(7, 4)
+    assert_instance_of Calc::Q, Calc::Q(7).root(4)
+    assert_in_epsilon 1.62658, Calc::Q.root(7, 4).to_f
+
+    assert_raises(Calc::MathError) { Calc::Q.root(1, 0) }
+    assert_raises(Calc::MathError) { Calc::Q.root(0, -1) }
+    assert_raises(Calc::MathError) { Calc::Q.root(-2, 4) }
+
+    # these are currently implemented in terms of Q#root
+    # calc actually has a sqrt with many options, we're not exposing yet
+    assert_instance_of Calc::Q, Calc::Q.sqrt(4)
+    assert_instance_of Calc::Q, Calc::Q(4).sqrt
+    assert_instance_of Calc::Q, Calc::Q.cbrt(8)
+    assert_instance_of Calc::Q, Calc::Q(8).cbrt
+    assert_equal 2, Calc::Q(4).sqrt
+    assert_equal 2, Calc::Q(8).cbrt
+  end
+
   def test_sec
     assert_instance_of Calc::Q, Calc::Q.sec(0)
     assert_in_epsilon 1.85081571768092561791, Calc::Q.sec(1).to_f

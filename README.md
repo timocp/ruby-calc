@@ -129,7 +129,7 @@ Calc::Q(0).sin    # => Calc::Q(0)
 Calc::Q(0).cos    # => Calc::Q(1)
 ```
 
-All available transcendental functions on Calc::Q:
+All available transcendental functions on Calc::Q follow.  They all take an extra optional epsilon argument, if not provided, the current default epsilon will be used:
 
 Method | Arguments | Description
 ------ | --------- | -----------
@@ -140,6 +140,7 @@ asec   | x         | inverse secant of x
 asin   | x         | arcsine of x
 atan   | x         | arctangent of x
 atan2  | y, x      | angle determined by the point (x,y)
+cbrt   | x         | cube root of x
 csc    | x         | cosecant of x
 cos    | x         | cosine of x
 cot    | x         | cotangent of x
@@ -147,8 +148,10 @@ exp    | x         | exponential function of x
 ln     | x         | natural logarithm of x (like Math.log)
 log    | x         | base 10 logarithm of x (like Math.log10)
 pi     | none      | value of π
+root   | x, n      | nth root of x
 sec    | x         | secant of x
 sin    | x         | sin of x
+sqrt   | x         | square root of x
 tan    | x         | tangent of x
 
 ### Complex numbers
