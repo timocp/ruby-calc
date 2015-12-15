@@ -271,7 +271,7 @@ shift(VALUE self, VALUE other, int sign)
 }
 
 static VALUE
-trig_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *))
+trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *))
 {
     NUMBER *qepsilon, *qnumber;
     VALUE number, epsilon, result;
@@ -303,10 +303,10 @@ trig_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBE
     return result;
 }
 
-/* same as trig_function(), except for functions where there are 2 NUMBER*
+/* same as trans_function(), except for functions where there are 2 NUMBER*
  * arguments, eg atan2 */
 static VALUE
-trig_function2(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *, NUMBER *))
+trans_function2(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *, NUMBER *))
 {
     NUMBER *qepsilon, *qnumbery, *qnumberx;
     VALUE numbery, numberx, epsilon, result;
@@ -561,121 +561,121 @@ cq_to_s(VALUE self)
 static VALUE
 cq_acos(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qacos);
+    return trans_function(argc, argv, self, &qacos);
 }
 
 static VALUE
 cq_acosh(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qacosh);
+    return trans_function(argc, argv, self, &qacosh);
 }
 
 static VALUE
 cq_acot(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qacot);
+    return trans_function(argc, argv, self, &qacot);
 }
 
 static VALUE
 cq_acoth(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qacoth);
+    return trans_function(argc, argv, self, &qacoth);
 }
 
 static VALUE
 cq_acsc(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qacsc);
+    return trans_function(argc, argv, self, &qacsc);
 }
 
 static VALUE
 cq_acsch(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qacsch);
+    return trans_function(argc, argv, self, &qacsch);
 }
 
 static VALUE
 cq_asec(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qasec);
+    return trans_function(argc, argv, self, &qasec);
 }
 
 static VALUE
 cq_asech(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qasech);
+    return trans_function(argc, argv, self, &qasech);
 }
 
 static VALUE
 cq_asin(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qasin);
+    return trans_function(argc, argv, self, &qasin);
 }
 
 static VALUE
 cq_asinh(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qasinh);
+    return trans_function(argc, argv, self, &qasinh);
 }
 
 static VALUE
 cq_atan(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qatan);
+    return trans_function(argc, argv, self, &qatan);
 }
 
 static VALUE
 cq_atan2(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function2(argc, argv, self, &qatan2);
+    return trans_function2(argc, argv, self, &qatan2);
 }
 
 static VALUE
 cq_atanh(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qatanh);
+    return trans_function(argc, argv, self, &qatanh);
 }
 
 static VALUE
 cq_cos(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qcos);
+    return trans_function(argc, argv, self, &qcos);
 }
 
 static VALUE
 cq_cosh(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qcosh);
+    return trans_function(argc, argv, self, &qcosh);
 }
 
 static VALUE
 cq_cot(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qcot);
+    return trans_function(argc, argv, self, &qcot);
 }
 
 static VALUE
 cq_coth(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qcoth);
+    return trans_function(argc, argv, self, &qcoth);
 }
 
 static VALUE
 cq_csc(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qcsc);
+    return trans_function(argc, argv, self, &qcsc);
 }
 
 static VALUE
 cq_csch(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qcsch);
+    return trans_function(argc, argv, self, &qcsch);
 }
 
 static VALUE
 cq_exp(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qexp);
+    return trans_function(argc, argv, self, &qexp);
 }
 
 static VALUE
@@ -691,13 +691,13 @@ cq_get_default_epsilon(VALUE klass)
 static VALUE
 cq_ln(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qln);
+    return trans_function(argc, argv, self, &qln);
 }
 
 static VALUE
 cq_log(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qlog);
+    return trans_function(argc, argv, self, &qlog);
 }
 
 static VALUE
@@ -723,37 +723,37 @@ cq_pi(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_power(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function2(argc, argv, self, &qpower);
+    return trans_function2(argc, argv, self, &qpower);
 }
 
 static VALUE
 cq_root(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function2(argc, argv, self, &qroot);
+    return trans_function2(argc, argv, self, &qroot);
 }
 
 static VALUE
 cq_sec(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qsec);
+    return trans_function(argc, argv, self, &qsec);
 }
 
 static VALUE
 cq_sech(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qsech);
+    return trans_function(argc, argv, self, &qsech);
 }
 
 static VALUE
 cq_sin(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qsin);
+    return trans_function(argc, argv, self, &qsin);
 }
 
 static VALUE
 cq_sinh(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qsinh);
+    return trans_function(argc, argv, self, &qsinh);
 }
 
 static VALUE
@@ -767,13 +767,13 @@ cq_set_default_epsilon(VALUE klass, VALUE epsilon)
 static VALUE
 cq_tan(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qtan);
+    return trans_function(argc, argv, self, &qtan);
 }
 
 static VALUE
 cq_tanh(int argc, VALUE * argv, VALUE self)
 {
-    return trig_function(argc, argv, self, &qtanh);
+    return trans_function(argc, argv, self, &qtanh);
 }
 
 /*****************************************************************************
