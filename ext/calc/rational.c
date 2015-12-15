@@ -602,6 +602,12 @@ cq_cos(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_cosh(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qcosh);
+}
+
+static VALUE
 cq_cot(int argc, VALUE * argv, VALUE self)
 {
     return trig_function(argc, argv, self, &qcot);
@@ -736,9 +742,10 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "acsc", cq_acsc, -1);
     rb_define_module_function(cQ, "asec", cq_asec, -1);
     rb_define_module_function(cQ, "asin", cq_asin, -1);
-    rb_define_module_function(cQ, "atan2", cq_atan2, -1);
     rb_define_module_function(cQ, "atan", cq_atan, -1);
+    rb_define_module_function(cQ, "atan2", cq_atan2, -1);
     rb_define_module_function(cQ, "cos", cq_cos, -1);
+    rb_define_module_function(cQ, "cosh", cq_cosh, -1);
     rb_define_module_function(cQ, "cot", cq_cot, -1);
     rb_define_module_function(cQ, "csc", cq_csc, -1);
     rb_define_module_function(cQ, "exp", cq_exp, -1);

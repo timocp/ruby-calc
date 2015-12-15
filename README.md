@@ -141,9 +141,10 @@ asin   | x         | arcsine of x
 atan   | x         | arctangent of x
 atan2  | y, x      | angle determined by the point (x,y)
 cbrt   | x         | cube root of x
-csc    | x         | cosecant of x
 cos    | x         | cosine of x
+cosh   | x         | hyperbolic cosine of x
 cot    | x         | cotangent of x
+csc    | x         | cosecant of x
 exp    | x         | exponential function of x
 ln     | x         | natural logarithm of x (like Math.log)
 log    | x         | base 10 logarithm of x (like Math.log10)
