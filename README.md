@@ -152,6 +152,7 @@ pi     | none      | value of π
 root   | x, n      | nth root of x
 sec    | x         | secant of x
 sin    | x         | sin of x
+sinh   | x         | hyperbolic sine of x
 sqrt   | x         | square root of x
 tan    | x         | tangent of x
 

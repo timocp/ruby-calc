@@ -692,6 +692,12 @@ cq_sin(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_sinh(int argc, VALUE * argv, VALUE self)
+{
+    return trig_function(argc, argv, self, &qsinh);
+}
+
+static VALUE
 cq_set_default_epsilon(VALUE klass, VALUE epsilon)
 {
     cq_default_epsilon = value_to_number(epsilon, 1);
@@ -758,6 +764,7 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "sec", cq_sec, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
     rb_define_module_function(cQ, "sin", cq_sin, -1);
+    rb_define_module_function(cQ, "sinh", cq_sinh, -1);
     rb_define_module_function(cQ, "tan", cq_tan, -1);
 
     /* default epsilon is 1e-20 */
