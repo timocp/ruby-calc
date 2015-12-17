@@ -306,7 +306,8 @@ trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMB
 /* same as trans_function(), except for functions where there are 2 NUMBER*
  * arguments, eg atan2 */
 static VALUE
-trans_function2(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *, NUMBER *))
+trans_function2(int argc, VALUE * argv, VALUE self,
+                NUMBER * (*f) (NUMBER *, NUMBER *, NUMBER *))
 {
     NUMBER *qepsilon, *qnumbery, *qnumberx;
     VALUE numbery, numberx, epsilon, result;
@@ -326,7 +327,8 @@ trans_function2(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUM
     if (epsilon_given) {
         qepsilon = value_to_number(epsilon, 0);
     }
-    DATA_PTR(result) = (*f) (qnumbery, qnumberx, epsilon_given ? qepsilon : cq_default_epsilon);
+    DATA_PTR(result) =
+        (*f) (qnumbery, qnumberx, epsilon_given ? qepsilon : cq_default_epsilon);
     qfree(qnumbery);
     qfree(qnumberx);
     if (epsilon_given) {

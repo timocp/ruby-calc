@@ -88,7 +88,8 @@ value_to_number(VALUE arg, int string_allowed)
     }
     else {
         if (string_allowed) {
-            rb_raise(rb_eArgError, "expected number, Rational, Float, Calc::Z, Calc::Q or string");
+            rb_raise(rb_eArgError,
+                     "expected number, Rational, Float, Calc::Z, Calc::Q or string");
         }
         else {
             rb_raise(rb_eArgError, "expected number, Rational, Float, Calc::Z or Calc::Q");
