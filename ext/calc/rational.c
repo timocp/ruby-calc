@@ -175,16 +175,6 @@ compare(VALUE self, VALUE other)
     return result;
 }
 
-static int
-compare_check_arg(VALUE self, VALUE other)
-{
-    int result = compare(self, other);
-    if (result == -2) {
-        rb_raise(rb_eArgError, "comparison of Calc::Q to non-numeric failed");
-    }
-    return result;
-}
-
 static VALUE
 numeric_op(VALUE self, VALUE other,
            NUMBER * (*fqq) (NUMBER *, NUMBER *), NUMBER * (*fql) (NUMBER *, long))
@@ -434,40 +424,10 @@ cq_shift_right(VALUE self, VALUE other)
 }
 
 static VALUE
-cq_equal(VALUE self, VALUE other)
-{
-    return compare(self, other) == 0 ? Qtrue : Qfalse;
-}
-
-static VALUE
-cq_comparison(VALUE self, VALUE other)
+cq_spaceship(VALUE self, VALUE other)
 {
     int result = compare(self, other);
     return result == -2 ? Qnil : INT2FIX(result);
-}
-
-static VALUE
-cq_lt(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == -1 ? Qtrue : Qfalse;
-}
-
-static VALUE
-cq_lte(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == 1 ? Qfalse : Qtrue;
-}
-
-static VALUE
-cq_gt(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == 1 ? Qtrue : Qfalse;
-}
-
-static VALUE
-cq_gte(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == -1 ? Qfalse : Qtrue;
 }
 
 static VALUE
@@ -796,13 +756,8 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "-", cq_subtract, 1);
     rb_define_method(cQ, "-@", cq_uminus, 0);
     rb_define_method(cQ, "/", cq_divide, 1);
-    rb_define_method(cQ, "<", cq_lt, 1);
     rb_define_method(cQ, "<<", cq_shift_left, 1);
-    rb_define_method(cQ, "<=", cq_lte, 1);
-    rb_define_method(cQ, "<=>", cq_comparison, 1);
-    rb_define_method(cQ, "==", cq_equal, 1);
-    rb_define_method(cQ, ">", cq_gt, 1);
-    rb_define_method(cQ, ">=", cq_gte, 1);
+    rb_define_method(cQ, "<=>", cq_spaceship, 1);
     rb_define_method(cQ, ">>", cq_shift_right, 1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "fact", cq_fact, 0);
@@ -843,6 +798,9 @@ define_calc_q(VALUE m)
     rb_define_module_function(cQ, "sinh", cq_sinh, -1);
     rb_define_module_function(cQ, "tan", cq_tan, -1);
     rb_define_module_function(cQ, "tanh", cq_tanh, -1);
+
+    /* include Comparable */
+    rb_include_module(cQ, rb_mComparable);
 
     /* default epsilon is 1e-20 */
     cq_default_epsilon = str2q((char *) "0.00000000000000000001");

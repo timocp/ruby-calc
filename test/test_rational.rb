@@ -118,6 +118,13 @@ class TestRational < MiniTest::Test
       refute_operator thing, :>=, other_gt
       refute_operator thing, :>,  other_gt
       refute_operator thing, :>,  other_eq
+
+      assert thing.between?(other_lt, other_gt)
+      assert thing.between?(other_lt, other_eq)
+      assert thing.between?(other_eq, other_gt)
+      refute thing.between?(other_eq, other_lt)
+      refute thing.between?(other_gt, other_lt)
+      refute thing.between?(other_gt, other_eq)
     end
 
     assert_nil Calc::Q(1,3) <=> "cat"

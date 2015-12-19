@@ -1,13 +1,18 @@
 require 'minitest_helper'
 
 class TestInteger < Minitest::Test
+
+  BIG  =  0x4000000000000000  # first Bignum
+  BIG2 =  0x8000000000000000  # first Bignum that won't fit in a long
+  BIG3 = -0x8000000000000001  # first negative bignum that won't fit in a long
+
   def test_class_exists
     refute_nil Calc::Z
   end
 
   def test_initialization
     assert_instance_of Calc::Z, Calc::Z.new(42)                 # Fixnum
-    assert_instance_of Calc::Z, Calc::Z.new(0x4000000000000000) # Bignum
+    assert_instance_of Calc::Z, Calc::Z.new(BIG)                # Bignum
     assert_instance_of Calc::Z, Calc::Z.new(Calc::Z.new(42))    # Calc::Z
     assert_instance_of Calc::Z, Calc::Z.new("1234")             # String
 
@@ -22,10 +27,10 @@ class TestInteger < Minitest::Test
     # TODO: won't work because NUM2LONG will raise exception.  some ideas for
     # fix but not sure it's high priority (how often will you do this?). work-
     # around is to use a string.
-    skip { assert_instance_of Calc::Z, Calc::Z.new(0x8000000000000000) }
-    skip { assert_instance_of Calc::Z, Calc::Z.new(-0x8000000000000001) }
-    assert_instance_of Calc::Z, Calc::Z.new("0x8000000000000000")
-    assert_instance_of Calc::Z, Calc::Z.new("-0x8000000000000001")
+    skip { assert_instance_of Calc::Z, Calc::Z.new(BIG2) }
+    skip { assert_instance_of Calc::Z, Calc::Z.new(BIG3) }
+    assert_instance_of Calc::Z, Calc::Z.new(BIG2.to_s)
+    assert_instance_of Calc::Z, Calc::Z.new(BIG3.to_s)
   end
 
   def test_concise_initialization
@@ -86,6 +91,12 @@ class TestInteger < Minitest::Test
     %i(< <= > >=).each do |op|
       assert_raises(ArgumentError) { Calc::Z.new(40).send(op, "cat") }
     end
+
+    assert Calc::Z(5).between?(1,10)
+    refute Calc::Z(5).between?(6,10)
+    refute Calc::Z(5).between?(1,4)
+    assert Calc::Z(5).between?(Calc::Z(1), Calc::Z(10))
+    assert Calc::Z(5).between?(4.5, 5.5)
   end
 
   def test_unary
@@ -285,10 +296,10 @@ class TestInteger < Minitest::Test
 
   def test_to_i
     assert_instance_of Fixnum, Calc::Z.new(42).to_i
-    assert_instance_of Bignum, Calc::Z.new(0x4000000000000000).to_i
+    assert_instance_of Bignum, Calc::Z.new(BIG).to_i
     assert_equal 42, Calc::Z.new(42).to_i
-    assert_equal 4611686018427387904, Calc::Z.new(0x4000000000000000).to_i
-    assert_equal 0x8000000000000000, Calc::Z.new("0x8000000000000000").to_i
+    assert_equal 4611686018427387904, Calc::Z.new(BIG).to_i
+    assert_equal BIG2, Calc::Z.new(BIG2.to_s).to_i
   end
 
   def test_to_r
@@ -299,7 +310,7 @@ class TestInteger < Minitest::Test
 
   def test_to_s
     assert_equal "42",                  Calc::Z.new(42).to_s
-    assert_equal "4611686018427387904", Calc::Z.new(0x4000000000000000).to_s
+    assert_equal "4611686018427387904", Calc::Z.new(BIG).to_s
     assert_equal "42",                  Calc::Z.new(Calc::Z.new(42)).to_s
   end
 

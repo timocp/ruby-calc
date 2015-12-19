@@ -97,3 +97,42 @@ value_to_number(VALUE arg, int string_allowed)
     }
     return qresult;
 }
+
+VALUE
+zvalue_to_f(ZVALUE *z)
+{
+    return rb_funcall(zvalue_to_i(z), rb_intern("to_f"), 0);
+}
+
+/* convert a ZVALUE to a ruby numeric (Fixnum or Bignum)
+ */
+VALUE
+zvalue_to_i(ZVALUE *z)
+{
+    VALUE tmp;
+    char *s;
+
+    if (zgtmaxlong(*z)) {
+        /* too big to fit in a long, ztoi would return MAXLONG.  use a string
+         * intermediary. */
+        math_divertio();
+        zprintval(*z, 0, 0);
+        s = math_getdivertedio();
+        tmp = rb_str_new2(s);
+        free(s);
+        return rb_funcall(tmp, rb_intern("to_i"), 0);
+    }
+    else {
+        return LONG2NUM(ztoi(*z));
+    }
+}
+
+/* converts a ZVALUE to the nearest double.  libcalc doesn't use floats/doubles
+ * at all so the simplest thing to do is convert to a Fixnum/Bignum, then use
+ * ruby's Fixnum#to_f.
+ */
+double
+zvalue_to_double(ZVALUE *z)
+{
+    return NUM2DBL(zvalue_to_i(z));
+}

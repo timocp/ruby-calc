@@ -85,50 +85,6 @@ cz_initialize_copy(VALUE obj, VALUE orig)
  * private functions used by instance methods                                *
  *****************************************************************************/
 
-/* used to implement <=>, ==, < and >
- * TODO: won't work if bignum param is > MAXLONG (9223372036854775807L)
- * returns:
- *  0 if values are the same
- *  -1 if self is < other
- *  +1 if self is > other
- *
- * returns -2 if 'other' is not a number.
- */
-static int
-compare(VALUE self, VALUE other)
-{
-    ZVALUE *zself, *zother, ztmp;
-    int result;
-    setup_math_error();
-
-    get_zvalue(self, zself);
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        itoz(NUM2LONG(other), &ztmp);
-        result = zrel(*zself, ztmp);
-        zfree(ztmp);
-    }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        result = zrel(*zself, *zother);
-    }
-    else {
-        result = -2;
-    }
-
-    return result;
-}
-
-/* calls compare but raises an exception of other is non-numeric */
-static int
-compare_check_arg(VALUE self, VALUE other)
-{
-    int result = compare(self, other);
-    if (result == -2) {
-        rb_raise(rb_eArgError, "comparison of Calc::Z to non-numeric failed");
-    }
-    return result;
-}
-
 /* used to implement +, -, etc
  * f1 is compulsory, the normal form of numeric operations
  *      void f(ZVALUE, ZVALUE, ZVALUE *)
@@ -297,40 +253,41 @@ cz_mod(VALUE self, VALUE other)
 }
 
 static VALUE
-cz_comparison(VALUE self, VALUE other)
+cz_spaceship(VALUE self, VALUE other)
 {
-    int result = compare(self, other);
-    return result == -2 ? Qnil : INT2FIX(result);
-}
+    ZVALUE *zself, *zother, ztmp;
+    int result;
+    double dself, dother;
+    setup_math_error();
 
-static VALUE
-cz_equal(VALUE self, VALUE other)
-{
-    return compare(self, other) == 0 ? Qtrue : Qfalse;
-}
+    get_zvalue(self, zself);
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
+        itoz(NUM2LONG(other), &ztmp);
+        result = zrel(*zself, ztmp);
+        zfree(ztmp);
+    }
+    else if (ISZVALUE(other)) {
+        get_zvalue(other, zother);
+        result = zrel(*zself, *zother);
+    }
+    else if (TYPE(other) == T_FLOAT) {
+        dself = zvalue_to_double(zself);
+        dother = NUM2DBL(other);
+        if (dself == dother) {
+            result = 0;
+        }
+        else if (dself < dother) {
+            result = -1;
+        }
+        else {
+            result = 1;
+        }
+    }
+    else {
+        return Qnil;
+    }
 
-static VALUE
-cz_gte(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == -1 ? Qfalse : Qtrue;
-}
-
-static VALUE
-cz_gt(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == 1 ? Qtrue : Qfalse;
-}
-
-static VALUE
-cz_lte(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == 1 ? Qfalse : Qtrue;
-}
-
-static VALUE
-cz_lt(VALUE self, VALUE other)
-{
-    return compare_check_arg(self, other) == -1 ? Qtrue : Qfalse;
+    return INT2FIX(result);
 }
 
 static VALUE
@@ -466,25 +423,18 @@ static VALUE
 cz_to_i(VALUE self)
 {
     ZVALUE *zself;
-    VALUE tmp;
-    char *s;
     setup_math_error();
-
     get_zvalue(self, zself);
+    return zvalue_to_i(zself);
+}
 
-    if (zgtmaxlong(*zself)) {
-        /* too big to fit in a long, ztoi would return MAXLONG.  use a string
-         * intermediary. */
-        math_divertio();
-        zprintval(*zself, 0, 0);
-        s = math_getdivertedio();
-        tmp = rb_str_new2(s);
-        free(s);
-        return rb_funcall(tmp, rb_intern("to_i"), 0);
-    }
-    else {
-        return LONG2NUM(ztoi(*zself));
-    }
+static VALUE
+cz_to_f(VALUE self)
+{
+    ZVALUE *zself;
+    setup_math_error();
+    get_zvalue(self, zself);
+    return zvalue_to_f(zself);
 }
 
 static VALUE
@@ -525,13 +475,8 @@ define_calc_z(VALUE m)
     rb_define_method(cZ, "+@", cz_self, 0);
     rb_define_method(cZ, "-", cz_subtract, 1);
     rb_define_method(cZ, "-@", cz_uminus, 0);
-    rb_define_method(cZ, "<", cz_lt, 1);
     rb_define_method(cZ, "<<", cz_shift_left, 1);
-    rb_define_method(cZ, "<=", cz_lte, 1);
-    rb_define_method(cZ, "<=>", cz_comparison, 1);
-    rb_define_method(cZ, "==", cz_equal, 1);
-    rb_define_method(cZ, ">", cz_gt, 1);
-    rb_define_method(cZ, ">=", cz_gte, 1);
+    rb_define_method(cZ, "<=>", cz_spaceship, 1);
     rb_define_method(cZ, ">>", cz_shift_right, 1);
     rb_define_method(cZ, "^", cz_xor, 1);
     rb_define_method(cZ, "abs", cz_abs, 0);
@@ -544,10 +489,14 @@ define_calc_z(VALUE m)
     rb_define_method(cZ, "next", cz_next, 0);
     rb_define_method(cZ, "odd?", cz_isodd, 0);
     rb_define_method(cZ, "to_i", cz_to_i, 0);
+    rb_define_method(cZ, "to_f", cz_to_f, 0);
     rb_define_method(cZ, "to_s", cz_to_s, 0);
     rb_define_method(cZ, "truncate", cz_self, 0);
     rb_define_method(cZ, "zero?", cz_iszero, 0);
     rb_define_method(cZ, "|", cz_or, 1);
+
+    /* include Comparable */
+    rb_include_module(cZ, rb_mComparable);
 
     rb_define_alias(cZ, "magnitude", "abs");
     rb_define_alias(cZ, "modulo", "%");
