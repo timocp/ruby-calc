@@ -263,26 +263,17 @@ shift(VALUE self, VALUE other, int sign)
 static VALUE
 trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *))
 {
-    NUMBER *qepsilon, *qnumber;
-    VALUE number, epsilon, result;
-    int epsilon_given;
+    NUMBER *qepsilon;
+    VALUE epsilon, result;
     setup_math_error();
 
     result = cq_new();
-    if (rb_scan_args(argc, argv, "11", &number, &epsilon) == 1) {
-        epsilon_given = 0;
+    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
+        DATA_PTR(result) = (*f) (DATA_PTR(self), cq_default_epsilon);
     }
     else {
-        epsilon_given = 1;
         qepsilon = value_to_number(epsilon, 0);
-    }
-    qnumber = value_to_number(number, 0);
-    if (epsilon_given) {
-        qepsilon = value_to_number(epsilon, 0);
-    }
-    DATA_PTR(result) = (*f) (qnumber, epsilon_given ? qepsilon : cq_default_epsilon);
-    qfree(qnumber);
-    if (epsilon_given) {
+        DATA_PTR(result) = (*f) (DATA_PTR(self), qepsilon);
         qfree(qepsilon);
     }
     /* there are a few functions which can return NULL with invalid args
@@ -294,34 +285,26 @@ trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMB
 }
 
 /* same as trans_function(), except for functions where there are 2 NUMBER*
- * arguments, eg atan2 */
+ * arguments, eg atan2.  the first param is the receiver (self). */
 static VALUE
 trans_function2(int argc, VALUE * argv, VALUE self,
                 NUMBER * (*f) (NUMBER *, NUMBER *, NUMBER *))
 {
-    NUMBER *qepsilon, *qnumbery, *qnumberx;
-    VALUE numbery, numberx, epsilon, result;
-    int epsilon_given;
+    NUMBER *qarg, *qepsilon;
+    VALUE arg, epsilon, result;
     setup_math_error();
 
     result = cq_new();
-    if (rb_scan_args(argc, argv, "21", &numbery, &numberx, &epsilon) == 2) {
-        epsilon_given = 0;
+    if (rb_scan_args(argc, argv, "11", &arg, &epsilon) == 1) {
+        qarg = value_to_number(arg, 0);
+        DATA_PTR(result) = (*f) (DATA_PTR(self), qarg, cq_default_epsilon);
+        qfree(qarg);
     }
     else {
-        epsilon_given = 1;
+        qarg = value_to_number(arg, 0);
         qepsilon = value_to_number(epsilon, 0);
-    }
-    qnumbery = value_to_number(numbery, 0);
-    qnumberx = value_to_number(numberx, 0);
-    if (epsilon_given) {
-        qepsilon = value_to_number(epsilon, 0);
-    }
-    DATA_PTR(result) =
-        (*f) (qnumbery, qnumberx, epsilon_given ? qepsilon : cq_default_epsilon);
-    qfree(qnumbery);
-    qfree(qnumberx);
-    if (epsilon_given) {
+        DATA_PTR(result) = (*f) (DATA_PTR(self), qarg, qepsilon);
+        qfree(qarg);
         qfree(qepsilon);
     }
     return result;
@@ -759,45 +742,44 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "<<", cq_shift_left, 1);
     rb_define_method(cQ, "<=>", cq_spaceship, 1);
     rb_define_method(cQ, ">>", cq_shift_right, 1);
+    rb_define_method(cQ, "acos", cq_acos, -1);
+    rb_define_method(cQ, "acosh", cq_acosh, -1);
+    rb_define_method(cQ, "acot", cq_acot, -1);
+    rb_define_method(cQ, "acoth", cq_acoth, -1);
+    rb_define_method(cQ, "acsc", cq_acsc, -1);
+    rb_define_method(cQ, "acsch", cq_acsch, -1);
+    rb_define_method(cQ, "asec", cq_asec, -1);
+    rb_define_method(cQ, "asech", cq_asech, -1);
+    rb_define_method(cQ, "asin", cq_asin, -1);
+    rb_define_method(cQ, "asinh", cq_asinh, -1);
+    rb_define_method(cQ, "atan", cq_atan, -1);
+    rb_define_method(cQ, "atan2", cq_atan2, -1);
+    rb_define_method(cQ, "atanh", cq_atanh, -1);
+    rb_define_method(cQ, "cos", cq_cos, -1);
+    rb_define_method(cQ, "cosh", cq_cosh, -1);
+    rb_define_method(cQ, "cot", cq_cot, -1);
+    rb_define_method(cQ, "coth", cq_coth, -1);
+    rb_define_method(cQ, "csc", cq_csc, -1);
+    rb_define_method(cQ, "csch", cq_csch, -1);
     rb_define_method(cQ, "denominator", cq_denominator, 0);
+    rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
+    rb_define_method(cQ, "ln", cq_ln, -1);
+    rb_define_method(cQ, "log", cq_log, -1);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
+    rb_define_method(cQ, "power", cq_power, -1);
+    rb_define_method(cQ, "root", cq_root, -1);
+    rb_define_method(cQ, "sec", cq_sec, -1);
+    rb_define_method(cQ, "sech", cq_sech, -1);
+    rb_define_method(cQ, "sin", cq_sin, -1);
+    rb_define_method(cQ, "sinh", cq_sinh, -1);
+    rb_define_method(cQ, "tan", cq_tan, -1);
+    rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
-
-    rb_define_module_function(cQ, "acos", cq_acos, -1);
-    rb_define_module_function(cQ, "acosh", cq_acosh, -1);
-    rb_define_module_function(cQ, "acot", cq_acot, -1);
-    rb_define_module_function(cQ, "acoth", cq_acoth, -1);
-    rb_define_module_function(cQ, "acsc", cq_acsc, -1);
-    rb_define_module_function(cQ, "acsch", cq_acsch, -1);
-    rb_define_module_function(cQ, "asec", cq_asec, -1);
-    rb_define_module_function(cQ, "asech", cq_asech, -1);
-    rb_define_module_function(cQ, "asin", cq_asin, -1);
-    rb_define_module_function(cQ, "asinh", cq_asinh, -1);
-    rb_define_module_function(cQ, "atan", cq_atan, -1);
-    rb_define_module_function(cQ, "atan2", cq_atan2, -1);
-    rb_define_module_function(cQ, "atanh", cq_atanh, -1);
-    rb_define_module_function(cQ, "cos", cq_cos, -1);
-    rb_define_module_function(cQ, "cosh", cq_cosh, -1);
-    rb_define_module_function(cQ, "cot", cq_cot, -1);
-    rb_define_module_function(cQ, "coth", cq_coth, -1);
-    rb_define_module_function(cQ, "csc", cq_csc, -1);
-    rb_define_module_function(cQ, "csch", cq_csch, -1);
-    rb_define_module_function(cQ, "exp", cq_exp, -1);
     rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
-    rb_define_module_function(cQ, "ln", cq_ln, -1);
-    rb_define_module_function(cQ, "log", cq_log, -1);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
-    rb_define_module_function(cQ, "power", cq_power, -1);
-    rb_define_module_function(cQ, "root", cq_root, -1);
-    rb_define_module_function(cQ, "sec", cq_sec, -1);
-    rb_define_module_function(cQ, "sech", cq_sech, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
-    rb_define_module_function(cQ, "sin", cq_sin, -1);
-    rb_define_module_function(cQ, "sinh", cq_sinh, -1);
-    rb_define_module_function(cQ, "tan", cq_tan, -1);
-    rb_define_module_function(cQ, "tanh", cq_tanh, -1);
 
     /* include Comparable */
     rb_include_module(cQ, rb_mComparable);

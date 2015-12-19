@@ -52,21 +52,24 @@ module Calc
       Rational(self.numerator.to_i, self.denominator.to_i)
     end
 
-    # instance versions of trans functions
-    %i(acos acosh acot acoth acsc acsch asec asech asin asinh atan atanh cbrt
-       cos cosh cot coth csc csch exp ln log root sec sech sin sinh sqrt tan
-       tanh).each do |f|
-      define_method f do |*args|
-        Calc::Q.__send__(f, self, *args)
+    def cbrt
+      root(3)
+    end
+
+    def sqrt
+      root(2)
+    end
+
+    class << self
+      # module versions of some methods for convenience
+      %i(acos acosh acot acoth acsc acsch asec asech asin asinh atan atan2
+         atanh cbrt cos cosh cot coth csc csch exp ln log power root sec sech
+         sin sinh sqrt tan tanh).each do |f|
+        define_method f do |*args|
+          Calc::Q(args.first).__send__(f, *args[1..-1])
+        end
       end
     end
 
-    def self.cbrt(x)
-      self.root(x, 3)
-    end
-
-    def self.sqrt(x)
-      self.root(x, 2)
-    end
   end
 end

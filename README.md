@@ -97,39 +97,9 @@ Calc::Q(10).fact    # => Calc::Q(3628800)
 
 ### Trancendental functions
 
-Transcendental functions such as sin, cos and pi, cannot be evaluated exactly as fractions.  Their ruby-calc wrapers take an extra argument which is the accuracy of the result.  The result will be a rational number within that quantity of the correct value (usually an absolute difference).
+Transcendental functions such as sin, cos and pi, cannot be evaluated exactly as fractions.  The result will be a rational number within a specific accuracy of the correct value (usually an absolute difference).
 
-```ruby
-# calculate pi to 10 decimal places:
-epsilon = Calc::Q(1) / Calc::Q("1e10")
-Calc::Q.pi(epsilon)  # => Calc::Q(3926990817/1250000000)
-
-# calculate pi to 200 decimal places:
-epsilon = Calc::Q(1) / Calc::Q("1e200")
-Calc::Q.pi(epsilon)  # => 401 character fraction omitted
-
-# the epsilon value can be omitted, in which case a default (1e-20) is used.
-# this is a global variable in the Calc::Q module, and can be modified with
-# readers/writers Calc::Q.get_default_epsilon and Calc::Q.set_default_epsilon(e)
-
-Calc::Q.get_default_epsilon # => Calc::Q(1/100000000000000000000)
-Calc::Q.set_default_epsilon(1, 1000)
-Calc::Q.pi   # => Calc::Q(1571/500)
-
-# trigonometric functions:
-Calc::Q.sin(0)          # => Calc::Q(0)
-Calc::Q.sin(1)          # => Calc::Q(16829419696157930133/20000000000000000000)
-Calc::Q.cos(1)          # => Calc::Q(2701511529340698587/5000000000000000000)
-Calc::Q.cos(Calc::Q.pi) # => Calc::Q(-1)
-Calc::Q.tan(Calc::Q.pi) # => Calc::Q(0)
-Calc::Q.tan(1)          # => Calc::Q(155740772465490223051/100000000000000000000)
-
-# you can also call these functions with instance receivers
-Calc::Q(0).sin    # => Calc::Q(0)
-Calc::Q(0).cos    # => Calc::Q(1)
-```
-
-All available transcendental functions on Calc::Q follow.  They all take an extra optional epsilon argument, if not provided, the current default epsilon will be used:
+The transcendental functions provided by Calc::Q are:
 
 Method | Arguments | Description
 ------ | --------- | -----------
@@ -165,6 +135,42 @@ sinh   | x         | hyperbolic sine of x
 sqrt   | x         | square root of x
 tan    | x         | tangent of x
 tanh   | x         | hyperbolic tangent of x
+
+These methods have equivalent module versions for convenience.  In the module version, the first parameter is equivalent to the receiver in the instance version.  Example:
+
+```ruby
+# single parameter functions
+Calc::Q(1).sin  # => Calc::Q(16829419696157930133/20000000000000000000)
+Calc::Q.sin(1)  # => Calc::Q(16829419696157930133/20000000000000000000)
+
+# two parameter functions
+Calc::Q(9).root(2)  # => Calc::Q(3)
+Calc::Q.root(9,2)   # => Calc::Q(3)
+
+# functions with no parameters are only available as a module method
+Cakc::Q.pi  # => Calc::Q(157079632679489661923/50000000000000000000)
+```
+
+The accuracy of transcendental functions will be within a specified `epsilon`.  Each method has an optional extra parameter which provides this for a single call.  If omitted a global epsilon is used (defaults to 1/1e20).  Epsilon must be greater than 0.
+
+```ruby
+# pi to default 20 decimal places:
+Calc::Q.pi  # => Calc::Q(157079632679489661923/50000000000000000000)
+
+# pi to 400 decimal places:
+Calc::Q.pi(Calc::Q(1) / Calc::Q("1e400")) # => (omitted)
+
+# pi to 2 decimal places:
+Calc::Q.pi(Calc::Q("0.01")) # => Calc::Q(157/50)
+```
+
+The default epsilon can be changed and will affect all subsequent method calls:
+
+```ruby
+Calc::Q.get_default_epsilon           # => Calc::Q(1/100000000000000000000)
+Calc::Q.set_default_epsilon("0.0001") # => nil
+Calc::Q.pi.to_f                       # => 3.1416
+```
 
 ### Complex numbers
 

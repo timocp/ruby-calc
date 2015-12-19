@@ -371,12 +371,13 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0).asech }
   end
 
-  # atan2 has no instance version (which param would be the receiver?)
   def test_atan2
+    assert_instance_of Calc::Q, Calc::Q(0).atan2(0)
     assert_instance_of Calc::Q, Calc::Q.atan2(0,0)
     [-1,0,1].each do |y|
       [-1,0,1].each do |x|
         assert_in_epsilon Math.atan2(y,x), Calc::Q.atan2(y,x).to_f
+        assert_in_epsilon Math.atan2(y,x), Calc::Q(y).atan2(x).to_f
       end
     end
   end
