@@ -151,17 +151,17 @@ Calc::Q.root(9,2)   # => Calc::Q(3)
 Cakc::Q.pi  # => Calc::Q(157079632679489661923/50000000000000000000)
 ```
 
-The accuracy of transcendental functions will be within a specified `epsilon`.  Each method has an optional extra parameter which provides this for a single call.  If omitted a global epsilon is used (defaults to 1/1e20).  Epsilon must be greater than 0.
+The accuracy of transcendental functions will be within a specified `epsilon`.  Each method has an optional extra parameter which provides this for a single call.  If omitted a global epsilon is used (defaults to 1e-20).  Epsilon must be greater than 0.
 
 ```ruby
 # pi to default 20 decimal places:
 Calc::Q.pi  # => Calc::Q(157079632679489661923/50000000000000000000)
 
 # pi to 400 decimal places:
-Calc::Q.pi(Calc::Q(1) / Calc::Q("1e400")) # => (omitted)
+Calc::Q.pi(Calc::Q("1e-400")) # => (omitted)
 
 # pi to 2 decimal places:
-Calc::Q.pi(Calc::Q("0.01")) # => Calc::Q(157/50)
+Calc::Q.pi(Calc::Q(0.01)) # => Calc::Q(157/50)
 ```
 
 The default epsilon can be changed and will affect all subsequent method calls:
