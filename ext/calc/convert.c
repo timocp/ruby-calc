@@ -1,23 +1,72 @@
 #include "calc.h"
 
+/* attempt to convert a bignum a long then to Calc::Z using itoz().
+ * NUM2LONG will raise an exception if arg doesn't fit in a long */
+static VALUE
+bignum_to_calc_z_via_long(VALUE arg)
+{
+    VALUE result;
+    ZVALUE *zresult;
+
+    result = cz_new();
+    get_zvalue(result, zresult);
+    itoz(NUM2LONG(arg), zresult);
+    return result;
+}
+
+/* handles exceptions during via_long.  convert the arg to a string, then
+ * Calc::Z using str2z */
+static VALUE
+bignum_to_calc_z_via_string(VALUE arg, VALUE e)
+{
+    ZVALUE *zresult;
+    VALUE result;
+    VALUE string;
+
+    if (rb_obj_is_kind_of(e, rb_eRangeError)) {
+        result = cz_new();
+        get_zvalue(result, zresult);
+        string = rb_funcall(arg, rb_intern("to_s"), 0);
+        str2z(StringValueCStr(string), zresult);
+    }
+    else {
+        /* something other than RangeError; re-raise it */
+        rb_exc_raise(e);
+    }
+
+    return result;
+}
+
+/* convert a Bignum to Calc::Z
+ * first tries to convert via a long; if that raises an exception, convert via
+ * a string */
+static VALUE
+bignum_to_calc_z(VALUE arg)
+{
+    return rb_rescue(&bignum_to_calc_z_via_long, arg, &bignum_to_calc_z_via_string, arg);
+}
+
 /* converts a ruby value into a ZVALUE.  Allowed types:
  *  - Fixnum
- *  - Bignum (has to fit in a long)
+ *  - Bignum
  *  - Calc::Z
  *  - String (using libcalc str2z)
  */
 ZVALUE
 value_to_zvalue(VALUE arg, int string_allowed)
 {
-    ZVALUE *zarg;
+    ZVALUE *zarg, *ztmp;
     ZVALUE result;
+    VALUE tmp;
     setup_math_error();
 
     if (TYPE(arg) == T_FIXNUM) {
         itoz(NUM2LONG(arg), &result);
     }
     else if (TYPE(arg) == T_BIGNUM) {
-        itoz(NUM2LONG(arg), &result);
+        tmp = bignum_to_calc_z(arg);
+        get_zvalue(tmp, ztmp);
+        zcopy(*ztmp, &result);
     }
     else if (ISZVALUE(arg)) {
         get_zvalue(arg, zarg);
@@ -28,10 +77,10 @@ value_to_zvalue(VALUE arg, int string_allowed)
     }
     else {
         if (string_allowed) {
-            rb_raise(rb_eArgError, "expected number, Calc::Z or String");
+            rb_raise(rb_eArgError, "expected Fixnum, Bignum, Calc::Z or String");
         }
         else {
-            rb_raise(rb_eArgError, "expected number or Calc::Z");
+            rb_raise(rb_eArgError, "expected Fixnum, Bignum or Calc::Z");
         }
     }
 
@@ -99,7 +148,7 @@ value_to_number(VALUE arg, int string_allowed)
 }
 
 VALUE
-zvalue_to_f(ZVALUE *z)
+zvalue_to_f(ZVALUE * z)
 {
     return rb_funcall(zvalue_to_i(z), rb_intern("to_f"), 0);
 }
@@ -107,7 +156,7 @@ zvalue_to_f(ZVALUE *z)
 /* convert a ZVALUE to a ruby numeric (Fixnum or Bignum)
  */
 VALUE
-zvalue_to_i(ZVALUE *z)
+zvalue_to_i(ZVALUE * z)
 {
     VALUE tmp;
     char *s;
@@ -132,7 +181,7 @@ zvalue_to_i(ZVALUE *z)
  * ruby's Fixnum#to_f.
  */
 double
-zvalue_to_double(ZVALUE *z)
+zvalue_to_double(ZVALUE * z)
 {
     return NUM2DBL(zvalue_to_i(z));
 }

@@ -13,6 +13,8 @@ class TestInteger < Minitest::Test
   def test_initialization
     assert_instance_of Calc::Z, Calc::Z.new(42)                 # Fixnum
     assert_instance_of Calc::Z, Calc::Z.new(BIG)                # Bignum
+    assert_instance_of Calc::Z, Calc::Z.new(BIG2)               # Bignum gt max long
+    assert_instance_of Calc::Z, Calc::Z.new(BIG3)               # Bignum lt min long
     assert_instance_of Calc::Z, Calc::Z.new(Calc::Z.new(42))    # Calc::Z
     assert_instance_of Calc::Z, Calc::Z.new("1234")             # String
 

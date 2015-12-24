@@ -15,9 +15,9 @@ extern void reinitialize(void);
 /* convert.c */
 extern ZVALUE value_to_zvalue(VALUE arg, int string_allowed);
 extern NUMBER *value_to_number(VALUE arg, int string_allowed);
-extern double zvalue_to_double(ZVALUE *z);
-extern VALUE zvalue_to_f(ZVALUE *z);
-extern VALUE zvalue_to_i(ZVALUE *z);
+extern double zvalue_to_double(ZVALUE * z);
+extern VALUE zvalue_to_f(ZVALUE * z);
+extern VALUE zvalue_to_i(ZVALUE * z);
 
 /* math_error.c */
 extern VALUE e_MathError;
@@ -30,13 +30,19 @@ extern void setup_math_error();
 #endif
 
 /* integer.c */
-extern const rb_data_type_t calc_z_type;
 
+/* shorthand for creating a new uninitialized Calc::Z object */
+#define cz_new() cz_alloc(cZ)
+
+extern const rb_data_type_t calc_z_type;
+extern VALUE cZ;                /* Calc::Z class */
+
+extern VALUE cz_alloc();
 extern void define_calc_z(VALUE m);
 
 /* rational.h */
 extern const rb_data_type_t calc_q_type;
-extern VALUE cQ;
+extern VALUE cQ;                /* Calc::Q class */
 
 extern void define_calc_q(VALUE m);
 

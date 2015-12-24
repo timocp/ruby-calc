@@ -39,15 +39,12 @@ const rb_data_type_t calc_z_type = {
 };
 
 /* tells ruby to allocate memory for a new object which wraps a ZVALUE */
-static VALUE
+VALUE
 cz_alloc(VALUE klass)
 {
     ZVALUE *z;
     return TypedData_Make_Struct(klass, ZVALUE, &calc_z_type, z);
 }
-
-/* shorthand for creating a new uninitialized Calc::Z object */
-#define cz_new() cz_alloc(cZ)
 
 /* Calc::Z.new(arg) */
 static VALUE
