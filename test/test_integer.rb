@@ -64,6 +64,9 @@ class TestInteger < Minitest::Test
     assert_equal  0, Calc::Z.new(8) <=> 8
     assert_equal -1, Calc::Z.new(9) <=> 10
     assert_equal  1, Calc::Z.new(12) <=> 11
+    assert_equal -1, Calc::Z(13) <=> BIG2
+    assert_equal  1, Calc::Z(13) <=> BIG3
+    assert_equal  0, Calc::Z(BIG2) <=> BIG2
 
     # <=> is supposed to return nil if objects aren't comparable
     assert_nil Calc::Z.new(3) <=> "cat"
@@ -115,6 +118,7 @@ class TestInteger < Minitest::Test
     assert_instance_of Calc::Z, Calc::Z.new(3) + 4
     assert_equal 10, Calc::Z.new(4) + Calc::Z.new(6)
     assert_equal 12, Calc::Z.new(5) + 7
+    assert_equal 9223372036854775850, Calc::Z(42) + BIG2
   end
 
   def test_subtract

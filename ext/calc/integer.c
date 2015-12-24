@@ -85,39 +85,20 @@ cz_initialize_copy(VALUE obj, VALUE orig)
 /* used to implement +, -, etc
  * f1 is compulsory, the normal form of numeric operations
  *      void f(ZVALUE, ZVALUE, ZVALUE *)
- * f2 is optional, when libcalc provides a "short" version that allows
- * a long parameter instead of a ZVALUE
- *      void f(ZVALUE, long, ZVALUE *)
  */
 static VALUE
-numeric_op(VALUE self, VALUE other,
-           void (*f1) (ZVALUE, ZVALUE, ZVALUE *), void (*f2) (ZVALUE, long, ZVALUE *))
+numeric_op(VALUE self, VALUE other, void (*f1) (ZVALUE, ZVALUE, ZVALUE *))
 {
-    ZVALUE *zself, *zother, ztmp, *zresult;
+    ZVALUE *zself, ztmp, *zresult;
     VALUE result;
     setup_math_error();
 
     result = cz_new();
     get_zvalue(self, zself);
     get_zvalue(result, zresult);
-
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        if (f2) {
-            (*f2) (*zself, NUM2LONG(other), zresult);
-        }
-        else {
-            itoz(NUM2LONG(other), &ztmp);
-            (*f1) (*zself, ztmp, zresult);
-            zfree(ztmp);
-        }
-    }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        (*f1) (*zself, *zother, zresult);
-    }
-    else {
-        rb_raise(rb_eArgError, "expected number");
-    }
+    ztmp = value_to_zvalue(other, 0);
+    (*f1) (*zself, ztmp, zresult);
+    zfree(ztmp);
 
     return result;
 }
@@ -175,43 +156,43 @@ cz_uminus(VALUE num)
 static VALUE
 cz_add(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &zadd, NULL);
+    return numeric_op(self, other, &zadd);
 }
 
 static VALUE
 cz_subtract(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &zsub, NULL);
+    return numeric_op(self, other, &zsub);
 }
 
 static VALUE
 cz_multiply(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &zmul, &zmuli);
+    return numeric_op(self, other, &zmul);
 }
 
 static VALUE
 cz_and(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &zand, NULL);
+    return numeric_op(self, other, &zand);
 }
 
 static VALUE
 cz_or(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &zor, NULL);
+    return numeric_op(self, other, &zor);
 }
 
 static VALUE
 cz_xor(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &zxor, NULL);
+    return numeric_op(self, other, &zxor);
 }
 
 static VALUE
 cz_power(VALUE self, VALUE other)
 {
-    return numeric_op(self, other, &zpowi, NULL);
+    return numeric_op(self, other, &zpowi);
 }
 
 static VALUE
@@ -252,20 +233,18 @@ cz_mod(VALUE self, VALUE other)
 static VALUE
 cz_spaceship(VALUE self, VALUE other)
 {
-    ZVALUE *zself, *zother, ztmp;
+    ZVALUE *zself, zother;
     int result;
     double dself, dother;
     setup_math_error();
 
     get_zvalue(self, zself);
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        itoz(NUM2LONG(other), &ztmp);
-        result = zrel(*zself, ztmp);
-        zfree(ztmp);
-    }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        result = zrel(*zself, *zother);
+
+    /* check type first because don't want value_to_zvalue to raise an exception */
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || ISZVALUE(other)) {
+        zother = value_to_zvalue(other, 0);
+        result = zrel(*zself, zother);
+        zfree(zother);
     }
     else if (TYPE(other) == T_FLOAT) {
         dself = zvalue_to_double(zself);
