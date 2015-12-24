@@ -87,6 +87,59 @@ value_to_zvalue(VALUE arg, int string_allowed)
     return result;
 }
 
+/* convert a pair of ZVALUEs to a NUMBER*, ensuring reduced to common terms
+ * and the sign in the numerator. */
+NUMBER *
+zz_to_number(ZVALUE znum, ZVALUE zden)
+{
+    NUMBER *q;
+    ZVALUE z_gcd, zignored;
+
+    if (ziszero(zden)) {
+        rb_raise(rb_eZeroDivError, "division by zero");
+    }
+    zgcd(znum, zden, &z_gcd);
+    q = qalloc();
+    if (zisone(z_gcd)) {
+        zcopy(znum, &q->num);
+        zcopy(zden, &q->den);
+    }
+    else {
+        zdiv(znum, z_gcd, &q->num, &zignored, 0);
+        zfree(zignored);
+        zdiv(zden, z_gcd, &q->den, &zignored, 0);
+        zfree(zignored);
+    }
+    /* make sure sign is in numerator.  1 is negative, 0 is positive */
+    if (zispos(q->num) && zisneg(q->den)) {
+        q->num.sign = 1;
+        q->den.sign = 0;
+    }
+    else if (zisneg(q->num) && zisneg(q->den)) {
+        q->num.sign = 0;
+        q->den.sign = 0;
+    }
+    return q;
+}
+
+/* convert a ruby Rational to a NUMBER*.  Since the denominator/numerator of
+ * the rational number could be too big for long, they are converted to zvalues
+ * first.
+ */
+static NUMBER *
+rational_to_number(VALUE arg)
+{
+    ZVALUE znum, zden;
+    NUMBER *qresult;
+
+    znum = value_to_zvalue(rb_funcall(arg, rb_intern("numerator"), 0), 0);
+    zden = value_to_zvalue(rb_funcall(arg, rb_intern("denominator"), 0), 0);
+    qresult = zz_to_number(znum, zden);
+    zfree(znum);
+    zfree(zden);
+    return qresult;
+}
+
 /* converts a ruby value into a NUMBER*.  Allowed types:
  *  - Fixnum
  *  - Bignum (has to fit in a long)
@@ -103,12 +156,17 @@ NUMBER *
 value_to_number(VALUE arg, int string_allowed)
 {
     NUMBER *qresult;
-    ZVALUE *zarg;
-    VALUE tmp;
+    ZVALUE *zarg, *znum;
+    VALUE num, tmp;
     setup_math_error();
 
-    if (TYPE(arg) == T_FIXNUM || TYPE(arg) == T_BIGNUM) {
+    if (TYPE(arg) == T_FIXNUM) {
         qresult = itoq(NUM2LONG(arg));
+    }
+    else if (TYPE(arg) == T_BIGNUM) {
+        num = bignum_to_calc_z(arg);
+        get_zvalue(num, znum);
+        qresult = zz_to_number(*znum, _one_);
     }
     else if (ISZVALUE(arg)) {
         get_zvalue(arg, zarg);
@@ -119,13 +177,11 @@ value_to_number(VALUE arg, int string_allowed)
         qresult = qlink((NUMBER *) DATA_PTR(arg));
     }
     else if (TYPE(arg) == T_RATIONAL) {
-        qresult = iitoq(NUM2LONG(rb_funcall(arg, rb_intern("numerator"), 0)),
-                        NUM2LONG(rb_funcall(arg, rb_intern("denominator"), 0)));
+        qresult = rational_to_number(arg);
     }
     else if (TYPE(arg) == T_FLOAT) {
         tmp = rb_funcall(arg, rb_intern("to_r"), 0);
-        qresult = iitoq(NUM2LONG(rb_funcall(tmp, rb_intern("numerator"), 0)),
-                        NUM2LONG(rb_funcall(tmp, rb_intern("denominator"), 0)));
+        qresult = rational_to_number(tmp);
     }
     else if (string_allowed && TYPE(arg) == T_STRING) {
         qresult = str2q(StringValueCStr(arg));

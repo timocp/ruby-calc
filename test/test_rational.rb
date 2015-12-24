@@ -2,10 +2,12 @@ require 'minitest_helper'
 
 class TestRational < MiniTest::Test
 
-  BIG = 0x4000000000000000  # first BigNum
-  EPS20 = Calc::Q(1) / Calc::Q("1e20")
-  EPS5  = Calc::Q(1) / Calc::Q("1e5")
-  EPS4  = Calc::Q(1) / Calc::Q("1e4")
+  BIG  =  0x4000000000000000  # first BigNum
+  BIG2 =  0x8000000000000000  # first Bignum that won't fit in a long
+  BIG3 = -0x8000000000000001  # first negative bignum that won't fit in a long
+  EPS20 = Calc::Q("1e-20")
+  EPS5  = Calc::Q("1e-5")
+  EPS4  = Calc::Q("1e-4")
 
   def test_class_exists
     refute_nil Calc::Q
@@ -15,12 +17,16 @@ class TestRational < MiniTest::Test
     # num/den versions (anything accepted by Calc::Z.new is allowed)
     assert_instance_of Calc::Q, Calc::Q.new(1, 3)
     assert_instance_of Calc::Q, Calc::Q.new(BIG, BIG+1)
+    assert_instance_of Calc::Q, Calc::Q.new(BIG2, BIG2+1)
+    assert_instance_of Calc::Q, Calc::Q.new(BIG3, BIG3-1)
     assert_instance_of Calc::Q, Calc::Q.new("1", "3")
     assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(1), Calc::Z(3))
 
     # single param version
     assert_instance_of Calc::Q, Calc::Q.new(1)
     assert_instance_of Calc::Q, Calc::Q.new(BIG)
+    assert_instance_of Calc::Q, Calc::Q.new(BIG2)
+    assert_instance_of Calc::Q, Calc::Q.new(BIG3)
     assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(42))
     assert_instance_of Calc::Q, Calc::Q.new("1/3")
     assert_instance_of Calc::Q, Calc::Q.new(Rational(1,3))

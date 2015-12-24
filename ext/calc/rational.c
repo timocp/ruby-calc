@@ -50,7 +50,7 @@ cq_initialize(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qself;
     VALUE arg1, arg2;
-    ZVALUE znum, zden, z_gcd, zignored;
+    ZVALUE znum, zden;
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "11", &arg1, &arg2) == 1) {
@@ -61,36 +61,13 @@ cq_initialize(int argc, VALUE * argv, VALUE self)
         /* 2 params. both can be anything Calc::Z.new would allow */
         zden = value_to_zvalue(arg2, 1);
         if (ziszero(zden)) {
+            zfree(zden);
             rb_raise(rb_eZeroDivError, "division by zero");
         }
         znum = value_to_zvalue(arg1, 1);
-        zgcd(znum, zden, &z_gcd);
-        qself = qalloc();
-        if (zisone(z_gcd)) {
-            qself->num = znum;
-            qself->den = zden;
-        }
-        else {
-            /* divide both by common greatest divisor */
-            zdiv(znum, z_gcd, &qself->num, &zignored, 0);
-            zfree(znum);
-            zfree(zignored);
-            zdiv(zden, z_gcd, &qself->den, &zignored, 0);
-            zfree(zden);
-            zfree(zignored);
-        }
-        /* make sure sign is in numerator */
-        /* sign: 1 is negative, 0 is positive (is this actually safe to do?) */
-        if (zispos(qself->num) && zisneg(qself->den)) {
-            /* only denominator negative - swap them */
-            qself->num.sign = 1;
-            qself->den.sign = 0;
-        }
-        else if (zisneg(qself->num) && zisneg(qself->den)) {
-            /* both negative - make both positive */
-            qself->num.sign = 0;
-            qself->den.sign = 0;
-        }
+        qself = zz_to_number(znum, zden);
+        zfree(zden);
+        zfree(znum);
     }
     DATA_PTR(self) = qself;
 

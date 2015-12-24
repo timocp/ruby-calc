@@ -18,6 +18,7 @@ extern NUMBER *value_to_number(VALUE arg, int string_allowed);
 extern double zvalue_to_double(ZVALUE * z);
 extern VALUE zvalue_to_f(ZVALUE * z);
 extern VALUE zvalue_to_i(ZVALUE * z);
+extern NUMBER *zz_to_number(ZVALUE znum, ZVALUE zden);
 
 /* math_error.c */
 extern VALUE e_MathError;
