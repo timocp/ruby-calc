@@ -142,6 +142,7 @@ class TestInteger < Minitest::Test
 
     # other arg types
     assert_integral_and_equal 3, Calc::Z(9) / 3
+    assert_integral_and_equal 0, Calc::Z(10) / BIG2
   end
 
   def test_mod

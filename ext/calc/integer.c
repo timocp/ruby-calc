@@ -312,41 +312,26 @@ cz_abs2(VALUE self)
 static VALUE
 cz_divmod(VALUE self, VALUE other)
 {
-    ZVALUE *zself, *zother, ztmp, *zquo, *zmod;
-    VALUE quo, mod, arr;
-    long ltmp;
+    ZVALUE *zself, *zquo, *zmod;
+    ZVALUE zother;
+    VALUE quo, mod;
     setup_math_error();
 
     quo = cz_new();
     mod = cz_new();
-    arr = rb_ary_new2(2);
     get_zvalue(self, zself);
     get_zvalue(quo, zquo);
     get_zvalue(mod, zmod);
 
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        ltmp = NUM2LONG(other);
-        if (ltmp == 0) {
-            rb_raise(rb_eZeroDivError, "division by zero in divmod");
-        }
-        itoz(ltmp, &ztmp);
-        zdiv(*zself, ztmp, zquo, zmod, 0);
-        zfree(ztmp);
+    zother = value_to_zvalue(other, 0);
+    if (ziszero(zother)) {
+      zfree(zother);
+      rb_raise(rb_eZeroDivError, "division by zero");
     }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        if (ziszero(*zother)) {
-            rb_raise(rb_eZeroDivError, "division by zero in divmod");
-        }
-        zdiv(*zself, *zother, zquo, zmod, 0);
-    }
-    else {
-        rb_raise(rb_eArgError, "number expected");
-    }
-    rb_ary_store(arr, 0, quo);
-    rb_ary_store(arr, 1, mod);
+    zdiv(*zself, zother, zquo, zmod, 0);
+    zfree(zother);
 
-    return arr;
+    return rb_assoc_new(quo, mod);
 }
 
 static VALUE
