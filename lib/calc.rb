@@ -19,6 +19,12 @@ module Calc
       self.divmod(y).first
     end
 
+    def %(y)
+      self.divmod(y).last
+    end
+
+    alias modulo %
+
     def remainder(y)
       z = self % y
       if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))

@@ -196,41 +196,6 @@ cz_power(VALUE self, VALUE other)
 }
 
 static VALUE
-cz_mod(VALUE self, VALUE other)
-{
-    ZVALUE *zself, *zother, ztmp, *zresult;
-    VALUE result;
-    long ltmp;
-    setup_math_error();
-
-    result = cz_new();
-    get_zvalue(self, zself);
-    get_zvalue(result, zresult);
-
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        ltmp = NUM2LONG(other);
-        if (ltmp == 0) {
-            rb_raise(rb_eZeroDivError, "division by zero in mod");
-        }
-        itoz(ltmp, &ztmp);
-        zmod(*zself, ztmp, zresult, 0); /* remainder sign ignored */
-        zfree(ztmp);
-    }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        if (ziszero(*zother)) {
-            rb_raise(rb_eZeroDivError, "division by zero in mod");
-        }
-        zmod(*zself, *zother, zresult, 0);      /* remainder sign ignored */
-    }
-    else {
-        rb_raise(rb_eArgError, "number expected");
-    }
-
-    return result;
-}
-
-static VALUE
 cz_spaceship(VALUE self, VALUE other)
 {
     ZVALUE *zself, zother;
@@ -428,7 +393,6 @@ define_calc_z(VALUE m)
     rb_define_method(cZ, "initialize_copy", cz_initialize_copy, 1);
 
     /* instance methods on Calc::Z */
-    rb_define_method(cZ, "%", cz_mod, 1);
     rb_define_method(cZ, "&", cz_and, 1);
     rb_define_method(cZ, "*", cz_multiply, 1);
     rb_define_method(cZ, "**", cz_power, 1);
@@ -460,7 +424,6 @@ define_calc_z(VALUE m)
     rb_include_module(cZ, rb_mComparable);
 
     rb_define_alias(cZ, "magnitude", "abs");
-    rb_define_alias(cZ, "modulo", "%");
     rb_define_alias(cZ, "to_int", "to_i");
     rb_define_alias(cZ, "succ", "next");
 }
