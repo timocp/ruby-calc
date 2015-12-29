@@ -25,16 +25,6 @@ class TestInteger < Minitest::Test
     assert_equal 1195503, Calc::Z.new("0x123def")
   end
 
-  def test_large_initialization
-    # TODO: won't work because NUM2LONG will raise exception.  some ideas for
-    # fix but not sure it's high priority (how often will you do this?). work-
-    # around is to use a string.
-    skip { assert_instance_of Calc::Z, Calc::Z.new(BIG2) }
-    skip { assert_instance_of Calc::Z, Calc::Z.new(BIG3) }
-    assert_instance_of Calc::Z, Calc::Z.new(BIG2.to_s)
-    assert_instance_of Calc::Z, Calc::Z.new(BIG3.to_s)
-  end
-
   def test_concise_initialization
     assert_instance_of Calc::Z, Calc::Z(42)
     assert_equal 42, Calc::Z(42)
@@ -93,7 +83,7 @@ class TestInteger < Minitest::Test
     refute_operator Calc::Z.new(33), :>=, 34
 
     # check we can't compare to non-numbers
-    %i(< <= > >=).each do |op|
+    [:<, :<=, :>, :>=].each do |op|
       assert_raises(ArgumentError) { Calc::Z.new(40).send(op, "cat") }
     end
 
@@ -102,6 +92,7 @@ class TestInteger < Minitest::Test
     refute Calc::Z(5).between?(1,4)
     assert Calc::Z(5).between?(Calc::Z(1), Calc::Z(10))
     assert Calc::Z(5).between?(4.5, 5.5)
+    assert Calc::Z(5).between?(BIG3, BIG2)
   end
 
   def test_unary
@@ -111,6 +102,10 @@ class TestInteger < Minitest::Test
     assert_equal -42, +Calc::Z.new(-42)
     assert_equal -42, -Calc::Z.new( 42)
     assert_equal  42, -Calc::Z.new(-42)
+    assert_equal  BIG2, +Calc::Z(BIG2)
+    assert_equal -BIG2, -Calc::Z(BIG2)
+    assert_equal  BIG3, +Calc::Z(BIG3)
+    assert_equal -BIG3, -Calc::Z(BIG3)
   end
 
   def test_add
@@ -125,12 +120,14 @@ class TestInteger < Minitest::Test
     assert_instance_of Calc::Z, Calc::Z.new(1) - Calc::Z.new(2)
     assert_equal -1, Calc::Z.new(1) - Calc::Z.new(2)
     assert_equal -1, Calc::Z.new(3) - 4
+    assert_equal -9223372036854775766, Calc::Z(42) - BIG2
   end
 
   def test_multiply
     assert_instance_of Calc::Z, Calc::Z.new(1) * Calc::Z.new(2)
     assert_equal 12, Calc::Z.new(3) * Calc::Z.new(4)
     assert_equal 30, Calc::Z.new(5) * 6
+    assert_equal 0x10000000000000000, Calc::Z(2) * BIG2
   end
 
   def test_divide
@@ -173,6 +170,7 @@ class TestInteger < Minitest::Test
     assert_equal [-4, -3], Calc::Z.new(13).divmod(-4)
     assert_equal [-4,  3], Calc::Z.new(-13).divmod(4)
     assert_equal [ 3, -1], Calc::Z.new(-13).divmod(-4)
+    assert_equal [ 2,  0], Calc::Z(BIG2).divmod(BIG)
 
     # divide by zero should raise ZeroDivisionError instead of CalcError
     assert_raises(ZeroDivisionError) { Calc::Z.new(1).divmod(0) }
@@ -245,19 +243,22 @@ class TestInteger < Minitest::Test
     assert_instance_of Calc::Z, Calc::Z.new(3) ** 19
     assert_equal  1162261467, Calc::Z.new(3) ** 19
     assert_equal -1162261467, Calc::Z.new(-3) ** 19
-    skip "TODO: powers to negatives require Calc::Q"
   end
   
   def test_abs
     assert_instance_of Calc::Z, Calc::Z.new(12).abs
     assert_equal 12, Calc::Z.new(12).abs
     assert_equal 12, Calc::Z.new(-12).abs
+    assert_equal BIG2, Calc::Z(BIG2).abs
+    assert_equal BIG2, Calc::Z(-BIG2).abs
   end
 
   def test_abs2
     assert_instance_of Calc::Z, Calc::Z.new(12).abs2
     assert_equal 144, Calc::Z.new(12).abs2
     assert_equal 144, Calc::Z.new(-12).abs2
+    assert_equal 0x40000000000000000000000000000000, Calc::Z(BIG2).abs2
+    assert_equal 0x40000000000000010000000000000001, Calc::Z(BIG3).abs2
   end
 
   # for integers, #ceil returns itself
