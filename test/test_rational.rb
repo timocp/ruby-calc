@@ -196,6 +196,40 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % 0
   end
 
+  def test_quomod
+    [5, BIG2, Calc::Z(5), Calc::Q(5), Rational(5,1), 5.0].each do |p|
+      r = Calc::Q(13).quomod(p)
+      assert_instance_of Array, r
+      assert_equal 2, r.size
+      assert_instance_of Calc::Q, r.first
+      assert_instance_of Calc::Q, r.last
+    end
+    assert_equal [2, 3], Calc::Q(13).quomod(5)
+    assert_equal [-4, -2], Calc::Q(10).quomod(-3)
+
+    assert_equal [ 3,  1], Calc::Q( 13).quomod( 4)
+    assert_equal [-4, -3], Calc::Q( 13).quomod(-4)
+    assert_equal [-4,  3], Calc::Q(-13).quomod( 4)
+    assert_equal [ 3, -1], Calc::Q(-13).quomod(-4)
+    assert_equal [ 2, Calc::Q( 7,2)], Calc::Q( 23,2).quomod( 4)
+    assert_equal [-3, Calc::Q(-1,2)], Calc::Q( 23,2).quomod(-4)
+    assert_equal [-3, Calc::Q( 1,2)], Calc::Q(-23,2).quomod( 4)
+    assert_equal [ 2, Calc::Q(-7,2)], Calc::Q(-23,2).quomod(-4)
+
+    assert_alias Calc::Q(1), :quomod, :divmod
+  end
+
+  def test_modulo_and_remainder
+    assert_equal  1, Calc::Q(13).modulo(4)
+    assert_equal  1, Calc::Q(13).remainder(4)
+    skip {
+      # behaviour with negatives is not quite right
+      assert_equal -3, Calc::Q(13).modulo(-4)
+      assert_equal  1, Calc::Q(13).remainder(-4)
+    }
+    assert_equal 3.5, Calc::Q(11.5).modulo(4)
+  end
+
   def test_power
     assert_rational_and_equal Calc::Q(3),    Calc::Q(81) ** Calc::Q(1,4)
     assert_in_epsilon Calc::Q(1,9).to_f,  (Calc::Q(1,3) ** 2).to_f

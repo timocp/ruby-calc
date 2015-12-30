@@ -5,6 +5,10 @@ require 'minitest/autorun'
 
 module Minitest::Assertions
 
+  def assert_alias(obj, m1, m2)
+    assert obj.method(m1) == obj.method(m2), "expected ##{ m2 } to be an alias of ##{ m1 }"
+  end
+
   def assert_integral_and_equal(expected, actual)
     assert_instance_of Calc::Z, actual
     assert_equal expected, actual

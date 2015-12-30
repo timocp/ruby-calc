@@ -2,6 +2,17 @@ require "calc/version"
 require "calc/calc"
 
 module Calc
+
+  module Remainder
+    def remainder(y)
+      z = self % y
+      if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))
+        return z - y
+      end
+      return z
+    end
+  end
+
   def self.Z(p)
     Z.new(p)
   end
@@ -11,6 +22,8 @@ module Calc
   end
 
   class Z
+    include Remainder
+
     def inspect
       "Calc::Z(#{ to_s })"
     end
@@ -25,20 +38,14 @@ module Calc
 
     alias modulo %
 
-    def remainder(y)
-      z = self % y
-      if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))
-        return z - y
-      end
-      return z
-    end
-
     def to_r
       Rational(self.to_i, 1)
     end
   end
 
   class Q
+    include Remainder
+
     def **(other)
       Calc::Q.power(self, other)
     end

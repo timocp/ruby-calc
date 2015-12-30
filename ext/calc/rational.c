@@ -393,10 +393,6 @@ cq_to_s(VALUE self)
     return rs;
 }
 
-/*****************************************************************************
- * module method implementations                                             *
- *****************************************************************************/
-
 static VALUE
 cq_acos(int argc, VALUE * argv, VALUE self)
 {
@@ -566,6 +562,24 @@ cq_power(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
+cq_quomod(VALUE self, VALUE other)
+{
+    NUMBER *qother, *qquo, *qmod;
+    VALUE quo, mod;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    qquomod(DATA_PTR(self), qother, &qquo, &qmod, 0);
+    qfree(qother);
+    quo = cq_new();
+    mod = cq_new();
+    DATA_PTR(quo) = qquo;
+    DATA_PTR(mod) = qmod;
+
+    return rb_assoc_new(quo, mod);
+}
+
+static VALUE
 cq_root(int argc, VALUE * argv, VALUE self)
 {
     return trans_function2(argc, argv, self, &qroot);
@@ -615,6 +629,14 @@ cq_tanh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qtanh);
 }
 
+static VALUE
+cq_iszero(VALUE self)
+{
+    NUMBER *qself;
+    qself = DATA_PTR(self);
+    return qiszero(qself) ? Qtrue : Qfalse;
+}
+
 /*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *
  *****************************************************************************/
@@ -662,6 +684,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "log", cq_log, -1);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
     rb_define_method(cQ, "power", cq_power, -1);
+    rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "root", cq_root, -1);
     rb_define_method(cQ, "sec", cq_sec, -1);
     rb_define_method(cQ, "sech", cq_sech, -1);
@@ -671,12 +694,16 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
+    rb_define_method(cQ, "zero?", cq_iszero, 0);
     rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
     rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
 
     /* include Comparable */
     rb_include_module(cQ, rb_mComparable);
+
+    rb_define_alias(cQ, "divmod", "quomod");
+    rb_define_alias(cQ, "modulo", "%");
 
     /* default epsilon is 1e-20 */
     cq_default_epsilon = str2q((char *) "0.00000000000000000001");
