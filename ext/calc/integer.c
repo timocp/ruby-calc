@@ -107,25 +107,21 @@ numeric_op(VALUE self, VALUE other, void (*f1) (ZVALUE, ZVALUE, ZVALUE *))
 static VALUE
 shift(VALUE self, VALUE other, int sign)
 {
-    ZVALUE *zself, *zother, *zresult;
+    ZVALUE *zself, zother, *zresult;
     VALUE result;
     setup_math_error();
 
-    result = cz_new();
     get_zvalue(self, zself);
+
+    zother = value_to_zvalue(other,0);
+    if (zge31b(zother)) {
+        zfree(zother);
+        rb_raise(rb_eArgError, "shift by too many bits");
+    }
+    result = cz_new();
     get_zvalue(result, zresult);
-
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        zshift(*zself, NUM2LONG(other) * sign, zresult);
-    }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        zshift(*zself, ztoi(*zother) * sign, zresult);
-    }
-    else {
-        rb_raise(rb_eArgError, "number expected");
-    }
-
+    zshift(*zself, ztoi(zother) * sign, zresult);
+    zfree(zother);
     return result;
 }
 
@@ -290,8 +286,8 @@ cz_divmod(VALUE self, VALUE other)
 
     zother = value_to_zvalue(other, 0);
     if (ziszero(zother)) {
-      zfree(zother);
-      rb_raise(rb_eZeroDivError, "division by zero");
+        zfree(zother);
+        rb_raise(rb_eZeroDivError, "division by zero");
     }
     zdiv(*zself, zother, zquo, zmod, 0);
     zfree(zother);

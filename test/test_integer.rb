@@ -236,6 +236,9 @@ class TestInteger < Minitest::Test
     assert_equal  320, Calc::Z.new(20) >> -4
     assert_equal  -12, Calc::Z.new(-50) << -2
     assert_equal -200, Calc::Z.new(-50) >> -2
+
+    assert_raises(ArgumentError) { Calc::Z(2) << BIG }
+    assert_raises(ArgumentError) { Calc::Z(2) << BIG2 }
   end
 
   def test_power
