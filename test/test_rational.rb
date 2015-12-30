@@ -155,6 +155,7 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + Calc::Z(4)
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Rational(1, 4)
+    assert_rational_and_equal 0x800000000000002a, Calc::Q(42) + BIG2
   end
 
   def test_subtract
@@ -162,6 +163,7 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(-2,3), Calc::Q(1,3) - 1
     assert_rational_and_equal Calc::Q(-5,3), Calc::Q(1,3) - Calc::Z(2)
     assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) - Rational(1,4)
+    assert_rational_and_equal Rational(-0x17fffffffffffffff,3), Calc::Q(1,3) - BIG2
   end
 
   def test_multiply
@@ -188,6 +190,7 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(3,4),  Calc::Q(11,4) % Calc::Z(2)
     assert_rational_and_equal Calc::Q(3,4),  Calc::Q(11,4) % 2
     assert_rational_and_equal Calc::Q(1,12), Calc::Q(11,4) % Rational(1,3)
+    assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % BIG2
 
     # unlike Z and ruby, q % 0 == q
     assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % 0

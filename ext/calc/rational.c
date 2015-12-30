@@ -101,37 +101,21 @@ static VALUE
 numeric_op(VALUE self, VALUE other,
            NUMBER * (*fqq) (NUMBER *, NUMBER *), NUMBER * (*fql) (NUMBER *, long))
 {
-    NUMBER *qself, *qresult, *qtmp;
-    ZVALUE *zother;
+    NUMBER *qother, *qresult;
     VALUE result;
     setup_math_error();
 
-    qself = DATA_PTR(self);
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        if (fql) {
-            qresult = (*fql) (qself, NUM2LONG(other));
-        }
-        else {
-            qtmp = itoq(NUM2LONG(other));
-            qresult = (*fqq) (qself, qtmp);
-            qfree(qtmp);
-        }
-    }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        qtmp = qalloc();
-        zcopy(*zother, &qtmp->num);
-        qresult = (*fqq) (qself, qtmp);
-        qfree(qtmp);
+    if (fql && TYPE(other) == T_FIXNUM) {
+        qresult = (*fql) (DATA_PTR(self), NUM2LONG(other));
     }
     else if (ISQVALUE(other)) {
-        qresult = (*fqq) (qself, DATA_PTR(other));
+        qresult = (*fqq) (DATA_PTR(self), DATA_PTR(other));
     }
-    else if (TYPE(other) == T_RATIONAL) {
-        qtmp = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
-                     NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
-        qresult = (*fqq) (qself, qtmp);
-        qfree(qtmp);
+    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
+             || TYPE(other) == T_RATIONAL || ISZVALUE(other)) {
+        qother = value_to_number(other, 0);
+        qresult = (*fqq) (DATA_PTR(self), qother);
+        qfree(qother);
     }
     else {
         rb_raise(rb_eArgError, "expected number");
@@ -281,38 +265,13 @@ cq_divide(VALUE self, VALUE other)
 static VALUE
 cq_mod(VALUE self, VALUE other)
 {
-    NUMBER *qself, *qother;
-    ZVALUE *zother;
+    NUMBER *qother;
     VALUE result;
     setup_math_error();
 
-    qself = DATA_PTR(self);
+    qother = value_to_number(other, 0);
     result = cq_new();
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        qother = itoq(NUM2LONG(other));
-        DATA_PTR(result) = qmod(qself, qother, 0);
-        qfree(qother);
-    }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        qother = qalloc();
-        zcopy(*zother, &qother->num);
-        DATA_PTR(result) = qmod(qself, qother, 0);
-        qfree(qother);
-    }
-    else if (ISQVALUE(other)) {
-        DATA_PTR(result) = qmod(qself, DATA_PTR(other), 0);
-    }
-    else if (TYPE(other) == T_RATIONAL) {
-        qother = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
-                       NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
-        DATA_PTR(result) = qmod(qself, qother, 0);
-        qfree(qother);
-    }
-    else {
-        rb_raise(rb_eArgError, "number expected");
-    }
-
+    DATA_PTR(result) = qmod(DATA_PTR(self), qother, 0);
     return result;
 }
 
