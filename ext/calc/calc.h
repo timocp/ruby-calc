@@ -10,7 +10,11 @@ extern void libcalc_call_me_first(void);
 extern void reinitialize(void);
 
 #include <calc/cmath.h>
+#include <calc/config.h>
 #include <calc/lib_calc.h>
+
+/* config.h */
+extern void define_calc_config(VALUE m);
 
 /* convert.c */
 extern ZVALUE value_to_zvalue(VALUE arg, int string_allowed);
@@ -19,6 +23,7 @@ extern double zvalue_to_double(ZVALUE * z);
 extern VALUE zvalue_to_f(ZVALUE * z);
 extern VALUE zvalue_to_i(ZVALUE * z);
 extern NUMBER *zz_to_number(ZVALUE znum, ZVALUE zden);
+extern VALUE number_to_calc_q(NUMBER *n);
 
 /* math_error.c */
 extern VALUE e_MathError;
@@ -38,13 +43,16 @@ extern void setup_math_error();
 extern const rb_data_type_t calc_z_type;
 extern VALUE cZ;                /* Calc::Z class */
 
-extern VALUE cz_alloc();
+extern VALUE cz_alloc(VALUE klass);
 extern void define_calc_z(VALUE m);
 
 /* rational.h */
+#define cq_new() cq_alloc(cQ)
+
 extern const rb_data_type_t calc_q_type;
 extern VALUE cQ;                /* Calc::Q class */
 
+extern VALUE cq_alloc(VALUE klass);
 extern void define_calc_q(VALUE m);
 
 /*** macros ***/

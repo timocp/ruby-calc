@@ -241,3 +241,13 @@ zvalue_to_double(ZVALUE * z)
 {
     return NUM2DBL(zvalue_to_i(z));
 }
+
+/* convert a NUMBER* to a new Calc::Q object */
+VALUE
+number_to_calc_q(NUMBER *n)
+{
+    VALUE q;
+    q = cq_new();
+    DATA_PTR(q) = qlink(n);
+    return q;
+}

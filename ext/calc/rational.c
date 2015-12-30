@@ -12,10 +12,6 @@
  */
 VALUE cQ;
 
-/* this global is the default epsilon used for transcendental functions if one
- * is not specified by the caller. */
-static NUMBER *cq_default_epsilon;
-
 /*****************************************************************************
  * functions related to memory allocation and object initialization          *
  *****************************************************************************/
@@ -47,13 +43,11 @@ const rb_data_type_t calc_q_type = {
  */
 
 /* no additional allocation beyond normal ruby alloc is required */
-static VALUE
+VALUE
 cq_alloc(VALUE klass)
 {
     return TypedData_Wrap_Struct(klass, &calc_q_type, 0);
 }
-
-#define cq_new() cq_alloc(cQ)
 
 static VALUE
 cq_initialize(int argc, VALUE * argv, VALUE self)
@@ -170,10 +164,10 @@ trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMB
 
     result = cq_new();
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        DATA_PTR(result) = (*f) (DATA_PTR(self), cq_default_epsilon);
+        DATA_PTR(result) = (*f) (DATA_PTR(self), conf->epsilon);
     }
     else {
-        qepsilon = value_to_number(epsilon, 0);
+        qepsilon = value_to_number(epsilon, 1);
         DATA_PTR(result) = (*f) (DATA_PTR(self), qepsilon);
         qfree(qepsilon);
     }
@@ -198,12 +192,12 @@ trans_function2(int argc, VALUE * argv, VALUE self,
     result = cq_new();
     if (rb_scan_args(argc, argv, "11", &arg, &epsilon) == 1) {
         qarg = value_to_number(arg, 0);
-        DATA_PTR(result) = (*f) (DATA_PTR(self), qarg, cq_default_epsilon);
+        DATA_PTR(result) = (*f) (DATA_PTR(self), qarg, conf->epsilon);
         qfree(qarg);
     }
     else {
         qarg = value_to_number(arg, 0);
-        qepsilon = value_to_number(epsilon, 0);
+        qepsilon = value_to_number(epsilon, 1);
         DATA_PTR(result) = (*f) (DATA_PTR(self), qarg, qepsilon);
         qfree(qarg);
         qfree(qepsilon);
@@ -660,16 +654,6 @@ cq_exp(int argc, VALUE * argv, VALUE self)
 }
 
 static VALUE
-cq_get_default_epsilon(VALUE klass)
-{
-    VALUE result;
-
-    result = cq_new();
-    DATA_PTR(result) = qlink(cq_default_epsilon);
-    return result;
-}
-
-static VALUE
 cq_ln(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qln);
@@ -690,10 +674,10 @@ cq_pi(int argc, VALUE * argv, VALUE self)
 
     result = cq_new();
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        DATA_PTR(result) = qpi(cq_default_epsilon);
+        DATA_PTR(result) = qpi(conf->epsilon);
     }
     else {
-        qepsilon = value_to_number(epsilon, 0);
+        qepsilon = value_to_number(epsilon, 1);
         DATA_PTR(result) = qpi(qepsilon);
         qfree(qepsilon);
     }
@@ -753,14 +737,6 @@ static VALUE
 cq_sinh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qsinh);
-}
-
-static VALUE
-cq_set_default_epsilon(VALUE klass, VALUE epsilon)
-{
-    cq_default_epsilon = value_to_number(epsilon, 1);
-
-    return Qnil;
 }
 
 static VALUE
@@ -841,16 +817,11 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, 0);
     rb_define_method(cQ, "zero?", cq_iszero, 0);
-    rb_define_module_function(cQ, "get_default_epsilon", cq_get_default_epsilon, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
-    rb_define_module_function(cQ, "set_default_epsilon", cq_set_default_epsilon, 1);
 
     /* include Comparable */
     rb_include_module(cQ, rb_mComparable);
 
     rb_define_alias(cQ, "divmod", "quomod");
     rb_define_alias(cQ, "modulo", "%");
-
-    /* default epsilon is 1e-20 */
-    cq_default_epsilon = str2q((char *) "0.00000000000000000001");
 }

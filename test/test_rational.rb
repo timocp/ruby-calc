@@ -326,22 +326,6 @@ class TestRational < MiniTest::Test
     assert_equal "1/4", Calc::Q.new("1", "4").to_s
   end
 
-  def test_epsilon
-    # check the default matches expected value
-    assert_equal Rational(1, 100000000000000000000), Calc::Q.get_default_epsilon
-
-    # check we can change it and doing so affects the transcendental functions
-    # when called with no epsilon argument
-    with_epsilon(EPS4) do
-      assert_equal Rational(1,10000), Calc::Q.get_default_epsilon
-      assert_equal Rational(3927,1250), Calc::Q.pi
-      assert_equal 0, Calc::Q.sin(0)
-      assert_equal Rational(1683,2000), Calc::Q.sin(1)
-      assert_equal 1, Calc::Q.cos(0)
-      assert_equal Rational(5403,10000), Calc::Q.cos(1)
-    end
-  end
-
   def test_pi
     pi = Calc::Q.pi(EPS20)
     assert_instance_of Calc::Q, pi

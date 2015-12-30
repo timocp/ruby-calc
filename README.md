@@ -157,18 +157,21 @@ The accuracy of transcendental functions will be within a specified `epsilon`.  
 # pi to default 20 decimal places:
 Calc::Q.pi  # => Calc::Q(157079632679489661923/50000000000000000000)
 
-# pi to 400 decimal places:
-Calc::Q.pi(Calc::Q("1e-400")) # => (omitted)
-
 # pi to 2 decimal places:
-Calc::Q.pi(Calc::Q(0.01)) # => Calc::Q(157/50)
+Calc::Q.pi(0.01) # => Calc::Q(157/50)
+
+# for very small epsilons, ruby floats can't store the values properly; you
+# can use a Calc::Q object, or anything which can be converted to one,
+# including a string.  Eg, pi to 400 decimal places:
+Calc::Q.pi("1e-400") # => (omitted)
+
 ```
 
-The default epsilon can be changed and will affect all subsequent method calls:
+The default epsilon can be changed via the Calc::Config module and will affect all subsequent method calls:
 
 ```ruby
-Calc::Q.get_default_epsilon           # => Calc::Q(1/100000000000000000000)
-Calc::Q.set_default_epsilon("0.0001") # => nil
+Calc::Config.epsilon                  # => Calc::Q(1/100000000000000000000)
+Calc::Config.epsilon = "0.0001"       # => "0.0001"
 Calc::Q.pi.to_f                       # => 3.1416
 ```
 
