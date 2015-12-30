@@ -58,6 +58,8 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(3) == Calc::Q.new(6, 2)  # Q == Q (reduced)
     assert Calc::Q.new(3) == 3                  # Q == Fixnum
     assert Calc::Q.new(BIG) == BIG              # Q == Bignum
+    assert Calc::Q.new(BIG2) == BIG2            # large positive bignum
+    assert Calc::Q.new(BIG3) == BIG3            # large negative bugnum
     assert Calc::Q.new(2,3) == Rational(2,3)    # Q == Rational
     assert Calc::Q.new(0.5) == 0.5              # Q == Float
 
@@ -216,8 +218,6 @@ class TestRational < MiniTest::Test
 
     assert_raises(ArgumentError) { Calc::Q.new(2) << Calc::Q(1,3) }
     assert_raises(ArgumentError) { Calc::Q.new(2) << Rational(1,3) }
-
-    # this need proper exception handling, will just exit with math_error atm
     assert_raises(Calc::MathError) { Calc::Q.new(1,3) << 1 }
   end
 

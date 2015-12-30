@@ -97,61 +97,6 @@ cq_initialize_copy(VALUE obj, VALUE orig)
  * private functions used by instance methods                                *
  *****************************************************************************/
 
-/* compares a Calc::Q with another numeric value
- * returns:
- *  0 if values are the same
- *  -1 if self is < other
- *  +1 if self is > other
- *  -2 if 'other' is not a number
- */
-static int
-compare(VALUE self, VALUE other)
-{
-    NUMBER *qself, *qother;
-    ZVALUE *zother;
-    VALUE tmp;
-    int result;
-    setup_math_error();
-
-    qself = DATA_PTR(self);
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        result = qreli(qself, NUM2LONG(other));
-    }
-    else if (ISZVALUE(other)) {
-        /* if it is a small ZVALUE, convert it to a long and use qreli.
-         * otherwise make a new NUMBER. */
-        get_zvalue(other, zother);
-        if (zgtmaxlong(*zother)) {
-            /* TODO too big for long, convert to a NUMBER */
-            rb_notimplement();
-        }
-        else {
-            result = qreli(qself, ztolong(*zother));
-        }
-    }
-    else if (TYPE(other) == T_RATIONAL) {
-        qother = iitoq(NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0)),
-                       NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0)));
-        result = qrel(qself, qother);
-        qfree(qother);
-    }
-    else if (TYPE(other) == T_FLOAT) {
-        tmp = rb_funcall(other, rb_intern("to_r"), 0);
-        qother = iitoq(NUM2LONG(rb_funcall(tmp, rb_intern("numerator"), 0)),
-                       NUM2LONG(rb_funcall(tmp, rb_intern("denominator"), 0)));
-        result = qrel(qself, qother);
-        qfree(qother);
-    }
-    else if (ISQVALUE(other)) {
-        result = qrel(qself, DATA_PTR(other));
-    }
-    else {
-        result = -2;
-    }
-
-    return result;
-}
-
 static VALUE
 numeric_op(VALUE self, VALUE other,
            NUMBER * (*fqq) (NUMBER *, NUMBER *), NUMBER * (*fql) (NUMBER *, long))
@@ -383,11 +328,39 @@ cq_shift_right(VALUE self, VALUE other)
     return shift(self, other, -1);
 }
 
+/* compares a Calc::Q with another numeric value
+ * returns:
+ *  0 if values are the same
+ *  -1 if self is < other
+ *  +1 if self is > other
+ *  nil if the other value is not a number
+ */
 static VALUE
 cq_spaceship(VALUE self, VALUE other)
 {
-    int result = compare(self, other);
-    return result == -2 ? Qnil : INT2FIX(result);
+    NUMBER *qself, *qother;
+    int result;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (TYPE(other) == T_FIXNUM) {
+        result = qreli(qself, NUM2LONG(other));
+    }
+    else if (ISQVALUE(other)) {
+        result = qrel(qself, DATA_PTR(other));
+    }
+    else if (TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT || TYPE(other) == T_RATIONAL
+             || ISZVALUE(other)) {
+        qself = DATA_PTR(self);
+        qother = value_to_number(other, 0);
+        result = qrel(qself, qother);
+        qfree(qother);
+    }
+    else {
+        return Qnil;
+    }
+
+    return INT2FIX(result);
 }
 
 static VALUE
