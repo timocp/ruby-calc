@@ -129,40 +129,25 @@ numeric_op(VALUE self, VALUE other,
 static VALUE
 shift(VALUE self, VALUE other, int sign)
 {
-    NUMBER *qself, *qother;
-    ZVALUE *zother;
+    NUMBER *qother;
     VALUE result;
     long n;
     setup_math_error();
 
-    qself = DATA_PTR(self);
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM) {
-        n = NUM2LONG(other);
+    qother = value_to_number(other, 0);
+    if (qisfrac(qother)) {
+        qfree(qother);
+        rb_raise(rb_eArgError, "shift by non-integer");
     }
-    else if (ISZVALUE(other)) {
-        get_zvalue(other, zother);
-        n = ztoi(*zother);
+    /* check it will actually fit in a long (otherwise qtoi will be wrong) */
+    if (zge31b(qother->num)) {
+        qfree(qother);
+        rb_raise(rb_eArgError, "shift by too many bits");
     }
-    else if (ISQVALUE(other)) {
-        qother = DATA_PTR(other);
-        if (!qisint(qother)) {
-            rb_raise(rb_eArgError, "shift by non-integer");
-        }
-        n = ztoi(qother->num);
-    }
-    else if (TYPE(other) == T_RATIONAL) {
-        n = NUM2LONG(rb_funcall(other, rb_intern("denominator"), 0));
-        if (n != 1) {
-            rb_raise(rb_eArgError, "shift by non-integer");
-        }
-        n = NUM2LONG(rb_funcall(other, rb_intern("numerator"), 0));
-    }
-    else {
-        rb_raise(rb_eArgError, "integer number expected");
-    }
-
+    n = qtoi(qother);
+    qfree(qother);
     result = cq_new();
-    DATA_PTR(result) = qshift(qself, n * sign);
+    DATA_PTR(result) = qshift(DATA_PTR(self), n * sign);
     return result;
 }
 

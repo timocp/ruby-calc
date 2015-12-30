@@ -222,6 +222,8 @@ class TestRational < MiniTest::Test
     assert_raises(ArgumentError) { Calc::Q.new(2) << Calc::Q(1,3) }
     assert_raises(ArgumentError) { Calc::Q.new(2) << Rational(1,3) }
     assert_raises(Calc::MathError) { Calc::Q.new(1,3) << 1 }
+    assert_raises(ArgumentError) { Calc::Q(2) << BIG }
+    assert_raises(ArgumentError) { Calc::Q(2) << BIG2 }
   end
 
   def test_denominator
