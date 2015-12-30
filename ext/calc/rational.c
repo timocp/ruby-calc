@@ -1,6 +1,16 @@
 #include "calc.h"
 
-VALUE cQ;                       /* Calc::Q class */
+/* Document-class: Calc::Q
+ *
+ * Calc rational number (fraction).
+ *
+ * A rational number consists of an arbitrarily large numerator and
+ * denominator.  The numerator and denominator are always in lowest terms, and
+ * the sign of the number is contained in the numerator.
+ *
+ * Wraps the libcalc C type NUMBER*.
+ */
+VALUE cQ;
 
 /* this global is the default epsilon used for transcendental functions if one
  * is not specified by the caller. */
@@ -205,12 +215,24 @@ trans_function2(int argc, VALUE * argv, VALUE self,
  * instance method implementations                                           *
  *****************************************************************************/
 
+/* Unary plus.  Returns the receiver's value.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  +Calc::Q(1) #=> Calc::Q(1)
+ */
 static VALUE
 cq_uplus(VALUE self)
 {
     return self;
 }
 
+/* Unary minus.  Returns the receiver's value, negated.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  -Calc::Q(1) #=> Calc::Q(-1)
+ */
 static VALUE
 cq_uminus(VALUE self)
 {
@@ -222,62 +244,127 @@ cq_uminus(VALUE self)
     return result;
 }
 
+/* Performs addition.
+ *
+ * @param y [Numeric,Calc::Z,Calc::Q]
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1) + 2 #=> Calc::Q(3)
+ */
 static VALUE
-cq_add(VALUE self, VALUE other)
+cq_add(VALUE x, VALUE y)
 {
     /* fourth arg was &qaddi, but this segfaults with ruby 2.1.x */
-    return numeric_op(self, other, &qqadd, NULL);
+    return numeric_op(x, y, &qqadd, NULL);
 }
 
+/* Performs subtraction.
+ *
+ * @param y [Numeric,Calc::Z,Calc::Q]
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(1) - 2 #=> Calc::Q(-1)
+ */
 static VALUE
-cq_subtract(VALUE self, VALUE other)
+cq_subtract(VALUE x, VALUE y)
 {
-    return numeric_op(self, other, &qsub, NULL);
+    return numeric_op(x, y, &qsub, NULL);
 }
 
+/* Performs multiplication.
+ *
+ * @param y [Numeric,Calc::Z,Calc::Q]
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(2) * 3 #=> Calc::Q(6)
+ */
 static VALUE
-cq_multiply(VALUE self, VALUE other)
+cq_multiply(VALUE x, VALUE y)
 {
-    return numeric_op(self, other, &qmul, &qmuli);
+    return numeric_op(x, y, &qmul, &qmuli);
 }
 
+/* Performs division.
+ *
+ * @param y [Numeric,Calc::Z,Calc::Q]
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if other is zero
+ * @example:
+ *  Calc::Q(2) / 3 #=> Calc::Q(2/3)
+ */
 static VALUE
-cq_divide(VALUE self, VALUE other)
+cq_divide(VALUE x, VALUE y)
 {
-    return numeric_op(self, other, &qqdiv, &qdivi);
+    return numeric_op(x, y, &qqdiv, &qdivi);
 }
 
+/* Computes the remainder for an integer quotient
+ *
+ * @param y [Numeric,Calc::Z,Calc::Q]
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(11) % 5 #=> Calc::Q(1)
+ */
 static VALUE
-cq_mod(VALUE self, VALUE other)
+cq_mod(VALUE x, VALUE y)
 {
-    NUMBER *qother;
+    NUMBER *qy;
     VALUE result;
     setup_math_error();
 
-    qother = value_to_number(other, 0);
+    qy = value_to_number(y, 0);
     result = cq_new();
-    DATA_PTR(result) = qmod(DATA_PTR(self), qother, 0);
+    DATA_PTR(result) = qmod(DATA_PTR(x), qy, 0);
     return result;
 }
 
+/* Left shift an integer by a given number of bits.  This multiplies the number
+ * by the appropriate power of 2.
+ *
+ * @param n [Numeric,Calc::Z,Calc::Q] number of bits to shift
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is a non-integer
+ * @raise [Calc::MathError] if abs(n) is >= 2^31
+ * @example:
+ *  Calc::Q(2) << 3 #=> Calc::Q(16)
+ */
 static VALUE
-cq_shift_left(VALUE self, VALUE other)
+cq_shift_left(VALUE x, VALUE n)
 {
-    return shift(self, other, 1);
+    return shift(x, n, 1);
 }
 
+/* Right shift an integer by a given number of bits.  This multiplies the
+ * number by the appropriate power of 2.  Low bits are truncated.
+ *
+ * @param n [Numeric,Calc::Z,Calc::Q] number of bits to shift
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is a non-integer
+ * @raise [ArgumentError] if abs(n) is >= 2^31
+ * @example:
+ *  Calc::Q(8) >> 2 #=> Calc::Q(2)
+ */
 static VALUE
 cq_shift_right(VALUE self, VALUE other)
 {
     return shift(self, other, -1);
 }
 
-/* compares a Calc::Q with another numeric value
- * returns:
- *  0 if values are the same
- *  -1 if self is < other
- *  +1 if self is > other
- *  nil if the other value is not a number
+/* Comparison - Returns -1, 0, +1 or nil depending on whether `y` is less than,
+ * equal to, or greater than `x`.
+ *
+ * This is used by the `Comparable` module to implement `==`, `!=`, `<`, `<=`,
+ * `>` and `>=`.
+ *
+ * nil is returned if the two values are incomparable.
+ *
+ * @param other [Numeric,Calc::Z,Calc::Q]
+ * @return [-1,0,1,nil]
+ * @example:
+ *  Calc::Q(5) <=> 4     #=> 1
+ *  Calc::Q(5) <=> 5.1   #=> -1
+ *  Calc::Q(5) <=> 5     #=> 0
+ *  Calc::Q(5) <=> "cat" #=> nil
  */
 static VALUE
 cq_spaceship(VALUE self, VALUE other)
@@ -295,7 +382,6 @@ cq_spaceship(VALUE self, VALUE other)
     }
     else if (TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT || TYPE(other) == T_RATIONAL
              || ISZVALUE(other)) {
-        qself = DATA_PTR(self);
         qother = value_to_number(other, 0);
         result = qrel(qself, qother);
         qfree(qother);
@@ -307,6 +393,13 @@ cq_spaceship(VALUE self, VALUE other)
     return INT2FIX(result);
 }
 
+/* Returns the denominator.  Always positive.
+ *
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(1,3).denominator  #=> Calc::Q(3)
+ *  Calc::Q(-1,3).denominator #=> Calc::Q(3)
+ */
 static VALUE
 cq_denominator(VALUE self)
 {
@@ -319,6 +412,14 @@ cq_denominator(VALUE self)
     return result;
 }
 
+/* Returns the factorial of a number.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is negative or not an integer
+ * @raise [Calc::MathError] if abs(self) >= 2^31
+ * @example:
+ *  Calc::Q(10).fact #=> Calc::Q(3628800)
+ */
 static VALUE
 cq_fact(VALUE self)
 {
@@ -331,6 +432,13 @@ cq_fact(VALUE self)
     return result;
 }
 
+/* Returns the numerator.  Return value has the same sign as self.
+ *
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(1,3).numerator  #=> Calc::Q(1)
+ *  Calc::Q(-1,3).numerator #=> Calc::Q(-1)
+ */
 static VALUE
 cq_numerator(VALUE self)
 {
@@ -343,6 +451,16 @@ cq_numerator(VALUE self)
     return result;
 }
 
+/* Converts this number to a core ruby integer (Fixnum or Bignum).
+ *
+ * If self is a fraction, the fractional part is truncated.
+ *
+ * @return [Fixnum,Bignum]
+ * @example
+ *  Calc::Q(42).to_i     #=> 42
+ *  Calc::Q("1e19").to_i #=> 10000000000000000000
+ *  Calc::Q(1,2).to_i    #=> 0
+ */
 static VALUE
 cq_to_i(VALUE self)
 {
@@ -376,6 +494,16 @@ cq_to_i(VALUE self)
     return result;
 }
 
+/* Converts this number to a string.
+ *
+ * If self is fractional, the output is "numerator / denominator".  Otherwise
+ * it is just the numerator.
+ *
+ * @return [String]
+ * @example
+ *  Calc::Q(42).to_s  #=> "42"
+ *  Calc::Q(1,2).to_s #=> "1/2"
+ */
 static VALUE
 cq_to_s(VALUE self)
 {
@@ -393,18 +521,36 @@ cq_to_s(VALUE self)
     return rs;
 }
 
+/* Inverse trigonometric cosine
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(0.5).acos #=> Calc::Q(20943951023931954923/20000000000000000000)
+ */
 static VALUE
 cq_acos(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qacos);
 }
 
+/* Inverse hyperbolic cosine
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(2).acosh #=> Calc::Q(65847894846240835431/50000000000000000000)
+ */
 static VALUE
 cq_acosh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qacosh);
 }
 
+/* Inverse trigonometric cotangent
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(2).acot #=> Calc::Q(46364760900080611621/100000000000000000000)
+ */
 static VALUE
 cq_acot(int argc, VALUE * argv, VALUE self)
 {

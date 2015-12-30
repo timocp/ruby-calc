@@ -1,6 +1,14 @@
 #include "calc.h"
 
-VALUE cZ;                       /* Calc::Z class */
+/* Document-class: Calc::Z
+ *
+ * Calc integer.
+ *
+ * Represents an arbitrarily large integer.
+ *
+ * Wraps the libcalc C type ZVALUE.
+ */
+VALUE cZ;
 
 /*****************************************************************************
  * functions related to memory allocation and object initialization          *
@@ -113,7 +121,7 @@ shift(VALUE self, VALUE other, int sign)
 
     get_zvalue(self, zself);
 
-    zother = value_to_zvalue(other,0);
+    zother = value_to_zvalue(other, 0);
     if (zge31b(zother)) {
         zfree(zother);
         rb_raise(rb_eArgError, "shift by too many bits");

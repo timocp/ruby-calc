@@ -1,6 +1,11 @@
 #include <stdarg.h>
 #include "calc.h"
 
+/* Document-class: Calc::MathError
+ *
+ * Exceptions of this class are raised whenever a libcalc function encounters
+ * an error.
+ */
 VALUE e_MathError;
 
 #ifdef JUMP_ON_MATH_ERROR
