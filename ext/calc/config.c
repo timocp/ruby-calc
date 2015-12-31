@@ -21,6 +21,21 @@ static VALUE mConfig;
 /*** module methods ***/
 
 static VALUE
+cc_get_display(VALUE klass)
+{
+    setup_math_error();
+    return INT2FIX(conf->outdigits);
+}
+
+static VALUE
+cc_set_display(VALUE klass, VALUE v)
+{
+    setup_math_error();
+    math_setdigits(FIX2INT(v));
+    return v;
+}
+
+static VALUE
 cc_get_epsilon(VALUE klass)
 {
     setup_math_error();
@@ -56,6 +71,8 @@ void
 define_calc_config(VALUE m)
 {
     mConfig = rb_define_module_under(m, "Config");
+    rb_define_module_function(mConfig, "display", cc_get_display, 0);
+    rb_define_module_function(mConfig, "display=", cc_set_display, 1);
     rb_define_module_function(mConfig, "epsilon", cc_get_epsilon, 0);
     rb_define_module_function(mConfig, "epsilon=", cc_set_epsilon, 1);
     rb_define_module_function(mConfig, "mode", cc_get_mode, 0);

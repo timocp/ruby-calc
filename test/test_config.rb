@@ -8,9 +8,21 @@ class TestConfig < Minitest::Test
 
   # expected defaults
   EXPECTED = {
+    display: 20,
     epsilon: Calc::Q("1e-20"),
     mode: "real",
   }
+
+  def test_display
+    assert_equal EXPECTED[:display], Calc::Config.display
+
+    Calc::Config.display = 10
+    assert_equal 10, Calc::Config.display
+
+    assert_raises(Calc::MathError) { Calc::Config.display = -1 }
+
+    Calc::Config.display = EXPECTED[:display]
+  end
 
   def test_epsilon
     assert_equal EXPECTED[:epsilon], Calc::Config.epsilon
