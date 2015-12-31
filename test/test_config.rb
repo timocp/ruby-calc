@@ -6,19 +6,39 @@ class TestConfig < Minitest::Test
     refute_nil Calc::Config
   end
 
-  def test_epsilon
-    # default value
-    assert_equal Calc::Q("1e-20"), Calc::Config.epsilon
+  # expected defaults
+  EXPECTED = {
+    epsilon: Calc::Q("1e-20"),
+    mode: "real",
+  }
 
-    # changing it
+  def test_epsilon
+    assert_equal EXPECTED[:epsilon], Calc::Config.epsilon
+
     Calc::Config.epsilon = "1e-40"
     assert_equal Calc::Q("1e-40"), Calc::Config.epsilon
 
-    # can't be zero or negative
     assert_raises(Calc::MathError) { Calc::Config.epsilon = 0 }
     assert_raises(Calc::MathError) { Calc::Config.epsilon = -0.1 }
 
-    # change it back to the default
-    Calc::Config.epsilon = "1e-20"
+    Calc::Config.epsilon = EXPECTED[:epsilon]
   end
+
+  def test_mode
+    assert_equal EXPECTED[:mode], Calc::Config.mode
+
+    Calc::Config.mode = "fraction"
+    assert_equal "fraction", Calc::Config.mode
+    Calc::Config.mode = "frac"
+    assert_equal "fraction", Calc::Config.mode
+    Calc::Config.mode = "default"
+    assert_equal EXPECTED[:mode], Calc::Config.mode
+    Calc::Config.mode = "scientific"
+    assert_equal "scientific", Calc::Config.mode
+
+    assert_raises(ArgumentError) { Calc::Config.mode = "cat" }
+
+    Calc::Config.mode = EXPECTED[:mode]
+  end
+
 end
