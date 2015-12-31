@@ -103,7 +103,7 @@ Internally, Calc::Q are always stored as a rational number (fraction).  Libcalc 
 Calc::Q.exp(1).to_s #=> "2.71828182845904523536"
 ```
 
-If any rounding has to occur, a leading tilde is included in the output
+Numbers are rounded after `Calc::Config.display` digits; if any rounding has to occur, a leading tilde is included in the output.
 
 ```ruby
 Calc::Q(1,11).to_s #=> "~0.09090909090909090909"
