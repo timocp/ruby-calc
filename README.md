@@ -98,16 +98,19 @@ Calc::Q(10).fact    #=> Calc::Q(3628800)
 ### Converting rational numbers to strings
 
 Internally, Calc::Q are always stored as a rational number (fraction).  Libcalc supports various output modes.  The default is "real" which will output as floating points.
+
 ```ruby
 Calc::Q.exp(1).to_s #=> "2.71828182845904523536"
 ```
 
 If any rounding has to occur, a leading tilde is included in the output
+
 ```ruby
 Calc::Q(1,11).to_s #=> "~0.09090909090909090909"
 ```
 
 to_s takes an optional parameter which is the output mode to use.  It must be a symbol or a string with one of the following values:
+
 ```ruby
 Calc::Q(1,20).to_s(:frac)     #=> "1/20"        base 10 fractions
 Calc::Q(1,20).to_s(:int)      #=> "~0"          base 10 integers
