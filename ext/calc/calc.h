@@ -23,7 +23,9 @@ extern double zvalue_to_double(ZVALUE * z);
 extern VALUE zvalue_to_f(ZVALUE * z);
 extern VALUE zvalue_to_i(ZVALUE * z);
 extern NUMBER *zz_to_number(ZVALUE znum, ZVALUE zden);
-extern VALUE number_to_calc_q(NUMBER *n);
+extern VALUE number_to_calc_q(NUMBER * n);
+extern long value_to_mode(VALUE v);
+extern VALUE mode_to_string(long n);
 
 /* math_error.c */
 extern VALUE e_MathError;

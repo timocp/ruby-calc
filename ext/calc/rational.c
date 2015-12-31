@@ -284,7 +284,7 @@ cq_multiply(VALUE x, VALUE y)
  * @return [Calc::Q]
  * @raise [Calc::MathError] if other is zero
  * @example:
- *  Calc::Q(2) / 3 #=> Calc::Q(2/3)
+ *  Calc::Q(2) / 4 #=> Calc::Q(0.5)
  */
 static VALUE
 cq_divide(VALUE x, VALUE y)
@@ -490,24 +490,33 @@ cq_to_i(VALUE self)
 
 /* Converts this number to a string.
  *
- * If self is fractional, the output is "numerator / denominator".  Otherwise
- * it is just the numerator.
+ * Format depends on the configuration parameters "mode" and "display.  The
+ * mode can be overridden for individual calls.
  *
+ * @param [String,Symbol] (optional) output mode, see [Calc::Config]
  * @return [String]
  * @example
- *  Calc::Q(42).to_s  #=> "42"
- *  Calc::Q(1,2).to_s #=> "1/2"
+ *  Calc::Q(1,2).to_s        #=> "0.5"
+ *  Calc::Q(1,2).to_s(:frac) #=> "1/2"
+ *  Calc::Q(42).to_s(:hex)   #=> "0x2a"
  */
 static VALUE
-cq_to_s(VALUE self)
+cq_to_s(int argc, VALUE * argv, VALUE self)
 {
     NUMBER *qself = DATA_PTR(self);
     char *s;
-    VALUE rs;
+    int args;
+    VALUE rs, mode;
     setup_math_error();
 
+    args = rb_scan_args(argc, argv, "01", &mode);
     math_divertio();
-    qprintnum(qself, MODE_FRAC);
+    if (args == 0) {
+        qprintnum(qself, MODE_DEFAULT);
+    }
+    else {
+        qprintnum(qself, value_to_mode(mode));
+    }
     s = math_getdivertedio();
     rs = rb_str_new2(s);
     free(s);
@@ -519,7 +528,7 @@ cq_to_s(VALUE self)
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @example
- *  Calc::Q(0.5).acos #=> Calc::Q(20943951023931954923/20000000000000000000)
+ *  Calc::Q(0.5).acos #=> Calc::Q(1.04719755119659774615)
  */
 static VALUE
 cq_acos(int argc, VALUE * argv, VALUE self)
@@ -531,7 +540,7 @@ cq_acos(int argc, VALUE * argv, VALUE self)
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @example
- *  Calc::Q(2).acosh #=> Calc::Q(65847894846240835431/50000000000000000000)
+ *  Calc::Q(2).acosh #=> Calc::Q(1.31695789692481670862)
  */
 static VALUE
 cq_acosh(int argc, VALUE * argv, VALUE self)
@@ -543,7 +552,7 @@ cq_acosh(int argc, VALUE * argv, VALUE self)
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @example
- *  Calc::Q(2).acot #=> Calc::Q(46364760900080611621/100000000000000000000)
+ *  Calc::Q(2).acot #=> Calc::Q(0.46364760900080611621)
  */
 static VALUE
 cq_acot(int argc, VALUE * argv, VALUE self)
@@ -815,7 +824,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "tan", cq_tan, -1);
     rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
-    rb_define_method(cQ, "to_s", cq_to_s, 0);
+    rb_define_method(cQ, "to_s", cq_to_s, -1);
     rb_define_method(cQ, "zero?", cq_iszero, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
 

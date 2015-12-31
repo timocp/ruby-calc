@@ -244,10 +244,99 @@ zvalue_to_double(ZVALUE * z)
 
 /* convert a NUMBER* to a new Calc::Q object */
 VALUE
-number_to_calc_q(NUMBER *n)
+number_to_calc_q(NUMBER * n)
 {
     VALUE q;
     q = cq_new();
     DATA_PTR(q) = qlink(n);
     return q;
+}
+
+/* "mode" conversions.  this is based on code in config.c */
+
+typedef struct {
+    const char *name;
+    long type;
+} nametype2;
+
+static nametype2 modes[] = {
+    {"fraction", MODE_FRAC},
+    {"frac", MODE_FRAC},
+    {"integer", MODE_INT},
+    {"int", MODE_INT},
+    {"real", MODE_REAL},
+    {"float", MODE_REAL},
+    {"default", MODE_INITIAL},  /* MODE_REAL */
+    {"scientific", MODE_EXP},
+    {"sci", MODE_EXP},
+    {"exp", MODE_EXP},
+    {"hexadecimal", MODE_HEX},
+    {"hex", MODE_HEX},
+    {"octal", MODE_OCTAL},
+    {"oct", MODE_OCTAL},
+    {"binary", MODE_BINARY},
+    {"bin", MODE_BINARY},
+    {"off", MODE2_OFF},
+    {NULL, 0}
+};
+
+static long
+lookup_long(nametype2 * set, const char *name)
+{
+    nametype2 *cp;
+
+    for (cp = set; cp->name; cp++) {
+        if (strcmp(cp->name, name) == 0)
+            return cp->type;
+    }
+    return -1;
+}
+
+static const char *
+lookup_name(nametype2 * set, long val)
+{
+    nametype2 *cp;
+
+    for (cp = set; cp->name; cp++) {
+        if (val == cp->type)
+            return cp->name;
+    }
+    return NULL;
+}
+
+/* convert value to a libcalc mode flag.  value may be a string or a symbol */
+long
+value_to_mode(VALUE v)
+{
+    VALUE tmp;
+    char *str;
+    long n;
+
+    if (TYPE(v) == T_STRING) {
+        str = StringValueCStr(v);
+    }
+    else if (TYPE(v) == T_SYMBOL) {
+        tmp = rb_funcall(v, rb_intern("to_s"), 0);
+        str = StringValueCStr(tmp);
+    }
+    else {
+        rb_raise(rb_eArgError, "expected String or Symbol");
+    }
+    n = lookup_long(modes, str);
+    if (n < 0) {
+        rb_raise(rb_eArgError, "Unknown mode \"%s\"", str);
+    }
+    return n;
+}
+
+VALUE
+mode_to_string(long n)
+{
+    const char *p;
+
+    p = lookup_name(modes, n);
+    if (p == NULL) {
+        rb_raise(e_MathError, "invalid output mode: %ld", n);
+    }
+    return rb_str_new2(p);
 }

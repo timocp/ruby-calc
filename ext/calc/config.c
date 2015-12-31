@@ -18,56 +18,6 @@ static VALUE mConfig;
  * some of its code is duplicated here.
  */
 
-typedef struct {
-    const char *name;
-    long type;
-} nametype2;
-
-static nametype2 modes[] = {
-    {"fraction", MODE_FRAC},
-    {"frac", MODE_FRAC},
-    {"integer", MODE_INT},
-    {"int", MODE_INT},
-    {"real", MODE_REAL},
-    {"float", MODE_REAL},
-    {"default", MODE_INITIAL},  /* MODE_REAL */
-    {"scientific", MODE_EXP},
-    {"sci", MODE_EXP},
-    {"exp", MODE_EXP},
-    {"hexadecimal", MODE_HEX},
-    {"hex", MODE_HEX},
-    {"octal", MODE_OCTAL},
-    {"oct", MODE_OCTAL},
-    {"binary", MODE_BINARY},
-    {"bin", MODE_BINARY},
-    {"off", MODE2_OFF},
-    {NULL, 0}
-};
-
-static long
-lookup_long(nametype2 * set, const char *name)
-{
-    nametype2 *cp;
-
-    for (cp = set; cp->name; cp++) {
-        if (strcmp(cp->name, name) == 0)
-            return cp->type;
-    }
-    return -1;
-}
-
-static const char *
-lookup_name(nametype2 * set, long val)
-{
-    nametype2 *cp;
-
-    for (cp = set; cp->name; cp++) {
-        if (val == cp->type)
-            return cp->name;
-    }
-    return NULL;
-}
-
 /*** module methods ***/
 
 static VALUE
@@ -88,29 +38,17 @@ cc_set_epsilon(VALUE klass, VALUE v)
 static VALUE
 cc_get_mode(VALUE klass)
 {
-    const char *p;
     setup_math_error();
 
-    p = lookup_name(modes, conf->outmode);
-    if (p == NULL) {
-        rb_raise(e_MathError, "invalid output mode: %d", conf->outmode);
-    }
-    return rb_str_new2(p);
+    return mode_to_string(conf->outmode);
 }
 
 static VALUE
 cc_set_mode(VALUE klass, VALUE v)
 {
-    char *str;
-    long n;
     setup_math_error();
 
-    str = StringValueCStr(v);
-    n = lookup_long(modes, str);
-    if (n < 0) {
-        rb_raise(rb_eArgError, "Unknown mode \"%s\"", str);
-    }
-    math_setmode(n);
+    math_setmode(value_to_mode(v));
     return v;
 }
 

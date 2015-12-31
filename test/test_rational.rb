@@ -48,7 +48,7 @@ class TestRational < MiniTest::Test
   def test_dup
     q1 = Calc::Q(13, 4)
     q2 = q1.dup
-    assert_equal "13/4", q2.to_s
+    assert_equal 3.25, q2
     refute_equal q1.object_id, q2.object_id
   end
 
@@ -309,21 +309,30 @@ class TestRational < MiniTest::Test
     assert_equal 4, Calc::Q(1,4).to_r.denominator
   end
 
-  # currently just using default calc (prints decimal approximation).  needs
-  # more options.
   def test_to_s
+    # default (real)
     assert_equal "42", Calc::Q.new(42).to_s
+    assert_equal "0.05", Calc::Q(1,20).to_s
     assert_equal "4611686018427387904", Calc::Q.new(BIG).to_s
-    assert_equal "42", Calc::Q.new(Calc::Z.new(42)).to_s
-    assert_equal "42", Calc::Q.new("42").to_s
-    assert_equal "42", Calc::Q.new("0b101010").to_s
-    assert_equal "42", Calc::Q.new("052").to_s
-    assert_equal "42", Calc::Q.new("0x2a").to_s
-    assert_equal "1/4", Calc::Q.new(Rational(1, 4)).to_s
-    assert_equal "1/4", Calc::Q.new(1, 4).to_s
-    assert_equal "2305843009213693952", Calc::Q.new(BIG, 2).to_s
-    assert_equal "1/4", Calc::Q.new(Calc::Z.new(1), Calc::Z.new(4)).to_s
-    assert_equal "1/4", Calc::Q.new("1", "4").to_s
+    assert_equal "9223372036854775808", Calc::Q(BIG2).to_s
+
+    # other modes
+    assert_equal "42",        Calc::Q(42).to_s(:frac)
+    assert_equal "42",        Calc::Q(42).to_s(:int)
+    assert_equal "42",        Calc::Q(42).to_s(:real)
+    assert_equal "4.2e1",     Calc::Q(42).to_s(:sci)
+    assert_equal "0x2a",      Calc::Q(42).to_s(:hex)
+    assert_equal "052",       Calc::Q(42).to_s(:oct)
+    assert_equal "0b101010",  Calc::Q(42).to_s(:bin)
+
+    assert_equal "1/20",      Calc::Q(1,20).to_s(:frac)
+    assert_equal "~0",        Calc::Q(1,20).to_s(:int)
+    assert_equal "0.05",      Calc::Q(1,20).to_s(:real)
+    assert_equal "5e-2",      Calc::Q(1,20).to_s(:sci)
+    assert_equal "1/0x14",    Calc::Q(1,20).to_s(:hex)
+    assert_equal "1/024",     Calc::Q(1,20).to_s(:oct)
+    assert_equal "1/0b10100", Calc::Q(1,20).to_s(:bin)
+
   end
 
   def test_pi

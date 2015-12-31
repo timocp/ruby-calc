@@ -55,19 +55,19 @@ z5 = Calc::Z("052")         # string in octal
 z6 = Calc::Z("0x2a")        # string in hex
 
 # integer arithmetic works like you'd expect:
-z1 + z2  # => Calc::Z(84)
-z1 * z2  # => Calc::Z(1764)
-z1 - z2  # => Calc::Z(0)
-z1 ** z2 # => Calc::Z(150130937545296572356771972164254457814047970568738777235893533016064)
+z1 + z2  #=> Calc::Z(84)
+z1 * z2  #=> Calc::Z(1764)
+z1 - z2  #=> Calc::Z(0)
+z1 ** z2 #=> Calc::Z(150130937545296572356771972164254457814047970568738777235893533016064)
 
 # division in the Z class is integer division.
-z1 / 4   # => Calc::Z(10)
+z1 / 4   #=> Calc::Z(10)
 
 # if you actually wanted a rational number, say:
-Calc::Q(z1, 4) # => Calc::Q(21/2)
+Calc::Q(z1, 4) #=> Calc::Q(10.5)
 
 # factorials of non-negative numbers:
-Calc::Z(10).fact    # => Calc::Z(3628800)
+Calc::Z(10).fact    #=> Calc::Z(3628800)
 ```
 
 ### Rational Numbers
@@ -83,17 +83,42 @@ q2 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
 
 # rational arithmetic.  you can provide ruby numbers or other calc classes as
 # arguments to most operators
-q1 + q2   # => Calc::Q(181/4)
-q1 - q2   # => Calc::Q(155/4)
-q1 * q2   # => Calc::Q(273/2)
-q1 / q2   # => Calc::Q(168/13)
+q1 + q2   #=> Calc::Q(45.25)
+q1 - q2   #=> Calc::Q(38.75)
+q1 * q2   #=> Calc::Q(136.5)
+q1 / q2   #=> Calc::Q(~12.92307692307692307692)
 
 # raise to integer power (fractional powers are todo)
-q2 ** q1  # => Calc::Q(61040881526285814362156628321386486455989674569/19342813113834066795298816)
+q2 ** q1  #=> Calc::Q(3155739610730618174599.37987276615998166797)
 
 # factorials of non-negative whole numbers:
-Calc::Q(10).fact    # => Calc::Q(3628800)
+Calc::Q(10).fact    #=> Calc::Q(3628800)
 ```
+
+### Converting rational numbers to strings
+
+Internally, Calc::Q are always stored as a rational number (fraction).  Libcalc supports various output modes.  The default is "real" which will output as floating points.
+```ruby
+Calc::Q.exp(1).to_s #=> "2.71828182845904523536"
+```
+
+If any rounding has to occur, a leading tilde is included in the output
+```ruby
+Calc::Q(1,11).to_s #=> "~0.09090909090909090909"
+```
+
+to_s takes an optional parameter which is the output mode to use.  It must be a symbol or a string with one of the following values:
+```ruby
+Calc::Q(1,20).to_s(:frac)     #=> "1/20"        base 10 fractions
+Calc::Q(1,20).to_s(:int)      #=> "~0"          base 10 integers
+Calc::Q(1,20).to_s(:real)     #=> "0.05"        base 10 floating point (default)
+Calc::Q(1,20).to_s(:sci)      #=> "5e-2"        base 10 scientific notation
+Calc::Q(1,20).to_s(:hex)      #=> "1/0x14"      base 16 fractions
+Calc::Q(1,20).to_s(:oct)      #=> "1/024"       base 8 fractions
+Calc::Q(1,20).to_s(:bin)      #=> "1/0b10100    base 2 fractions
+```
+
+The default output mode can be set with [Calc::Config].  The output of `inspect` will match whatever the current default is.
 
 ### Trancendental functions
 
@@ -140,39 +165,41 @@ These methods have equivalent module versions for convenience.  In the module ve
 
 ```ruby
 # single parameter functions
-Calc::Q(1).sin  # => Calc::Q(16829419696157930133/20000000000000000000)
-Calc::Q.sin(1)  # => Calc::Q(16829419696157930133/20000000000000000000)
+Calc::Q(1).sin  #=> Calc::Q(0.84147098480789650665)
+Calc::Q.sin(1)  #=> Calc::Q(0.84147098480789650665)
 
 # two parameter functions
-Calc::Q(9).root(2)  # => Calc::Q(3)
-Calc::Q.root(9,2)   # => Calc::Q(3)
+Calc::Q(9).root(2)  #=> Calc::Q(3)
+Calc::Q.root(9,2)   #=> Calc::Q(3)
 
 # functions with no parameters are only available as a module method
-Cakc::Q.pi  # => Calc::Q(157079632679489661923/50000000000000000000)
+Calc::Q.pi  #=> Calc::Q(3.14159265358979323846)
 ```
 
 The accuracy of transcendental functions will be within a specified `epsilon`.  Each method has an optional extra parameter which provides this for a single call.  If omitted a global epsilon is used (defaults to 1e-20).  Epsilon must be greater than 0.
 
 ```ruby
 # pi to default 20 decimal places:
-Calc::Q.pi  # => Calc::Q(157079632679489661923/50000000000000000000)
+Calc::Q.pi  #=> Calc::Q(3.14159265358979323846)
 
 # pi to 2 decimal places:
-Calc::Q.pi(0.01) # => Calc::Q(157/50)
+Calc::Q.pi("0.01") #=> Calc::Q(3.14)
 
-# for very small epsilons, ruby floats can't store the values properly; you
-# can use a Calc::Q object, or anything which can be converted to one,
-# including a string.  Eg, pi to 400 decimal places:
-Calc::Q.pi("1e-400") # => (omitted)
+# Usually using a ruby float as a precision won't work as floating point
+# numbers are converted into rational number that may not be exactly the same
+Calc::Q(0.01).to_s(:frac) #=> "5764607523034235/576460752303423488"
+# For this reason it is recommended to use a Calc::Q or a string as the
+# epsilon.  Eg, pi to 400 decimal places:
+Calc::Q.pi("1e-400") #=> (omitted)
 
 ```
 
 The default epsilon can be changed via the Calc::Config module and will affect all subsequent method calls:
 
 ```ruby
-Calc::Config.epsilon                  # => Calc::Q(1/100000000000000000000)
-Calc::Config.epsilon = "0.0001"       # => "0.0001"
-Calc::Q.pi.to_f                       # => 3.1416
+Calc::Config.epsilon                  #=> Calc::Q(0.00000000000000000001)
+Calc::Config.epsilon = "0.0001"       #=> "0.0001"
+Calc::Q.pi                            #=> Calc::Q(3.1416)
 ```
 
 ### Complex numbers
