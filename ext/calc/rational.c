@@ -49,6 +49,39 @@ cq_alloc(VALUE klass)
     return TypedData_Wrap_Struct(klass, &calc_q_type, 0);
 }
 
+/* Creates a new rational number.
+ *
+ * Single parameter version can take:
+ * * Fixnum
+ * * Bignum
+ * * Rational
+ * * Calc::Z
+ * * Calc::Q
+ * * String
+ * * Float
+ *
+ * Strings can be in rational, floating point, exponential, hex or octal, eg:
+ *   Calc::Q("3/10")   #=> Calc::Q(0.3)
+ *   Calc::Q("0.5")    #=> Calc::Q(0.5)
+ *   Calc::Q("1e10")   #=> Calc::Q(10000000000)
+ *   Calc::Q("1e-10")  #=> Calc::Q(0.0000000001)
+ *   Calc::Q("0x2a")   #=> Calc::Q(42)
+ *   Calc::Q("052")    #=> Calc::Q(42)
+ *
+ * @todo 2 param version should treat args as a pair of Q's instead of Z's
+ *   (so that string formats are consistant)
+ *
+ * Note that a Float cannot precisely equal many values; it will be converted
+ * the the closest rational number which may not be what you expect, eg:
+ *   Calc::Q(0.3)  #=> Calc::Q(~0.29999999999999998890)
+ * for this reason, it is best to avoid Floats.  Libcalc's string parsing will
+ * work better:
+ *   Calc::Q("0.3")  #=> Calc::Q(0.3)
+ *
+ * @param x [Numeric,Calc::Z,Calc::Q,String]
+ * @return [Calc::Q]
+ * @raise [ZeroDivisionError] if denominator of new number is zero
+ */
 static VALUE
 cq_initialize(int argc, VALUE * argv, VALUE self)
 {
@@ -202,6 +235,9 @@ trans_function2(int argc, VALUE * argv, VALUE self,
         qfree(qarg);
         qfree(qepsilon);
     }
+    if (!DATA_PTR(result)) {
+        rb_raise(e_MathError, "Transcendental function returned NULL");
+    }
     return result;
 }
 
@@ -353,7 +389,7 @@ cq_shift_right(VALUE self, VALUE other)
  * nil is returned if the two values are incomparable.
  *
  * @param other [Numeric,Calc::Z,Calc::Q]
- * @return [-1,0,1,nil]
+ * @return [Fixnum,nil]
  * @example:
  *  Calc::Q(5) <=> 4     #=> 1
  *  Calc::Q(5) <=> 5.1   #=> -1
@@ -493,7 +529,7 @@ cq_to_i(VALUE self)
  * Format depends on the configuration parameters "mode" and "display.  The
  * mode can be overridden for individual calls.
  *
- * @param [String,Symbol] (optional) output mode, see [Calc::Config]
+ * @param mode [String,Symbol] (optional) output mode, see [Calc::Config]
  * @return [String]
  * @example
  *  Calc::Q(1,2).to_s        #=> "0.5"
@@ -525,6 +561,7 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
 }
 
 /* Inverse trigonometric cosine
+ *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @example
@@ -537,6 +574,7 @@ cq_acos(int argc, VALUE * argv, VALUE self)
 }
 
 /* Inverse hyperbolic cosine
+ *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @example
@@ -549,6 +587,7 @@ cq_acosh(int argc, VALUE * argv, VALUE self)
 }
 
 /* Inverse trigonometric cotangent
+ *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @example
@@ -560,120 +599,284 @@ cq_acot(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qacot);
 }
 
+/* Inverse hyperbolic cotangent
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if abs(self) <= 1
+ * @example
+ *  Calc::Q(2).acoth #=> Calc::Q(0.5493061443340548457)
+ */
 static VALUE
 cq_acoth(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qacoth);
 }
 
+/* Inverse trigonometric cosecant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if abs(self) < 1
+ * @example
+ *  Calc::Q(2).acsc #=> Calc::Q(0.52359877559829887308)
+ */
 static VALUE
 cq_acsc(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qacsc);
 }
 
+/* Inverse hyperbolic cosecant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::Q(2).acsch #=> Calc::Q(0.4812118250596034475)
+ */
 static VALUE
 cq_acsch(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qacsch);
 }
 
+/* Inverse trigonometric secant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if abs(self) is < 1
+ * @example
+ *  Calc::Q(2).asec #=> Calc::Q(1.04719755119659774615)
+ */
 static VALUE
 cq_asec(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qasec);
 }
 
+/* Inverse hyperbolic secant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] unless 0 < self <= 1
+ * @example
+ *  Calc::Q(0.5).asech #=> Calc::Q(1.31695789692481670862)
+ */
 static VALUE
 cq_asech(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qasech);
 }
 
+/* Inverse trigonometric sine
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self < -1 or self > 1
+ * @example
+ *  Calc::Q(0.5).asin #=> Calc::Q(0.52359877559829887308)
+ */
 static VALUE
 cq_asin(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qasin);
 }
 
+/* Inverse hyperbolic sine
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(2).asinh #=> Calc::Q(1.44363547517881034249)
+ */
 static VALUE
 cq_asinh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qasinh);
 }
 
+/* Inverse trigonometric tangent
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(2).atan #=> Calc::Q(1.10714871779409050302)
+ */
 static VALUE
 cq_atan(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qatan);
 }
 
+/* Angle to point (arctangent with 2 arguments)
+ *
+ * To match normal calling conventions, `y.atan2(x)` is equivalent to
+ * `Math.atan2(y,x)`.  To avoid confusion, the class method may be
+ * preferrable: `Calc::Q.atan2(y,x)`.
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(0).atan2(0)   #=> Calc::Q(0)
+ *  Calc::Q(17).atan2(52) #=> Calc::Q(0.31597027195298044266)
+ */
 static VALUE
 cq_atan2(int argc, VALUE * argv, VALUE self)
 {
     return trans_function2(argc, argv, self, &qatan2);
 }
 
+/* Inverse hyperbolic tangent
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(0.5).atanh #=> Calc::Q(0.87758256189037271612)
+ */
 static VALUE
 cq_atanh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qatanh);
 }
 
+/* Cosine
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).cos #=> Calc::Q(0.5403023058681397174)
+ */
 static VALUE
 cq_cos(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qcos);
 }
 
+/* Hyperbolic cosine
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).cosh #=> Calc::Q(1.54308063481524377848)
+ */
 static VALUE
 cq_cosh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qcosh);
 }
 
+/* Trigonometric cotangent
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::Q(1).cot #=> Calc::Q(0.64209261593433070301)
+ */
 static VALUE
 cq_cot(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qcot);
 }
 
+/* Hyperbolic cotangent
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::Q(1).coth #=> Calc::Q(1.31303528549933130364)
+ */
 static VALUE
 cq_coth(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qcoth);
 }
 
+/* Trigonometric cosecant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).csc #=> Calc::Q(1.18839510577812121626)
+ */
 static VALUE
 cq_csc(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qcsc);
 }
 
+/* Hyperbolic cosecant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::Q(1).csch #=> Calc::Q(0.85091812823932154513)
+ */
 static VALUE
 cq_csch(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qcsch);
 }
 
+/* Exponential function
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).exp #=> Calc::Q(2.71828182845904523536)
+ *  Calc::Q(2).exp #=> Calc::Q(7.38905609893065022723)
+ */
 static VALUE
 cq_exp(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qexp);
 }
 
+/* Logarithm
+ *
+ * Note that this is like using ruby's Math.log.
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::Q(10).ln #=> Calc::Q(2.30258509299404568402)
+ */
 static VALUE
 cq_ln(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qln);
 }
 
+/* Base 10 logarithm
+ *
+ * Note that this is like using ruby's Math.log10.
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self < -1 or self > 1
+ * @example
+ *  Calc::Q(10).log     #=> Calc::Q(1)
+ *  Calc::Q(100).log    #=> Calc::Q(2)
+ *  Calc::Q("1e10").log #=> Calc::Q(10)
+ */
 static VALUE
 cq_log(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qlog);
 }
 
+/* Evaluates п (pi) to a specified accuracy
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q.pi          #=> Calc::Q(3.14159265358979323846)
+ *  Calc::Q.pi("1e-40") #=> Calc::Q(3.1415926535897932384626433832795028841972)
+ */
 static VALUE
 cq_pi(int argc, VALUE * argv, VALUE self)
 {
@@ -694,12 +897,29 @@ cq_pi(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Evaluates a numeric power
+ *
+ * @param y [Numeric,Calc::Z,Calc::Q] power to raise by
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is negative or raising to a VERY large power
+ * @example
+ *  Calc::Q("1.2345").power(10) #=> Calc::Q(8.2207405646327461795)
+ */
 static VALUE
 cq_power(int argc, VALUE * argv, VALUE self)
 {
     return trans_function2(argc, argv, self, &qpower);
 }
 
+/* Returns the quotient and remainder from division
+ *
+ * @param y [Numeric,Calc::Z,Calc::Q] number to divide by
+ * @return [Array<Calc::Q>] Array containing quotient and remainder
+ * @todo add parameter to control rounding
+ * @example
+ *  Calc::Q(13).quomod(5) #=> [Calc::Q(2), Calc::Q(3)]
+ */
 static VALUE
 cq_quomod(VALUE self, VALUE other)
 {
@@ -718,48 +938,107 @@ cq_quomod(VALUE self, VALUE other)
     return rb_assoc_new(quo, mod);
 }
 
+/* Returns the nth root
+ *
+ * @param n [Numeric,Calc::Z,Calc::Q] positive integer
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if n is not a positive integer
+ * @example
+ *  Calc::Q(7).root(4) #=> Calc::Q(1.62657656169778574321)
+ */
 static VALUE
 cq_root(int argc, VALUE * argv, VALUE self)
 {
     return trans_function2(argc, argv, self, &qroot);
 }
 
+/* Trigonometric secant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).sec #=> Calc::Q(1.85081571768092561791)
+ */
 static VALUE
 cq_sec(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qsec);
 }
 
+/* Hyperbolic secant
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).sech #=> Calc::Q(0.64805427366388539958)
+ */
 static VALUE
 cq_sech(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qsech);
 }
 
+/* Trigonometric sine
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).xxx #=> Calc::Q(0.84147098480789650665)
+ */
 static VALUE
 cq_sin(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qsin);
 }
 
+/* Hyperbolic sine
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).sin #=> Calc::Q(1.17520119364380145688)
+ */
 static VALUE
 cq_sinh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qsinh);
 }
 
+/* Trigonometric tangent
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).tan #=> Calc::Q(1.55740772465490223051)
+ */
 static VALUE
 cq_tan(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qtan);
 }
 
+/* Hyperbolic tangent
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).tanh #=> Calc::Q(0.76159415595576488812)
+ */
 static VALUE
 cq_tanh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qtanh);
 }
 
+/* Returns true if self is zero
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(0).zero? #=> true
+ *  Calc::Q(1).zero? #=> false
+ */
 static VALUE
 cq_iszero(VALUE self)
 {
