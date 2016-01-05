@@ -558,6 +558,13 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
     return rs;
 }
 
+/* Absolute value
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).abs  #=> Calc::Q(1)
+ *  Calc::Q(-1).abs #=> Calc::Q(1)
+ */
 static VALUE
 cq_abs(VALUE self)
 {
