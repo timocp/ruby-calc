@@ -31,7 +31,7 @@ Or install it yourself as:
 
 ## Usage
 
-The library provides 3 classes
+The library provides 3 classes:
 
 Ruby class | Represents
 ---------- | ----------
@@ -39,11 +39,13 @@ Calc::Z    | Integers
 Calc::Q    | Rational numbers (fractions)
 Calc::C    | Complex numbers
 
-In calc, all 3 types of numbers can be arbitrarily large/precise.  But ruby Bignum/Rational already do this.  Calc is useful for its rich collection of numeric functions, as well as being able to calculate transcendental functions to arbitrary accuracy.
+In calc, all 3 types of numbers can be arbitrarily large/precise.  It provides a large collection of builtin functions, all of which can compute results to arbitrary accuracy.
 
 While incomplete, this library intends to implement the ruby Numeric interface on each class, and also provide wrappers for all numerical functions provided by the calc library.
 
-### Integers
+In addition to providing access to the C library which implements calc (libcalc), this ruby gem aims for compatibility with the standard ruby types (`Calc::Z`, `Calc::Q` and `Calc::C` should act like `Fixnum`/`Bugnum`, `Rational` and `Complex` respectively).
+
+### Integers (Calc::Z)
 
 ```ruby
 # creating integers (following are all equivalent)
@@ -62,15 +64,9 @@ z1 ** z2 #=> Calc::Z(15013093754529657235677197216425445781404797056873877723589
 
 # division in the Z class is integer division.
 z1 / 4   #=> Calc::Z(10)
-
-# if you actually wanted a rational number, say:
-Calc::Q(z1, 4) #=> Calc::Q(10.5)
-
-# factorials of non-negative numbers:
-Calc::Z(10).fact    #=> Calc::Z(3628800)
 ```
 
-### Rational Numbers
+### Rational Numbers (Calc::Q)
 
 ```ruby
 # creating rational numbers - parameter formats are the same as for Z, except
@@ -95,74 +91,83 @@ q2 ** q1  #=> Calc::Q(3155739610730618174599.37987276615998166797)
 Calc::Q(10).fact    #=> Calc::Q(3628800)
 ```
 
-### Converting rational numbers to strings
+### Complex numbers (Calc::C)
 
-Internally, Calc::Q are always stored as a rational number (fraction).  Libcalc supports various output modes.  The default is "real" which will output as floating points.
+Not implemented yet.
+
+### Build in functions
+
+Where possible, calc builtin functions are exposed by this library are implemented as methods with the same name:
+
+Method | Arguments  | Description
+------ | ---------  | -----------
+acos   | x [, b]    | arccosine of x within accuracy b
+acosh  | x [, b]    | hyperbolic arccosine of x within accuracy b
+acot   | x [, b]    | inverse cotangent of x within accuracy b
+acoth  | x [, b]    | inverse hyperbolic cotangent of x within accuracy b
+acsc   | x [, b]    | inverse cosecant of x within accuracy b
+acsch  | x [, b]    | inverse hyperbolic cosecant of x within accuracy b
+asec   | x [, b]    | inverse secant of x within accuracy b
+asech  | x [, b]    | inverse hyperbolic secant of x within accuracy b
+asin   | x [, b]    | arcsine of x within accuracy b
+asinh  | x [, b]    | hyperbolic arcsine of x within accuracy b
+atan   | x [, b]    | arctangent of x within accuracy b
+atan2  | y, x [, b] | angle determined by the point (x,y) within accuracy b
+atanh  | x [, b]    | hyperbolic arctangent of x within accuracy b
+cbrt   | x [, b]    | cube root of x within accuracy b
+cos    | x [, b]    | cosine of x within accuracy b
+cosh   | x [, b]    | hyperbolic cosine of x within accuracy b
+cot    | x [, b]    | cotangent of x within accuracy b
+coth   | x [, b]    | hyperbolic cotangent of x within accuracy b
+csc    | x [, b]    | cosecant of x within accuracy b
+csch   | x [, b]    | hyperbolic cosecant of x within accuracy b
+exp    | x [, b]    | exponential function of x within accuracy b
+fact   | x          | factorial of integer x
+ln     | x [, b]    | natural logarithm of x within accuracy b
+log    | x [, b]    | base 10 logarithm of x within accuracy b
+pi     | [b]        | value of π within accuracy b
+root   | x, n [, b] | nth root of x within accuracy b
+sec    | x [, b]    | secant of x within accuracy b
+sech   | x [, b]    | hyperbolic secant within accuracy b
+sin    | x [, b]    | sine of x within accuracy b
+sinh   | x [, b]    | hyperbolic sine of x within accuracy b
+sqrt   | x [, b]    | square root of x within accuracy b
+tan    | x [, b]    | tangent of x within accuracy b
+tanh   | x [, b]    | hyperbolic tangent of x within accuracy b
+
+Unlike the command line verion of calc, these are implemented separated on each appropriate class and will return a value belonging to that class.  In other words, methods on `Calc::Q` will not return answers in `Calc::C`, even if the command line version of calc would have done.
+
+If you want complex results, make sure you use complex parameters (even if the complex part is zero).  This matches the standard ruby Numeric/Rational/Complex behaviours.
 
 ```ruby
-Calc::Q.exp(1).to_s #=> "2.71828182845904523536"
+Calc::Q.sqrt(-1)    #=> Calc::MathError; command line calc would return 1i.
+Calc::C.sqrt(-1)    #=> Calc::C(1i)
 ```
 
-Numbers are rounded after `Calc::Config.display` digits; if any rounding has to occur, a leading tilde is included in the output.
+These methods (unlike in the command line version of calc) use the first argument as the method receiver, eg:
 
 ```ruby
-Calc::Q(1,11).to_s #=> "~0.09090909090909090909"
+Calc::Q(1).sin          # in calc: sin(1)
+Calc::Q(2).power(3)     # in calc: power(2,3)
 ```
 
-to_s takes an optional parameter which is the output mode to use.  It must be a symbol or a string with one of the following values:
+If you prefer it, most of these are also available as equivalent class methods:
 
 ```ruby
-Calc::Q(1,20).to_s(:frac)     #=> "1/20"        base 10 fractions
-Calc::Q(1,20).to_s(:int)      #=> "~0"          base 10 integers
-Calc::Q(1,20).to_s(:real)     #=> "0.05"        base 10 floating point (default)
-Calc::Q(1,20).to_s(:sci)      #=> "5e-2"        base 10 scientific notation
-Calc::Q(1,20).to_s(:hex)      #=> "1/0x14"      base 16 fractions
-Calc::Q(1,20).to_s(:oct)      #=> "1/024"       base 8 fractions
-Calc::Q(1,20).to_s(:bin)      #=> "1/0b10100    base 2 fractions
+Calc::Q.sin(1)
+Calc::Q.power(2,3)
 ```
 
-The default output mode can be set with [Calc::Config].  The output of `inspect` will match whatever the current default is.
+Functions with no arguments (other than precision/rounding modes) are only available as class methods:
+
+```ruby
+Calc::Q.pi              # in calc: pi()
+```
+
 
 ### Trancendental functions
 
 Transcendental functions such as sin, cos and pi, cannot be evaluated exactly as fractions.  The result will be a rational number within a specific accuracy of the correct value (usually an absolute difference).
-
-The transcendental functions provided by Calc::Q are:
-
-Method | Arguments | Description
------- | --------- | -----------
-acos   | x         | arccosine of x
-acosh  | x         | hyperbolic arccosine of x
-acot   | x         | inverse cotangent of x
-acoth  | x         | inverse hyperbolic cotangent of x
-acsc   | x         | inverse cosecant of x
-acsch  | x         | inverse hyperbolic cosecant of x
-asec   | x         | inverse secant of x
-asech  | x         | inverse hyperbolic secant of x
-asin   | x         | arcsine of x
-asinh  | x         | hyperbolic arcsine of x
-atan   | x         | arctangent of x
-atan2  | y, x      | angle determined by the point (x,y)
-atanh  | x         | hyperbolic arctangent of x
-cbrt   | x         | cube root of x
-cos    | x         | cosine of x
-cosh   | x         | hyperbolic cosine of x
-cot    | x         | cotangent of x
-coth   | x         | hyperbolic cotangent of x
-csc    | x         | cosecant of x
-csch   | x         | hyperbolic cosecant of x
-exp    | x         | exponential function of x
-ln     | x         | natural logarithm of x (like Math.log)
-log    | x         | base 10 logarithm of x (like Math.log10)
-pi     | none      | value of π
-root   | x, n      | nth root of x
-sec    | x         | secant of x
-sech   | x         | hyperbolic secant
-sin    | x         | sine of x
-sinh   | x         | hyperbolic sine of x
-sqrt   | x         | square root of x
-tan    | x         | tangent of x
-tanh   | x         | hyperbolic tangent of x
 
 These methods have equivalent module versions for convenience.  In the module version, the first parameter is equivalent to the receiver in the instance version.  Example:
 
@@ -197,26 +202,101 @@ Calc::Q.pi("1e-400") #=> (omitted)
 
 ```
 
-The default epsilon can be changed via the Calc::Config module and will affect all subsequent method calls:
+The default epsilon can be changed via the Calc.config method and will affect all subsequent method calls:
 
 ```ruby
-Calc::Config.epsilon                  #=> Calc::Q(0.00000000000000000001)
-Calc::Config.epsilon = "0.0001"       #=> "0.0001"
+Calc.config(:epsilon)                 #=> Calc::Q(0.00000000000000000001)
+Calc::Q.pi                            #=> Calc::Q(3.14159265358979323846)
+Calc.config(:epsilon, "0.0001")
 Calc::Q.pi                            #=> Calc::Q(3.1416)
 ```
 
-### Complex numbers
+### Converting to other classes
 
-Not added yet.
-
-### Converting to core ruby classes
+Each class implements the following methods:
 
 Method | Result
 ------ | ------
 to_f   | Converts to a ruby Float (precision can be lost!)
 to_i   | Converts to a ruby Fixnum or Bignum (for Q, discards remainder)
 to_r   | Converts to a ruby Rational
-to_s   | Converts to a ruby String
+to_s   | Converts to a ruby String (see below)
+
+The following methods will convert to other `Calc` methods:
+
+Method | Result
+------ | ------
+to_z   | Convert to `Calc::Z` (non-integer parts will be lost)
+to_q   | Convert to `Calc::Q`
+to_c   | Convert to `Calc::C`
+
+However, you can't convert from Calc::C
+
+#### Converting to strings
+
+Internally, `Calc::Q` are always stored as a rational number (fraction).  Libcalc supports various output modes.  The default is "real" which will output as floating points.
+
+```ruby
+Calc::Q.exp(1).to_s #=> "2.71828182845904523536"
+```
+
+Numbers are rounded after `Calc::Config.display` digits; if any rounding has to occur, a leading tilde is included in the output.  If you don't want rounding, you can output as a fraction:
+
+```ruby
+Calc::Q(1,11).to_s         #=> "~0.09090909090909090909"
+Calc::Q(1,11).to_s(:frac)  #=> "1/11"
+```
+
+`to_s` takes an optional parameter which is the output mode to use.  It must be a symbol or a string with one of the following values:
+
+```ruby
+Calc::Q(1,20).to_s(:frac)     #=> "1/20"        base 10 fractions
+Calc::Q(1,20).to_s(:int)      #=> "~0"          base 10 integers
+Calc::Q(1,20).to_s(:real)     #=> "0.05"        base 10 floating point (default)
+Calc::Q(1,20).to_s(:sci)      #=> "5e-2"        base 10 scientific notation
+Calc::Q(1,20).to_s(:hex)      #=> "1/0x14"      base 16 fractions
+Calc::Q(1,20).to_s(:oct)      #=> "1/024"       base 8 fractions
+Calc::Q(1,20).to_s(:bin)      #=> "1/0b10100    base 2 fractions
+```
+
+The default output mode can be set with [Calc::Config].  The output of `inspect` will match whatever the current default is.
+
+### Configuration
+
+Default output modes, precision, rounding modes, etc can be set with the `Calc.config` method.  It acts the same as the `config()` function in calc:
+* The first parameter is the name of a configuration item (string or symbol)
+* If a second parameter is present, it is the new value (the old value is returned)
+* If there is no second parameter, it only returns the current value.
+
+Not all of calc's configuration is implemented (and only onese related to maths functions will be).  The defaults are the same as using calc with no command line options.  The current set are:
+
+Parameter | Default | Meaning
+--------- | ------- | -------
+display   | 20      | number of digits when converting to string (does NOT affect internal value)
+epsilon   | 1e-20   | default precision for transcendental functions
+mode      | :real   | default output mode when converting to string
+
+For more details of these, type "help config" in calc.
+
+## Differences from Calc
+
+For people familiar with the command line interface to calc, here are some important differences to make this library more ruby-ish:
+
+Calc methods which act on values now use the first value as the method receiver, eg:
+
+Ruby doesn't have output parameters; for functions which in calc modify their parameters, ruby-calc instead returns values, eg:
+
+```ruby
+q, r = Calc::Q.divmod(a, b)   # in calc: divmod(a, b, q, r)
+                              # the actual calc return value is not available
+```
+
+In calc, the normal number type is rational, but return values will automatically become complex if necessary.  This is not the case for ruby-calc; `Calc::Q` methods will only return `Calc::Q` values.  If you want complex results, you have to start with `Calc::C` objects.
+
+Other differences:
+* Non-maths builtin functions are not implemented - use the normal ruby way of doing that
+* Not all configuration items are implemented (and only ones related to maths will be)
+* You can't define/call calc functions (ie, eval() is not implemented)
 
 ## Development
 
