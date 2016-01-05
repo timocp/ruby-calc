@@ -14,21 +14,25 @@ class TestRational < MiniTest::Test
   end
 
   def test_initialization
-    # num/den versions (anything accepted by Calc::Z.new is allowed)
-    assert_instance_of Calc::Q, Calc::Q.new(1, 3)
-    assert_instance_of Calc::Q, Calc::Q.new(BIG, BIG+1)
-    assert_instance_of Calc::Q, Calc::Q.new(BIG2, BIG2+1)
-    assert_instance_of Calc::Q, Calc::Q.new(BIG3, BIG3-1)
-    assert_instance_of Calc::Q, Calc::Q.new("1", "3")
-    assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(1), Calc::Z(3))
+    # num/den versions
+    assert_instance_of Calc::Q, Calc::Q.new(1, 3)           # Fixnum
+    assert_instance_of Calc::Q, Calc::Q.new(BIG, BIG+1)     # Bignum
+    assert_instance_of Calc::Q, Calc::Q.new(BIG2, BIG2+1)   # big Bignum
+    assert_instance_of Calc::Q, Calc::Q.new(BIG3, BIG3-1)   # small Bignum
+    assert_instance_of Calc::Q, Calc::Q.new("1", "3")       # strings
+    assert_instance_of Calc::Q, Calc::Q("1e3", "1e-3")      # exponential string
+    assert_instance_of Calc::Q, Calc::Q(0.3, 2.0)
+    assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(1), Calc::Z(3)) # Calc::Z's
 
-    # single param version
+    # single param version (same, but 
     assert_instance_of Calc::Q, Calc::Q.new(1)
     assert_instance_of Calc::Q, Calc::Q.new(BIG)
     assert_instance_of Calc::Q, Calc::Q.new(BIG2)
     assert_instance_of Calc::Q, Calc::Q.new(BIG3)
     assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(42))
     assert_instance_of Calc::Q, Calc::Q.new("1/3")
+    assert_instance_of Calc::Q, Calc::Q.new("1e3")
+    assert_instance_of Calc::Q, Calc::Q.new("1e-3")
     assert_instance_of Calc::Q, Calc::Q.new(Rational(1,3))
     assert_instance_of Calc::Q, Calc::Q.new(0.3)
   end

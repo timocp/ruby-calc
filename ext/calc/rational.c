@@ -51,7 +51,8 @@ cq_alloc(VALUE klass)
 
 /* Creates a new rational number.
  *
- * Single parameter version can take:
+ * Arguments are either a numerator/denominator pair, or a single numerator.
+ * With a single parameter, a denominator of 1 is implied.  Valid types are:
  * * Fixnum
  * * Bignum
  * * Rational
@@ -68,9 +69,6 @@ cq_alloc(VALUE klass)
  *   Calc::Q("0x2a")   #=> Calc::Q(42)
  *   Calc::Q("052")    #=> Calc::Q(42)
  *
- * @todo 2 param version should treat args as a pair of Q's instead of Z's
- *   (so that string formats are consistant)
- *
  * Note that a Float cannot precisely equal many values; it will be converted
  * the the closest rational number which may not be what you expect, eg:
  *   Calc::Q(0.3)  #=> Calc::Q(~0.29999999999999998890)
@@ -78,33 +76,33 @@ cq_alloc(VALUE klass)
  * work better:
  *   Calc::Q("0.3")  #=> Calc::Q(0.3)
  *
- * @param x [Numeric,Calc::Z,Calc::Q,String]
+ * @param num [Numeric,Calc::Z,Calc::Q,String]
+ * @param den [Numeric,Calc::Z,Calc::Q,String] (optional)
  * @return [Calc::Q]
  * @raise [ZeroDivisionError] if denominator of new number is zero
  */
 static VALUE
 cq_initialize(int argc, VALUE * argv, VALUE self)
 {
-    NUMBER *qself;
-    VALUE arg1, arg2;
-    ZVALUE znum, zden;
+    NUMBER *qself, *qnum, *qden;
+    VALUE num, den;
     setup_math_error();
 
-    if (rb_scan_args(argc, argv, "11", &arg1, &arg2) == 1) {
+    if (rb_scan_args(argc, argv, "11", &num, &den) == 1) {
         /* single param */
-        qself = value_to_number(arg1, 1);
+        qself = value_to_number(num, 1);
     }
     else {
-        /* 2 params. both can be anything Calc::Z.new would allow */
-        zden = value_to_zvalue(arg2, 1);
-        if (ziszero(zden)) {
-            zfree(zden);
+        /* 2 params. divide first by second. */
+        qden = value_to_number(den, 1);
+        if (qiszero(qden)) {
+            qfree(qden);
             rb_raise(rb_eZeroDivError, "division by zero");
         }
-        znum = value_to_zvalue(arg1, 1);
-        qself = zz_to_number(znum, zden);
-        zfree(zden);
-        zfree(znum);
+        qnum = value_to_number(num, 1);
+        qself = qqdiv(qnum, qden);
+        qfree(qden);
+        qfree(qnum);
     }
     DATA_PTR(self) = qself;
 
