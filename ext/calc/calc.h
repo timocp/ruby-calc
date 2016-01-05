@@ -14,7 +14,7 @@ extern void reinitialize(void);
 #include <calc/lib_calc.h>
 
 /* config.h */
-extern void define_calc_config(VALUE m);
+extern VALUE calc_config(int argc, VALUE * argv, VALUE klass);
 
 /* convert.c */
 extern ZVALUE value_to_zvalue(VALUE arg, int string_allowed);
@@ -26,6 +26,7 @@ extern NUMBER *zz_to_number(ZVALUE znum, ZVALUE zden);
 extern VALUE number_to_calc_q(NUMBER * n);
 extern long value_to_mode(VALUE v);
 extern VALUE mode_to_string(long n);
+extern long value_to_config(VALUE v);
 
 /* math_error.c */
 extern VALUE e_MathError;

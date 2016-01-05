@@ -280,6 +280,15 @@ static nametype2 modes[] = {
     {NULL, 0}
 };
 
+/* config types we support - a subset of "configs[]" in calc's config.c */
+
+static nametype2 configs[] = {
+    {"mode", CONFIG_MODE},
+    {"display", CONFIG_DISPLAY},
+    {"epsilon", CONFIG_EPSILON},
+    {NULL, 0}
+};
+
 static long
 lookup_long(nametype2 * set, const char *name)
 {
@@ -304,13 +313,13 @@ lookup_name(nametype2 * set, long val)
     return NULL;
 }
 
-/* convert value to a libcalc mode flag.  value may be a string or a symbol */
-long
-value_to_mode(VALUE v)
+/* given a String or Symbol, returns the index into a nameset
+ * or -1 if not found */
+static long
+value_to_nametype_long(VALUE v, nametype2 * set)
 {
     VALUE tmp;
     char *str;
-    long n;
 
     if (TYPE(v) == T_STRING) {
         str = StringValueCStr(v);
@@ -322,9 +331,19 @@ value_to_mode(VALUE v)
     else {
         rb_raise(rb_eArgError, "expected String or Symbol");
     }
-    n = lookup_long(modes, str);
+    return lookup_long(set, str);
+}
+
+/* convert value to a libcalc mode flag.  value may be a string or a symbol.
+ * raises an exception if the mode in invalid. */
+long
+value_to_mode(VALUE v)
+{
+    int n;
+
+    n = value_to_nametype_long(v, modes);
     if (n < 0) {
-        rb_raise(rb_eArgError, "Unknown mode \"%s\"", str);
+        rb_raise(rb_eArgError, "invalid output mode");
     }
     return n;
 }
@@ -339,4 +358,12 @@ mode_to_string(long n)
         rb_raise(e_MathError, "invalid output mode: %ld", n);
     }
     return rb_str_new2(p);
+}
+
+/* convert a string or symbol to the libcalc CALC_* enum
+ * returns -1 if the name is invalid/unsupported in ruby-calc */
+long
+value_to_config(VALUE v)
+{
+    return value_to_nametype_long(v, configs);
 }
