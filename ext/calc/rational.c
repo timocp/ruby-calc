@@ -558,6 +558,17 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
     return rs;
 }
 
+static VALUE
+cq_abs(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+
+    result = cq_new();
+    DATA_PTR(result) = qqabs(DATA_PTR(self));
+    return result;
+}
+
 /* Inverse trigonometric cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1066,6 +1077,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "<<", cq_shift_left, 1);
     rb_define_method(cQ, "<=>", cq_spaceship, 1);
     rb_define_method(cQ, ">>", cq_shift_right, 1);
+    rb_define_method(cQ, "abs", cq_abs, 0);
     rb_define_method(cQ, "acos", cq_acos, -1);
     rb_define_method(cQ, "acosh", cq_acosh, -1);
     rb_define_method(cQ, "acot", cq_acot, -1);
@@ -1109,5 +1121,6 @@ define_calc_q(VALUE m)
     rb_include_module(cQ, rb_mComparable);
 
     rb_define_alias(cQ, "divmod", "quomod");
+    rb_define_alias(cQ, "magnitude", "abs");
     rb_define_alias(cQ, "modulo", "%");
 }

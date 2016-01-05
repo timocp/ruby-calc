@@ -200,6 +200,13 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % 0
   end
 
+  def test_abs
+    assert_instance_of Calc::Q, Calc::Q(12).abs
+    assert_equal 12, Calc::Q(12).abs
+    assert_equal 12, Calc::Q(-12).abs
+    assert_alias Calc::Q(12), :abs, :magnitude
+  end
+
   def test_quomod
     [5, BIG2, Calc::Z(5), Calc::Q(5), Rational(5,1), 5.0].each do |p|
       r = Calc::Q(13).quomod(p)

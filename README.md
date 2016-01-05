@@ -95,12 +95,13 @@ Calc::Q(10).fact    #=> Calc::Q(3628800)
 
 Not implemented yet.
 
-### Build in functions
+### Built in functions
 
 Where possible, calc builtin functions are exposed by this library are implemented as methods with the same name:
 
 Method | Arguments  | Description
 ------ | ---------  | -----------
+abs    | x          | absolute value of x
 acos   | x [, b]    | arccosine of x within accuracy b
 acosh  | x [, b]    | hyperbolic arccosine of x within accuracy b
 acot   | x [, b]    | inverse cotangent of x within accuracy b

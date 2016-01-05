@@ -254,6 +254,7 @@ class TestInteger < Minitest::Test
     assert_equal 12, Calc::Z.new(-12).abs
     assert_equal BIG2, Calc::Z(BIG2).abs
     assert_equal BIG2, Calc::Z(-BIG2).abs
+    assert_alias Calc::Z(1), :abs, :magnitude
   end
 
   def test_abs2
