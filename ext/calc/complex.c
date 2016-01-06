@@ -14,7 +14,7 @@ VALUE cC;
 void
 cc_free(void *p)
 {
-    cfree((COMPLEX *) p);
+    comfree((COMPLEX *) p);
 }
 
 const rb_data_type_t calc_c_type = {
