@@ -24,7 +24,7 @@ class TestRational < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q(0.3, 2.0)
     assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(1), Calc::Z(3)) # Calc::Z's
 
-    # single param version (same, but 
+    # single param version
     assert_instance_of Calc::Q, Calc::Q.new(1)
     assert_instance_of Calc::Q, Calc::Q.new(BIG)
     assert_instance_of Calc::Q, Calc::Q.new(BIG2)

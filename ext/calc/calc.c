@@ -11,4 +11,5 @@ Init_calc(void)
     define_calc_math_error(m);
     define_calc_z(m);
     define_calc_q(m);
+    define_calc_c(m);
 }

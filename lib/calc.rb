@@ -20,6 +20,10 @@ module Calc
   def self.Q(*args)
     Q.new(*args)
   end
+  
+  def self.C(*args)
+    C.new(*args)
+  end
 
   class Z
     include Remainder
