@@ -75,6 +75,44 @@ cc_initialize_copy(VALUE obj, VALUE orig)
     return obj;
 }
 
+/* Test for equality.
+ *
+ * If the other value is complex (Calc::C or Complex), returns true if the
+ * real an imaginary parts of both numbers are the same.
+ *
+ * The other value is some other numberic type (Fixnum, Bignum, Calc::Q, Calc::Z,
+ * Rational or Float) then retusn true if the complex part of this number is
+ * zero and the real part is equal to the other.
+ *
+ * Otherwise returns false.
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(1,2) == Complex(1,2) #=> true
+ *  Calc::C(1,2) == Calc::C(1,2) #=> true
+ *  Calc::C(4,0) == 4            #=> true
+ *  Calc::C(4,1) == 4            #=> false
+ */
+static VALUE
+cc_equal(VALUE self, VALUE other)
+{
+    COMPLEX *cself;
+    int result;
+    setup_math_error();
+
+    cself = DATA_PTR(self);
+    if (ISCVALUE(other)) {
+        result = c_cmp(cself, DATA_PTR(other));
+        /* FALSE if they are equal, TRUE if they differ */
+        return result == FALSE ? Qtrue : Qfalse;
+    }
+    else {
+        return Qfalse;
+    }
+
+    return Qfalse;
+}
+
 /* Returns the imaginary part of a complex number
  *
  * @return [Calc::Q]
@@ -123,6 +161,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "initialize", cc_initialize, -1);
     rb_define_method(cC, "initialize_copy", cc_initialize_copy, 1);
 
+    rb_define_method(cC, "==", cc_equal, 1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "re", cc_re, 0);
 

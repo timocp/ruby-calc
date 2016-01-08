@@ -46,4 +46,10 @@ class TestComplex < MiniTest::Test
     assert_alias Calc::C(1,2), :im, :imag
   end
 
+  def test_equal
+    assert Calc::C(1,2) == Calc::C(1,2)
+
+    refute Calc::C(1,2) == Calc::C(1,3)
+  end
+
 end
