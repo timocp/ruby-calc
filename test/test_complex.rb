@@ -34,4 +34,16 @@ class TestComplex < MiniTest::Test
     assert_instance_of Calc::C, Calc::C(Calc::Q(1))
   end
 
+  def test_re
+    assert_instance_of Calc::Q, Calc::C(1,2).re
+    assert_equal 1, Calc::C(1,2).re
+    assert_alias Calc::C(1,2), :re, :real
+  end
+
+  def test_im
+    assert_instance_of Calc::Q, Calc::C(1,2).im
+    assert_equal 2, Calc::C(1,2).im
+    assert_alias Calc::C(1,2), :im, :imag
+  end
+
 end

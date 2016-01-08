@@ -75,7 +75,45 @@ cc_initialize_copy(VALUE obj, VALUE orig)
     return obj;
 }
 
-/* class definition */
+/* Returns the imaginary part of a complex number
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::C(1,2).im #=> Calc::Q(2)
+ */
+static VALUE
+cc_im(VALUE self)
+{
+    VALUE result;
+    COMPLEX *cself;
+    setup_math_error();
+
+    cself = DATA_PTR(self);
+    result = cq_new();
+    DATA_PTR(result) = qlink(cself->imag);
+    return result;
+}
+
+/* Returns the real part of a complex number
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::C(1,2).re #=> Calc::Q(1)
+ */
+static VALUE
+cc_re(VALUE self)
+{
+    VALUE result;
+    COMPLEX *cself;
+    setup_math_error();
+
+    cself = DATA_PTR(self);
+    result = cq_new();
+    DATA_PTR(result) = qlink(cself->real);
+    return result;
+}
+
+/* class initialization */
 
 void
 define_calc_c(VALUE m)
@@ -84,4 +122,10 @@ define_calc_c(VALUE m)
     rb_define_alloc_func(cC, cc_alloc);
     rb_define_method(cC, "initialize", cc_initialize, -1);
     rb_define_method(cC, "initialize_copy", cc_initialize_copy, 1);
+
+    rb_define_method(cC, "im", cc_im, 0);
+    rb_define_method(cC, "re", cc_re, 0);
+
+    rb_define_alias(cC, "imag", "im");
+    rb_define_alias(cC, "real", "re");
 }
