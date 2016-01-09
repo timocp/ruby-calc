@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency 'minitest', '~> 5.8', '>= 5.8.2'
   spec.add_development_dependency "yard"
+  spec.add_development_dependency "pry"
 end
