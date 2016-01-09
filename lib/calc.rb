@@ -89,4 +89,35 @@ module Calc
     end
 
   end
+
+  class C
+    def to_s(*args)
+      r = self.re
+      i = self.im
+      if i.zero?
+        r.to_s(*args)
+      elsif r.zero?
+        imag_part(i, *args)
+      elsif i > 0
+        r.to_s(*args) + "+" + imag_part(i, *args)
+      else
+        r.to_s(*args) + imag_part(i, *args)
+      end
+    end
+
+    def inspect
+      "Calc::C(#{ to_s })"
+    end
+
+    private
+
+    # for formatting imaginary parts; if a fraction, put the "i" after the
+    # denominator (eg 2i/3).  otherwise it goes at the end (eg 0.5i).
+    def imag_part(number, *args)
+      string = number.to_s(*args)
+      solidus = string.index("/")
+      string.insert(solidus || -1, "i")
+    end
+
+  end
 end

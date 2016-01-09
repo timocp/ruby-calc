@@ -66,4 +66,22 @@ class TestComplex < MiniTest::Test
     refute Calc::C(5, 1) == Calc::Z(5)
   end
 
+  def test_to_s
+    assert_equal "1+1i", Calc::C(1,1).to_s
+    assert_equal "1", Calc::C(1,0).to_s
+    assert_equal "1i", Calc::C(0,1).to_s
+    assert_equal "0", Calc::C(0,0).to_s
+    assert_equal "-1i", Calc::C(0,-1).to_s
+    assert_equal "-1", Calc::C(-1,0).to_s
+    assert_equal "-1-1i", Calc::C(-1,-1).to_s
+    assert_equal "0.2+0.4i", Calc::C(Calc::Q(1,5), Calc::Q(2,5)).to_s
+    assert_equal "1/5+2i/5", Calc::C(Calc::Q(1,5), Calc::Q(2,5)).to_s(:frac)
+    assert_equal "-0.2-0.4i", Calc::C(Calc::Q(-1,5), Calc::Q(-2,5)).to_s
+    assert_equal "-1/5-2i/5", Calc::C(Calc::Q(-1,5), Calc::Q(-2,5)).to_s(:frac)
+  end
+
+  def test_inspect
+    assert_equal "Calc::C(1+1i)", Calc::C(1,1).inspect
+  end
+
 end
