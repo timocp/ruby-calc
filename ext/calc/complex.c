@@ -53,7 +53,10 @@ cc_initialize(int argc, VALUE * argv, VALUE self)
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "11", &re, &im) == 1) {
-        if (ISCVALUE(re) || TYPE(re) == T_COMPLEX) {
+        if (ISCVALUE(re)) {
+            cself = clink((COMPLEX *)DATA_PTR(re));
+        }
+        else if (TYPE(re) == T_COMPLEX) {
             cself = value_to_complex(re);
         }
         else {
