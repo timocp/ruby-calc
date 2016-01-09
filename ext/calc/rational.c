@@ -117,7 +117,7 @@ cq_initialize_copy(VALUE obj, VALUE orig)
     if (obj == orig) {
         return obj;
     }
-    if (!ISQVALUE(orig)) {
+    if (!CALC_Q_P(orig)) {
         rb_raise(rb_eTypeError, "wrong argument type");
     }
 
@@ -143,11 +143,11 @@ numeric_op(VALUE self, VALUE other,
     if (fql && TYPE(other) == T_FIXNUM) {
         qresult = (*fql) (DATA_PTR(self), NUM2LONG(other));
     }
-    else if (ISQVALUE(other)) {
+    else if (CALC_Q_P(other)) {
         qresult = (*fqq) (DATA_PTR(self), DATA_PTR(other));
     }
     else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL || ISZVALUE(other)) {
+             || TYPE(other) == T_RATIONAL || CALC_Z_P(other)) {
         qother = value_to_number(other, 0);
         qresult = (*fqq) (DATA_PTR(self), qother);
         qfree(qother);
@@ -407,11 +407,11 @@ cq_spaceship(VALUE self, VALUE other)
        result = qreli(qself, NUM2LONG(other));
        }
      */
-    if (ISQVALUE(other)) {
+    if (CALC_Q_P(other)) {
         result = qrel(qself, DATA_PTR(other));
     }
     else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL || ISZVALUE(other)) {
+             || TYPE(other) == T_RATIONAL || CALC_Z_P(other)) {
         qother = value_to_number(other, 0);
         result = qrel(qself, qother);
         qfree(qother);
@@ -1071,7 +1071,7 @@ cq_iszero(VALUE self)
 void
 define_calc_q(VALUE m)
 {
-    cQ = rb_define_class_under(m, "Q", rb_cData);
+    cQ = rb_define_class_under(m, "Q", cNumeric);
     rb_define_alloc_func(cQ, cq_alloc);
     rb_define_method(cQ, "initialize", cq_initialize, -1);
     rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);

@@ -68,7 +68,7 @@ value_to_zvalue(VALUE arg, int string_allowed)
         get_zvalue(tmp, ztmp);
         zcopy(*ztmp, &result);
     }
-    else if (ISZVALUE(arg)) {
+    else if (CALC_Z_P(arg)) {
         get_zvalue(arg, zarg);
         zcopy(*zarg, &result);
     }
@@ -168,12 +168,12 @@ value_to_number(VALUE arg, int string_allowed)
         get_zvalue(num, znum);
         qresult = zz_to_number(*znum, _one_);
     }
-    else if (ISZVALUE(arg)) {
+    else if (CALC_Z_P(arg)) {
         get_zvalue(arg, zarg);
         qresult = qalloc();
         zcopy(*zarg, &qresult->num);
     }
-    else if (ISQVALUE(arg)) {
+    else if (CALC_Q_P(arg)) {
         qresult = qlink((NUMBER *) DATA_PTR(arg));
     }
     else if (TYPE(arg) == T_RATIONAL) {
@@ -383,7 +383,7 @@ value_to_complex(VALUE arg)
     COMPLEX *cresult;
     VALUE real, imag;
 
-    if (ISCVALUE(arg)) {
+    if (CALC_C_P(arg)) {
         cresult = clink((COMPLEX *) DATA_PTR(arg));
     }
     else if (TYPE(arg) == T_COMPLEX) {

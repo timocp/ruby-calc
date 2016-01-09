@@ -75,7 +75,7 @@ cz_initialize_copy(VALUE obj, VALUE orig)
     if (obj == orig) {
         return obj;
     }
-    if (!ISZVALUE(orig)) {
+    if (!CALC_Z_P(orig)) {
         rb_raise(rb_eTypeError, "wrong argument type");
     }
 
@@ -210,7 +210,7 @@ cz_spaceship(VALUE self, VALUE other)
     get_zvalue(self, zself);
 
     /* check type first because don't want value_to_zvalue to raise an exception */
-    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || ISZVALUE(other)) {
+    if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || CALC_Z_P(other)) {
         zother = value_to_zvalue(other, 0);
         result = zrel(*zself, zother);
         zfree(zother);
@@ -391,7 +391,7 @@ cz_to_s(VALUE self)
 void
 define_calc_z(VALUE m)
 {
-    cZ = rb_define_class_under(m, "Z", rb_cData);
+    cZ = rb_define_class_under(m, "Z", cNumeric);
     rb_define_alloc_func(cZ, cz_alloc);
     rb_define_method(cZ, "initialize", cz_initialize, 1);
     rb_define_method(cZ, "initialize_copy", cz_initialize_copy, 1);

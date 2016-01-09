@@ -30,7 +30,7 @@ extern long value_to_config(VALUE v);
 extern COMPLEX *value_to_complex(VALUE arg);
 
 /* math_error.c */
-extern VALUE e_MathError;
+extern VALUE e_MathError;       /* Calc::MathError class (exception) */
 extern void define_calc_math_error();
 
 #ifdef JUMP_ON_MATH_ERROR
@@ -38,6 +38,10 @@ extern void setup_math_error();
 #else
 #define setup_math_error()
 #endif
+
+/* numeric.c */
+extern VALUE cNumeric;          /* Calc::Numeric module */
+extern void define_calc_numeric(VALUE m);
 
 /* integer.c */
 extern const rb_data_type_t calc_z_type;
@@ -55,7 +59,7 @@ extern void define_calc_q(VALUE m);
 
 /* complex.c */
 extern const rb_data_type_t calc_c_type;
-extern VALUE cC;
+extern VALUE cC;                /* Calc::C class */
 
 extern VALUE cq_qlloc(VALUE klass);
 extern void define_calc_c(VALUE m);
@@ -68,9 +72,9 @@ extern void define_calc_c(VALUE m);
 #define cc_new() cc_alloc(cC)
 
 /* test ruby values match our TypedData classes */
-#define ISZVALUE(v) (rb_typeddata_is_kind_of((v), &calc_z_type))
-#define ISQVALUE(v) (rb_typeddata_is_kind_of((v), &calc_q_type))
-#define ISCVALUE(v) (rb_typeddata_is_kind_of((v), &calc_c_type))
+#define CALC_Z_P(v) (rb_typeddata_is_kind_of((v), &calc_z_type))
+#define CALC_Q_P(v) (rb_typeddata_is_kind_of((v), &calc_q_type))
+#define CALC_C_P(v) (rb_typeddata_is_kind_of((v), &calc_c_type))
 
 /* shortcut for getting pointer to Calc::Z's ZVALUE */
 #define get_zvalue(ruby_var,c_var) { TypedData_Get_Struct(ruby_var, ZVALUE, &calc_z_type, c_var); }

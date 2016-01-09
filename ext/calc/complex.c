@@ -53,8 +53,8 @@ cc_initialize(int argc, VALUE * argv, VALUE self)
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "11", &re, &im) == 1) {
-        if (ISCVALUE(re)) {
-            cself = clink((COMPLEX *)DATA_PTR(re));
+        if (CALC_C_P(re)) {
+            cself = clink((COMPLEX *) DATA_PTR(re));
         }
         else if (TYPE(re) == T_COMPLEX) {
             cself = value_to_complex(re);
@@ -85,7 +85,7 @@ cc_initialize_copy(VALUE obj, VALUE orig)
     if (obj == orig) {
         return obj;
     }
-    if (!ISCVALUE(orig)) {
+    if (!CALC_C_P(orig)) {
         rb_raise(rb_eTypeError, "wrong argument type");
     }
     corig = DATA_PTR(orig);
@@ -136,7 +136,7 @@ cc_equal(VALUE self, VALUE other)
     setup_math_error();
 
     cself = DATA_PTR(self);
-    if (ISCVALUE(other)) {
+    if (CALC_C_P(other)) {
         result = !c_cmp(cself, DATA_PTR(other));
     }
     else if (TYPE(other) == T_COMPLEX) {
@@ -145,7 +145,7 @@ cc_equal(VALUE self, VALUE other)
         comfree(cother);
     }
     else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_RATIONAL ||
-             TYPE(other) == T_FLOAT || ISZVALUE(other) || ISQVALUE(other)) {
+             TYPE(other) == T_FLOAT || CALC_Z_P(other) || CALC_Q_P(other)) {
         cother = qqtoc(value_to_number(other, 0), &_qzero_);
         result = !c_cmp(cself, cother);
         comfree(cother);
@@ -200,7 +200,7 @@ cc_re(VALUE self)
 void
 define_calc_c(VALUE m)
 {
-    cC = rb_define_class_under(m, "C", rb_cData);
+    cC = rb_define_class_under(m, "C", cNumeric);
     rb_define_alloc_func(cC, cc_alloc);
     rb_define_method(cC, "initialize", cc_initialize, -1);
     rb_define_method(cC, "initialize_copy", cc_initialize_copy, 1);

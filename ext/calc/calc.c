@@ -9,6 +9,7 @@ Init_calc(void)
     m = rb_define_module("Calc");
     rb_define_module_function(m, "config", calc_config, -1);
     define_calc_math_error(m);
+    define_calc_numeric(m);
     define_calc_z(m);
     define_calc_q(m);
     define_calc_c(m);

@@ -3,7 +3,7 @@ require "calc/calc"
 
 module Calc
 
-  module Remainder
+  class Numeric
     def remainder(y)
       z = self % y
       if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))
@@ -26,8 +26,6 @@ module Calc
   end
 
   class Z
-    include Remainder
-
     def inspect
       "Calc::Z(#{ to_s })"
     end
@@ -48,8 +46,6 @@ module Calc
   end
 
   class Q
-    include Remainder
-
     def **(other)
       Calc::Q.power(self, other)
     end
