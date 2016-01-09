@@ -131,6 +131,12 @@ cc_add(VALUE x, VALUE y)
     return numeric_op(x, y, &c_add, &c_addq);
 }
 
+static VALUE
+cc_subtract(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &c_sub, &c_subq);
+}
+
 /* Unary minus.  Returns the receiver's value, negated.
  *
  * @return [Calc::C]
@@ -244,6 +250,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "initialize_copy", cc_initialize_copy, 1);
 
     rb_define_method(cC, "+", cc_add, 1);
+    rb_define_method(cC, "-", cc_subtract, 1);
     rb_define_method(cC, "-@", cc_uminus, 0);
     rb_define_method(cC, "==", cc_equal, 1);
     rb_define_method(cC, "im", cc_im, 0);

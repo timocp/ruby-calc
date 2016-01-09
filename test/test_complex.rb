@@ -107,4 +107,10 @@ class TestComplex < MiniTest::Test
     assert_equal Calc::C(Calc::Q(3,2), 1), Calc::C(1,1) + 0.5
   end
 
+  def test_sub
+    assert_instance_of Calc::C, Calc::C(1,1) - Calc::C(1,1)
+    assert_equal Calc::C(0), Calc::C(1,1) - Calc::C(1,1)
+    assert_equal Calc::C(Calc::Q(1,3),1), Calc::C(1,1) - Calc::Q(2,3)
+  end
+
 end
