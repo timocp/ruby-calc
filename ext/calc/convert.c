@@ -142,7 +142,7 @@ rational_to_number(VALUE arg)
 
 /* converts a ruby value into a NUMBER*.  Allowed types:
  *  - Fixnum
- *  - Bignum (has to fit in a long)
+ *  - Bignum
  *  - Calc::Z
  *  - Calc::Q
  *  - Rational
@@ -366,4 +366,34 @@ long
 value_to_config(VALUE v)
 {
     return value_to_nametype_long(v, configs);
+}
+
+/* convert a ruby value into a COMPLEX*.  Allowed types:
+ * - Complex
+ * - Any type allowed by value_to_number (except string).
+ *
+ * libcalc doesn't provide any way to convert a string to a complex number.
+ *
+ * caller is responseible for freeing the returned complex.  storing it in
+ * a Calc::C is sufficient for the ruby GC to get it.
+ */
+COMPLEX *
+value_to_complex(VALUE arg)
+{
+    COMPLEX *cresult;
+    VALUE real, imag;
+
+    if (ISCVALUE(arg)) {
+        cresult = clink((COMPLEX *)DATA_PTR(arg));
+    }
+    else if (TYPE(arg) == T_COMPLEX) {
+        real = rb_funcall(arg, rb_intern("real"), 0);
+        imag = rb_funcall(arg, rb_intern("imag"), 0);
+        cresult = qqtoc(value_to_number(real, 0), value_to_number(imag, 0));
+    }
+    else {
+        rb_raise(rb_eArgError, "expected number or complex number");
+    }
+
+    return cresult;
 }

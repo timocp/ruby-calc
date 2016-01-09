@@ -27,6 +27,7 @@ extern VALUE number_to_calc_q(NUMBER * n);
 extern long value_to_mode(VALUE v);
 extern VALUE mode_to_string(long n);
 extern long value_to_config(VALUE v);
+extern COMPLEX *value_to_complex(VALUE arg);
 
 /* math_error.c */
 extern VALUE e_MathError;

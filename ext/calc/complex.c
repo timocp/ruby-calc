@@ -96,21 +96,24 @@ cc_initialize_copy(VALUE obj, VALUE orig)
 static VALUE
 cc_equal(VALUE self, VALUE other)
 {
-    COMPLEX *cself;
+    COMPLEX *cself, *cother;
     int result;
     setup_math_error();
 
     cself = DATA_PTR(self);
     if (ISCVALUE(other)) {
-        result = c_cmp(cself, DATA_PTR(other));
-        /* FALSE if they are equal, TRUE if they differ */
-        return result == FALSE ? Qtrue : Qfalse;
+        result = !c_cmp(cself, DATA_PTR(other));
+    }
+    else if (TYPE(other) == T_COMPLEX) {
+        cother = value_to_complex(other);
+        result = !c_cmp(cself, cother);
+        comfree(cother);
     }
     else {
         return Qfalse;
     }
 
-    return Qfalse;
+    return result ? Qtrue : Qfalse;
 }
 
 /* Returns the imaginary part of a complex number
