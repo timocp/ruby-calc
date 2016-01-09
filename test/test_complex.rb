@@ -95,4 +95,16 @@ class TestComplex < MiniTest::Test
     assert_equal Complex(1,1), -Calc::C(-1,-1)
   end
 
+  def test_add
+    assert_instance_of Calc::C, Calc::C(1,1) + Calc::C(2,-2)
+    assert_equal Calc::C(3,-1), Calc::C(1,1) + Calc::C(2,-2)
+    assert_equal Calc::C(3,1), Calc::C(1,1) + Calc::Q(2)
+    assert_equal Calc::C(3,1), Calc::C(1,1) + Calc::Z(2)
+    assert_equal Calc::C(3,3), Calc::C(1,1) + Complex(2,2)
+    assert_equal Calc::C(Calc::Q(5,3), 1), Calc::C(1,1) + Rational(2,3)
+    assert_equal Calc::C(3,1), Calc::C(1,1) + 2
+    assert_equal Calc::C(1+BIG2,1), Calc::C(1,1) + BIG2
+    assert_equal Calc::C(Calc::Q(3,2), 1), Calc::C(1,1) + 0.5
+  end
+
 end

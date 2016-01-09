@@ -93,6 +93,44 @@ cc_initialize_copy(VALUE obj, VALUE orig)
     return obj;
 }
 
+static VALUE
+numeric_op(VALUE self, VALUE other,
+           COMPLEX * (fcc) (COMPLEX *, COMPLEX *), COMPLEX * (fcq) (COMPLEX *, NUMBER *))
+{
+    COMPLEX *cresult, *cother;
+    VALUE result;
+    setup_math_error();
+
+    if (CALC_C_P(other)) {
+        cresult = (*fcc) (DATA_PTR(self), DATA_PTR(other));
+    }
+    else if (fcq && CALC_Q_P(other)) {
+        cresult = (*fcq) (DATA_PTR(self), DATA_PTR(other));
+    }
+    else {
+        cother = value_to_complex(other);
+        cresult = (*fcc) (DATA_PTR(self), cother);
+        comfree(cother);
+    }
+
+    result = cc_new();
+    DATA_PTR(result) = cresult;
+    return result;
+}
+
+/* Performs addition.
+ *
+ * @param y [Numeric,Numeric::Calc]
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(1,1) + Calc::C(2,-2) #=> Calc::C(3-1i)
+ */
+static VALUE
+cc_add(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &c_add, &c_addq);
+}
+
 /* Unary minus.  Returns the receiver's value, negated.
  *
  * @return [Calc::C]
@@ -205,6 +243,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "initialize", cc_initialize, -1);
     rb_define_method(cC, "initialize_copy", cc_initialize_copy, 1);
 
+    rb_define_method(cC, "+", cc_add, 1);
     rb_define_method(cC, "-@", cc_uminus, 0);
     rb_define_method(cC, "==", cc_equal, 1);
     rb_define_method(cC, "im", cc_im, 0);

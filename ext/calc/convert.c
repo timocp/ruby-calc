@@ -391,8 +391,15 @@ value_to_complex(VALUE arg)
         imag = rb_funcall(arg, rb_intern("imag"), 0);
         cresult = qqtoc(value_to_number(real, 0), value_to_number(imag, 0));
     }
+    else if (CALC_Q_P(arg)) {
+        cresult = qqtoc(DATA_PTR(arg), &_qzero_);
+    }
+    else if (FIXNUM_P(arg) || CALC_Z_P(arg) || TYPE(arg) == T_BIGNUM || TYPE(arg) == T_RATIONAL
+             || TYPE(arg) == T_FLOAT) {
+        cresult = qqtoc(value_to_number(arg, 0), &_qzero_);
+    }
     else {
-        rb_raise(rb_eArgError, "expected number or complex number");
+        rb_raise(rb_eArgError, "expected Numeric or Calc::Numeric");
     }
 
     return cresult;
