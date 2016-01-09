@@ -101,7 +101,7 @@ module Calc
       elsif i > 0
         r.to_s(*args) + "+" + imag_part(i, *args)
       else
-        r.to_s(*args) + imag_part(i, *args)
+        r.to_s(*args) + "-" + imag_part(i.abs, *args)
       end
     end
 
@@ -115,8 +115,7 @@ module Calc
     # denominator (eg 2i/3).  otherwise it goes at the end (eg 0.5i).
     def imag_part(number, *args)
       string = number.to_s(*args)
-      solidus = string.index("/")
-      string.insert(solidus || -1, "i")
+      string.insert(string.index("/") || -1, "i")
     end
 
   end
