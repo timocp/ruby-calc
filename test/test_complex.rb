@@ -49,9 +49,21 @@ class TestComplex < MiniTest::Test
   def test_equal
     assert Calc::C(1,2) == Calc::C(1,2)
     assert Calc::C(BIG, BIG2) == Complex(BIG, BIG2)
+    assert Calc::C(10, 0) == 10
+    assert Calc::C(BIG2, 0) == BIG2
+    assert Calc::C(5, 0) == Rational(5)
+    assert Calc::C(5, 0) == 5.0
+    assert Calc::C(5, 0) == Calc::Q(5)
+    assert Calc::C(5, 0) == Calc::Z(5)
 
     refute Calc::C(1,2) == Calc::C(1,3)
     refute Calc::C(BIG, BIG2) == Complex(BIG2, BIG)
+    refute Calc::C(10, 1) == 10
+    refute Calc::C(BIG2, 1) == BIG2
+    refute Calc::C(5, 1) == Rational(5)
+    refute Calc::C(5, 1) == 5.0
+    refute Calc::C(5, 1) == Calc::Q(5)
+    refute Calc::C(5, 1) == Calc::Z(5)
   end
 
 end

@@ -81,10 +81,10 @@ cc_initialize_copy(VALUE obj, VALUE orig)
  * real an imaginary parts of both numbers are the same.
  *
  * The other value is some other numberic type (Fixnum, Bignum, Calc::Q, Calc::Z,
- * Rational or Float) then retusn true if the complex part of this number is
+ * Rational or Float) then returns true if the complex part of this number is
  * zero and the real part is equal to the other.
  *
- * Otherwise returns false.
+ * For any other type, returns false.
  *
  * @return [Boolean]
  * @example
@@ -106,6 +106,12 @@ cc_equal(VALUE self, VALUE other)
     }
     else if (TYPE(other) == T_COMPLEX) {
         cother = value_to_complex(other);
+        result = !c_cmp(cself, cother);
+        comfree(cother);
+    }
+    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_RATIONAL ||
+             TYPE(other) == T_FLOAT || ISZVALUE(other) || ISQVALUE(other)) {
+        cother = qqtoc(value_to_number(other, 0), &_qzero_);
         result = !c_cmp(cself, cother);
         comfree(cother);
     }

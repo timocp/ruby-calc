@@ -384,7 +384,7 @@ value_to_complex(VALUE arg)
     VALUE real, imag;
 
     if (ISCVALUE(arg)) {
-        cresult = clink((COMPLEX *)DATA_PTR(arg));
+        cresult = clink((COMPLEX *) DATA_PTR(arg));
     }
     else if (TYPE(arg) == T_COMPLEX) {
         real = rb_funcall(arg, rb_intern("real"), 0);
