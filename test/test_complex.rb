@@ -84,4 +84,13 @@ class TestComplex < MiniTest::Test
     assert_equal "Calc::C(1+1i)", Calc::C(1,1).inspect
   end
 
+  def test_unary
+    assert_instance_of Calc::C, +Calc::C(1,1)
+    assert_instance_of Calc::C, -Calc::C(1,1)
+    assert_equal Complex(1,1), +Calc::C(1,1)
+    assert_equal Complex(-1,-1), +Calc::C(-1,-1)
+    assert_equal Complex(-1,-1), -Calc::C(1,1)
+    assert_equal Complex(1,1), -Calc::C(-1,-1)
+  end
+
 end

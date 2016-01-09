@@ -109,6 +109,15 @@ module Calc
       "Calc::C(#{ to_s })"
     end
 
+    # Unary plus.  Returns the receiver's value.
+    #
+    # @return [Calc::C]
+    # @example
+    #  +Calc::C(1,1) #=> Calc::C(1,1)
+    def +@
+      self
+    end
+
     private
 
     # for formatting imaginary parts; if a fraction, put the "i" after the

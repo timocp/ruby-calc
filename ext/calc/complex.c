@@ -75,6 +75,23 @@ cc_initialize_copy(VALUE obj, VALUE orig)
     return obj;
 }
 
+/* Unary minus.  Returns the receiver's value, negated.
+ *
+ * @return [Calc::C]
+ * @example
+ *  -Calc::C(1,-1) #=> Calc::C(-1,1)
+ */
+static VALUE
+cc_uminus(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+
+    result = cc_new();
+    DATA_PTR(result) = c_sub(&_czero_, DATA_PTR(self));
+    return result;
+}
+
 /* Test for equality.
  *
  * If the other value is complex (Calc::C or Complex), returns true if the
@@ -170,6 +187,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "initialize", cc_initialize, -1);
     rb_define_method(cC, "initialize_copy", cc_initialize_copy, 1);
 
+    rb_define_method(cC, "-@", cc_uminus, 0);
     rb_define_method(cC, "==", cc_equal, 1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "re", cc_re, 0);
