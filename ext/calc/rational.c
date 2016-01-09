@@ -402,14 +402,16 @@ cq_spaceship(VALUE self, VALUE other)
     setup_math_error();
 
     qself = DATA_PTR(self);
-    if (TYPE(other) == T_FIXNUM) {
-        result = qreli(qself, NUM2LONG(other));
-    }
-    else if (ISQVALUE(other)) {
+    /* qreli returns incorrect results if self > 0 and other == 0
+       if (TYPE(other) == T_FIXNUM) {
+       result = qreli(qself, NUM2LONG(other));
+       }
+     */
+    if (ISQVALUE(other)) {
         result = qrel(qself, DATA_PTR(other));
     }
-    else if (TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT || TYPE(other) == T_RATIONAL
-             || ISZVALUE(other)) {
+    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
+             || TYPE(other) == T_RATIONAL || ISZVALUE(other)) {
         qother = value_to_number(other, 0);
         result = qrel(qself, qother);
         qfree(qother);

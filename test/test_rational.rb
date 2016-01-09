@@ -110,6 +110,7 @@ class TestRational < MiniTest::Test
       [ Calc::Q(1,3), Calc::Q(1,4),  Calc::Q(1,3),  Calc::Q(1,2)  ],
       [ Calc::Q(2),   Calc::Z(1),    Calc::Z(2),    Calc::Z(3)    ],
       [ Calc::Q(3),   2,             3,             4             ],
+      [ Calc::Q(1),   0,             1,             2             ],
       [ Calc::Q(1,3), Rational(1,4), Rational(1,3), Rational(1,2) ],
       [ Calc::Q(0.3), 0.299,         0.3,           0.301         ],
     ].each do |thing, other_lt, other_eq, other_gt|
@@ -471,7 +472,7 @@ class TestRational < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q.exp(1)
     assert_instance_of Calc::Q, Calc::Q(1).exp
     assert_in_epsilon Math.exp(-1), Calc::Q.exp(-1).to_f
-    assert_equal 0, Calc::Q.exp(0)
+    assert_equal 1, Calc::Q.exp(0)
     assert_in_epsilon Math::E, Calc::Q.exp(1).to_f
     assert_in_epsilon Math.exp(2), Calc::Q.exp(2).to_f
   end
