@@ -32,6 +32,8 @@ class TestComplex < MiniTest::Test
     assert_instance_of Calc::C, Calc::C(0.3)
     assert_instance_of Calc::C, Calc::C(Calc::Z(1))
     assert_instance_of Calc::C, Calc::C(Calc::Q(1))
+    assert_instance_of Calc::C, Calc::C(Complex(1,1))
+    assert_instance_of Calc::C, Calc::C(Calc::C(1,1))
   end
 
   def test_re

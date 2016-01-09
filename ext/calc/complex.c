@@ -33,6 +33,16 @@ cc_alloc(VALUE klass)
 }
 
 /* Creates a new complex number.
+ *
+ * If a single param of type Complex or Calc::C, returns a new complex number
+ * with the same real and imaginary parts.
+ *
+ * If a single param of other numeric types (Fixnum, Bignum, Rational, Float,
+ * Calc::Z, Calc::Q), returns a complex number with the specified real part
+ * and zero imaginary part.
+ *
+ * If two params, returns a complex number with the specified real and
+ * imaginary parts; the parts can be any type allowed by Calc::Q.new.
  */
 static VALUE
 cc_initialize(int argc, VALUE * argv, VALUE self)
@@ -43,9 +53,14 @@ cc_initialize(int argc, VALUE * argv, VALUE self)
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "11", &re, &im) == 1) {
-        qre = value_to_number(re, 1);
-        cself = qqtoc(qre, &_qzero_);
-        qfree(qre);
+        if (ISCVALUE(re) || TYPE(re) == T_COMPLEX) {
+            cself = value_to_complex(re);
+        }
+        else {
+            qre = value_to_number(re, 1);
+            cself = qqtoc(qre, &_qzero_);
+            qfree(qre);
+        }
     }
     else {
         qre = value_to_number(re, 1);
