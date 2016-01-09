@@ -118,7 +118,20 @@ numeric_op(VALUE self, VALUE other,
     return result;
 }
 
-/* Performs addition.
+/* Performs complex multiplication.
+ *
+ * @param y [Numeric,Numeric::Calc]
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(1,1) * Calc::C(1,1) #=> Calc::C(2i)
+ */
+static VALUE
+cc_multiply(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &c_mul, &c_mulq);
+}
+
+/* Performs complex addition.
  *
  * @param y [Numeric,Numeric::Calc]
  * @return [Calc::C]
@@ -131,6 +144,13 @@ cc_add(VALUE x, VALUE y)
     return numeric_op(x, y, &c_add, &c_addq);
 }
 
+/* Performs complex subtraction.
+ *
+ * @param y [Numeric,Numeric::Calc]
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(1,1) - Calc::C(2,2) #=> Calc::C(-1-1i)
+ */
 static VALUE
 cc_subtract(VALUE x, VALUE y)
 {
@@ -152,6 +172,19 @@ cc_uminus(VALUE self)
     result = cc_new();
     DATA_PTR(result) = c_sub(&_czero_, DATA_PTR(self));
     return result;
+}
+
+/* Performs complex division.
+ *
+ * @param y [Numeric,Numeric::Calc]
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(1,1) / Calc::C(0,1) #=> Calc::C(1-1i)
+ */
+static VALUE
+cc_divide(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &c_div, &c_divq);
 }
 
 /* Test for equality.
@@ -249,9 +282,11 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "initialize", cc_initialize, -1);
     rb_define_method(cC, "initialize_copy", cc_initialize_copy, 1);
 
+    rb_define_method(cC, "*", cc_multiply, 1);
     rb_define_method(cC, "+", cc_add, 1);
     rb_define_method(cC, "-", cc_subtract, 1);
     rb_define_method(cC, "-@", cc_uminus, 0);
+    rb_define_method(cC, "/", cc_divide, 1);
     rb_define_method(cC, "==", cc_equal, 1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "re", cc_re, 0);

@@ -107,10 +107,29 @@ class TestComplex < MiniTest::Test
     assert_equal Calc::C(Calc::Q(3,2), 1), Calc::C(1,1) + 0.5
   end
 
-  def test_sub
+  def test_subtract
     assert_instance_of Calc::C, Calc::C(1,1) - Calc::C(1,1)
     assert_equal Calc::C(0), Calc::C(1,1) - Calc::C(1,1)
     assert_equal Calc::C(Calc::Q(1,3),1), Calc::C(1,1) - Calc::Q(2,3)
+  end
+
+  def test_multiply
+    assert_instance_of Calc::C, Calc::C(1,1) * Calc::C(1,1)
+    assert_equal Calc::C(0,2), Calc::C(1,1) * Calc::C(1,1)
+    assert_equal Calc::C(0,1), Calc::C(1,0) * Calc::C(0,1)
+    assert_equal Calc::C(0,-2), Calc::C(1,1) * Calc::C(-1,-1)
+  end
+
+  def test_divide
+    assert_instance_of Calc::C, Calc::C(1,1) / Calc::C(1,1)
+    assert_equal 1, Calc::C(1,1) / Calc::C(1,1)
+    assert_equal Calc::C(1,-1), Calc::C(1,1) / Calc::C(0,1)
+    assert_equal Calc::C(1,1), Calc::C(1,1) / Calc::C(1,0)
+    assert_equal Calc::C(2,-2), Calc::C(4,-4) / 2
+    assert_equal Calc::C(-2,-2), Calc::C(4,-4) / Calc::C(0,2)
+    assert_equal Calc::C(0,-2), Calc::C(4,-4) / Calc::C(2,2)
+
+    assert_raises(Calc::MathError) { Calc::C(1,1) / 0 }
   end
 
 end
