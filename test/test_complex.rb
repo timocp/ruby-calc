@@ -48,8 +48,10 @@ class TestComplex < MiniTest::Test
 
   def test_equal
     assert Calc::C(1,2) == Calc::C(1,2)
+    assert Calc::C(BIG, BIG2) == Complex(BIG, BIG2)
 
     refute Calc::C(1,2) == Calc::C(1,3)
+    refute Calc::C(BIG, BIG2) == Complex(BIG2, BIG)
   end
 
 end
