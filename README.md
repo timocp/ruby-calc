@@ -93,7 +93,31 @@ Calc::Q(10).fact    #=> Calc::Q(3628800)
 
 ### Complex numbers (Calc::C)
 
-Not implemented yet.
+```ruby
+# Complex numbers can be created by passing a real and imaginary pair of
+# rational numbers.  In this form, the arguments can be anything accepted by
+# Calc::Q#new:
+c1 = Calc::C(2, 3) #=> Calc::C(2+3i)
+
+# You can pass a single Complex or Calc::C parameter:
+c2 = Calc::C(Complex(-1,-1)) #=> Calc::C(-1-1i)
+
+# If any other single numeric type is passed, it is used as the real part and
+# the imaginary part is set to zero:
+c3 = Calc::C(1) #=> Calc::C(1)
+
+# Complex arithmetic is available:
+c1 + c2  #=> Calc::C(1+2i)
+c1 - c2  #=> Calc::C(3+4i)
+c1 * c2  #=> Calc::C(1-5i)
+c1 / c2  #=> Calc::C(-2.5+0.5i)
+c1 ** c2 #=> Calc::C(-0.47426003871893157744-0.56942019125139104294i)
+
+# The real and imaginary parts can be retrieved with #re/#im
+# (aliases #real/#imag).  Calc::Q rational numbers are returned
+(c1 / c2).re #=> Calc::Q(-2.5)
+(c1 / c2).im #=> Calc::Q(-0.5)
+```
 
 ### Built in functions
 
@@ -127,6 +151,7 @@ fact   | x          | factorial of integer x
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 pi     | [b]        | value of π within accuracy b
+power  | x, y [, b] | x raised to the power of y within accuracy b
 root   | x, n [, b] | nth root of x within accuracy b
 sec    | x [, b]    | secant of x within accuracy b
 sech   | x [, b]    | hyperbolic secant within accuracy b
