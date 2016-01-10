@@ -114,15 +114,23 @@ module Calc
     # @example
     #   Calc::C(-1).abs          #=> Calc::Q(1)
     #   Calc::C(3,-4).abs        #=> Calc::Q(5)
-    #   Calc::C(4,5).abs("1e-5") #=> Calc::Q(6.40312) XXX
+    #   Calc::C(4,5).abs("1e-5") #=> Calc::Q(6.40312)
     def abs(*args)
-      if real?
-        re.abs
-      elsif imag?
-        im.abs
-      else
-        re.hypot(im, *args)
-      end
+      # see value.c#absvalue()
+      re.hypot(im, *args)
+    end
+
+    # Returns the argument (the angle or phase) of a complex number in radians.
+    #
+    # @param eps [Calc::Q] (optional) calculation accuracy
+    # @return [Calc::Q]
+    # @example
+    #  Calc::C(1,0)  #=> 0
+    #  Calc::C(-1,0) #=> -pi
+    #  Calc::C(1,1)  #=> Calc::Q(0.78539816339744830962)
+    def arg(*args)
+      # see func.c#f_arg()
+      Q.atan2(im, re, *args)
     end
 
     def to_s(*args)

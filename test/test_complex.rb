@@ -178,4 +178,12 @@ class TestComplex < MiniTest::Test
     assert_instance_of FalseClass, Calc::C(1,0).imag?
   end
 
+  def test_arg
+    assert_instance_of Calc::Q, Calc::C(1,1).arg
+    assert_equal 0, Calc::C(2).arg
+    assert_in_epsilon Calc::Q.pi(), Calc::C(-2).arg
+    assert_in_epsilon 0.98279372324732906799, Calc::C(2,3).arg
+    assert_in_epsilon 0.98279, Calc::C(2,3).arg("1e-5")
+  end
+
 end
