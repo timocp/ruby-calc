@@ -535,4 +535,11 @@ class TestRational < MiniTest::Test
     assert_equal Calc::Q(7,4), 1 + Calc::Q(3,4)
   end
 
+  def test_hypot
+    assert_instance_of Calc::Q, Calc::Q(3).hypot(4)
+    assert_instance_of Calc::Q, Calc::Q.hypot(3,4)
+    assert_equal 5, Calc::Q(3).hypot(4)
+    assert_in_epsilon 3.60555127546398929312, Calc::Q(2).hypot(-3)
+  end
+
 end

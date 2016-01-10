@@ -841,6 +841,20 @@ cq_exp(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qexp);
 }
 
+/* Returns the hypotenuse of a right-angled triangle given the other sides
+ *
+ * @param y [Numeric,Calc::Numeric] other side
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(3).hypot(4)  #=> Calc::Q(5)
+ *  Calc::Q(2).hypot(-3) #=> Calc::Q(3.60555127546398929312)
+ */
+static VALUE
+cq_hypot(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function2(argc, argv, self, &qhypot);
+}
+
 /* Logarithm
  *
  * Note that this is like using ruby's Math.log.
@@ -1096,6 +1110,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "denominator", cq_denominator, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
+    rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "ln", cq_ln, -1);
     rb_define_method(cQ, "log", cq_log, -1);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
