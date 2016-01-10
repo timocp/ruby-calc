@@ -118,6 +118,33 @@ numeric_op(VALUE self, VALUE other,
     return result;
 }
 
+static VALUE
+trans_function2(int argc, VALUE * argv, VALUE self, COMPLEX * (f) (COMPLEX *, COMPLEX *, NUMBER *))
+{
+    VALUE arg, epsilon, result;
+    COMPLEX *carg;
+    NUMBER *qepsilon;
+    setup_math_error();
+
+    result = cc_new();
+    if (rb_scan_args(argc, argv, "11", &arg, &epsilon) == 1) {
+        carg = value_to_complex(arg);
+        DATA_PTR(result) = (*f) (DATA_PTR(self), carg, conf->epsilon);
+        comfree(carg);
+    }
+    else {
+        carg = value_to_complex(arg);
+        qepsilon = value_to_number(epsilon, 1);
+        DATA_PTR(result) = (*f) (DATA_PTR(self), carg, qepsilon);
+        qfree(qepsilon);
+        comfree(carg);
+    }
+    if (!DATA_PTR(result)) {
+        rb_raise(e_MathError, "Transcendental function returned NULL");
+    }
+    return result;
+}
+
 /* Performs complex multiplication.
  *
  * @param y [Numeric,Numeric::Calc]
@@ -253,6 +280,22 @@ cc_im(VALUE self)
     return result;
 }
 
+/* Raise to a specified power
+ *
+ * @param y [Numeric,Numeric::Calc]
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(1,1) ** 2 #=> Calc::C(2i)
+ */
+static VALUE
+cc_power(int argc, VALUE * argv, VALUE self)
+{
+    /* todo: if y is integer, converting to NUMBER* and using c_powi might
+     * be faster */
+    return trans_function2(argc, argv, self, &c_power);
+}
+
 /* Returns the real part of a complex number
  *
  * @return [Calc::Q]
@@ -289,8 +332,10 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "/", cc_divide, 1);
     rb_define_method(cC, "==", cc_equal, 1);
     rb_define_method(cC, "im", cc_im, 0);
+    rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
 
+    rb_define_alias(cC, "**", "power");
     rb_define_alias(cC, "imag", "im");
     rb_define_alias(cC, "real", "re");
 }

@@ -47,7 +47,7 @@ module Calc
 
   class Q
     def **(other)
-      Calc::Q.power(self, other)
+      power(other)
     end
 
     def inspect
@@ -112,6 +112,15 @@ module Calc
     #  +Calc::C(1,1) #=> Calc::C(1,1)
     def +@
       self
+    end
+
+    class << self
+      # module versions of some methods for convenience
+      %i(power).each do |f|
+        define_method f do |*args|
+          Calc::C(args.first).__send__(f, *args[1..-1])
+        end
+      end
     end
 
     private

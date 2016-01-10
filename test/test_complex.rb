@@ -132,4 +132,17 @@ class TestComplex < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::C(1,1) / 0 }
   end
 
+  def test_power
+    assert_instance_of Calc::C, Calc::C(1,1) ** 2
+    assert_instance_of Calc::C, Calc::C.power(Calc::C(1,1), 2)
+
+    assert_equal -4, Calc::C(1,1) ** 4
+    assert_equal 8.22074, Calc::C("1.2345").power(10, "1e-5").re.to_f
+    assert_equal       0, Calc::C("1.2345").power(10, "1e-5").im
+    assert_equal -26, Calc::C(1,3).power(3).re
+    assert_equal -18, Calc::C(1,3).power(3).im
+    assert_equal Calc::C("-2.50593","-1.39445"), Calc::C(1,3).power(Calc::C(2,1), "1e-5")
+    assert_equal Calc::C(".20787957635076190855"), Calc::C(0,1) ** Calc::C(0,1)
+  end
+
 end
