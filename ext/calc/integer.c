@@ -401,7 +401,6 @@ define_calc_z(VALUE m)
     rb_define_method(cZ, "*", cz_multiply, 1);
     rb_define_method(cZ, "**", cz_power, 1);
     rb_define_method(cZ, "+", cz_add, 1);
-    rb_define_method(cZ, "+@", cz_self, 0);
     rb_define_method(cZ, "-", cz_subtract, 1);
     rb_define_method(cZ, "-@", cz_uminus, 0);
     rb_define_method(cZ, "<<", cz_shift_left, 1);

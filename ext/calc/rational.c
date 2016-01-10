@@ -243,18 +243,6 @@ trans_function2(int argc, VALUE * argv, VALUE self,
  * instance method implementations                                           *
  *****************************************************************************/
 
-/* Unary plus.  Returns the receiver's value.
- *
- * @return [Calc::Q]
- * @example
- *  +Calc::Q(1) #=> Calc::Q(1)
- */
-static VALUE
-cq_uplus(VALUE self)
-{
-    return self;
-}
-
 /* Unary minus.  Returns the receiver's value, negated.
  *
  * @return [Calc::Q]
@@ -1079,7 +1067,6 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "%", cq_mod, 1);
     rb_define_method(cQ, "*", cq_multiply, 1);
     rb_define_method(cQ, "+", cq_add, 1);
-    rb_define_method(cQ, "+@", cq_uplus, 0);
     rb_define_method(cQ, "-", cq_subtract, 1);
     rb_define_method(cQ, "-@", cq_uminus, 0);
     rb_define_method(cQ, "/", cq_divide, 1);

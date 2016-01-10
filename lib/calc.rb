@@ -4,6 +4,17 @@ require "calc/calc"
 module Calc
 
   class Numeric
+    # Unary plus.  Returns the receiver's value.
+    #
+    # @return [Calc::Numeric]
+    # @example
+    #  +Calc::C(1,1) #=> Calc::C(1,1)
+    #  +Calc::Q(1)   #=> Calc::Q(1)
+    #  +Calc::Z(1)   #=> Calc::Z(1)
+    def +@
+      self
+    end
+
     def remainder(y)
       z = self % y
       if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))
@@ -16,6 +27,7 @@ module Calc
     def coerce(other)
       [self.class.new(other), self]
     end
+
   end
 
   def self.Z(p)
@@ -108,15 +120,6 @@ module Calc
 
     def inspect
       "Calc::C(#{ to_s })"
-    end
-
-    # Unary plus.  Returns the receiver's value.
-    #
-    # @return [Calc::C]
-    # @example
-    #  +Calc::C(1,1) #=> Calc::C(1,1)
-    def +@
-      self
     end
 
     class << self
