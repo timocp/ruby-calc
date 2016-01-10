@@ -104,6 +104,27 @@ module Calc
   end
 
   class C
+    # Returns the absolute value of a complex number.  For purely real or
+    # purely imaginary values, returns the absolute value of the non-zero
+    # part.  Otherwise returns the absolute part of its complex form within
+    # the specified accuracy.
+    #
+    # @param eps [Calc::Q] (optional) calculation accuracy
+    # @return [Calc::Q]
+    # @example
+    #   Calc::C(-1).abs          #=> Calc::Q(1)
+    #   Calc::C(3,-4).abs        #=> Calc::Q(5)
+    #   Calc::C(4,5).abs("1e-5") #=> Calc::Q(6.40312) XXX
+    def abs(*args)
+      if real?
+        re.abs
+      elsif imag?
+        im.abs
+      else
+        re.hypot(im, *args)
+      end
+    end
+
     def to_s(*args)
       r = self.re
       i = self.im

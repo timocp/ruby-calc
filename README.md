@@ -125,7 +125,7 @@ Where possible, calc builtin functions are exposed by this library are implement
 
 Method | Arguments  | Description
 ------ | ---------  | -----------
-abs    | x          | absolute value of x
+abs    | x [, b]    | absolute value of x (for complex x, within accuracy b)
 acos   | x [, b]    | arccosine of x within accuracy b
 acosh  | x [, b]    | hyperbolic arccosine of x within accuracy b
 acot   | x [, b]    | inverse cotangent of x within accuracy b

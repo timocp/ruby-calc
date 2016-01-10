@@ -119,7 +119,8 @@ numeric_op(VALUE self, VALUE other,
 }
 
 static VALUE
-trans_function2(int argc, VALUE * argv, VALUE self, COMPLEX * (f) (COMPLEX *, COMPLEX *, NUMBER *))
+trans_function2(int argc, VALUE * argv, VALUE self,
+                COMPLEX * (f) (COMPLEX *, COMPLEX *, NUMBER *))
 {
     VALUE arg, epsilon, result;
     COMPLEX *carg;
@@ -280,6 +281,20 @@ cc_im(VALUE self)
     return result;
 }
 
+/* Returns true if the number is imaginary (ie, has zero real part and non-zero
+ * imaginary part)
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(0,1).imag? #=> true
+ *  Calc::C(1,1).real? #=> false
+ */
+static VALUE
+cc_isimag(VALUE self)
+{
+    return cisimag((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
 /* Raise to a specified power
  *
  * @param y [Numeric,Numeric::Calc]
@@ -315,6 +330,19 @@ cc_re(VALUE self)
     return result;
 }
 
+/* Returns true if the number is real (ie, has zero imaginary part)
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(1,1).real? #=> false
+ *  Calc::C(1,0).real? #=> true
+ */
+static VALUE
+cc_isreal(VALUE self)
+{
+    return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
 /* class initialization */
 
 void
@@ -332,8 +360,10 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "/", cc_divide, 1);
     rb_define_method(cC, "==", cc_equal, 1);
     rb_define_method(cC, "im", cc_im, 0);
+    rb_define_method(cC, "imag?", cc_isimag, 0);
     rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
+    rb_define_method(cC, "real?", cc_isreal, 0);
 
     rb_define_alias(cC, "**", "power");
     rb_define_alias(cC, "imag", "im");

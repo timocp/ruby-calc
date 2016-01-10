@@ -154,4 +154,28 @@ class TestComplex < MiniTest::Test
     assert_equal Calc::C(1,1), 0.5 * Calc::C(2,2)
   end
 
+  def test_abs
+    assert_instance_of Calc::Q, Calc::C(1,0).abs
+    assert_instance_of Calc::Q, Calc::C(1,1).abs
+    assert_instance_of Calc::Q, Calc::C(0,1).abs
+    assert_equal 1, Calc::C(1,0).abs
+    assert_in_epsilon 1.4142135623730950488, Calc::C(1,1).abs
+    assert_equal 1, Calc::C(0,1).abs
+    assert_equal 0, Calc::C(0,0).abs
+    assert_equal 1, Calc::C(-1).abs
+    assert_equal 5, Calc::C(3,-4).abs
+  end
+
+  def test_real?
+    assert_instance_of TrueClass, Calc::C(1,0).real?
+    assert_instance_of FalseClass, Calc::C(1,1).real?
+    assert_instance_of FalseClass, Calc::C(0,1).real?
+  end
+
+  def test_imag?
+    assert_instance_of TrueClass, Calc::C(0,1).imag?
+    assert_instance_of FalseClass, Calc::C(1,1).imag?
+    assert_instance_of FalseClass, Calc::C(1,0).imag?
+  end
+
 end
