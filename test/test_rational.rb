@@ -542,4 +542,10 @@ class TestRational < MiniTest::Test
     assert_in_epsilon 3.60555127546398929312, Calc::Q(2).hypot(-3)
   end
 
+  def test_arg
+    assert_instance_of Calc::Q, Calc::Q(1).arg
+    assert_in_epsilon Calc::Q.pi, Calc::Q(-1).arg
+    assert_equal 0, Calc::Q(1).arg
+  end
+
 end

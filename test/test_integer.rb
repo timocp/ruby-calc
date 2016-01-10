@@ -346,4 +346,10 @@ class TestInteger < Minitest::Test
   def test_coerce
     assert_equal 2, 1 + Calc::Z(1)
   end
+
+  def test_arg
+    assert_instance_of Calc::Z, Calc::Z(1).arg
+    assert_in_epsilon Calc::Q.pi, Calc::Z(-1).arg
+    assert_equal 0, Calc::Z(1).arg
+  end
 end

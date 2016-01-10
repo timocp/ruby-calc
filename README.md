@@ -132,6 +132,7 @@ acot   | x [, b]    | inverse cotangent of x within accuracy b
 acoth  | x [, b]    | inverse hyperbolic cotangent of x within accuracy b
 acsc   | x [, b]    | inverse cosecant of x within accuracy b
 acsch  | x [, b]    | inverse hyperbolic cosecant of x within accuracy b
+arg    | x [, b]    | argument (angle) of complex number x within acccuracy b
 asec   | x [, b]    | inverse secant of x within accuracy b
 asech  | x [, b]    | inverse hyperbolic secant of x within accuracy b
 asin   | x [, b]    | arcsine of x within accuracy b
@@ -307,8 +308,6 @@ For more details of these, type "help config" in calc.
 ## Differences from Calc
 
 For people familiar with the command line interface to calc, here are some important differences to make this library more ruby-ish:
-
-Calc methods which act on values now use the first value as the method receiver, eg:
 
 Ruby doesn't have output parameters; for functions which in calc modify their parameters, ruby-calc instead returns values, eg:
 

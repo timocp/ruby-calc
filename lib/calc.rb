@@ -15,6 +15,26 @@ module Calc
       self
     end
 
+    # Returns the argument (the angle or phase) of a complex number in radians.
+    #
+    # This this method is used by non-complex classes, it will be 0 for
+    # positive values, pi() otherwise
+    #
+    # @param eps [Calc::Q] (optional) calculation accuracy
+    # @return [Calc::Z,Calc::Q]
+    # @example
+    #  Calc::Z(-1).arg #=> Calc::Q(3.14159265358979323846)
+    #  Calc::Z(1).arg  #=> Calc::Z(0)
+    #  Calc::Q(-1).arg #=> Calc::Q(3.14159265358979323846)
+    #  Calc::Q(1).arg  #=> Calc::Q(0)
+    def arg(*args)
+      if self < 0
+        Q.pi(*args)
+      else
+        self.class.new(0)
+      end
+    end
+
     def remainder(y)
       z = self % y
       if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))
@@ -60,6 +80,15 @@ module Calc
     def to_r
       Rational(self.to_i, 1)
     end
+
+    class << self
+      # module versions of methods
+      %i(arg).each do |f|
+        define_method f do |*args|
+          Calc::Z(args.first).__send__(f, *args[1..-1])
+        end
+      end
+    end
   end
 
   class Q
@@ -92,7 +121,7 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(acos acosh acot acoth acsc acsch asec asech asin asinh atan atan2
+      %i(acos acosh acot acoth acsc acsch arg asec asech asin asinh atan atan2
          atanh cbrt cos cosh cot coth csc csch exp hypot ln log power root sec
          sech sin sinh sqrt tan tanh).each do |f|
         define_method f do |*args|
@@ -153,7 +182,7 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(power).each do |f|
+      %i(abs arg power).each do |f|
         define_method f do |*args|
           Calc::C(args.first).__send__(f, *args[1..-1])
         end
