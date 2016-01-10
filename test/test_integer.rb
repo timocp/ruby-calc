@@ -342,4 +342,8 @@ class TestInteger < Minitest::Test
     assert_equal "Calc::Z(42)",  Calc::Z.new(42).inspect
     assert_equal "Calc::Z(-42)", Calc::Z.new(-42).inspect
   end
+
+  def test_coerce
+    assert_equal 2, 1 + Calc::Z(1)
+  end
 end

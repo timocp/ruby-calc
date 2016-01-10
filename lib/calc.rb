@@ -11,6 +11,11 @@ module Calc
       end
       return z
     end
+
+    # Provides support for Ruby type coercion.
+    def coerce(other)
+      [self.class.new(other), self]
+    end
   end
 
   def self.Z(p)

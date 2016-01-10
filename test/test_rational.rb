@@ -528,4 +528,11 @@ class TestRational < MiniTest::Test
     assert_in_epsilon 0.64805427366388539958, Calc::Q.sech(1).to_f
   end
 
+  def test_coerce
+    assert_instance_of Calc::Q, Rational(1,2) + Calc::Q(3,4)
+    assert_equal Calc::Q(5,4), Rational(1,2) + Calc::Q(3,4)
+    assert_equal Calc::Q(5,4), 0.5 + Calc::Q(3,4)
+    assert_equal Calc::Q(7,4), 1 + Calc::Q(3,4)
+  end
+
 end

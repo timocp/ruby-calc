@@ -145,4 +145,13 @@ class TestComplex < MiniTest::Test
     assert_equal Calc::C(".20787957635076190855"), Calc::C(0,1) ** Calc::C(0,1)
   end
 
+  def test_coerce
+    assert_instance_of Calc::C, Complex(1,1) + Calc::C(2,2)
+    assert_equal Calc::C(3,3), Complex(1,1) + Calc::C(2,2)
+    assert_equal Calc::C(3,2), 1 + Calc::C(2,2)
+    assert_equal Calc::C(4,4), 2 * Calc::C(2,2)
+    assert_equal Calc::C("0.5","-0.5"), 2 / Calc::C(2,2)
+    assert_equal Calc::C(1,1), 0.5 * Calc::C(2,2)
+  end
+
 end
