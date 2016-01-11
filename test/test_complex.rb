@@ -186,4 +186,14 @@ class TestComplex < MiniTest::Test
     assert_in_epsilon 0.98279, Calc::C(2,3).arg("1e-5")
   end
 
+  def test_polar
+    assert_instance_of Calc::C, Calc::C.polar(2,0)
+    assert_instance_of Calc::C, Calc::C.polar(1,2, "1e-5")
+    assert_instance_of Calc::C, Calc::C.polar(2, Calc::Q.pi()/4)
+    assert_equal 2, Calc::C.polar(2,0)
+    assert_equal Calc::C("-0.41615","0.9093"), Calc::C.polar(1,2,"1e-5")
+    assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc::Q.pi()/4).re
+    assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc::Q.pi()/4).im
+  end
+
 end

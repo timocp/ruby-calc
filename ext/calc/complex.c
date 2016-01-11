@@ -343,6 +343,41 @@ cc_isreal(VALUE self)
     return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
+/* Returns a new complex number specified by modulus (radius) and argument
+ * (angle, in radians).
+ *
+ * @param radius [Numeric,Calc::Numeric]
+ * @param angle [Numeric,Calc::Numeric]
+ * @param eps [Numeric] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C.polar(1,2) #=> Calc::C(-0.416146836547142387+0.9092974268256816954i)
+ */
+static VALUE
+cc_polar(int argc, VALUE * argv, VALUE self)
+{
+    VALUE radius, angle, epsilon, result;
+    NUMBER *qradius, *qangle, *qepsilon;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "21", &radius, &angle, &epsilon) == 3) {
+        qepsilon = value_to_number(epsilon, 1);
+    }
+    else {
+        qepsilon = NULL;
+    }
+    qradius = value_to_number(radius, 0);
+    qangle = value_to_number(angle, 0);
+    result = cc_new();
+    DATA_PTR(result) = c_polar(qradius, qangle, qepsilon ? qepsilon : conf->epsilon);
+    if (qepsilon) {
+        qfree(qepsilon);
+    }
+    qfree(qradius);
+    qfree(qangle);
+    return result;
+}
+
 /* class initialization */
 
 void
@@ -364,6 +399,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
     rb_define_method(cC, "real?", cc_isreal, 0);
+    rb_define_module_function(cC, "polar", cc_polar, -1);
 
     rb_define_alias(cC, "**", "power");
     rb_define_alias(cC, "imag", "im");

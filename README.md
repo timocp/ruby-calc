@@ -102,6 +102,11 @@ c1 = Calc::C(2, 3) #=> Calc::C(2+3i)
 # You can pass a single Complex or Calc::C parameter:
 c2 = Calc::C(Complex(-1,-1)) #=> Calc::C(-1-1i)
 
+# You can also use the polar method to initialize a complex number by giving
+# a modulus (radius) and argument (angle, in radians)
+Calc::C.polar(1,2) #=> Calc::C(-0.416146836547142387+0.9092974268256816954i)
+Calc::C.polar(c2.abs, c2.arg) #=> Calc::C(-1-1i)
+
 # If any other single numeric type is passed, it is used as the real part and
 # the imaginary part is set to zero:
 c3 = Calc::C(1) #=> Calc::C(1)
