@@ -119,6 +119,28 @@ numeric_op(VALUE self, VALUE other,
 }
 
 static VALUE
+trans_function(int argc, VALUE * argv, VALUE self, COMPLEX * (*f) (COMPLEX *, NUMBER *))
+{
+    VALUE result, epsilon;
+    NUMBER *qepsilon;
+    setup_math_error();
+
+    result = cc_new();
+    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
+        DATA_PTR(result) = (*f) (DATA_PTR(self), conf->epsilon);
+    }
+    else {
+        qepsilon = value_to_number(epsilon, 1);
+        DATA_PTR(result) = (*f) (DATA_PTR(self), qepsilon);
+        qfree(qepsilon);
+    }
+    if (!DATA_PTR(result)) {
+        rb_raise(e_MathError, "Complex transcendental function returned NULL");
+    }
+    return result;
+}
+
+static VALUE
 trans_function2(int argc, VALUE * argv, VALUE self,
                 COMPLEX * (f) (COMPLEX *, COMPLEX *, NUMBER *))
 {
@@ -141,7 +163,7 @@ trans_function2(int argc, VALUE * argv, VALUE self,
         comfree(carg);
     }
     if (!DATA_PTR(result)) {
-        rb_raise(e_MathError, "Transcendental function returned NULL");
+        rb_raise(e_MathError, "Complex transcendental function returned NULL");
     }
     return result;
 }
@@ -262,6 +284,188 @@ cc_equal(VALUE self, VALUE other)
     return result ? Qtrue : Qfalse;
 }
 
+/* Inverse trigonometric cosine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).acos #=> Calc::C(1.00014354247379721852-1.98338702991653543235i)
+ */
+static VALUE
+cc_acos(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_acos);
+}
+
+/* Inverse hyperbolic cosine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).acosh #=> Calc::C(1.98338702991653543235+1.00014354247379721852i)
+ */
+static VALUE
+cc_acosh(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_acosh);
+}
+
+/* Inverse trigonometric cotangent
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).acot #=> Calc::C(0.1608752771983210967-~0.22907268296853876630i)
+ */
+static VALUE
+cc_acot(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_acot);
+}
+
+/* Inverse hyperbolic cotangent
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).acoth #=> Calc::C(~0.14694666622552975204-~0.23182380450040305810i)
+ */
+static VALUE
+cc_acoth(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_acoth);
+}
+
+/* Inverse trigonometric cosecant
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).acsc #=> Calc::C(0.15038560432786196325-0.23133469857397331455i)
+ */
+static VALUE
+cc_acsc(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_acsc);
+}
+
+/* Inverse hyperbolic cosecant
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).acsch #=> Calc::C(0.15735549884498542878-0.22996290237720785451i)
+ */
+static VALUE
+cc_acsch(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_acsch);
+}
+
+/* Inverse trigonometric secant
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).asec #=> Calc::C(1.42041072246703465598+0.23133469857397331455i)
+ */
+static VALUE
+cc_asec(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_asec);
+}
+
+/* Inverse hyperbolic secant
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).asech #=> Calc::C(0.23133469857397331455-1.42041072246703465598i)
+ */
+static VALUE
+cc_asech(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_asech);
+}
+
+/* Inverse trigonometric sine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).asin #=> Calc::C(0.57065278432109940071+1.98338702991653543235i)
+ */
+static VALUE
+cc_asin(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_asin);
+}
+
+/* Inverse hyperbolic sine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).asinh #=> Calc::C(1.96863792579309629179+0.96465850440760279204i
+ */
+static VALUE
+cc_asinh(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_asinh);
+}
+
+/* Inverse trigonometric tangent
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).atan #=> Calc::C(1.40992104959657552253+~0.22907268296853876630i)
+ */
+static VALUE
+cc_atan(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_atan);
+}
+
+/* Inverse hyperbolic tangent
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).atanh #=> Calc::C(~0.14694666622552975204+~1.33897252229449356112i)
+ */
+static VALUE
+cc_atanh(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_atanh);
+}
+
+/* Cosine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).cos #=> Calc::C(-4.18962569096880723013-9.10922789375533659798i)
+ */
+static VALUE
+cc_cos(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_cos);
+}
+
+/* Hyperbolic cosine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).cosh #=> Calc::C(~-3.72454550491532256548+~0.51182256998738460884i)
+ */
+static VALUE
+cc_cosh(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_cosh);
+}
+
 /* Returns the imaginary part of a complex number
  *
  * @return [Calc::Q]
@@ -293,6 +497,19 @@ static VALUE
 cc_isimag(VALUE self)
 {
     return cisimag((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
+/* Inverts a complex number
+ */
+static VALUE
+cc_invert(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+
+    result = cc_new();
+    DATA_PTR(result) = c_inv(DATA_PTR(self));
+    return result;
 }
 
 /* Raise to a specified power
@@ -341,6 +558,32 @@ static VALUE
 cc_isreal(VALUE self)
 {
     return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
+/* Trigonometric sine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).sin #=> Calc::C(9.15449914691142957347-4.16890695996656435076i)
+ */
+static VALUE
+cc_sin(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_sin);
+}
+
+/* Hyperbolic sine
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(2,3).acos #=> 
+ */
+static VALUE
+cc_sinh(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_sinh);
 }
 
 /* Returns a new complex number specified by modulus (radius) and argument
@@ -394,11 +637,28 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "-@", cc_uminus, 0);
     rb_define_method(cC, "/", cc_divide, 1);
     rb_define_method(cC, "==", cc_equal, 1);
+    rb_define_method(cC, "acos", cc_acos, -1);
+    rb_define_method(cC, "acosh", cc_acosh, -1);
+    rb_define_method(cC, "acot", cc_acot, -1);
+    rb_define_method(cC, "acoth", cc_acoth, -1);
+    rb_define_method(cC, "acsc", cc_acsc, -1);
+    rb_define_method(cC, "acsch", cc_acsch, -1);
+    rb_define_method(cC, "asec", cc_asec, -1);
+    rb_define_method(cC, "asech", cc_asech, -1);
+    rb_define_method(cC, "asin", cc_asin, -1);
+    rb_define_method(cC, "asinh", cc_asinh, -1);
+    rb_define_method(cC, "atan", cc_atan, -1);
+    rb_define_method(cC, "atanh", cc_atanh, -1);
+    rb_define_method(cC, "cos", cc_cos, -1);
+    rb_define_method(cC, "cosh", cc_cosh, -1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "imag?", cc_isimag, 0);
+    rb_define_method(cC, "invert", cc_invert, 0);
     rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
     rb_define_method(cC, "real?", cc_isreal, 0);
+    rb_define_method(cC, "sin", cc_sin, -1);
+    rb_define_method(cC, "sinh", cc_sinh, -1);
     rb_define_module_function(cC, "polar", cc_polar, -1);
 
     rb_define_alias(cC, "**", "power");

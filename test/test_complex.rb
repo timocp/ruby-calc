@@ -6,6 +6,12 @@ class TestComplex < MiniTest::Test
   BIG2 =  0x8000000000000000  # first Bignum that won't fit in a long
   BIG3 = -0x8000000000000001  # first negative bignum that won't fit in a long
 
+  def assert_complex_parts(c, rp, ip)
+    assert_instance_of Calc::C, c
+    assert_in_epsilon rp, c.re
+    assert_in_epsilon ip, c.im
+  end
+
   def test_class_exists
     refute_nil Calc::C
   end
@@ -194,6 +200,102 @@ class TestComplex < MiniTest::Test
     assert_equal Calc::C("-0.41615","0.9093"), Calc::C.polar(1,2,"1e-5")
     assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc::Q.pi()/4).re
     assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc::Q.pi()/4).im
+  end
+
+  def test_cos
+    assert_complex_parts Calc::C(2,3).cos, -4.18962569096880723013, -9.10922789375533659798
+  end
+
+  def test_sin
+    assert_complex_parts Calc::C(2,3).sin, 9.15449914691142957347, -4.16890695996656435076
+  end
+
+  def test_cosh
+    assert_complex_parts Calc::C(2,3).cosh, -3.72454550491532256548, 0.51182256998738460884
+  end
+
+  def test_sinh
+    assert_complex_parts Calc::C(2,3).sinh, -3.59056458998577995202, 0.53092108624851980526
+  end
+
+  def test_asin
+    assert_complex_parts Calc::C(2,3).asin, 0.57065278432109940071, 1.98338702991653543235
+  end
+
+  def test_acos
+    assert_complex_parts Calc::C(2,3).acos, 1.00014354247379721852, -1.98338702991653543235
+  end
+
+  def test_atan
+    assert_complex_parts Calc::C(2,3).atan, 1.40992104959657552253, 0.22907268296853876630
+  end
+
+  def test_acot
+    assert_complex_parts Calc::C(2,3).acot, 0.1608752771983210967, -0.22907268296853876630
+  end
+
+  def test_asec
+    assert_complex_parts Calc::C(2,3).asec, 1.42041072246703465598, 0.2313346985739733145
+  end
+
+  def test_acsc
+    assert_complex_parts Calc::C(2,3).acsc, 0.15038560432786196325, -0.23133469857397331455
+  end
+
+  def test_asinh
+    assert_complex_parts Calc::C(2,3).asinh, 1.96863792579309629179, 0.96465850440760279204
+  end
+
+  def test_acosh
+    assert_complex_parts Calc::C(2,3).acosh, 1.98338702991653543235, 1.00014354247379721852
+  end
+
+  def test_atanh
+    assert_complex_parts Calc::C(2,3).atanh, 0.14694666622552975204, 1.33897252229449356112
+  end
+
+  def test_acoth
+    assert_complex_parts Calc::C(2,3).acoth, 0.14694666622552975204, -0.23182380450040305810
+  end
+
+  def test_asech
+    assert_complex_parts Calc::C(2,3).asech, 0.23133469857397331455, -1.42041072246703465598
+  end
+
+  def test_acsch
+    assert_complex_parts Calc::C(2,3).acsch, 0.15735549884498542878, -0.22996290237720785451
+  end
+  
+  def test_cot
+    assert_complex_parts Calc::C(2,3).cot, -0.00373971037633695666, -0.99675779656935831046
+  end
+
+  def test_coth
+    assert_complex_parts Calc::C(2,3).coth, 1.03574663776499539611, 0.01060478347033710175
+  end
+
+  def test_csc
+    assert_complex_parts Calc::C(2,3).csc, 0.09047320975320743981, 0.04120098628857412646
+  end
+
+  def test_csch
+    assert_complex_parts Calc::C(2,3).csch, -0.27254866146294019951, -0.04030057885689152187
+  end
+
+  def test_sec
+    assert_complex_parts Calc::C(2,3).sec, -0.04167496441114427005, 0.09061113719623759653
+  end
+
+  def test_sech
+    assert_complex_parts Calc::C(2,3).sech, -0.26351297515838930964, -0.03621163655876852087
+  end
+
+  def test_tan
+    assert_complex_parts Calc::C(2,3).tan, -0.00376402564150424829, 1.00323862735360980145
+  end
+
+  def test_tanh
+    assert_complex_parts Calc::C(2,3).tanh, 0.96538587902213312428, -0.00988437503832249372
   end
 
 end
