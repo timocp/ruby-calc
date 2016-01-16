@@ -85,9 +85,9 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(acos acosh acot acoth acsc acsch arg asec asech asin asinh atan atan2
-         atanh cbrt cos cosh cot coth csc csch exp hypot ln log power root sec
-         sech sin sinh sqrt tan tanh).each do |f|
+      %i(abs acos acosh acot acoth acsc acsch arg asec asech asin asinh atan
+         atan2 atanh cbrt cos cosh cot coth csc csch exp fact hypot ln log
+         power quomod root sec sech sin sinh sqrt tan tanh).each do |f|
         define_method f do |*args|
           Calc::Q(args.first).__send__(f, *args[1..-1])
         end
@@ -234,7 +234,9 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(abs arg power).each do |f|
+      %i(abs acos acosh acot acoth acsc acsch arg asec asech asin asinh atan
+         atanh cos cosh cot coth csc csch power sec sech sin sinh tan
+         tanh).each do |f|
         define_method f do |*args|
           Calc::C(args.first).__send__(f, *args[1..-1])
         end

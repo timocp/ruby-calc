@@ -192,6 +192,7 @@ class TestRational < MiniTest::Test
 
   def test_abs
     assert_instance_of Calc::Q, Calc::Q(12).abs
+    assert_instance_of Calc::Q, Calc::Q.abs(12)
     assert_equal 12, Calc::Q(12).abs
     assert_equal 12, Calc::Q(-12).abs
     assert_alias Calc::Q(12), :abs, :magnitude
@@ -199,11 +200,12 @@ class TestRational < MiniTest::Test
 
   def test_quomod
     [5, BIG2, Calc::Q(5), Rational(5,1), 5.0].each do |p|
-      r = Calc::Q(13).quomod(p)
-      assert_instance_of Array, r
-      assert_equal 2, r.size
-      assert_instance_of Calc::Q, r.first
-      assert_instance_of Calc::Q, r.last
+      [Calc::Q(13).quomod(p), Calc::Q.quomod(13, p)].each do |r|
+        assert_instance_of Array, r
+        assert_equal 2, r.size
+        assert_instance_of Calc::Q, r.first
+        assert_instance_of Calc::Q, r.last
+      end
     end
     assert_equal [2, 3], Calc::Q(13).quomod(5)
     assert_equal [-4, -2], Calc::Q(10).quomod(-3)
@@ -277,6 +279,7 @@ class TestRational < MiniTest::Test
 
   def test_fact
     assert_instance_of Calc::Q, Calc::Q(42).fact
+    assert_instance_of Calc::Q, Calc::Q.fact(42)
     assert_equal 1, Calc::Q(0).fact
     assert_equal 1, Calc::Q(1).fact
     assert_equal 2, Calc::Q(2).fact
