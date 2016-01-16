@@ -56,7 +56,6 @@ cq_alloc(VALUE klass)
  * * Fixnum
  * * Bignum
  * * Rational
- * * Calc::Z
  * * Calc::Q
  * * String
  * * Float
@@ -76,8 +75,8 @@ cq_alloc(VALUE klass)
  * work better:
  *   Calc::Q("0.3")  #=> Calc::Q(0.3)
  *
- * @param num [Numeric,Calc::Z,Calc::Q,String]
- * @param den [Numeric,Calc::Z,Calc::Q,String] (optional)
+ * @param num [Numeric,Calc::Q,String]
+ * @param den [Numeric,Calc::Q,String] (optional)
  * @return [Calc::Q]
  * @raise [ZeroDivisionError] if denominator of new number is zero
  */
@@ -147,7 +146,7 @@ numeric_op(VALUE self, VALUE other,
         qresult = (*fqq) (DATA_PTR(self), DATA_PTR(other));
     }
     else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL || CALC_Z_P(other)) {
+             || TYPE(other) == T_RATIONAL) {
         qother = value_to_number(other, 0);
         qresult = (*fqq) (DATA_PTR(self), qother);
         qfree(qother);
@@ -262,7 +261,7 @@ cq_uminus(VALUE self)
 
 /* Performs addition.
  *
- * @param y [Numeric,Calc::Z,Calc::Q]
+ * @param y [Numeric,Calc::Q]
  * @return [Calc::Q]
  * @example
  *  Calc::Q(1) + 2 #=> Calc::Q(3)
@@ -276,7 +275,7 @@ cq_add(VALUE x, VALUE y)
 
 /* Performs subtraction.
  *
- * @param y [Numeric,Calc::Z,Calc::Q]
+ * @param y [Numeric,Calc::Q]
  * @return [Calc::Q]
  * @example:
  *  Calc::Q(1) - 2 #=> Calc::Q(-1)
@@ -289,7 +288,7 @@ cq_subtract(VALUE x, VALUE y)
 
 /* Performs multiplication.
  *
- * @param y [Numeric,Calc::Z,Calc::Q]
+ * @param y [Numeric,Calc::Q]
  * @return [Calc::Q]
  * @example:
  *  Calc::Q(2) * 3 #=> Calc::Q(6)
@@ -302,7 +301,7 @@ cq_multiply(VALUE x, VALUE y)
 
 /* Performs division.
  *
- * @param y [Numeric,Calc::Z,Calc::Q]
+ * @param y [Numeric,Calc::Q]
  * @return [Calc::Q]
  * @raise [Calc::MathError] if other is zero
  * @example:
@@ -316,7 +315,7 @@ cq_divide(VALUE x, VALUE y)
 
 /* Computes the remainder for an integer quotient
  *
- * @param y [Numeric,Calc::Z,Calc::Q]
+ * @param y [Numeric,Calc::Q]
  * @return [Calc::Q]
  * @example:
  *  Calc::Q(11) % 5 #=> Calc::Q(1)
@@ -337,7 +336,7 @@ cq_mod(VALUE x, VALUE y)
 /* Left shift an integer by a given number of bits.  This multiplies the number
  * by the appropriate power of 2.
  *
- * @param n [Numeric,Calc::Z,Calc::Q] number of bits to shift
+ * @param n [Numeric,Calc::Q] number of bits to shift
  * @return [Calc::Q]
  * @raise [Calc::MathError] if self is a non-integer
  * @raise [Calc::MathError] if abs(n) is >= 2^31
@@ -353,7 +352,7 @@ cq_shift_left(VALUE x, VALUE n)
 /* Right shift an integer by a given number of bits.  This multiplies the
  * number by the appropriate power of 2.  Low bits are truncated.
  *
- * @param n [Numeric,Calc::Z,Calc::Q] number of bits to shift
+ * @param n [Numeric,Calc::Q] number of bits to shift
  * @return [Calc::Q]
  * @raise [Calc::MathError] if self is a non-integer
  * @raise [ArgumentError] if abs(n) is >= 2^31
@@ -374,7 +373,7 @@ cq_shift_right(VALUE self, VALUE other)
  *
  * nil is returned if the two values are incomparable.
  *
- * @param other [Numeric,Calc::Z,Calc::Q]
+ * @param other [Numeric,Calc::Q]
  * @return [Fixnum,nil]
  * @example:
  *  Calc::Q(5) <=> 4     #=> 1
@@ -399,7 +398,7 @@ cq_spaceship(VALUE self, VALUE other)
         result = qrel(qself, DATA_PTR(other));
     }
     else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL || CALC_Z_P(other)) {
+             || TYPE(other) == T_RATIONAL) {
         qother = value_to_number(other, 0);
         result = qrel(qself, qother);
         qfree(qother);
@@ -919,7 +918,7 @@ cq_pi(int argc, VALUE * argv, VALUE self)
 
 /* Evaluates a numeric power
  *
- * @param y [Numeric,Calc::Z,Calc::Q] power to raise by
+ * @param y [Numeric,Calc::Q] power to raise by
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @raise [Calc::MathError] if self is negative or raising to a VERY large power
@@ -934,7 +933,7 @@ cq_power(int argc, VALUE * argv, VALUE self)
 
 /* Returns the quotient and remainder from division
  *
- * @param y [Numeric,Calc::Z,Calc::Q] number to divide by
+ * @param y [Numeric,Calc::Q] number to divide by
  * @return [Array<Calc::Q>] Array containing quotient and remainder
  * @todo add parameter to control rounding
  * @example
@@ -960,7 +959,7 @@ cq_quomod(VALUE self, VALUE other)
 
 /* Returns the nth root
  *
- * @param n [Numeric,Calc::Z,Calc::Q] positive integer
+ * @param n [Numeric,Calc::Q] positive integer
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @raise [Calc::MathError] if n is not a positive integer

@@ -2,7 +2,7 @@
 
 /* Document-class: Calc::Numeric
  *
- * Parent class to the libraries numeric classes (Calc::Z, Calc::Q and Calc::C)
+ * Parent class to the libraries numeric classes (Calc::Q and Calc::C)
  */
 VALUE cNumeric;
 

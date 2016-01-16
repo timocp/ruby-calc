@@ -31,64 +31,44 @@ Or install it yourself as:
 
 ## Usage
 
-The library provides 3 classes:
-
-Ruby class | Represents
----------- | ----------
-Calc::Z    | Integers
-Calc::Q    | Rational numbers (fractions)
-Calc::C    | Complex numbers
-
-In calc, all 3 types of numbers can be arbitrarily large/precise.  It provides a large collection of builtin functions, all of which can compute results to arbitrary accuracy.
-
-While incomplete, this library intends to implement the ruby Numeric interface on each class, and also provide wrappers for all numerical functions provided by the calc library.
-
-In addition to providing access to the C library which implements calc (libcalc), this ruby gem aims for compatibility with the standard ruby types (`Calc::Z`, `Calc::Q` and `Calc::C` should act like `Fixnum`/`Bugnum`, `Rational` and `Complex` respectively).
-
-### Integers (Calc::Z)
-
-```ruby
-# creating integers (following are all equivalent)
-z1 = Calc::Z(42)            # fixnum or bignum argument
-z2 = Calc::Z(z1)            # another Z argument
-z3 = Calc::Z("42")          # strings will be converted
-z4 = Calc::Z("0b101010")    # string in binary
-z5 = Calc::Z("052")         # string in octal
-z6 = Calc::Z("0x2a")        # string in hex
-
-# integer arithmetic works like you'd expect:
-z1 + z2  #=> Calc::Z(84)
-z1 * z2  #=> Calc::Z(1764)
-z1 - z2  #=> Calc::Z(0)
-z1 ** z2 #=> Calc::Z(150130937545296572356771972164254457814047970568738777235893533016064)
-
-# division in the Z class is integer division.
-z1 / 4   #=> Calc::Z(10)
-```
+The library provides 2 types of number classes:
 
 ### Rational Numbers (Calc::Q)
 
-```ruby
-# creating rational numbers - parameter formats are the same as for Z, except
-# there are 2 parameters, a numerator and a denominator.  if you omit the
-# denominator, it is assumed to be 1.
-q1 = Calc::Q(42)  # equivalent to Calc::Q(42, 1)
+Rational numbers are a pair of integers (numerator and denominator).  Each value can be arbitraily large;  the number is always stored in lowest common terms with the sign in the numerator.
 
-# you can also pass a single argument of a plain ruby Rational number:
-q2 = Calc::Q(Rational(13,4))  # equivalent to Calc::Q(13, 4)
+```ruby
+# any numeric type can be passed as a parameter
+Calc::Q(42)             #=> Calc::Q(42)
+Calc::Q(Rational(3,10)) #=> Calc::Q(0.3)
+Calc::Q(Calc::Q(42))    #=> Calc::Q(42)
+Calc::Q(0.3)            #=> Calc::Q(~0.29999999999999998890)
+
+# strings are parsed by the calc library, which allows real, rational
+# exponential, scientific, hex, octal and binary:
+Calc::Q("0.3")      #=> Calc::Q("0.3")  (compare to Float example above)
+Calc::Q("3/10")     #=> Calc::Q("0.3")
+Calc::Q("1e10")     #=> Calc::Q(10000000000)
+Calc::Q("1e-10")    #=> Calc::Q(0.0000000001)
+Calc::Q("0x2a")     #=> Calc::Q(42)
+Calc::Q("052")      #=> Calc::Q(42)
+Calc::Q("0b101010") #=> Calc::Q(42)
+
+# If you pass a second parameter, the first will be divided by it (if you
+# are passing integers, you are effectively passing a numerator/denominator).
+Calc::Q(1,4) #=> Calc::Q(0.25)
 
 # rational arithmetic.  you can provide ruby numbers or other calc classes as
 # arguments to most operators
+q1 = Calc::Q(42)
+q2 = Calc::Q(13,4)
 q1 + q2   #=> Calc::Q(45.25)
 q1 - q2   #=> Calc::Q(38.75)
 q1 * q2   #=> Calc::Q(136.5)
 q1 / q2   #=> Calc::Q(~12.92307692307692307692)
 
-# raise to integer power (fractional powers are todo)
-q2 ** q1  #=> Calc::Q(3155739610730618174599.37987276615998166797)
-
-# factorials of non-negative whole numbers:
-Calc::Q(10).fact    #=> Calc::Q(3628800)
+# raise to power
+q1 ** q2  #=> Calc::Q(188608.03646237737943757212)
 ```
 
 ### Complex numbers (Calc::C)
@@ -101,6 +81,8 @@ c1 = Calc::C(2, 3) #=> Calc::C(2+3i)
 
 # You can pass a single Complex or Calc::C parameter:
 c2 = Calc::C(Complex(-1,-1)) #=> Calc::C(-1-1i)
+# note that ruby allow complex literals which turn into Complex objects, so:
+Calc::C(4+5i) #=> Calc::C(4+5i)
 
 # You can also use the polar method to initialize a complex number by giving
 # a modulus (radius) and argument (angle, in radians)
@@ -243,26 +225,18 @@ Calc.config(:epsilon, "0.0001")
 Calc::Q.pi                            #=> Calc::Q(3.1416)
 ```
 
-### Converting to other classes
+### Converting between numeric types
 
-Each class implements the following methods:
+The following methods can be used to convert a ruby-calc class to ruby numeric types.
 
-Method | Result
------- | ------
-to_f   | Converts to a ruby Float (precision can be lost!)
-to_i   | Converts to a ruby Fixnum or Bignum (for Q, discards remainder)
-to_r   | Converts to a ruby Rational
-to_s   | Converts to a ruby String (see below)
-
-The following methods will convert to other `Calc` methods:
-
-Method | Result
------- | ------
-to_z   | Convert to `Calc::Z` (non-integer parts will be lost)
-to_q   | Convert to `Calc::Q`
-to_c   | Convert to `Calc::C`
-
-However, you can't convert from Calc::C
+Method             | Result
+------             | ------
+Calc::Q#to_f       | Converts to ruby Float (precision can be lost!)
+Calc::Q#to_i       | Converts to ruby Fixnum/Bignum (discards remainder)
+Calc::Q#to_r       | Converts to ruby Rational
+Calc::Q#to_c       | Converts to ruby Complex
+Calc::Q#to_complex | Converts to a Calc::C with zero imaginary part
+Calc::C#to_c       | Converts to ruby Complex
 
 #### Converting to strings
 
@@ -327,6 +301,7 @@ Other differences:
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that
 * Not all configuration items are implemented (and only ones related to maths will be)
 * You can't define/call calc functions (ie, eval() is not implemented)
+* Libcalc provides an integer type (ZVALUE) which ruby-calc doesn't provide access to (because ruby already has arbitrary size integers and libcalc's interesting functions are all for Rational or Complex numbers)
 
 ## Development
 

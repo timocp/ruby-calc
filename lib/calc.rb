@@ -10,7 +10,6 @@ module Calc
     # @example
     #  +Calc::C(1,1) #=> Calc::C(1,1)
     #  +Calc::Q(1)   #=> Calc::Q(1)
-    #  +Calc::Z(1)   #=> Calc::Z(1)
     def +@
       self
     end
@@ -21,10 +20,8 @@ module Calc
     # positive values, pi() otherwise
     #
     # @param eps [Calc::Q] (optional) calculation accuracy
-    # @return [Calc::Z,Calc::Q]
+    # @return [Calc::Q]
     # @example
-    #  Calc::Z(-1).arg #=> Calc::Q(3.14159265358979323846)
-    #  Calc::Z(1).arg  #=> Calc::Z(0)
     #  Calc::Q(-1).arg #=> Calc::Q(3.14159265358979323846)
     #  Calc::Q(1).arg  #=> Calc::Q(0)
     def arg(*args)
@@ -50,45 +47,12 @@ module Calc
 
   end
 
-  def self.Z(p)
-    Z.new(p)
-  end
-
   def self.Q(*args)
     Q.new(*args)
   end
   
   def self.C(*args)
     C.new(*args)
-  end
-
-  class Z
-    def inspect
-      "Calc::Z(#{ to_s })"
-    end
-
-    def /(y)
-      self.divmod(y).first
-    end
-
-    def %(y)
-      self.divmod(y).last
-    end
-
-    alias modulo %
-
-    def to_r
-      Rational(self.to_i, 1)
-    end
-
-    class << self
-      # module versions of methods
-      %i(arg).each do |f|
-        define_method f do |*args|
-          Calc::Z(args.first).__send__(f, *args[1..-1])
-        end
-      end
-    end
   end
 
   class Q

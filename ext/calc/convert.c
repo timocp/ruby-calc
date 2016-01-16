@@ -1,149 +1,67 @@
 #include "calc.h"
 
-/* attempt to convert a bignum a long then to Calc::Z using itoz().
+/* attempt to convert a bignum a long then to Calc::Q using itoq().
  * NUM2LONG will raise an exception if arg doesn't fit in a long */
 static VALUE
-bignum_to_calc_z_via_long(VALUE arg)
+bignum_to_calc_q_via_long(VALUE arg)
 {
     VALUE result;
-    ZVALUE *zresult;
+    long tmp;
 
-    result = cz_new();
-    get_zvalue(result, zresult);
-    itoz(NUM2LONG(arg), zresult);
+    tmp = NUM2LONG(arg);
+    result = cq_new();
+    DATA_PTR(result) = itoq(tmp);
     return result;
 }
 
 /* handles exceptions during via_long.  convert the arg to a string, then
- * Calc::Z using str2z */
+ * Calc::Q using str2q() */
 static VALUE
-bignum_to_calc_z_via_string(VALUE arg, VALUE e)
+bignum_to_calc_q_via_string(VALUE arg, VALUE e)
 {
-    ZVALUE *zresult;
-    VALUE result;
-    VALUE string;
+    VALUE result, string;
 
     if (rb_obj_is_kind_of(e, rb_eRangeError)) {
-        result = cz_new();
-        get_zvalue(result, zresult);
         string = rb_funcall(arg, rb_intern("to_s"), 0);
-        str2z(StringValueCStr(string), zresult);
+        result = cq_new();
+        DATA_PTR(result) = str2q(StringValueCStr(string));
     }
     else {
         /* something other than RangeError; re-raise it */
         rb_exc_raise(e);
     }
-
     return result;
 }
 
-/* convert a Bignum to Calc::Z
+/* convert a Bignum to Calc::Q
  * first tries to convert via a long; if that raises an exception, convert via
  * a string */
 static VALUE
-bignum_to_calc_z(VALUE arg)
+bignum_to_calc_q(VALUE arg)
 {
-    return rb_rescue(&bignum_to_calc_z_via_long, arg, &bignum_to_calc_z_via_string, arg);
-}
-
-/* converts a ruby value into a ZVALUE.  Allowed types:
- *  - Fixnum
- *  - Bignum
- *  - Calc::Z
- *  - String (using libcalc str2z)
- */
-ZVALUE
-value_to_zvalue(VALUE arg, int string_allowed)
-{
-    ZVALUE *zarg, *ztmp;
-    ZVALUE result;
-    VALUE tmp;
-    setup_math_error();
-
-    if (TYPE(arg) == T_FIXNUM) {
-        itoz(NUM2LONG(arg), &result);
-    }
-    else if (TYPE(arg) == T_BIGNUM) {
-        tmp = bignum_to_calc_z(arg);
-        get_zvalue(tmp, ztmp);
-        zcopy(*ztmp, &result);
-    }
-    else if (CALC_Z_P(arg)) {
-        get_zvalue(arg, zarg);
-        zcopy(*zarg, &result);
-    }
-    else if (string_allowed && TYPE(arg) == T_STRING) {
-        str2z(StringValueCStr(arg), &result);
-    }
-    else {
-        if (string_allowed) {
-            rb_raise(rb_eArgError, "expected Fixnum, Bignum, Calc::Z or String");
-        }
-        else {
-            rb_raise(rb_eArgError, "expected Fixnum, Bignum or Calc::Z");
-        }
-    }
-
-    return result;
-}
-
-/* convert a pair of ZVALUEs to a NUMBER*, ensuring reduced to common terms
- * and the sign in the numerator. */
-NUMBER *
-zz_to_number(ZVALUE znum, ZVALUE zden)
-{
-    NUMBER *q;
-    ZVALUE z_gcd, zignored;
-
-    if (ziszero(zden)) {
-        rb_raise(rb_eZeroDivError, "division by zero");
-    }
-    zgcd(znum, zden, &z_gcd);
-    q = qalloc();
-    if (zisone(z_gcd)) {
-        zcopy(znum, &q->num);
-        zcopy(zden, &q->den);
-    }
-    else {
-        zdiv(znum, z_gcd, &q->num, &zignored, 0);
-        zfree(zignored);
-        zdiv(zden, z_gcd, &q->den, &zignored, 0);
-        zfree(zignored);
-    }
-    /* make sure sign is in numerator.  1 is negative, 0 is positive */
-    if (zispos(q->num) && zisneg(q->den)) {
-        q->num.sign = 1;
-        q->den.sign = 0;
-    }
-    else if (zisneg(q->num) && zisneg(q->den)) {
-        q->num.sign = 0;
-        q->den.sign = 0;
-    }
-    return q;
+    return rb_rescue(&bignum_to_calc_q_via_long, arg, &bignum_to_calc_q_via_string, arg);
 }
 
 /* convert a ruby Rational to a NUMBER*.  Since the denominator/numerator of
- * the rational number could be too big for long, they are converted to zvalues
+ * the rational number could be too big for long, they are converted to NUMBER*
  * first.
  */
 static NUMBER *
 rational_to_number(VALUE arg)
 {
-    ZVALUE znum, zden;
-    NUMBER *qresult;
+    NUMBER *qresult, *qnum, *qden;
 
-    znum = value_to_zvalue(rb_funcall(arg, rb_intern("numerator"), 0), 0);
-    zden = value_to_zvalue(rb_funcall(arg, rb_intern("denominator"), 0), 0);
-    qresult = zz_to_number(znum, zden);
-    zfree(znum);
-    zfree(zden);
+    qnum = value_to_number(rb_funcall(arg, rb_intern("numerator"), 0), 0);
+    qden = value_to_number(rb_funcall(arg, rb_intern("denominator"), 0), 0);
+    qresult = qqdiv(qnum, qden);
+    qfree(qnum);
+    qfree(qden);
     return qresult;
 }
 
 /* converts a ruby value into a NUMBER*.  Allowed types:
  *  - Fixnum
  *  - Bignum
- *  - Calc::Z
  *  - Calc::Q
  *  - Rational
  *  - String (using libcalc str2q)
@@ -156,22 +74,14 @@ NUMBER *
 value_to_number(VALUE arg, int string_allowed)
 {
     NUMBER *qresult;
-    ZVALUE *zarg, *znum;
     VALUE num, tmp;
-    setup_math_error();
 
     if (TYPE(arg) == T_FIXNUM) {
         qresult = itoq(NUM2LONG(arg));
     }
     else if (TYPE(arg) == T_BIGNUM) {
-        num = bignum_to_calc_z(arg);
-        get_zvalue(num, znum);
-        qresult = zz_to_number(*znum, _one_);
-    }
-    else if (CALC_Z_P(arg)) {
-        get_zvalue(arg, zarg);
-        qresult = qalloc();
-        zcopy(*zarg, &qresult->num);
+        num = bignum_to_calc_q(arg);
+        qresult = qlink((NUMBER *) DATA_PTR(num));
     }
     else if (CALC_Q_P(arg)) {
         qresult = qlink((NUMBER *) DATA_PTR(arg));
@@ -193,53 +103,13 @@ value_to_number(VALUE arg, int string_allowed)
     }
     else {
         if (string_allowed) {
-            rb_raise(rb_eArgError,
-                     "expected number, Rational, Float, Calc::Z, Calc::Q or string");
+            rb_raise(rb_eArgError, "expected number, Rational, Float, Calc::Q or string");
         }
         else {
-            rb_raise(rb_eArgError, "expected number, Rational, Float, Calc::Z or Calc::Q");
+            rb_raise(rb_eArgError, "expected number, Rational, Float or Calc::Q");
         }
     }
     return qresult;
-}
-
-VALUE
-zvalue_to_f(ZVALUE * z)
-{
-    return rb_funcall(zvalue_to_i(z), rb_intern("to_f"), 0);
-}
-
-/* convert a ZVALUE to a ruby numeric (Fixnum or Bignum)
- */
-VALUE
-zvalue_to_i(ZVALUE * z)
-{
-    VALUE tmp;
-    char *s;
-
-    if (zgtmaxlong(*z)) {
-        /* too big to fit in a long, ztoi would return MAXLONG.  use a string
-         * intermediary. */
-        math_divertio();
-        zprintval(*z, 0, 0);
-        s = math_getdivertedio();
-        tmp = rb_str_new2(s);
-        free(s);
-        return rb_funcall(tmp, rb_intern("to_i"), 0);
-    }
-    else {
-        return LONG2NUM(ztoi(*z));
-    }
-}
-
-/* converts a ZVALUE to the nearest double.  libcalc doesn't use floats/doubles
- * at all so the simplest thing to do is convert to a Fixnum/Bignum, then use
- * ruby's Fixnum#to_f.
- */
-double
-zvalue_to_double(ZVALUE * z)
-{
-    return NUM2DBL(zvalue_to_i(z));
 }
 
 /* convert a NUMBER* to a new Calc::Q object */
@@ -394,7 +264,7 @@ value_to_complex(VALUE arg)
     else if (CALC_Q_P(arg)) {
         cresult = qqtoc(DATA_PTR(arg), &_qzero_);
     }
-    else if (FIXNUM_P(arg) || CALC_Z_P(arg) || TYPE(arg) == T_BIGNUM || TYPE(arg) == T_RATIONAL
+    else if (FIXNUM_P(arg) || TYPE(arg) == T_BIGNUM || TYPE(arg) == T_RATIONAL
              || TYPE(arg) == T_FLOAT) {
         cresult = qqtoc(value_to_number(arg, 0), &_qzero_);
     }

@@ -25,7 +25,6 @@ class TestComplex < MiniTest::Test
     assert_instance_of Calc::C, Calc::C("1/3", "1e-3")
     assert_instance_of Calc::C, Calc::C(Rational(1,3), Rational(1,3))
     assert_instance_of Calc::C, Calc::C(0.3, 0.3)
-    assert_instance_of Calc::C, Calc::C(Calc::Z(1), Calc::Z(2))
     assert_instance_of Calc::C, Calc::C(Calc::Q(1), Calc::Q(2))
 
     assert_instance_of Calc::C, Calc::C(1)
@@ -36,7 +35,6 @@ class TestComplex < MiniTest::Test
     assert_instance_of Calc::C, Calc::C("1/3")
     assert_instance_of Calc::C, Calc::C(Rational(1,3))
     assert_instance_of Calc::C, Calc::C(0.3)
-    assert_instance_of Calc::C, Calc::C(Calc::Z(1))
     assert_instance_of Calc::C, Calc::C(Calc::Q(1))
     assert_instance_of Calc::C, Calc::C(Complex(1,1))
     assert_instance_of Calc::C, Calc::C(Calc::C(1,1))
@@ -62,7 +60,6 @@ class TestComplex < MiniTest::Test
     assert Calc::C(5, 0) == Rational(5)
     assert Calc::C(5, 0) == 5.0
     assert Calc::C(5, 0) == Calc::Q(5)
-    assert Calc::C(5, 0) == Calc::Z(5)
 
     refute Calc::C(1,2) == Calc::C(1,3)
     refute Calc::C(BIG, BIG2) == Complex(BIG2, BIG)
@@ -71,7 +68,6 @@ class TestComplex < MiniTest::Test
     refute Calc::C(5, 1) == Rational(5)
     refute Calc::C(5, 1) == 5.0
     refute Calc::C(5, 1) == Calc::Q(5)
-    refute Calc::C(5, 1) == Calc::Z(5)
   end
 
   def test_to_s
@@ -105,7 +101,6 @@ class TestComplex < MiniTest::Test
     assert_instance_of Calc::C, Calc::C(1,1) + Calc::C(2,-2)
     assert_equal Calc::C(3,-1), Calc::C(1,1) + Calc::C(2,-2)
     assert_equal Calc::C(3,1), Calc::C(1,1) + Calc::Q(2)
-    assert_equal Calc::C(3,1), Calc::C(1,1) + Calc::Z(2)
     assert_equal Calc::C(3,3), Calc::C(1,1) + Complex(2,2)
     assert_equal Calc::C(Calc::Q(5,3), 1), Calc::C(1,1) + Rational(2,3)
     assert_equal Calc::C(3,1), Calc::C(1,1) + 2

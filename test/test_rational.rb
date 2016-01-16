@@ -22,14 +22,12 @@ class TestRational < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q.new("1", "3")       # strings
     assert_instance_of Calc::Q, Calc::Q("1e3", "1e-3")      # exponential string
     assert_instance_of Calc::Q, Calc::Q(0.3, 2.0)
-    assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(1), Calc::Z(3)) # Calc::Z's
 
     # single param version
     assert_instance_of Calc::Q, Calc::Q.new(1)
     assert_instance_of Calc::Q, Calc::Q.new(BIG)
     assert_instance_of Calc::Q, Calc::Q.new(BIG2)
     assert_instance_of Calc::Q, Calc::Q.new(BIG3)
-    assert_instance_of Calc::Q, Calc::Q.new(Calc::Z(42))
     assert_instance_of Calc::Q, Calc::Q.new("1/3")
     assert_instance_of Calc::Q, Calc::Q.new("1e3")
     assert_instance_of Calc::Q, Calc::Q.new("1e-3")
@@ -40,7 +38,6 @@ class TestRational < MiniTest::Test
   def test_intialization_div_zero
     assert_raises(ZeroDivisionError) { Calc::Q.new(5, 0) }
     assert_raises(ZeroDivisionError) { Calc::Q.new(5, "0") }
-    assert_raises(ZeroDivisionError) { Calc::Q.new(5, Calc::Z(0)) }
     assert_raises(ZeroDivisionError) { Calc::Q.new("5/0") }
   end
 
@@ -58,7 +55,6 @@ class TestRational < MiniTest::Test
 
   def test_equal
     assert Calc::Q.new(3) == Calc::Q.new(3)     # Q == Q
-    assert Calc::Q.new(3) == Calc::Z.new(3)     # Q == Z
     assert Calc::Q.new(3) == Calc::Q.new(6, 2)  # Q == Q (reduced)
     assert Calc::Q.new(3) == 3                  # Q == Fixnum
     assert Calc::Q.new(BIG) == BIG              # Q == Bignum
@@ -68,7 +64,6 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(0.5) == 0.5              # Q == Float
 
     assert Calc::Q.new(3) != Calc::Q.new(4)
-    assert Calc::Q.new(3) != Calc::Z.new(4)
     assert Calc::Q.new(3) != Calc::Q.new(4, 2)
     assert Calc::Q.new(3) != 4
     assert Calc::Q.new(BIG) != BIG + 1
@@ -108,7 +103,6 @@ class TestRational < MiniTest::Test
   def test_comparisons
     [
       [ Calc::Q(1,3), Calc::Q(1,4),  Calc::Q(1,3),  Calc::Q(1,2)  ],
-      [ Calc::Q(2),   Calc::Z(1),    Calc::Z(2),    Calc::Z(3)    ],
       [ Calc::Q(3),   2,             3,             4             ],
       [ Calc::Q(1),   0,             1,             2             ],
       [ Calc::Q(1,3), Rational(1,4), Rational(1,3), Rational(1,2) ],
@@ -157,7 +151,6 @@ class TestRational < MiniTest::Test
 
   def test_add
     assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + 4
-    assert_rational_and_equal Calc::Q(13, 3), Calc::Q.new(1, 3) + Calc::Z(4)
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Rational(1, 4)
     assert_rational_and_equal 0x800000000000002a, Calc::Q(42) + BIG2
@@ -166,7 +159,6 @@ class TestRational < MiniTest::Test
   def test_subtract
     assert_rational_and_equal Calc::Q(-1,6), Calc::Q(1,3) - Calc::Q(1,2)
     assert_rational_and_equal Calc::Q(-2,3), Calc::Q(1,3) - 1
-    assert_rational_and_equal Calc::Q(-5,3), Calc::Q(1,3) - Calc::Z(2)
     assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) - Rational(1,4)
     assert_rational_and_equal Rational(-0x17fffffffffffffff,3), Calc::Q(1,3) - BIG2
   end
@@ -174,14 +166,12 @@ class TestRational < MiniTest::Test
   def test_multiply
     assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) * Calc::Q(1,4)
     assert_rational_and_equal Calc::Q(4,3),  Calc::Q(1,3) * 4
-    assert_rational_and_equal Calc::Q(5,3),  Calc::Q(1,3) * Calc::Z(5)
     assert_rational_and_equal Calc::Q(1,5),  Calc::Q(1,3) * Rational(3,5)
   end
 
   def test_divide
     assert_rational_and_equal Calc::Q(4,3),  Calc::Q(1,3) / Calc::Q(1,4)
     assert_rational_and_equal Calc::Q(1,6),  Calc::Q(1,3) / 2
-    assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) / Calc::Z(4)
     assert_rational_and_equal Calc::Q(5,3),  Calc::Q(1,3) / Rational(1,5)
   end
 
@@ -192,7 +182,6 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(-3,28), Calc::Q(-1,4) % Calc::Q(-1,7)
 
     # other arg types
-    assert_rational_and_equal Calc::Q(3,4),  Calc::Q(11,4) % Calc::Z(2)
     assert_rational_and_equal Calc::Q(3,4),  Calc::Q(11,4) % 2
     assert_rational_and_equal Calc::Q(1,12), Calc::Q(11,4) % Rational(1,3)
     assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % BIG2
@@ -209,7 +198,7 @@ class TestRational < MiniTest::Test
   end
 
   def test_quomod
-    [5, BIG2, Calc::Z(5), Calc::Q(5), Rational(5,1), 5.0].each do |p|
+    [5, BIG2, Calc::Q(5), Rational(5,1), 5.0].each do |p|
       r = Calc::Q(13).quomod(p)
       assert_instance_of Array, r
       assert_equal 2, r.size
@@ -245,7 +234,6 @@ class TestRational < MiniTest::Test
   def test_power
     assert_rational_and_equal Calc::Q(3),    Calc::Q(81) ** Calc::Q(1,4)
     assert_in_epsilon Calc::Q(1,9).to_f,  (Calc::Q(1,3) ** 2).to_f
-    assert_in_epsilon Calc::Q(1,27).to_f, (Calc::Q(1,3) ** Calc::Z(3)).to_f
     assert_rational_and_equal Calc::Q(4),    Calc::Q(8) ** Rational(2,3)
 
     assert_instance_of Calc::Q, Calc::Q.power(1.2345, 10)
@@ -256,7 +244,6 @@ class TestRational < MiniTest::Test
     # both arguments have to be integers
     assert_rational_and_equal  128, Calc::Q(4) << Calc::Q(5)
     assert_rational_and_equal    0, Calc::Q(4) >> 5
-    assert_rational_and_equal  400, Calc::Q(100) << Calc::Z(2)
     assert_rational_and_equal   25, Calc::Q(100) >> Rational(2,1)
     assert_rational_and_equal -320, Calc::Q(-20) << 4
     assert_rational_and_equal   -1, Calc::Q(-20) >> 4

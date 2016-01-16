@@ -38,8 +38,8 @@ cc_alloc(VALUE klass)
  * with the same real and imaginary parts.
  *
  * If a single param of other numeric types (Fixnum, Bignum, Rational, Float,
- * Calc::Z, Calc::Q), returns a complex number with the specified real part
- * and zero imaginary part.
+ * Calc::Q), returns a complex number with the specified real part and zero
+ * imaginary part.
  *
  * If two params, returns a complex number with the specified real and
  * imaginary parts; the parts can be any type allowed by Calc::Q.new.
@@ -242,7 +242,7 @@ cc_divide(VALUE x, VALUE y)
  * If the other value is complex (Calc::C or Complex), returns true if the
  * real an imaginary parts of both numbers are the same.
  *
- * The other value is some other numberic type (Fixnum, Bignum, Calc::Q, Calc::Z,
+ * The other value is some other numberic type (Fixnum, Bignum, Calc::Q,
  * Rational or Float) then returns true if the complex part of this number is
  * zero and the real part is equal to the other.
  *
@@ -272,7 +272,7 @@ cc_equal(VALUE self, VALUE other)
         comfree(cother);
     }
     else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_RATIONAL ||
-             TYPE(other) == T_FLOAT || CALC_Z_P(other) || CALC_Q_P(other)) {
+             TYPE(other) == T_FLOAT || CALC_Q_P(other)) {
         cother = qqtoc(value_to_number(other, 0), &_qzero_);
         result = !c_cmp(cself, cother);
         comfree(cother);
