@@ -327,18 +327,16 @@ builtins_done = Calc::Q(0)
   [:xor, Q],
 ].each do |func, (*things)|
   builtins += 1
-  this_done = true
-  [*things].each do |thing|
-    if !thing.respond_to?(func)
-      this_done = false
-      if thing.is_a?(Module)
-        puts "Expected #{ thing } to have module method: #{ func }"
-      else
-        puts "Expected #{ thing.class } to have instance method: #{ func }"
-      end
-    end
+  missing = [*things].reject do |thing|
+    thing.respond_to?(func)
   end
-  builtins_done += 1 if this_done
+  if missing.size > 0
+    puts("Expected method #{ func } on " + missing.map do |thing|
+      thing.is_a?(Module) ? "module #{ thing }" : "class #{ thing.class }"
+    end.join(", "))
+  else
+    builtins_done += 1
+  end
 end
 
 # check for compatibility with built in ruby equivalents
