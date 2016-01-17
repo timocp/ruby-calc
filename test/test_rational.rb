@@ -538,4 +538,19 @@ class TestRational < MiniTest::Test
     assert_equal 0, Calc::Q(1).arg
   end
 
+  def test_bernoulli
+    assert_instance_of Calc::Q, Calc::Q(6).bernoulli
+    assert_instance_of Calc::Q, Calc::Q.bernoulli(6)
+    [1, "-1/2", "1/6", 0, "-1/30", 0, "1/42"].each_with_index do |expected, n|
+      assert_equal Calc::Q(expected), Calc::Q(n).bernoulli
+    end
+
+    # even >= 2^31 is error.  odd >= 2^31 is 0
+    assert_raises(Calc::MathError) { Calc::Q("1/2").bernoulli }
+    assert_raises(Calc::MathError) { (Calc::Q(2) ** 31).bernoulli }
+    assert_equal 0, (Calc::Q(2) ** 31 + 1).bernoulli
+
+    assert_nil Calc.freebernoulli
+  end
+
 end

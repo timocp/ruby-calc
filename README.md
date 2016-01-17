@@ -127,6 +127,7 @@ asinh  | x [, b]    | hyperbolic arcsine of x within accuracy b
 atan   | x [, b]    | arctangent of x within accuracy b
 atan2  | y, x [, b] | angle determined by the point (x,y) within accuracy b
 atanh  | x [, b]    | hyperbolic arctangent of x within accuracy b
+bernoulli | x       | xth bernoulli number
 cbrt   | x [, b]    | cube root of x within accuracy b
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b
@@ -136,6 +137,7 @@ csc    | x [, b]    | cosecant of x within accuracy b
 csch   | x [, b]    | hyperbolic cosecant of x within accuracy b
 exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
+freebernoulli |     | free memory storing calculated bernoulli numbers
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 pi     | [b]        | value of π within accuracy b

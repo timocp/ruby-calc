@@ -745,6 +745,34 @@ cq_atanh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qatanh);
 }
 
+/* Returns the bernoulli number with index self.  Self must be an integer,
+ * and < 2^31 if even.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is fractional or even and >= 2^31
+ * @example
+ *  Calc::Q(20).bernoulli.to_s(:frac) #=> "-174611/330"
+ */
+static VALUE
+cq_bernoulli(VALUE self)
+{
+    VALUE result;
+    NUMBER *qself, *qresult;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "Non-integer argument for bernoulli");
+    }
+    qresult = qbern(((NUMBER *) DATA_PTR(self))->num);
+    if (!qresult) {
+        rb_raise(e_MathError, "Bad argument for bern");
+    }
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1100,6 +1128,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "atan", cq_atan, -1);
     rb_define_method(cQ, "atan2", cq_atan2, -1);
     rb_define_method(cQ, "atanh", cq_atanh, -1);
+    rb_define_method(cQ, "bernoulli", cq_bernoulli, 0);
     rb_define_method(cQ, "cos", cq_cos, -1);
     rb_define_method(cQ, "cosh", cq_cosh, -1);
     rb_define_method(cQ, "cot", cq_cot, -1);
