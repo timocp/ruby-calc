@@ -562,4 +562,10 @@ class TestRational < MiniTest::Test
     assert_in_epsilon -3.14159265358979323846, Calc::Q(2).agd.im
   end
 
+  def test_gd
+    assert_equal 0, Calc::Q(0).agd
+    assert_instance_of Calc::Q, Calc::Q(1).gd
+    assert_in_epsilon 0.86576948323965862429, Calc::Q(1).gd
+  end
+
 end

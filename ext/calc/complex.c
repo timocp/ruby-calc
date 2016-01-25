@@ -479,6 +479,18 @@ cc_cosh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &c_cosh);
 }
 
+/* Gudermannian function
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ */
+static VALUE
+cc_gd(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_gd);
+}
+
 /* Returns the imaginary part of a complex number
  *
  * @return [Calc::Q]
@@ -665,6 +677,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "atanh", cc_atanh, -1);
     rb_define_method(cC, "cos", cc_cos, -1);
     rb_define_method(cC, "cosh", cc_cosh, -1);
+    rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "imag?", cc_isimag, 0);
     rb_define_method(cC, "invert", cc_invert, 0);

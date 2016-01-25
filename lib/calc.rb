@@ -80,6 +80,17 @@ module Calc
       "Calc::Q(#{ to_s })"
     end
 
+    # Gudermannian function
+    # 
+    # @param eps [Calc::Q] (optional) calculation accuracy
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(1).gd #=> Calc::Q(0.86576948323965862429)
+    def gd(*args)
+      r = Calc::C(self).gd(*args)
+      r.real? ? r.re : r
+    end
+
     def sqrt
       root(2)
     end
@@ -97,9 +108,10 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(abs acos acosh acot acoth acsc acsch arg asec asech asin asinh atan
-         atan2 atanh bernoulli cbrt cos cosh cot coth csc csch exp fact hypot
-         ln log power quomod root sec sech sin sinh sqrt tan tanh).each do |f|
+      %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
+         atan atan2 atanh bernoulli cbrt cos cosh cot coth csc csch exp fact gd
+         hypot ln log power quomod root sec sech sin sinh sqrt tan
+         tanh).each do |f|
         define_method f do |*args|
           Calc::Q(args.first).__send__(f, *args[1..-1])
         end
@@ -247,7 +259,7 @@ module Calc
     class << self
       # module versions of some methods for convenience
       %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
-         atan atanh cos cosh cot coth csc csch power sec sech sin sinh tan
+         atan atanh cos cosh cot coth csc csch gd power sec sech sin sinh tan
          tanh).each do |f|
         define_method f do |*args|
           Calc::C(args.first).__send__(f, *args[1..-1])

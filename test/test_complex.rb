@@ -323,4 +323,13 @@ class TestComplex < MiniTest::Test
     assert_equal 0, Calc::C(0,0).agd
   end
 
+  def test_gd
+    assert_complex_parts Calc::C(1).gd, 0.86576948323965862429, 0
+    assert_complex_parts Calc::C(2+1i).gd, 1.422911462459226797, 0.22751065843194319695
+    assert_complex_parts Calc::C.gd(2+1i), 1.422911462459226797, 0.22751065843194319695
+    assert_equal 0, Calc::C(0,0).gd
+
+    assert_raises(Calc::MathError) { Calc::C(0, Calc::Q.pi/2).gd }
+  end
+
 end
