@@ -362,6 +362,19 @@ cc_acsch(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &c_acsch);
 }
 
+/* Inverse gudermannian function
+ *
+ * @param eps [Calc::Q] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(1,2).agd #=> Calc::C(0.22751065843194319695+1.422911462459226797i)
+ */
+static VALUE
+cc_agd(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_agd);
+}
+
 /* Inverse trigonometric secant
  *
  * @param eps [Calc::Q] (optional) calculation accuracy
@@ -643,6 +656,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "acoth", cc_acoth, -1);
     rb_define_method(cC, "acsc", cc_acsc, -1);
     rb_define_method(cC, "acsch", cc_acsch, -1);
+    rb_define_method(cC, "agd", cc_agd, -1);
     rb_define_method(cC, "asec", cc_asec, -1);
     rb_define_method(cC, "asech", cc_asech, -1);
     rb_define_method(cC, "asin", cc_asin, -1);

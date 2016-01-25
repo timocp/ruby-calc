@@ -553,4 +553,13 @@ class TestRational < MiniTest::Test
     assert_nil Calc.freebernoulli
   end
 
+  def test_agd
+    assert_equal 0, Calc::Q(0).agd
+    assert_instance_of Calc::Q, Calc::Q(1).agd
+    assert_instance_of Calc::C, Calc::Q(2).agd
+    assert_in_epsilon 1.22619117088351707081, Calc::Q(1).agd
+    assert_in_epsilon 1.5234524435626735209, Calc::Q(2).agd.re
+    assert_in_epsilon -3.14159265358979323846, Calc::Q(2).agd.im
+  end
+
 end

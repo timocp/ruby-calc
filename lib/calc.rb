@@ -60,8 +60,28 @@ module Calc
       power(other)
     end
 
+    # Inverse gudermannian function
+    #
+    # @param eps [Calc::Q] (optional) calculation accuracy
+    # @return [Calc::Q,Calc::C]
+    # @example
+    #  Calc::Q(1).agd #=> Calc::Q(1.22619117088351707081)
+    #  Calc::Q(2).agd #=> Calc::C(1.5234524435626735209-3.14159265358979323846i)
+    def agd(*args)
+      r = Calc::C(self).agd(*args)
+      r.real? ? r.re : r
+    end
+
+    def cbrt
+      root(3)
+    end
+
     def inspect
       "Calc::Q(#{ to_s })"
+    end
+
+    def sqrt
+      root(2)
     end
 
     # libcalc has no concept of floating point numbers.  so we use ruby's
@@ -73,14 +93,6 @@ module Calc
     # convert to a core ruby Rational
     def to_r
       Rational(self.numerator.to_i, self.denominator.to_i)
-    end
-
-    def cbrt
-      root(3)
-    end
-
-    def sqrt
-      root(2)
     end
 
     class << self
@@ -234,8 +246,8 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(abs acos acosh acot acoth acsc acsch arg asec asech asin asinh atan
-         atanh cos cosh cot coth csc csch power sec sech sin sinh tan
+      %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
+         atan atanh cos cosh cot coth csc csch power sec sech sin sinh tan
          tanh).each do |f|
         define_method f do |*args|
           Calc::C(args.first).__send__(f, *args[1..-1])

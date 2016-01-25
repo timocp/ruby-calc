@@ -317,4 +317,10 @@ class TestComplex < MiniTest::Test
     assert_complex_parts Calc::C.tanh(2+3i), 0.96538587902213312428, -0.00988437503832249372
   end
 
+  def test_agd
+    assert_complex_parts Calc::C(1,2).agd, 0.22751065843194319695, 1.422911462459226797
+    assert_complex_parts Calc::C.agd(1+2i), 0.22751065843194319695, 1.422911462459226797
+    assert_equal 0, Calc::C(0,0).agd
+  end
+
 end

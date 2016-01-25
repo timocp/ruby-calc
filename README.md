@@ -119,6 +119,7 @@ acot   | x [, b]    | inverse cotangent of x within accuracy b
 acoth  | x [, b]    | inverse hyperbolic cotangent of x within accuracy b
 acsc   | x [, b]    | inverse cosecant of x within accuracy b
 acsch  | x [, b]    | inverse hyperbolic cosecant of x within accuracy b
+agd    | x [, b]    | inverse gudermannian function of x within accuracy b
 arg    | x [, b]    | argument (angle) of complex number x within acccuracy b
 asec   | x [, b]    | inverse secant of x within accuracy b
 asech  | x [, b]    | inverse hyperbolic secant of x within accuracy b
