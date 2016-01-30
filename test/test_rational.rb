@@ -349,12 +349,19 @@ class TestRational < MiniTest::Test
     # test trig functions which are also in ruby Math by comparing our result
     # to theirs.  note that our results lose precision when converting to
     # float, so this is just testing values are roughly right.
-    %i(acos asin asinh atan cos cosh sin sinh tan tanh).each do |method|
+    %i(asin asinh atan cos cosh sin sinh tan tanh).each do |method|
       [-1, 0, 1].each do |input|
         assert_in_epsilon(Math.send(method, input), Calc::Q.send(method, input).to_f)
         assert_in_epsilon(Math.send(method, input), Calc::Q(input).send(method).to_f)
       end
     end
+  end
+
+  def test_acos
+    assert_instance_of Calc::Q, Calc::Q(0.5).acos
+    assert_in_epsilon 1.04719755119659774615, Calc::Q(0.5).acos
+    assert_instance_of Calc::C, Calc::Q(2).acos
+    assert_complex_parts Calc::Q(2).acos, 0, 1.31695789692481670863
   end
 
   def test_acosh

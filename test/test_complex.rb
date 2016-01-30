@@ -6,12 +6,6 @@ class TestComplex < MiniTest::Test
   BIG2 =  0x8000000000000000  # first Bignum that won't fit in a long
   BIG3 = -0x8000000000000001  # first negative bignum that won't fit in a long
 
-  def assert_complex_parts(c, rp, ip)
-    assert_instance_of Calc::C, c
-    assert_in_epsilon rp, c.re
-    assert_in_epsilon ip, c.im
-  end
-
   def test_class_exists
     refute_nil Calc::C
   end
@@ -224,7 +218,6 @@ class TestComplex < MiniTest::Test
 
   def test_acos
     assert_complex_parts Calc::C(2,3).acos, 1.00014354247379721852, -1.98338702991653543235
-    assert_complex_parts Calc::C.acos(2+3i), 1.00014354247379721852, -1.98338702991653543235
   end
 
   def test_atan

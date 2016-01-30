@@ -186,25 +186,50 @@ shift(VALUE self, VALUE other, int sign)
 }
 
 static VALUE
-trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *))
+trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *),
+               COMPLEX * (*fcomplex) (COMPLEX *, NUMBER *))
 {
-    NUMBER *qepsilon;
+    NUMBER *qepsilon, *qresult;
+    COMPLEX *cself, *cresult;
     VALUE epsilon, result;
     setup_math_error();
 
-    result = cq_new();
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        DATA_PTR(result) = (*f) (DATA_PTR(self), conf->epsilon);
+        qepsilon = NULL;
     }
     else {
         qepsilon = value_to_number(epsilon, 1);
-        DATA_PTR(result) = (*f) (DATA_PTR(self), qepsilon);
-        qfree(qepsilon);
     }
-    /* there are a few functions which can return NULL with invalid args
-     * instead of calling math_error */
-    if (!DATA_PTR(result)) {
-        rb_raise(e_MathError, "Transcendental function returned NULL");
+    qresult = (*f) (DATA_PTR(self), qepsilon ? qepsilon : conf->epsilon);
+    if (qresult) {
+        result = cq_new();
+        DATA_PTR(result) = qresult;
+    }
+    else if (fcomplex) {
+        /* non-real result, call complex version.  see calc's func.c */
+        cself = comalloc();
+        qfree(cself->real);
+        cself->real = qlink((NUMBER *) DATA_PTR(self));
+        cresult = (*fcomplex) (cself, qepsilon ? qepsilon : conf->epsilon);
+        comfree(cself);
+        if (cresult) {
+            result = cc_new();
+            DATA_PTR(result) = cresult;
+        }
+        else {
+            /* Can this happen? */
+            rb_raise(e_MathError,
+                     "Unhandled NULL from complex version of transcendental function");
+        }
+    }
+    else {
+        if (qepsilon) {
+            qfree(qepsilon);
+        }
+        rb_raise(e_MathError, "Unhandled NULL from transcendental function");
+    }
+    if (qepsilon) {
+        qfree(qepsilon);
     }
     return result;
 }
@@ -568,14 +593,15 @@ cq_abs(VALUE self)
 /* Inverse trigonometric cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
+ * @return [Calc::Q,Calc::C]
  * @example
  *  Calc::Q(0.5).acos #=> Calc::Q(1.04719755119659774615)
+ *  Calc::Q(2.0).acos #=> Calc::C(1.31695789692481670863i)
  */
 static VALUE
 cq_acos(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacos);
+    return trans_function(argc, argv, self, &qacos, &c_acos);
 }
 
 /* Inverse hyperbolic cosine
@@ -588,7 +614,7 @@ cq_acos(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_acosh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacosh);
+    return trans_function(argc, argv, self, &qacosh, NULL);
 }
 
 /* Inverse trigonometric cotangent
@@ -601,7 +627,7 @@ cq_acosh(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_acot(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacot);
+    return trans_function(argc, argv, self, &qacot, NULL);
 }
 
 /* Inverse hyperbolic cotangent
@@ -615,7 +641,7 @@ cq_acot(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_acoth(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacoth);
+    return trans_function(argc, argv, self, &qacoth, NULL);
 }
 
 /* Inverse trigonometric cosecant
@@ -629,7 +655,7 @@ cq_acoth(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_acsc(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacsc);
+    return trans_function(argc, argv, self, &qacsc, NULL);
 }
 
 /* Inverse hyperbolic cosecant
@@ -643,7 +669,7 @@ cq_acsc(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_acsch(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacsch);
+    return trans_function(argc, argv, self, &qacsch, NULL);
 }
 
 /* Inverse trigonometric secant
@@ -657,7 +683,7 @@ cq_acsch(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_asec(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qasec);
+    return trans_function(argc, argv, self, &qasec, NULL);
 }
 
 /* Inverse hyperbolic secant
@@ -671,7 +697,7 @@ cq_asec(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_asech(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qasech);
+    return trans_function(argc, argv, self, &qasech, NULL);
 }
 
 /* Inverse trigonometric sine
@@ -685,7 +711,7 @@ cq_asech(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_asin(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qasin);
+    return trans_function(argc, argv, self, &qasin, NULL);
 }
 
 /* Inverse hyperbolic sine
@@ -698,7 +724,7 @@ cq_asin(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_asinh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qasinh);
+    return trans_function(argc, argv, self, &qasinh, NULL);
 }
 
 /* Inverse trigonometric tangent
@@ -711,7 +737,7 @@ cq_asinh(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_atan(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qatan);
+    return trans_function(argc, argv, self, &qatan, NULL);
 }
 
 /* Angle to point (arctangent with 2 arguments)
@@ -742,7 +768,7 @@ cq_atan2(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_atanh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qatanh);
+    return trans_function(argc, argv, self, &qatanh, NULL);
 }
 
 /* Returns the bernoulli number with index self.  Self must be an integer,
@@ -783,7 +809,7 @@ cq_bernoulli(VALUE self)
 static VALUE
 cq_cos(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qcos);
+    return trans_function(argc, argv, self, &qcos, NULL);
 }
 
 /* Hyperbolic cosine
@@ -796,7 +822,7 @@ cq_cos(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_cosh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qcosh);
+    return trans_function(argc, argv, self, &qcosh, NULL);
 }
 
 /* Trigonometric cotangent
@@ -810,7 +836,7 @@ cq_cosh(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_cot(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qcot);
+    return trans_function(argc, argv, self, &qcot, NULL);
 }
 
 /* Hyperbolic cotangent
@@ -824,7 +850,7 @@ cq_cot(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_coth(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qcoth);
+    return trans_function(argc, argv, self, &qcoth, NULL);
 }
 
 /* Trigonometric cosecant
@@ -837,7 +863,7 @@ cq_coth(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_csc(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qcsc);
+    return trans_function(argc, argv, self, &qcsc, NULL);
 }
 
 /* Hyperbolic cosecant
@@ -851,7 +877,7 @@ cq_csc(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_csch(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qcsch);
+    return trans_function(argc, argv, self, &qcsch, NULL);
 }
 
 /* Exponential function
@@ -865,7 +891,7 @@ cq_csch(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_exp(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qexp);
+    return trans_function(argc, argv, self, &qexp, NULL);
 }
 
 /* Returns the hypotenuse of a right-angled triangle given the other sides
@@ -895,7 +921,7 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_ln(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qln);
+    return trans_function(argc, argv, self, &qln, NULL);
 }
 
 /* Base 10 logarithm
@@ -913,7 +939,7 @@ cq_ln(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_log(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qlog);
+    return trans_function(argc, argv, self, &qlog, NULL);
 }
 
 /* Evaluates п (pi) to a specified accuracy
@@ -1010,7 +1036,7 @@ cq_root(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_sec(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qsec);
+    return trans_function(argc, argv, self, &qsec, NULL);
 }
 
 /* Hyperbolic secant
@@ -1023,7 +1049,7 @@ cq_sec(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_sech(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qsech);
+    return trans_function(argc, argv, self, &qsech, NULL);
 }
 
 /* Trigonometric sine
@@ -1036,7 +1062,7 @@ cq_sech(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_sin(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qsin);
+    return trans_function(argc, argv, self, &qsin, NULL);
 }
 
 /* Hyperbolic sine
@@ -1049,7 +1075,7 @@ cq_sin(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_sinh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qsinh);
+    return trans_function(argc, argv, self, &qsinh, NULL);
 }
 
 /* Trigonometric tangent
@@ -1062,7 +1088,7 @@ cq_sinh(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_tan(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qtan);
+    return trans_function(argc, argv, self, &qtan, NULL);
 }
 
 /* Hyperbolic tangent
@@ -1075,7 +1101,7 @@ cq_tan(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_tanh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qtanh);
+    return trans_function(argc, argv, self, &qtanh, NULL);
 }
 
 /* Returns true if self is zero

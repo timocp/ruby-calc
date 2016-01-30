@@ -52,7 +52,7 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
+      %i(acosh acot acoth acsc acsch agd arg asec asech asin asinh
          atan atan2 atanh bernoulli cbrt cos cosh cot coth csc csch exp fact gd
          hypot ln log power quomod root sec sech sin sinh sqrt tan
          tanh).each do |f|

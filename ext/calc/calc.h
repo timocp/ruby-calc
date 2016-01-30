@@ -49,7 +49,7 @@ extern void define_calc_q(VALUE m);
 extern const rb_data_type_t calc_c_type;
 extern VALUE cC;                /* Calc::C class */
 
-extern VALUE cq_qlloc(VALUE klass);
+extern VALUE cc_alloc(VALUE klass);
 extern void define_calc_c(VALUE m);
 
 /*** macros ***/

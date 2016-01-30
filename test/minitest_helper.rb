@@ -29,6 +29,17 @@ module Minitest::Assertions
     refute_equal expected, actual
   end
 
+  def assert_rational_in_epsilon(expected, actual)
+    assert_instance_of Calc::Q, actual
+    assert_in_epsilon expected, actual
+  end
+
+  def assert_complex_parts(c, rp, ip)
+    assert_instance_of Calc::C, c
+    assert_in_epsilon rp, c.re
+    assert_in_epsilon ip, c.im
+  end
+
   def with_epsilon(eps)
     old_eps = Calc::Q.get_default_epsilon
     Calc::Q.set_default_epsilon(eps)
