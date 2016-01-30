@@ -20,10 +20,6 @@ module Calc
       root(3)
     end
 
-    def inspect
-      "Calc::Q(#{ to_s })"
-    end
-
     # Gudermannian function
     # 
     # @param eps [Calc::Q] (optional) calculation accuracy
@@ -33,6 +29,26 @@ module Calc
     def gd(*args)
       r = Calc::C(self).gd(*args)
       r.real? ? r.re : r
+    end
+
+    def im
+      Calc::Q(0)
+    end
+
+    def inspect
+      "Calc::Q(#{ to_s })"
+    end
+
+    def isimag
+      false
+    end
+
+    def isreal
+      true
+    end
+
+    def re
+      self
     end
 
     def sqrt
@@ -50,9 +66,14 @@ module Calc
       Rational(self.numerator.to_i, self.denominator.to_i)
     end
 
+    alias imag im
+    alias imag? isimag
+    alias real? isreal
+    alias real re
+
     class << self
       # module versions of some methods for convenience
-      %i(acosh acot acoth acsc acsch agd arg asec asech asin asinh
+      %i(acot acoth acsc acsch agd arg asec asech asin asinh
          atan atan2 atanh bernoulli cbrt cos cosh cot coth csc csch exp fact gd
          hypot ln log power quomod root sec sech sin sinh sqrt tan
          tanh).each do |f|

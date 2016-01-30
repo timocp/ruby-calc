@@ -16,4 +16,10 @@ class TestCalc < Minitest::Test
     assert_rational_in_epsilon 1.04719755119659774615, Calc.acos(0.5)
     assert_complex_parts Calc.acos(2), 0, 1.31695789692481670863
   end
+
+  def test_acosh
+    assert_rational_and_equal 0, Calc.acosh(Calc::C(1,0))
+    assert_rational_in_epsilon 1.31695789692481670862, Calc.acosh(2)
+    assert_complex_parts Calc.acosh(0), 0, 1.57079632679489661923
+  end
 end

@@ -9,7 +9,7 @@ module Calc
   # module versions of calc builtins; implemented by turning the argument
   # into the right class and calling the class method
   class << self
-    %i(abs acos).each do |f|
+    %i(abs acos acosh).each do |f|
       define_method f do |*args|
         x = args.shift
         if x.is_a?(Calc::Q) || x.is_a?(Calc::C)

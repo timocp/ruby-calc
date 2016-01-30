@@ -122,20 +122,29 @@ static VALUE
 trans_function(int argc, VALUE * argv, VALUE self, COMPLEX * (*f) (COMPLEX *, NUMBER *))
 {
     VALUE result, epsilon;
+    COMPLEX *cresult;
     NUMBER *qepsilon;
     setup_math_error();
 
-    result = cc_new();
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        DATA_PTR(result) = (*f) (DATA_PTR(self), conf->epsilon);
+        cresult = (*f) (DATA_PTR(self), conf->epsilon);
     }
     else {
         qepsilon = value_to_number(epsilon, 1);
-        DATA_PTR(result) = (*f) (DATA_PTR(self), qepsilon);
+        cresult = (*f) (DATA_PTR(self), qepsilon);
         qfree(qepsilon);
     }
-    if (!DATA_PTR(result)) {
+    if (!cresult) {
         rb_raise(e_MathError, "Complex transcendental function returned NULL");
+    }
+    else if (cisreal(cresult)) {
+        result = cq_new();
+        DATA_PTR(result) = qlink(cresult->real);
+        comfree(cresult);
+    }
+    else {
+        result = cc_new();
+        DATA_PTR(result) = cresult;
     }
     return result;
 }
@@ -510,20 +519,6 @@ cc_im(VALUE self)
     return result;
 }
 
-/* Returns true if the number is imaginary (ie, has zero real part and non-zero
- * imaginary part)
- *
- * @return [Boolean]
- * @example
- *  Calc::C(0,1).imag? #=> true
- *  Calc::C(1,1).real? #=> false
- */
-static VALUE
-cc_isimag(VALUE self)
-{
-    return cisimag((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
-}
-
 /* Inverts a complex number
  */
 static VALUE
@@ -535,6 +530,33 @@ cc_invert(VALUE self)
     result = cc_new();
     DATA_PTR(result) = c_inv(DATA_PTR(self));
     return result;
+}
+
+/* Returns true if the number is imaginary (ie, has zero real part and non-zero
+ * imaginary part)
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(0,1).imag? #=> true
+ *  Calc::C(1,1).imag? #=> false
+ */
+static VALUE
+cc_isimag(VALUE self)
+{
+    return cisimag((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
+/* Returns true if the number is real (ie, has zero imaginary part)
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(1,1).real? #=> false
+ *  Calc::C(1,0).real? #=> true
+ */
+static VALUE
+cc_isreal(VALUE self)
+{
+    return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
 /* Raise to a specified power
@@ -570,19 +592,6 @@ cc_re(VALUE self)
     result = cq_new();
     DATA_PTR(result) = qlink(cself->real);
     return result;
-}
-
-/* Returns true if the number is real (ie, has zero imaginary part)
- *
- * @return [Boolean]
- * @example
- *  Calc::C(1,1).real? #=> false
- *  Calc::C(1,0).real? #=> true
- */
-static VALUE
-cc_isreal(VALUE self)
-{
-    return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
 /* Trigonometric sine
@@ -679,11 +688,11 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "cosh", cc_cosh, -1);
     rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
-    rb_define_method(cC, "imag?", cc_isimag, 0);
     rb_define_method(cC, "invert", cc_invert, 0);
+    rb_define_method(cC, "isimag", cc_isimag, 0);
+    rb_define_method(cC, "isreal", cc_isreal, 0);
     rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
-    rb_define_method(cC, "real?", cc_isreal, 0);
     rb_define_method(cC, "sin", cc_sin, -1);
     rb_define_method(cC, "sinh", cc_sinh, -1);
     rb_define_module_function(cC, "polar", cc_polar, -1);
@@ -691,4 +700,6 @@ define_calc_c(VALUE m)
     rb_define_alias(cC, "**", "power");
     rb_define_alias(cC, "imag", "im");
     rb_define_alias(cC, "real", "re");
+    rb_define_alias(cC, "real?", "isreal");
+    rb_define_alias(cC, "imag?", "isimag");
 }

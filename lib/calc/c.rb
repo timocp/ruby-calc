@@ -137,7 +137,7 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(acosh acot acoth acsc acsch agd arg asec asech asin asinh
+      %i(acot acoth acsc acsch agd arg asec asech asin asinh
          atan atanh cos cosh cot coth csc csch gd power sec sech sin sinh tan
          tanh).each do |f|
         define_method f do |*args|

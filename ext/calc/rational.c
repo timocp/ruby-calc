@@ -213,8 +213,15 @@ trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMB
         cresult = (*fcomplex) (cself, qepsilon ? qepsilon : conf->epsilon);
         comfree(cself);
         if (cresult) {
-            result = cc_new();
-            DATA_PTR(result) = cresult;
+            if (cisreal(cresult)) {
+                result = cq_new();
+                DATA_PTR(result) = qlink(cresult->real);
+                comfree(cresult);
+            }
+            else {
+                result = cc_new();
+                DATA_PTR(result) = cresult;
+            }
         }
         else {
             /* Can this happen? */
@@ -607,14 +614,15 @@ cq_acos(int argc, VALUE * argv, VALUE self)
 /* Inverse hyperbolic cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
+ * @return [Calc::Q,Calc::C]
  * @example
  *  Calc::Q(2).acosh #=> Calc::Q(1.31695789692481670862)
+ *  Calc::Q(0).acosh #=> Calc::C(1.57079632679489661923i)
  */
 static VALUE
 cq_acosh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacosh, NULL);
+    return trans_function(argc, argv, self, &qacosh, &c_acosh);
 }
 
 /* Inverse trigonometric cotangent

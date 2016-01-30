@@ -358,17 +358,14 @@ class TestRational < MiniTest::Test
   end
 
   def test_acos
-    assert_instance_of Calc::Q, Calc::Q(0.5).acos
-    assert_in_epsilon 1.04719755119659774615, Calc::Q(0.5).acos
-    assert_instance_of Calc::C, Calc::Q(2).acos
+    assert_rational_in_epsilon 1.04719755119659774615, Calc::Q(0.5).acos
     assert_complex_parts Calc::Q(2).acos, 0, 1.31695789692481670863
   end
 
   def test_acosh
-    assert_instance_of Calc::Q, Calc::Q.acosh(1)
-    assert_instance_of Calc::Q, Calc::Q(1).acosh
-    assert_equal 0, Calc::Q.acosh(1)
-    assert_in_epsilon 1.31695789692481670862, Calc::Q.acosh(2).to_f
+    assert_rational_and_equal 0, Calc::Q(1).acosh
+    assert_rational_in_epsilon 1.31695789692481670862, Calc::Q(2).acosh
+    assert_complex_parts Calc::Q(0).acosh, 0, 1.57079632679489661923
   end
 
   def test_acot
@@ -572,6 +569,26 @@ class TestRational < MiniTest::Test
     assert_equal 0, Calc::Q(0).agd
     assert_instance_of Calc::Q, Calc::Q(1).gd
     assert_in_epsilon 0.86576948323965862429, Calc::Q(1).gd
+  end
+
+  def test_isreal
+    assert_instance_of TrueClass, Calc::Q(1).isreal
+    assert_alias Calc::Q(1), :isreal, :real?
+  end
+
+  def test_isimag
+    assert_instance_of FalseClass, Calc::Q(1).isimag
+    assert_alias Calc::Q(1), :isimag, :imag?
+  end
+
+  def test_re
+    assert_rational_and_equal 5, Calc::Q(5).re
+    assert_alias Calc::Q(5), :re, :real
+  end
+
+  def test_im
+    assert_rational_and_equal 0, Calc::Q(5).im
+    assert_alias Calc::Q(5), :im, :imag
   end
 
 end

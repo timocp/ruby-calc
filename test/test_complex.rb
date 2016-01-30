@@ -247,7 +247,6 @@ class TestComplex < MiniTest::Test
 
   def test_acosh
     assert_complex_parts Calc::C(2,3).acosh, 1.98338702991653543235, 1.00014354247379721852
-    assert_complex_parts Calc::C.acosh(2+3i), 1.98338702991653543235, 1.00014354247379721852
   end
 
   def test_atanh
@@ -317,7 +316,7 @@ class TestComplex < MiniTest::Test
   end
 
   def test_gd
-    assert_complex_parts Calc::C(1).gd, 0.86576948323965862429, 0
+    assert_rational_in_epsilon 0.86576948323965862429, Calc::C(1).gd
     assert_complex_parts Calc::C(2+1i).gd, 1.422911462459226797, 0.22751065843194319695
     assert_complex_parts Calc::C.gd(2+1i), 1.422911462459226797, 0.22751065843194319695
     assert_equal 0, Calc::C(0,0).gd
