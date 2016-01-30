@@ -47,6 +47,21 @@ module Calc
 
   end
 
+  # module versions of calc builtins; implemented by turning the argument
+  # into the right class and calling the class method
+  class << self
+    %i(abs).each do |f|
+      define_method f do |*args|
+        x = args.shift
+        if x.is_a?(Calc::C) || x.is_a?(Complex)
+          Calc::C(x).__send__(f, *args)
+        else
+          Calc::Q(x).__send__(f, *args)
+        end
+      end
+    end
+  end
+
   def self.Q(*args)
     Q.new(*args)
   end
@@ -108,7 +123,7 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
+      %i(acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
          atan atan2 atanh bernoulli cbrt cos cosh cot coth csc csch exp fact gd
          hypot ln log power quomod root sec sech sin sinh sqrt tan
          tanh).each do |f|
@@ -258,7 +273,7 @@ module Calc
 
     class << self
       # module versions of some methods for convenience
-      %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
+      %i(acos acosh acot acoth acsc acsch agd arg asec asech asin asinh
          atan atanh cos cosh cot coth csc csch gd power sec sech sin sinh tan
          tanh).each do |f|
         define_method f do |*args|

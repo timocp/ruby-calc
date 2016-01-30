@@ -192,7 +192,6 @@ class TestRational < MiniTest::Test
 
   def test_abs
     assert_instance_of Calc::Q, Calc::Q(12).abs
-    assert_instance_of Calc::Q, Calc::Q.abs(12)
     assert_equal 12, Calc::Q(12).abs
     assert_equal 12, Calc::Q(-12).abs
     assert_alias Calc::Q(12), :abs, :magnitude

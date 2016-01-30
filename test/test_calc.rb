@@ -5,7 +5,10 @@ class TestCalc < Minitest::Test
     refute_nil ::Calc::VERSION
   end
 
-  def test_it_does_something_useful
-    assert true
+  def test_abs
+    assert_rational_and_equal 5, Calc.abs(5)
+    assert_rational_and_equal 5, Calc.abs(-5)
+    assert_rational_and_equal 5, Calc.abs(Calc::C(-5,0))
+    assert_rational_and_equal Calc::C(4,5).abs, Calc.abs(Calc::C(4,5))
   end
 end
