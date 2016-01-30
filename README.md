@@ -86,8 +86,8 @@ Calc::C(4+5i) #=> Calc::C(4+5i)
 
 # You can also use the polar method to initialize a complex number by giving
 # a modulus (radius) and argument (angle, in radians)
-Calc::C.polar(1,2) #=> Calc::C(-0.416146836547142387+0.9092974268256816954i)
-Calc::C.polar(c2.abs, c2.arg) #=> Calc::C(-1-1i)
+Calc.polar(1,2) #=> Calc::C(-0.416146836547142387+0.9092974268256816954i)
+Calc.polar(c2.abs, c2.arg) #=> Calc::C(-1-1i)
 
 # If any other single numeric type is passed, it is used as the real part and
 # the imaginary part is set to zero:
@@ -153,33 +153,27 @@ sqrt   | x [, b]    | square root of x within accuracy b
 tan    | x [, b]    | tangent of x within accuracy b
 tanh   | x [, b]    | hyperbolic tangent of x within accuracy b
 
-Unlike the command line verion of calc, these are implemented separated on each appropriate class and will return a value belonging to that class.  In other words, methods on `Calc::Q` will not return answers in `Calc::C`, even if the command line version of calc would have done.
-
-If you want complex results, make sure you use complex parameters (even if the complex part is zero).  This matches the standard ruby Numeric/Rational/Complex behaviours.
+Each builtin is implemented as a class method of Calc::Q, Calc::C (or both) to allow object orientated style.  Their behaviour matches the calc builtins as closely as possible.  The receiver of these methods is what would have been the first parameter in calc.
 
 ```ruby
-Calc::Q.sqrt(-1)    #=> Calc::MathError; command line calc would return 1i.
-Calc::C.sqrt(-1)    #=> Calc::C(1i)
+Calc::Q(1).sin
+Calc::Q(2).power(3)
 ```
 
-These methods (unlike in the command line version of calc) use the first argument as the method receiver, eg:
+If you prefer the C-like style of calc, these are also available as class methods on Calc.  This allows you to include Calc and use the builtins directly.  These will call the rational/complex version of the method based on the type of the first parameter.
 
 ```ruby
-Calc::Q(1).sin          # in calc: sin(1)
-Calc::Q(2).power(3)     # in calc: power(2,3)
-```
-
-If you prefer it, most of these are also available as equivalent class methods:
-
-```ruby
-Calc::Q.sin(1)
-Calc::Q.power(2,3)
+Calc.sin(1)
+Calc.power(2,3)
+include Calc
+sin(1)
+power(2,3)
 ```
 
 Functions with no arguments (other than precision/rounding modes) are only available as class methods:
 
 ```ruby
-Calc::Q.pi              # in calc: pi()
+Calc.pi
 ```
 
 
@@ -192,31 +186,31 @@ These methods have equivalent module versions for convenience.  In the module ve
 ```ruby
 # single parameter functions
 Calc::Q(1).sin  #=> Calc::Q(0.84147098480789650665)
-Calc::Q.sin(1)  #=> Calc::Q(0.84147098480789650665)
+Calc.sin(1)     #=> Calc::Q(0.84147098480789650665)
 
 # two parameter functions
 Calc::Q(9).root(2)  #=> Calc::Q(3)
-Calc::Q.root(9,2)   #=> Calc::Q(3)
+Calc.root(9,2)      #=> Calc::Q(3)
 
 # functions with no parameters are only available as a module method
-Calc::Q.pi  #=> Calc::Q(3.14159265358979323846)
+Calc.pi  #=> Calc::Q(3.14159265358979323846)
 ```
 
 The accuracy of transcendental functions will be within a specified `epsilon`.  Each method has an optional extra parameter which provides this for a single call.  If omitted a global epsilon is used (defaults to 1e-20).  Epsilon must be greater than 0.
 
 ```ruby
 # pi to default 20 decimal places:
-Calc::Q.pi  #=> Calc::Q(3.14159265358979323846)
+Calc.pi  #=> Calc::Q(3.14159265358979323846)
 
 # pi to 2 decimal places:
-Calc::Q.pi("0.01") #=> Calc::Q(3.14)
+Calc.pi("0.01") #=> Calc::Q(3.14)
 
 # Usually using a ruby float as a precision won't work as floating point
 # numbers are converted into rational number that may not be exactly the same
-Calc::Q(0.01).to_s(:frac) #=> "5764607523034235/576460752303423488"
+Calc::Q(0.01).to_s(:frac)   #=> "5764607523034235/576460752303423488"
 # For this reason it is recommended to use a Calc::Q or a string as the
 # epsilon.  Eg, pi to 400 decimal places:
-Calc::Q.pi("1e-400") #=> (omitted)
+Calc::Q("0.01").to_s(:frac) #=> "1/100"
 
 ```
 
@@ -224,9 +218,9 @@ The default epsilon can be changed via the Calc.config method and will affect al
 
 ```ruby
 Calc.config(:epsilon)                 #=> Calc::Q(0.00000000000000000001)
-Calc::Q.pi                            #=> Calc::Q(3.14159265358979323846)
+Calc.pi                               #=> Calc::Q(3.14159265358979323846)
 Calc.config(:epsilon, "0.0001")
-Calc::Q.pi                            #=> Calc::Q(3.1416)
+Calc.pi                               #=> Calc::Q(3.1416)
 ```
 
 ### Converting between numeric types
@@ -247,7 +241,7 @@ Calc::C#to_c       | Converts to ruby Complex
 Internally, `Calc::Q` are always stored as a rational number (fraction).  Libcalc supports various output modes.  The default is "real" which will output as floating points.
 
 ```ruby
-Calc::Q.exp(1).to_s #=> "2.71828182845904523536"
+Calc.exp(1).to_s #=> "2.71828182845904523536"
 ```
 
 Numbers are rounded after `Calc::Config.display` digits; if any rounding has to occur, a leading tilde is included in the output.  If you don't want rounding, you can output as a fraction:
@@ -270,6 +264,8 @@ Calc::Q(1,20).to_s(:bin)      #=> "1/0b10100    base 2 fractions
 ```
 
 The default output mode can be set with [Calc::Config].  The output of `inspect` will match whatever the current default is.
+
+Note that you can also provide `Calc::Q` objects to the ruby printf method.  The format string parameter will coerce the number to the right internal type first (eg %d will display as an integer, %f as a floating point number).  The display may have lost precision in this conversion.
 
 ### Configuration
 
@@ -295,11 +291,9 @@ For people familiar with the command line interface to calc, here are some impor
 Ruby doesn't have output parameters; for functions which in calc modify their parameters, ruby-calc instead returns values, eg:
 
 ```ruby
-q, r = Calc::Q.divmod(a, b)   # in calc: divmod(a, b, q, r)
+q, r = Calc::Q(a).quomod(b)   # in calc: quomod(a, b, q, r)
                               # the actual calc return value is not available
 ```
-
-In calc, the normal number type is rational, but return values will automatically become complex if necessary.  This is not the case for ruby-calc; `Calc::Q` methods will only return `Calc::Q` values.  If you want complex results, you have to start with `Calc::C` objects.
 
 Other differences:
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that

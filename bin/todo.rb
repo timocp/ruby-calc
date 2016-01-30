@@ -5,9 +5,9 @@ require "calc"
 
 q = Calc::Q(1)
 c = Calc::C(1,1)
-ALL = [Calc::Q, Calc::C, q, c]
-Q = [Calc::Q, q]
-C = [Calc::C, c]
+ALL = [Calc, q, c]
+RAT = [Calc, q]
+COM = [Calc, c]
 builtins = Calc::Q(0)
 builtins_done = Calc::Q(0)
 
@@ -39,13 +39,13 @@ builtins_done = Calc::Q(0)
   [:asinh, ALL],
   # assoc - use {}
   [:atan, ALL],
-  [:atan2, Q],
+  [:atan2, RAT],
   [:atanh, ALL],
   [:avg, Calc],
   # base - use Calc.config
   # base2 - unlikely to implement as config item
-  [:bernoulli, Q],
-  [:bit, Q],
+  [:bernoulli, RAT],
+  [:bit, RAT],
   # blk - not sure why you'd need these in a ruby script
   # blkcpy
   # bklfree
@@ -54,11 +54,11 @@ builtins_done = Calc::Q(0)
   # calc_tty
   # calcleve
   # calcpath
-  [:catalan, Q],
+  [:catalan, RAT],
   [:ceil, ALL],
-  [:cfappr, Q],
-  [:cfsim, Q],
-  [:char, Q],
+  [:cfappr, RAT],
+  [:cfsim, RAT],
+  [:char, RAT],
   # cmdbuf use ARGV
   [:cmp, ALL],
   [:comb, ALL],
@@ -76,10 +76,10 @@ builtins_done = Calc::Q(0)
   # ctime - use Time.now / Time.now.ctime
   # custom - n/a no plans to access custom compiled functions yet
   # delete - use Array#delete
-  [:den, Q],
+  [:den, RAT],
   # det - use Matrix#det
-  [:digit, Q],
-  [:digits, Q],
+  [:digit, RAT],
+  [:digits, RAT],
   # display - use Calc.config
   # dp - use Vector#dot
   # epsilon - use Calc.config
@@ -88,15 +88,15 @@ builtins_done = Calc::Q(0)
   # errno - no libcalc interface
   # error - use raise and ruby exceptions
   [:estr, ALL],
-  [:euler, Q],
+  [:euler, RAT],
   # eval - too hard for now :)
   [:exp, ALL],
-  [:factor, Q],
-  [:fcnt, Q],
-  [:fib, Q],
+  [:factor, RAT],
+  [:fcnt, RAT],
+  [:fib, RAT],
   # forall - use ruby loops
-  [:frem, Q],
-  [:fact, Q],
+  [:frem, RAT],
+  [:fact, RAT],
   # fclose and other file related funcs: use File
   # feof
   # ferror
@@ -108,7 +108,7 @@ builtins_done = Calc::Q(0)
   # fgets
   # fgetstr
   # files
-  [:floor, Q],
+  [:floor, RAT],
   # fopen
   # fpathopen
   # fprintf
@@ -128,26 +128,26 @@ builtins_done = Calc::Q(0)
   # fsize
   # ftell
   [:frac, ALL],
-  [:gcd, Q],
-  [:gcdrem, Q],
+  [:gcd, RAT],
+  [:gcdrem, RAT],
   [:gd, ALL],
   # getenv - use ENV
   # hash - not necessary
   # head - use Array
-  [:highbit, Q],
+  [:highbit, RAT],
   [:hmean, Calc],
-  [:hnrmod, Q],
-  [:hypot, Q],
-  [:ilog, ALL],
-  [:ilog10, Q],
-  [:ilog2, Q],
+  [:hnrmod, RAT],
+  [:hypot, RAT],
+  [:ilog, RAT],
+  [:ilog10, RAT],
+  [:ilog2, RAT],
   [:im, ALL],
   # indices - use ruby Hash/Matrix
   # inputlevel - calc / eval related
   # insert - use Array
   [:int, ALL],
   [:inverse, ALL],
-  [:iroot, Q],
+  [:iroot, RAT],
   # mostly the is* don't make sense in ruby, since only numbers are mapped to
   # ruby types.  the ones we do have are named as predicates (iseven-> even?)
   # isassoc
@@ -163,35 +163,35 @@ builtins_done = Calc::Q(0)
   [:isint, ALL],
   # islist
   # ismat
-  [:ismult, Q],
+  [:ismult, RAT],
   # isnull
   # isnum
   # isobj
   # isobjtype
   [:isodd, ALL],
   # isoctet
-  [:isprime, Q],
+  [:isprime, RAT],
   # isptr
-  [:isqrt, Q],
+  [:isqrt, RAT],
   # isrand
   # israndom
-  [:isreal, Q],
-  [:isrel, Q],
+  [:isreal, RAT],
+  [:isrel, RAT],
   # isstr
   # issimple
-  [:issq, Q],
+  [:issq, RAT],
   # istype
-  [:jacobi, Q],
+  [:jacobi, RAT],
   # join - use Array#join
-  [:lcm, Q],
-  [:lcmfact, Q],
-  [:lfactor, Q],
+  [:lcm, RAT],
+  [:lcmfact, RAT],
+  [:lfactor, RAT],
   # links - interesting but not necessary
   # list - use Array
   [:ln, ALL],
   [:log, ALL],
-  [:lowbit, Q],
-  [:ltol, Q],
+  [:lowbit, RAT],
+  [:ltol, RAT],
   # makelist - use Array
   # matdim, etc - use ruby Matrix library
   # matfill
@@ -200,23 +200,23 @@ builtins_done = Calc::Q(0)
   # matsum
   # mattrace
   # mattrans
-  [:max, Calc::Q],
+  [:max, Calc],
   # memsize - not exposed by libcalc
-  [:meq, Q],
-  [:min, Calc::Q],
-  [:minv, Q],
+  [:meq, RAT],
+  [:min, Calc],
+  [:minv, RAT],
   [:mmin, ALL],
-  [:mne, Q],
+  [:mne, RAT],
   [:mod, ALL],
   # modify - use Array/Matrix
   # name - block stuff
-  [:near, Q],
+  [:near, RAT],
   # newerror - use ruby exceptions
-  [:nextcand, Q],
-  [:nextprime, Q],
+  [:nextcand, RAT],
+  [:nextprime, RAT],
   [:norm, ALL],
   # null - use ruby nil
-  [:num, Q],
+  [:num, RAT],
   # ord - use String#ord
   # isupper etc - use String
   # islower
@@ -230,37 +230,37 @@ builtins_done = Calc::Q(0)
   # isspace
   # isxdigit
   # param - use ruby method arguments
-  [:perm, Q],
-  [:prevcand, Q],
-  [:prevprime, Q],
-  [:pfact, Q],
-  [:pi, Calc::Q],
-  [:pix, Q],
-  [:places, Q],
-  [:pmod, Q],
-  [:polar, Calc::C],
+  [:perm, RAT],
+  [:prevcand, RAT],
+  [:prevprime, RAT],
+  [:pfact, RAT],
+  [:pi, Calc],
+  [:pix, RAT],
+  [:places, RAT],
+  [:pmod, RAT],
+  [:polar, COM],
   [:poly, ALL], # MAYBE - not in linklib
   # pop - use Array
-  [:popcnt, Q],
+  [:popcnt, RAT],
   [:power, ALL],
   # protect - block stuff
-  [:ptest, Q],
+  [:ptest, RAT],
   # printf - use ruby printf
   # prompt - use gets (or highline, etc)
   # push - use array
   # putenv - use ENV
   [:quo, ALL],
-  [:quomod, Q],
+  [:quomod, RAT],
   # rand - no random stuff needed
   # randbit
   # random
   # randombit
   # randperm
-  [:rcin, Q],
-  [:rcmul, Q],
-  [:rcout, Q],
-  [:rcpow, Q],
-  [:rcsq, Q],
+  [:rcin, RAT],
+  [:rcmul, RAT],
+  [:rcout, RAT],
+  [:rcpow, RAT],
+  [:rcsq, RAT],
   [:re, ALL],
   # remove - use Array
   # reverse - use Array/Matrix
@@ -320,11 +320,11 @@ builtins_done = Calc::Q(0)
   [:tanh, ALL],
   # test - not needed; truthiness in ruby is different. for Q/C, use !zero?
   # time - use Time.now.to_i
-  [:trunc, Q],
+  [:trunc, RAT],
   # ungetc - i/o stuff
   # usertime - use Process#times
   [:version, Calc],
-  [:xor, Q],
+  [:xor, RAT],
 ].each do |func, (*things)|
   builtins += 1
   missing = [*things].reject do |thing|
