@@ -233,11 +233,13 @@ class TestRational < MiniTest::Test
   end
 
   def test_power
-    assert_rational_and_equal Calc::Q(3),    Calc::Q(81) ** Calc::Q(1,4)
-    assert_in_epsilon Calc::Q(1,9).to_f,  (Calc::Q(1,3) ** 2).to_f
-    assert_rational_and_equal Calc::Q(4),    Calc::Q(8) ** Rational(2,3)
+    assert_rational_and_equal Calc::Q(3),     Calc::Q(81) ** Calc::Q(1,4)
+    assert_rational_in_epsilon Calc::Q(1,9),  Calc::Q(1,3) ** 2
+    assert_rational_and_equal Calc::Q(4),     Calc::Q(8) ** Rational(2,3)
 
     assert_rational_in_epsilon 8.2207405646327461795, Calc::Q(1.2345).power(10)
+    assert_rational_and_equal -8, Calc::Q(-2) ** 3
+    assert_complex_parts Calc::Q(-1) ** "0.1", 0.95105651629515357212, 0.3090169943749474241
   end
 
   def test_shift
@@ -298,8 +300,8 @@ class TestRational < MiniTest::Test
     assert_equal 5, Calc::Q(5,1).to_i
 
     # numbers larger than MAXLONG
-    assert_equal 90438207500880449001, (Calc::Q(99,2) ** 10).numerator.to_i
-    assert_equal 1024,                 (Calc::Q(99,2) ** 10).denominator.to_i
+    assert_equal 90438207500880449001, (Calc::Q(99,2) ** 10).numerator
+    assert_equal 1024,                 (Calc::Q(99,2) ** 10).denominator
   end
 
   def test_to_r

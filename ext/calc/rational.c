@@ -277,7 +277,7 @@ trans_function2(int argc, VALUE * argv, VALUE self,
  */
 static VALUE
 log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER *),
-               COMPLEX * (*fc) (COMPLEX *, NUMBER *))
+             COMPLEX * (*fc) (COMPLEX *, NUMBER *))
 {
     VALUE epsilon, result;
     NUMBER *qepsilon, *qself;
@@ -1026,17 +1026,65 @@ cq_pi(int argc, VALUE * argv, VALUE self)
 
 /* Evaluates a numeric power
  *
- * @param y [Numeric,Calc::Q] power to raise by
+ * @param y [Numeric] power to raise by
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] if self is negative or raising to a VERY large power
+ * @return [Calc::Q,Calc::C]
+ * @raise [Calc::MathError] if raising to a VERY large power
  * @example
  *  Calc::Q("1.2345").power(10) #=> Calc::Q(8.2207405646327461795)
+ *  Calc::Q(-1).power("0.1")    #=> Calc::C(0.95105651629515357212+0.3090169943749474241i)
  */
 static VALUE
 cq_power(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function2(argc, argv, self, &qpower);
+    /* ref: powervalue() in calc value.c.  handle cases NUM,NUM and NUM,COM */
+    VALUE arg, epsilon, result;
+    NUMBER *qself, *qarg, *qepsilon;
+    COMPLEX *cself, *carg, *cresult;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "11", &arg, &epsilon) == 1) {
+        qepsilon = NULL;
+    }
+    else {
+        qepsilon = value_to_number(epsilon, 1);
+    }
+    qself = DATA_PTR(self);
+    if (CALC_C_P(arg) || TYPE(arg) == T_COMPLEX || qisneg(qself)) {
+        cself = comalloc();
+        qfree(cself->real);
+        cself->real = qlink(qself);
+        if (TYPE(arg) == T_STRING) {
+            carg = comalloc();
+            qfree(carg->real);
+            carg->real = value_to_number(arg, 1);
+        }
+        else {
+            carg = value_to_complex(arg);
+        }
+        cresult = c_power(cself, carg, qepsilon ? qepsilon : conf->epsilon);
+        comfree(cself);
+        comfree(carg);
+        if (cisreal(cresult)) {
+            result = cq_new();
+            DATA_PTR(result) = qlink(cresult->real);
+            comfree(cresult);
+        }
+        else {
+            result = cc_new();
+            DATA_PTR(result) = cresult;
+        }
+    }
+    else {
+        result = cq_new();
+        qarg = value_to_number(arg, 1);
+        DATA_PTR(result) = qpower(qself, qarg, qepsilon ? qepsilon : conf->epsilon);
+        qfree(qarg)
+    }
+    if (qepsilon) {
+        qfree(qepsilon);
+    }
+    return result;
 }
 
 /* Returns the quotient and remainder from division
