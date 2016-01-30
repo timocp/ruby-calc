@@ -270,6 +270,53 @@ trans_function2(int argc, VALUE * argv, VALUE self,
     return result;
 }
 
+/* similar to trans_function, but for qln and qlog; unlike the normal qfunc's,
+ * they will return wrong results for self < 0, so check that first and if
+ * so call the complex version.
+ * ref: f_ln() and f_log() in calc's func.c
+ */
+static VALUE
+log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER *),
+               COMPLEX * (*fc) (COMPLEX *, NUMBER *))
+{
+    VALUE epsilon, result;
+    NUMBER *qepsilon, *qself;
+    COMPLEX *cself, *cresult;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
+        qepsilon = NULL;
+    }
+    else {
+        qepsilon = value_to_number(epsilon, 1);
+    }
+    qself = DATA_PTR(self);
+    if (!qisneg(qself) && !qiszero(qself)) {
+        result = cq_new();
+        DATA_PTR(result) = (*fq) (qself, qepsilon ? qepsilon : conf->epsilon);
+    }
+    else {
+        cself = comalloc();
+        qfree(cself->real);
+        cself->real = qlink(qself);
+        cresult = (*fc) (cself, qepsilon ? qepsilon : conf->epsilon);
+        comfree(cself);
+        if (cisreal(cresult)) {
+            result = cq_new();
+            DATA_PTR(result) = qlink(cresult->real);
+            comfree(cresult);
+        }
+        else {
+            result = cc_new();
+            DATA_PTR(result) = cresult;
+        }
+    }
+    if (qepsilon) {
+        qfree(qepsilon);
+    }
+    return result;
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -641,29 +688,29 @@ cq_acot(int argc, VALUE * argv, VALUE self)
 /* Inverse hyperbolic cotangent
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] if abs(self) <= 1
+ * @return [Calc::Q,Calc::C]
  * @example
- *  Calc::Q(2).acoth #=> Calc::Q(0.5493061443340548457)
+ *  Calc::Q(2).acoth   #=> Calc::Q(0.5493061443340548457)
+ *  Calc::Q(0.5).acoth #=> Calc::C(0.5493061443340548457+1.57079632679489661923i)
  */
 static VALUE
 cq_acoth(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacoth, NULL);
+    return trans_function(argc, argv, self, &qacoth, &c_acoth);
 }
 
 /* Inverse trigonometric cosecant
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] if abs(self) < 1
+ * @return [Calc::Q,Calc::C]
  * @example
- *  Calc::Q(2).acsc #=> Calc::Q(0.52359877559829887308)
+ *  Calc::Q(2).acsc   #=> Calc::Q(0.52359877559829887308)
+ *  Calc::Q(0.5).acsc #=> Calc::C(1.57079632679489661923-1.31695789692481670863i)
  */
 static VALUE
 cq_acsc(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacsc, NULL);
+    return trans_function(argc, argv, self, &qacsc, &c_acsc);
 }
 
 /* Inverse hyperbolic cosecant
@@ -677,49 +724,47 @@ cq_acsc(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_acsch(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qacsch, NULL);
+    return trans_function(argc, argv, self, &qacsch, &c_acsch);
 }
 
 /* Inverse trigonometric secant
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] if abs(self) is < 1
+ * @return [Calc::Q,Calc::C]
  * @example
  *  Calc::Q(2).asec #=> Calc::Q(1.04719755119659774615)
  */
 static VALUE
 cq_asec(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qasec, NULL);
+    return trans_function(argc, argv, self, &qasec, &c_asec);
 }
 
 /* Inverse hyperbolic secant
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] unless 0 < self <= 1
+ * @return [Calc::Q,Calc::C]
+ * @raise [Calc::MathError] if self is zero
  * @example
  *  Calc::Q(0.5).asech #=> Calc::Q(1.31695789692481670862)
  */
 static VALUE
 cq_asech(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qasech, NULL);
+    return trans_function(argc, argv, self, &qasech, &c_asech);
 }
 
 /* Inverse trigonometric sine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] if self < -1 or self > 1
+ * @return [Calc::Q,Calc::C]
  * @example
  *  Calc::Q(0.5).asin #=> Calc::Q(0.52359877559829887308)
  */
 static VALUE
 cq_asin(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qasin, NULL);
+    return trans_function(argc, argv, self, &qasin, &c_asin);
 }
 
 /* Inverse hyperbolic sine
@@ -769,14 +814,14 @@ cq_atan2(int argc, VALUE * argv, VALUE self)
 /* Inverse hyperbolic tangent
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
+ * @return [Calc::Q,Calc::C]
  * @example
  *  Calc::Q(0.5).atanh #=> Calc::Q(0.87758256189037271612)
  */
 static VALUE
 cq_atanh(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qatanh, NULL);
+    return trans_function(argc, argv, self, &qatanh, &c_atanh);
 }
 
 /* Returns the bernoulli number with index self.  Self must be an integer,
@@ -921,7 +966,7 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
  * Note that this is like using ruby's Math.log.
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
+ * @return [Calc::Q,Calc::C]
  * @raise [Calc::MathError] if self is zero
  * @example
  *  Calc::Q(10).ln #=> Calc::Q(2.30258509299404568402)
@@ -929,7 +974,7 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_ln(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qln, NULL);
+    return log_function(argc, argv, self, &qln, &c_ln);
 }
 
 /* Base 10 logarithm
@@ -937,9 +982,10 @@ cq_ln(int argc, VALUE * argv, VALUE self)
  * Note that this is like using ruby's Math.log10.
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] if self < -1 or self > 1
+ * @return [Calc::Q,Calc::C]
+ * @raise [Calc::MathError] if self is zero
  * @example
+ *  Calc::Q(-1).log     #=> Calc::C(~1.36437635384184134748i)
  *  Calc::Q(10).log     #=> Calc::Q(1)
  *  Calc::Q(100).log    #=> Calc::Q(2)
  *  Calc::Q("1e10").log #=> Calc::Q(10)
@@ -947,7 +993,7 @@ cq_ln(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_log(int argc, VALUE * argv, VALUE self)
 {
-    return trans_function(argc, argv, self, &qlog, NULL);
+    return log_function(argc, argv, self, &qlog, &c_log);
 }
 
 /* Evaluates п (pi) to a specified accuracy
