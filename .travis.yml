@@ -8,3 +8,5 @@ rvm:
 before_install:
   - gem install bundler     # travis ruby 2.0.0 installs bundler 1.7, update it
   - bin/install_calc.sh
+after_success:
+  - bin/todo.rb
