@@ -70,17 +70,5 @@ module Calc
     alias imag? isimag
     alias real? isreal
     alias real re
-
-    class << self
-      # module versions of some methods for convenience
-      %i(acot acoth acsc acsch agd arg asec asech asin asinh
-         atan atan2 atanh bernoulli cbrt cos cosh cot coth csc csch exp fact gd
-         hypot ln log power quomod root sec sech sin sinh sqrt tan
-         tanh).each do |f|
-        define_method f do |*args|
-          Calc::Q(args.first).__send__(f, *args[1..-1])
-        end
-      end
-    end
   end
 end

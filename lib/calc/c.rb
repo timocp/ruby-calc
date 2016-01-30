@@ -26,7 +26,7 @@ module Calc
     #  Calc::C(1,1)  #=> Calc::Q(0.78539816339744830962)
     def arg(*args)
       # see f_arg() in func.c
-      Q.atan2(im, re, *args)
+      im.atan2(re, *args)
     end
 
     # Trigonometric cotangent
@@ -133,17 +133,6 @@ module Calc
 
     def inspect
       "Calc::C(#{ to_s })"
-    end
-
-    class << self
-      # module versions of some methods for convenience
-      %i(acot acoth acsc acsch agd arg asec asech asin asinh
-         atan atanh cos cosh cot coth csc csch gd power sec sech sin sinh tan
-         tanh).each do |f|
-        define_method f do |*args|
-          Calc::C(args.first).__send__(f, *args[1..-1])
-        end
-      end
     end
 
     private

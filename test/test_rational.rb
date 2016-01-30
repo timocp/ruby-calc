@@ -199,7 +199,7 @@ class TestRational < MiniTest::Test
 
   def test_quomod
     [5, BIG2, Calc::Q(5), Rational(5,1), 5.0].each do |p|
-      [Calc::Q(13).quomod(p), Calc::Q.quomod(13, p)].each do |r|
+      [Calc::Q(13).quomod(p)].each do |r|
         assert_instance_of Array, r
         assert_equal 2, r.size
         assert_instance_of Calc::Q, r.first
@@ -237,8 +237,7 @@ class TestRational < MiniTest::Test
     assert_in_epsilon Calc::Q(1,9).to_f,  (Calc::Q(1,3) ** 2).to_f
     assert_rational_and_equal Calc::Q(4),    Calc::Q(8) ** Rational(2,3)
 
-    assert_instance_of Calc::Q, Calc::Q.power(1.2345, 10)
-    assert_in_epsilon 8.2207405646327461795, Calc::Q.power(1.2345, 10).to_f
+    assert_rational_in_epsilon 8.2207405646327461795, Calc::Q(1.2345).power(10)
   end
 
   def test_shift
@@ -278,7 +277,6 @@ class TestRational < MiniTest::Test
 
   def test_fact
     assert_instance_of Calc::Q, Calc::Q(42).fact
-    assert_instance_of Calc::Q, Calc::Q.fact(42)
     assert_equal 1, Calc::Q(0).fact
     assert_equal 1, Calc::Q(1).fact
     assert_equal 2, Calc::Q(2).fact
@@ -351,7 +349,6 @@ class TestRational < MiniTest::Test
     # float, so this is just testing values are roughly right.
     %i(asin asinh atan cos cosh sin sinh tan tanh).each do |method|
       [-1, 0, 1].each do |input|
-        assert_in_epsilon(Math.send(method, input), Calc::Q.send(method, input).to_f)
         assert_in_epsilon(Math.send(method, input), Calc::Q(input).send(method).to_f)
       end
     end
@@ -369,7 +366,6 @@ class TestRational < MiniTest::Test
   end
 
   def test_acot
-    assert_instance_of Calc::Q, Calc::Q.acot(1)
     assert_instance_of Calc::Q, Calc::Q(1).acot
     assert_in_epsilon 2.35619449019234492885, Calc::Q(-1).acot.to_f
     assert_in_epsilon 1.57079632679489661923, Calc::Q(0).acot.to_f
@@ -377,29 +373,24 @@ class TestRational < MiniTest::Test
   end
 
   def test_acoth
-    assert_instance_of Calc::Q, Calc::Q.acoth(2)
-    assert_instance_of Calc::Q, Calc::Q(2).acoth
-    assert_in_epsilon 0.5493061443340548457, Calc::Q.acoth(2).to_f
-    assert_raises(Calc::MathError) { Calc::Q.acoth(0) }
-    assert_raises(Calc::MathError) { Calc::Q.acoth(1) }
+    assert_rational_in_epsilon 0.5493061443340548457, Calc::Q(2).acoth
+    assert_raises(Calc::MathError) { Calc::Q(0).acoth }
+    assert_raises(Calc::MathError) { Calc::Q(1).acoth }
   end
 
   def test_acsc
-    assert_instance_of Calc::Q, Calc::Q.acsc(1)
     assert_instance_of Calc::Q, Calc::Q(1).acsc
     assert_in_epsilon 1.57079632679489661923, Calc::Q(1).acsc.to_f
     assert_raises(Calc::MathError) { Calc::Q(0).acsc }
   end
 
   def test_acsch
-    assert_instance_of Calc::Q, Calc::Q.acsch(1)
     assert_instance_of Calc::Q, Calc::Q(1).acsch
     assert_in_epsilon 0.88137358701954302523, Calc::Q(1).acsch.to_f
     assert_raises(Calc::MathError) { Calc::Q(0).acsch }
   end
 
   def test_asec
-    assert_instance_of Calc::Q, Calc::Q.asec(1)
     assert_instance_of Calc::Q, Calc::Q(1).asec
     assert_in_epsilon 3.14159265358979323846, Calc::Q(-1).asec.to_f
     assert_equal 0, Calc::Q(1).asec
@@ -407,118 +398,102 @@ class TestRational < MiniTest::Test
   end
 
   def test_asech
-    assert_instance_of Calc::Q, Calc::Q.asech(1)
     assert_instance_of Calc::Q, Calc::Q(1).asech
-    assert_equal 0, Calc::Q.asech(1)
-    assert_in_epsilon 1.31695789692481670862, Calc::Q.asech(0.5).to_f
+    assert_equal 0, Calc::Q(1).asech
+    assert_in_epsilon 1.31695789692481670862, Calc::Q(0.5).asech
     assert_raises(Calc::MathError) { Calc::Q(0).asech }
   end
 
   def test_atan2
     assert_instance_of Calc::Q, Calc::Q(0).atan2(0)
-    assert_instance_of Calc::Q, Calc::Q.atan2(0,0)
     [-1,0,1].each do |y|
       [-1,0,1].each do |x|
-        assert_in_epsilon Math.atan2(y,x), Calc::Q.atan2(y,x).to_f
         assert_in_epsilon Math.atan2(y,x), Calc::Q(y).atan2(x).to_f
       end
     end
   end
 
   def test_atanh
-    assert_instance_of Calc::Q, Calc::Q.atanh(0)
     assert_instance_of Calc::Q, Calc::Q(0).atanh
-    assert_equal 0, Calc::Q.atanh(0)
-    assert_in_epsilon 0.5493061443340548457, Calc::Q.atanh(0.5).to_f
-    assert_raises(Calc::MathError) { Calc::Q.atanh(1) }
+    assert_equal 0, Calc::Q(0).atanh
+    assert_in_epsilon 0.5493061443340548457, Calc::Q(0.5).atanh
+    assert_raises(Calc::MathError) { Calc::Q(1).atanh }
   end
 
   def test_cot
-    assert_instance_of Calc::Q, Calc::Q.cot(1)
-    assert_in_epsilon 0.64209261593433070301, Calc::Q.cot(1).to_f
-    assert_in_epsilon 0.64209261593433070301, Calc::Q(1).cot.to_f
-    assert_raises(Calc::MathError) { Calc::Q.cot(0) }
+    assert_instance_of Calc::Q, Calc::Q(1).cot
+    assert_in_epsilon 0.64209261593433070301, Calc::Q(1).cot
+    assert_raises(Calc::MathError) { Calc::Q(0).cot }
   end
 
   def test_coth
-    assert_instance_of Calc::Q, Calc::Q.coth(1)
     assert_instance_of Calc::Q, Calc::Q(1).coth
     assert_in_epsilon 1.31303528549933130364, Calc::Q(1).coth.to_f
-    assert_raises(Calc::MathError) { Calc::Q.coth(0) }
+    assert_raises(Calc::MathError) { Calc::Q(0).coth }
   end
 
   def test_csc
-    assert_instance_of Calc::Q, Calc::Q.csc(1)
-    assert_in_epsilon 1.18839510577812121626, Calc::Q.csc(1).to_f
+    assert_instance_of Calc::Q, Calc::Q(1).csc
     assert_in_epsilon 1.18839510577812121626, Calc::Q(1).csc.to_f
-    assert_raises(Calc::MathError) { Calc::Q.csc(0) }
+    assert_raises(Calc::MathError) { Calc::Q(0).csc }
   end
 
   def test_csch
-    assert_instance_of Calc::Q, Calc::Q.csch(1)
     assert_instance_of Calc::Q, Calc::Q(1).csch
-    assert_in_epsilon 0.85091812823932154513, Calc::Q.csch(1).to_f
-    assert_raises(Calc::MathError) { Calc::Q.csch(0) }
+    assert_in_epsilon 0.85091812823932154513, Calc::Q(1).csch
+    assert_raises(Calc::MathError) { Calc::Q(0).csch }
   end
 
   def test_exp
-    assert_instance_of Calc::Q, Calc::Q.exp(1)
     assert_instance_of Calc::Q, Calc::Q(1).exp
-    assert_in_epsilon Math.exp(-1), Calc::Q.exp(-1).to_f
-    assert_equal 1, Calc::Q.exp(0)
-    assert_in_epsilon Math::E, Calc::Q.exp(1).to_f
-    assert_in_epsilon Math.exp(2), Calc::Q.exp(2).to_f
+    assert_in_epsilon Math.exp(-1), Calc::Q(-1).exp
+    assert_equal 1, Calc::Q(0).exp
+    assert_in_epsilon Math::E, Calc::Q(1).exp
+    assert_in_epsilon Math.exp(2), Calc::Q(2).exp
   end
 
   # libcalc ln is equivalent to Math.log
   def test_ln
-    assert_instance_of Calc::Q, Calc::Q.ln(1)
     assert_instance_of Calc::Q, Calc::Q(1).ln
-    assert_raises(Calc::MathError) { Calc::Q.ln(0) }
-    assert_equal 0, Calc::Q.ln(1)
-    assert_in_epsilon Math.log(2), Calc::Q.ln(2).to_f
+    assert_raises(Calc::MathError) { Calc::Q(0).ln }
+    assert_equal 0, Calc::Q(1).ln
+    assert_in_epsilon Math.log(2), Calc::Q(2).ln
   end
 
   # libcalc log is equivalent to Math.log10 or Math.log(x, 10)
   def test_log
-    assert_instance_of Calc::Q, Calc::Q.log(1)
     assert_instance_of Calc::Q, Calc::Q(1).log
-    assert_raises(Calc::MathError) { Calc::Q.log(0) }
-    assert_equal 0, Calc::Q.log(1)
-    assert_in_epsilon Math.log10(2), Calc::Q.log(2).to_f
+    assert_raises(Calc::MathError) { Calc::Q(0).log }
+    assert_equal 0, Calc::Q(1).log
+    assert_in_epsilon Math.log10(2), Calc::Q(2).log
   end
 
   def test_root
-    assert_instance_of Calc::Q, Calc::Q.root(7, 4)
     assert_instance_of Calc::Q, Calc::Q(7).root(4)
-    assert_in_epsilon 1.62658, Calc::Q.root(7, 4).to_f
+    assert_in_epsilon 1.62658, Calc::Q(7).root(4)
 
-    assert_raises(Calc::MathError) { Calc::Q.root(1, 0) }
-    assert_raises(Calc::MathError) { Calc::Q.root(0, -1) }
-    assert_raises(Calc::MathError) { Calc::Q.root(-2, 4) }
+    assert_raises(Calc::MathError) { Calc::Q(1).root(0) }
+    assert_raises(Calc::MathError) { Calc::Q(0).root(-1) }
+    assert_raises(Calc::MathError) { Calc::Q(-2).root(4) }
 
     # these are currently implemented in terms of Q#root
     # calc actually has a sqrt with many options, we're not exposing yet
-    assert_instance_of Calc::Q, Calc::Q.sqrt(4)
     assert_instance_of Calc::Q, Calc::Q(4).sqrt
-    assert_instance_of Calc::Q, Calc::Q.cbrt(8)
     assert_instance_of Calc::Q, Calc::Q(8).cbrt
     assert_equal 2, Calc::Q(4).sqrt
     assert_equal 2, Calc::Q(8).cbrt
   end
 
   def test_sec
-    assert_instance_of Calc::Q, Calc::Q.sec(0)
-    assert_in_epsilon 1.85081571768092561791, Calc::Q.sec(1).to_f
-    assert_in_epsilon 1.85081571768092561791, Calc::Q(1).sec.to_f
-    assert_equal 1, Calc::Q.sec(0)
+    assert_instance_of Calc::Q, Calc::Q(0).sec
+    assert_in_epsilon 1.85081571768092561791, Calc::Q(1).sec
+    assert_equal 1, Calc::Q(0).sec
   end
 
   def test_sech
-    assert_instance_of Calc::Q, Calc::Q.sech(0)
     assert_instance_of Calc::Q, Calc::Q(0).sech
-    assert_equal 1, Calc::Q.sech(0)
-    assert_in_epsilon 0.64805427366388539958, Calc::Q.sech(1).to_f
+    assert_equal 1, Calc::Q(0).sech
+    assert_in_epsilon 0.64805427366388539958, Calc::Q(1).sech
   end
 
   def test_coerce
@@ -530,7 +505,6 @@ class TestRational < MiniTest::Test
 
   def test_hypot
     assert_instance_of Calc::Q, Calc::Q(3).hypot(4)
-    assert_instance_of Calc::Q, Calc::Q.hypot(3,4)
     assert_equal 5, Calc::Q(3).hypot(4)
     assert_in_epsilon 3.60555127546398929312, Calc::Q(2).hypot(-3)
   end
@@ -543,7 +517,6 @@ class TestRational < MiniTest::Test
 
   def test_bernoulli
     assert_instance_of Calc::Q, Calc::Q(6).bernoulli
-    assert_instance_of Calc::Q, Calc::Q.bernoulli(6)
     [1, "-1/2", "1/6", 0, "-1/30", 0, "1/42"].each_with_index do |expected, n|
       assert_equal Calc::Q(expected), Calc::Q(n).bernoulli
     end
