@@ -345,17 +345,6 @@ class TestRational < MiniTest::Test
     assert_equal Rational(314159,100000), pi
   end
 
-  def test_trig
-    # test trig functions which are also in ruby Math by comparing our result
-    # to theirs.  note that our results lose precision when converting to
-    # float, so this is just testing values are roughly right.
-    %i(sin sinh tan tanh).each do |method|
-      [-1, 0, 1].each do |input|
-        assert_in_epsilon(Math.send(method, input), Calc::Q(input).send(method).to_f)
-      end
-    end
-  end
-
   def test_acos
     assert_rational_in_epsilon 1.04719755119659774615, Calc::Q(0.5).acos
     assert_complex_parts Calc::Q(2).acos, 0, 1.31695789692481670863
@@ -510,15 +499,33 @@ class TestRational < MiniTest::Test
   end
 
   def test_sec
-    assert_instance_of Calc::Q, Calc::Q(0).sec
-    assert_in_epsilon 1.85081571768092561791, Calc::Q(1).sec
-    assert_equal 1, Calc::Q(0).sec
+    assert_rational_in_epsilon 1.85081571768092561791, Calc::Q(1).sec
+    assert_rational_and_equal 1, Calc::Q(0).sec
   end
 
   def test_sech
-    assert_instance_of Calc::Q, Calc::Q(0).sech
-    assert_equal 1, Calc::Q(0).sech
-    assert_in_epsilon 0.64805427366388539958, Calc::Q(1).sech
+    assert_rational_and_equal 1, Calc::Q(0).sech
+    assert_rational_in_epsilon 0.64805427366388539958, Calc::Q(1).sech
+  end
+
+  def test_sin
+    assert_rational_and_equal 0, Calc::Q(0).sin
+    assert_rational_in_epsilon 0.84147098480789650665, Calc::Q(1).sin
+  end
+
+  def test_sinh
+    assert_rational_and_equal 0, Calc::Q(0).sinh
+    assert_rational_in_epsilon 1.17520119364380145688, Calc::Q(1).sinh
+  end
+
+  def test_tan
+    assert_rational_and_equal 0, Calc::Q(0).tan
+    assert_rational_in_epsilon 1.55740772465490223051, Calc::Q(1).tan
+  end
+
+  def test_tanh
+    assert_rational_and_equal 0, Calc::Q(0).tanh
+    assert_rational_in_epsilon 0.76159415595576488812, Calc::Q(1).tanh
   end
 
   def test_coerce
