@@ -961,6 +961,22 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
     return trans_function2(argc, argv, self, &qhypot);
 }
 
+/* Returns true if self is zero
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(0).iszero #=> true
+ *  Calc::Q(1).iszero #=> false
+ */
+static VALUE
+cq_iszero(VALUE self)
+{
+    NUMBER *qself;
+    qself = DATA_PTR(self);
+    return qiszero(qself) ? Qtrue : Qfalse;
+}
+
 /* Logarithm
  *
  * Note that this is like using ruby's Math.log.
@@ -1159,7 +1175,7 @@ cq_sech(int argc, VALUE * argv, VALUE self)
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
  * @example
- *  Calc::Q(1).xxx #=> Calc::Q(0.84147098480789650665)
+ *  Calc::Q(1).sin #=> Calc::Q(0.84147098480789650665)
  */
 static VALUE
 cq_sin(int argc, VALUE * argv, VALUE self)
@@ -1204,22 +1220,6 @@ static VALUE
 cq_tanh(int argc, VALUE * argv, VALUE self)
 {
     return trans_function(argc, argv, self, &qtanh, NULL);
-}
-
-/* Returns true if self is zero
- *
- * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @example
- *  Calc::Q(0).zero? #=> true
- *  Calc::Q(1).zero? #=> false
- */
-static VALUE
-cq_iszero(VALUE self)
-{
-    NUMBER *qself;
-    qself = DATA_PTR(self);
-    return qiszero(qself) ? Qtrue : Qfalse;
 }
 
 /*****************************************************************************
@@ -1267,6 +1267,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
+    rb_define_method(cQ, "iszero", cq_iszero, 0);
     rb_define_method(cQ, "ln", cq_ln, -1);
     rb_define_method(cQ, "log", cq_log, -1);
     rb_define_method(cQ, "numerator", cq_numerator, 0);
@@ -1281,7 +1282,6 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, -1);
-    rb_define_method(cQ, "zero?", cq_iszero, 0);
     rb_define_module_function(cQ, "pi", cq_pi, -1);
 
     /* include Comparable */
@@ -1290,4 +1290,5 @@ define_calc_q(VALUE m)
     rb_define_alias(cQ, "divmod", "quomod");
     rb_define_alias(cQ, "magnitude", "abs");
     rb_define_alias(cQ, "modulo", "%");
+    rb_define_alias(cQ, "zero?", "iszero");
 }
