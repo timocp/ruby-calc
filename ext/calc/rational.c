@@ -852,6 +852,41 @@ cq_bernoulli(VALUE self)
     return result;
 }
 
+/* Returns true if binary bit y is set in self, otherwise false.
+ *
+ * @param y [Numeric] bit position
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(9).bit?(0) #=> true
+ *  Calc::Q(9).bit?(1) #=> false
+ * @see bit
+ */
+static VALUE
+cq_bitp(VALUE self, VALUE y)
+{
+    /* this is an "opcode" in calc rather than a builtin ("help bit" is
+     * wrong!).  this is based on calc's opcodes.c#o_bit() */
+    NUMBER *qself, *qy;
+    long index;
+    int r;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    qy = value_to_number(y, 0);
+    if (qisfrac(qy)) {
+        qfree(qy);
+        rb_raise(e_MathError, "Bad argument type for bit");     /* E_BIT1 */
+    }
+    if (zge31b(qy->num)) {
+        qfree(qy);
+        rb_raise(e_MathError, "Index too large for bit");       /* E_BIT2 */
+    }
+    index = qtoi(qy);
+    qfree(qy);
+    r = qisset(qself, index);
+    return r ? Qtrue : Qfalse;
+}
+
 /* Cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1275,6 +1310,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "atan2", cq_atan2, -1);
     rb_define_method(cQ, "atanh", cq_atanh, -1);
     rb_define_method(cQ, "bernoulli", cq_bernoulli, 0);
+    rb_define_method(cQ, "bit?", cq_bitp, 1);
     rb_define_method(cQ, "cos", cq_cos, -1);
     rb_define_method(cQ, "cosh", cq_cosh, -1);
     rb_define_method(cQ, "cot", cq_cot, -1);

@@ -16,6 +16,18 @@ module Calc
       r.real? ? r.re : r
     end
 
+    # Returns 1 if binary bit y is set in self, otherwise 0.
+    #
+    # @param y [Numeric] bit position
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(9).bit(0) #=> Calc::Q(1)
+    #  Calc::Q(9).bit(1) #=> Calc::Q(0)
+    # @see bit?
+    def bit(y)
+      self.class.new(bit?(y) ? 1 : 0)
+    end
+
     def cbrt
       root(3)
     end

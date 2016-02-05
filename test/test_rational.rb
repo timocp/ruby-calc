@@ -601,4 +601,38 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0).inverse }
   end
 
+  def test_bit?
+    assert_instance_of TrueClass, Calc::Q(9).bit?(0)
+    assert_instance_of FalseClass, Calc::Q(9).bit?(1)
+    assert_instance_of FalseClass, Calc::Q(9).bit?(2)
+    assert_instance_of TrueClass, Calc::Q(9).bit?(3)
+    assert_instance_of FalseClass, Calc::Q(9).bit?(4)
+    assert_instance_of FalseClass, Calc::Q(0).bit?(0)
+    assert_instance_of FalseClass, Calc::Q(9).bit?(-1)
+    assert_instance_of TrueClass, Calc::Q("1.25").bit?(-2)
+    assert_instance_of FalseClass, Calc::Q("1.25").bit?(-1)
+    assert_instance_of TrueClass, Calc::Q("1.25").bit?(0)
+    assert_instance_of TrueClass, Calc::Q.pi.bit?(1)
+    assert_instance_of FalseClass, Calc::Q.pi.bit?(-2)
+    assert_instance_of TrueClass, Calc::Q.pi.bit?(-3)
+    assert_raises(Calc::MathError) { Calc::Q(9).bit?(0.5) }
+  end
+
+  def test_bit
+    assert_rational_and_equal 1, Calc::Q(9).bit(0)
+    assert_rational_and_equal 0, Calc::Q(9).bit(1)
+    assert_rational_and_equal 0, Calc::Q(9).bit(2)
+    assert_rational_and_equal 1, Calc::Q(9).bit(3)
+    assert_rational_and_equal 0, Calc::Q(9).bit(4)
+    assert_rational_and_equal 0, Calc::Q(0).bit(0)
+    assert_rational_and_equal 0, Calc::Q(9).bit(-1)
+    assert_rational_and_equal 1, Calc::Q("1.25").bit(-2)
+    assert_rational_and_equal 0, Calc::Q("1.25").bit(-1)
+    assert_rational_and_equal 1, Calc::Q("1.25").bit(0)
+    assert_rational_and_equal 1, Calc::Q.pi.bit(1)
+    assert_rational_and_equal 0, Calc::Q.pi.bit(-2)
+    assert_rational_and_equal 1, Calc::Q.pi.bit(-3)
+    assert_raises(Calc::MathError) { Calc::Q(9).bit(0.5) }
+  end
+
 end

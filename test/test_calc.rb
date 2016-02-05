@@ -61,6 +61,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :atan2, 2
     check_delegation :atanh
     check_real_delegation :bernoulli
+    check_real_delegation :bit
     check_delegation :cos
     check_delegation :cosh
     check_delegation :cot
