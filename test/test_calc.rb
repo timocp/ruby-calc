@@ -30,8 +30,8 @@ class TestCalc < Minitest::Test
   end
 
   def check_complex_delegation(m, arg_count = 1)
-    [1+1i, 1-1i, 1i, -1i, -1+1i, -1-1i].map do |n|
-      check_delegation_value(m, n, Calc::C(n), arg_count - 1)
+    [[1,1], [1,-1], [0,1], [0,-1], [-1,1], [-1,1]].map do |r,i|
+      check_delegation_value(m, Complex(r,i), Calc::C(r,i), arg_count - 1)
     end
   end
 

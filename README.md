@@ -81,7 +81,8 @@ c1 = Calc::C(2, 3) #=> Calc::C(2+3i)
 
 # You can pass a single Complex or Calc::C parameter:
 c2 = Calc::C(Complex(-1,-1)) #=> Calc::C(-1-1i)
-# note that ruby allow complex literals which turn into Complex objects, so:
+# note that ruby 2.1 and later allow complex literals which turn into Complex
+# objects, so:
 Calc::C(4+5i) #=> Calc::C(4+5i)
 
 # You can also use the polar method to initialize a complex number by giving

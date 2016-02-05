@@ -294,14 +294,14 @@ class TestComplex < MiniTest::Test
 
   def test_gd
     assert_rational_in_epsilon 0.86576948323965862429, Calc::C(1).gd
-    assert_complex_parts Calc::C(2+1i).gd, 1.422911462459226797, 0.22751065843194319695
+    assert_complex_parts Calc::C(2,1).gd, 1.422911462459226797, 0.22751065843194319695
     assert_equal 0, Calc::C(0,0).gd
 
     assert_raises(Calc::MathError) { Calc::C(0, Calc::Q.pi/2).gd }
   end
 
   def test_inverse
-    assert_complex_parts Calc::C(3+4i).inverse, 0.12, -0.16
+    assert_complex_parts Calc::C(3,4).inverse, 0.12, -0.16
     assert_raises(Calc::MathError) { Calc::C(0,0).inverse }
   end
 
