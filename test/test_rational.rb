@@ -595,4 +595,10 @@ class TestRational < MiniTest::Test
     assert_alias Calc::Q(5), :im, :imag
   end
 
+  def test_inverse
+    assert_rational_and_equal Calc::Q(4,5), Calc::Q(5,4).inverse
+    assert_rational_and_equal Calc::Q(-7,2), Calc::Q(-2,7).inverse
+    assert_raises(Calc::MathError) { Calc::Q(0).inverse }
+  end
+
 end

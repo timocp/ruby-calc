@@ -140,6 +140,7 @@ exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
 freebernoulli |     | free memory storing calculated bernoulli numbers
 gd     | z [, b]    | gudermannian function of z within accuracy b
+inverse| x          | inverse of x
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 pi     | [b]        | value of π within accuracy b

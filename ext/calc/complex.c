@@ -519,10 +519,15 @@ cc_im(VALUE self)
     return result;
 }
 
-/* Inverts a complex number
+/* Inverse of a complex number
+ *
+ * @return [Calc::C]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::C(2+2i).inverse #=> Calc::C(0.25-0.25i)
  */
 static VALUE
-cc_invert(VALUE self)
+cc_inverse(VALUE self)
 {
     VALUE result;
     setup_math_error();
@@ -688,7 +693,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "cosh", cc_cosh, -1);
     rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
-    rb_define_method(cC, "invert", cc_invert, 0);
+    rb_define_method(cC, "inverse", cc_inverse, 0);
     rb_define_method(cC, "isimag", cc_isimag, 0);
     rb_define_method(cC, "isreal", cc_isreal, 0);
     rb_define_method(cC, "power", cc_power, -1);

@@ -59,7 +59,7 @@ module Calc
     #  Calc::C(2,3).csc #=> Calc::C(~0.09047320975320743981+~0.04120098628857412646i)
     def csc(*args)
       # see f_csc() in func.c
-      sin(*args).invert
+      sin(*args).inverse
     end
 
     # Hyperbolic cosecant
@@ -70,7 +70,7 @@ module Calc
     #  Calc::C(2,3).csch #=> Calc::C(~-0.27254866146294019951-~0.04030057885689152187i)
     def csch(*args)
       # see f_csch() in func.c
-      sinh(*args).invert
+      sinh(*args).inverse
     end
 
     # Trigonometric secant
@@ -81,7 +81,7 @@ module Calc
     #  Calc::C(2,3).sec #=> Calc::C(~-0.04167496441114427005+~0.09061113719623759653i)
     def sec(*args)
       # see f_sec() in func.c
-      cos(*args).invert
+      cos(*args).inverse
     end
 
     # Hyperbolic secant
@@ -92,7 +92,7 @@ module Calc
     #  Calc::C(2,3).sech #=> Calc::C(~-0.26351297515838930964-~0.03621163655876852087i)
     def sech(*args)
       # see f_sech() in func.c
-      cosh(*args).invert
+      cosh(*args).inverse
     end
 
     # Trigonometric tangent

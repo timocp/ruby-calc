@@ -300,4 +300,9 @@ class TestComplex < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::C(0, Calc::Q.pi/2).gd }
   end
 
+  def test_inverse
+    assert_complex_parts Calc::C(3+4i).inverse, 0.12, -0.16
+    assert_raises(Calc::MathError) { Calc::C(0,0).inverse }
+  end
+
 end

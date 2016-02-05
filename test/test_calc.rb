@@ -69,6 +69,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :fact
     check_delegation :gd
     check_delegation :im
+    check_delegation :inverse
     check_delegation :isreal
     check_real_delegation :pi
     check_real_delegation :quomod, 2

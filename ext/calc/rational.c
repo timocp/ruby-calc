@@ -961,6 +961,24 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
     return trans_function2(argc, argv, self, &qhypot);
 }
 
+/* Inverse of a real number
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is zero
+ * @example:
+ *  Calc::Q(3).inverse #=> Calc::Q(0.25)
+ */
+static VALUE
+cq_inverse(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+
+    result = cq_new();
+    DATA_PTR(result) = qinv(DATA_PTR(self));
+    return result;
+}
+
 /* Returns true if self is zero
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1267,6 +1285,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
+    rb_define_method(cQ, "inverse", cq_inverse, 0);
     rb_define_method(cQ, "iszero", cq_iszero, 0);
     rb_define_method(cQ, "ln", cq_ln, -1);
     rb_define_method(cQ, "log", cq_log, -1);
