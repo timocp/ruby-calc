@@ -10,8 +10,8 @@ module Calc
   # into the right class and calling the class method
   class << self
     %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin asinh atan
-    atan2 atanh cos cosh cot coth csc csch fact gd im inverse isreal pi quomod
-    re sec sech sin sinh tan tanh).each do |f|
+    atan2 atanh bernoulli cos cosh cot coth csc csch fact gd hypot im inverse
+    isreal pi power quomod re sec sech sin sinh tan tanh).each do |f|
       define_method f do |*args|
         x = args.shift
         if x.is_a?(Calc::Q) || x.is_a?(Calc::C)
