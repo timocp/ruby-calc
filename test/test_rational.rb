@@ -262,19 +262,21 @@ class TestRational < MiniTest::Test
   end
 
   def test_denominator
-    assert_instance_of Calc::Q, Calc::Q(1, 2).denominator
-    assert_equal 4, Calc::Q( 13,  4).denominator
-    assert_equal 4, Calc::Q( 13, -4).denominator
-    assert_equal 4, Calc::Q(-13, -4).denominator
-    assert_equal 4, Calc::Q(-13, -4).denominator
+    assert_instance_of Calc::Q, Calc::Q(1, 2).den
+    assert_equal 4, Calc::Q( 13,  4).den
+    assert_equal 4, Calc::Q( 13, -4).den
+    assert_equal 4, Calc::Q(-13, -4).den
+    assert_equal 4, Calc::Q(-13, -4).den
+    assert_alias Calc::Q(1), :denominator, :den
   end
 
   def test_numerator
-    assert_instance_of Calc::Q, Calc::Q(1, 2).numerator
-    assert_equal  13, Calc::Q( 13,  4).numerator
-    assert_equal -13, Calc::Q(-13,  4).numerator
-    assert_equal -13, Calc::Q( 13, -4).numerator
-    assert_equal  13, Calc::Q(-13, -4).numerator
+    assert_instance_of Calc::Q, Calc::Q(1, 2).num
+    assert_equal  13, Calc::Q( 13,  4).num
+    assert_equal -13, Calc::Q(-13,  4).num
+    assert_equal -13, Calc::Q( 13, -4).num
+    assert_equal  13, Calc::Q(-13, -4).num
+    assert_alias Calc::Q(1), :numerator, :num
   end
 
   def test_fact

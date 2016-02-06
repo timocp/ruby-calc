@@ -68,12 +68,14 @@ class TestCalc < Minitest::Test
     check_delegation :coth
     check_delegation :csc
     check_delegation :csch
+    check_real_delegation :den
     check_real_delegation :fact
     check_delegation :gd
     check_real_delegation :hypot, 2
     check_delegation :im
     check_delegation :inverse
     check_delegation :isreal
+    check_real_delegation :num
     check_real_delegation :pi
     check_delegation :power, 2
     check_real_delegation :quomod, 2

@@ -138,6 +138,7 @@ cot    | x [, b]    | cotangent of x within accuracy b
 coth   | x [, b]    | hyperbolic cotangent of x within accuracy b
 csc    | x [, b]    | cosecant of x within accuracy b
 csch   | x [, b]    | hyperbolic cosecant of x within accuracy b
+den    | x          | denominator of x
 exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
 freebernoulli |     | free memory storing calculated bernoulli numbers
@@ -145,6 +146,7 @@ gd     | z [, b]    | gudermannian function of z within accuracy b
 inverse| x          | inverse of x
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
+num    | x          | numerator of x
 pi     | [b]        | value of π within accuracy b
 power  | x, y [, b] | x raised to the power of y within accuracy b
 root   | x, n [, b] | nth root of x within accuracy b

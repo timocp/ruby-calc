@@ -493,11 +493,11 @@ cq_spaceship(VALUE self, VALUE other)
  *
  * @return [Calc::Q]
  * @example:
- *  Calc::Q(1,3).denominator  #=> Calc::Q(3)
- *  Calc::Q(-1,3).denominator #=> Calc::Q(3)
+ *  Calc::Q(1,3).den  #=> Calc::Q(3)
+ *  Calc::Q(-1,3).den #=> Calc::Q(3)
  */
 static VALUE
-cq_denominator(VALUE self)
+cq_den(VALUE self)
 {
     VALUE result;
     setup_math_error();
@@ -532,11 +532,11 @@ cq_fact(VALUE self)
  *
  * @return [Calc::Q]
  * @example:
- *  Calc::Q(1,3).numerator  #=> Calc::Q(1)
- *  Calc::Q(-1,3).numerator #=> Calc::Q(-1)
+ *  Calc::Q(1,3).num  #=> Calc::Q(1)
+ *  Calc::Q(-1,3).num #=> Calc::Q(-1)
  */
 static VALUE
-cq_numerator(VALUE self)
+cq_num(VALUE self)
 {
     VALUE result;
     setup_math_error();
@@ -1317,7 +1317,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "coth", cq_coth, -1);
     rb_define_method(cQ, "csc", cq_csc, -1);
     rb_define_method(cQ, "csch", cq_csch, -1);
-    rb_define_method(cQ, "denominator", cq_denominator, 0);
+    rb_define_method(cQ, "den", cq_den, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
@@ -1325,7 +1325,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "iszero", cq_iszero, 0);
     rb_define_method(cQ, "ln", cq_ln, -1);
     rb_define_method(cQ, "log", cq_log, -1);
-    rb_define_method(cQ, "numerator", cq_numerator, 0);
+    rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "root", cq_root, -1);
@@ -1342,8 +1342,10 @@ define_calc_q(VALUE m)
     /* include Comparable */
     rb_include_module(cQ, rb_mComparable);
 
+    rb_define_alias(cQ, "denominator", "den");
     rb_define_alias(cQ, "divmod", "quomod");
     rb_define_alias(cQ, "magnitude", "abs");
     rb_define_alias(cQ, "modulo", "%");
+    rb_define_alias(cQ, "numerator", "num");
     rb_define_alias(cQ, "zero?", "iszero");
 }
