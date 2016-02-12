@@ -176,7 +176,7 @@ class TestComplex < MiniTest::Test
   def test_arg
     assert_instance_of Calc::Q, Calc::C(1,1).arg
     assert_equal 0, Calc::C(2).arg
-    assert_in_epsilon Calc::Q.pi(), Calc::C(-2).arg
+    assert_in_epsilon Calc.pi(), Calc::C(-2).arg
     assert_in_epsilon 0.98279372324732906799, Calc::C(2,3).arg
     assert_in_epsilon 0.98279, Calc::C(2,3).arg("1e-5")
   end
@@ -184,11 +184,11 @@ class TestComplex < MiniTest::Test
   def test_polar
     assert_instance_of Calc::C, Calc::C.polar(2,0)
     assert_instance_of Calc::C, Calc::C.polar(1,2, "1e-5")
-    assert_instance_of Calc::C, Calc::C.polar(2, Calc::Q.pi()/4)
+    assert_instance_of Calc::C, Calc::C.polar(2, Calc.pi()/4)
     assert_equal 2, Calc::C.polar(2,0)
     assert_equal Calc::C("-0.41615","0.9093"), Calc::C.polar(1,2,"1e-5")
-    assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc::Q.pi()/4).re
-    assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc::Q.pi()/4).im
+    assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc.pi()/4).re
+    assert_in_epsilon 1.4142135623730950488, Calc::C.polar(2, Calc.pi()/4).im
   end
 
   def test_cos
@@ -297,7 +297,7 @@ class TestComplex < MiniTest::Test
     assert_complex_parts Calc::C(2,1).gd, 1.422911462459226797, 0.22751065843194319695
     assert_equal 0, Calc::C(0,0).gd
 
-    assert_raises(Calc::MathError) { Calc::C(0, Calc::Q.pi/2).gd }
+    assert_raises(Calc::MathError) { Calc::C(0, Calc.pi/2).gd }
   end
 
   def test_inverse

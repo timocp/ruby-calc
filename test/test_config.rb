@@ -27,9 +27,9 @@ class TestConfig < Minitest::Test
   end
 
   def test_epsilon
-    assert_equal Calc::Q("3.14159265358979323846"), Calc::Q.pi
+    assert_equal Calc::Q("3.14159265358979323846"), Calc.pi
     with_config(:epsilon, Calc::Q("1e-20"), Calc::Q("1e-3")) do
-      assert_equal Calc::Q("3.142"), Calc::Q.pi
+      assert_equal Calc::Q("3.142"), Calc.pi
     end
     assert_raises(Calc::MathError) { Calc.config(:epsilon, 0) }
     assert_raises(Calc::MathError) { Calc.config(:epsilon, -0.1) }

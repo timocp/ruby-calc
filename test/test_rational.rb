@@ -5,9 +5,6 @@ class TestRational < MiniTest::Test
   BIG  =  0x4000000000000000  # first BigNum
   BIG2 =  0x8000000000000000  # first Bignum that won't fit in a long
   BIG3 = -0x8000000000000001  # first negative bignum that won't fit in a long
-  EPS20 = Calc::Q("1e-20")
-  EPS5  = Calc::Q("1e-5")
-  EPS4  = Calc::Q("1e-4")
 
   def test_class_exists
     refute_nil Calc::Q
@@ -338,15 +335,6 @@ class TestRational < MiniTest::Test
 
   end
 
-  def test_pi
-    pi = Calc::Q.pi(EPS20)
-    assert_instance_of Calc::Q, pi
-    assert_equal Rational(157079632679489661923,50000000000000000000), pi
-
-    pi = Calc::Q.pi(EPS5)
-    assert_equal Rational(314159,100000), pi
-  end
-
   def test_acos
     assert_rational_in_epsilon 1.04719755119659774615, Calc::Q(0.5).acos
     assert_complex_parts Calc::Q(2).acos, 0, 1.31695789692481670863
@@ -544,7 +532,7 @@ class TestRational < MiniTest::Test
 
   def test_arg
     assert_instance_of Calc::Q, Calc::Q(1).arg
-    assert_in_epsilon Calc::Q.pi, Calc::Q(-1).arg
+    assert_in_epsilon Calc.pi, Calc::Q(-1).arg
     assert_equal 0, Calc::Q(1).arg
   end
 
@@ -614,9 +602,9 @@ class TestRational < MiniTest::Test
     assert_instance_of TrueClass, Calc::Q("1.25").bit?(-2)
     assert_instance_of FalseClass, Calc::Q("1.25").bit?(-1)
     assert_instance_of TrueClass, Calc::Q("1.25").bit?(0)
-    assert_instance_of TrueClass, Calc::Q.pi.bit?(1)
-    assert_instance_of FalseClass, Calc::Q.pi.bit?(-2)
-    assert_instance_of TrueClass, Calc::Q.pi.bit?(-3)
+    assert_instance_of TrueClass, Calc.pi.bit?(1)
+    assert_instance_of FalseClass, Calc.pi.bit?(-2)
+    assert_instance_of TrueClass, Calc.pi.bit?(-3)
     assert_raises(Calc::MathError) { Calc::Q(9).bit?(0.5) }
   end
 
@@ -631,9 +619,9 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal 1, Calc::Q("1.25").bit(-2)
     assert_rational_and_equal 0, Calc::Q("1.25").bit(-1)
     assert_rational_and_equal 1, Calc::Q("1.25").bit(0)
-    assert_rational_and_equal 1, Calc::Q.pi.bit(1)
-    assert_rational_and_equal 0, Calc::Q.pi.bit(-2)
-    assert_rational_and_equal 1, Calc::Q.pi.bit(-3)
+    assert_rational_and_equal 1, Calc.pi.bit(1)
+    assert_rational_and_equal 0, Calc.pi.bit(-2)
+    assert_rational_and_equal 1, Calc.pi.bit(-3)
     assert_raises(Calc::MathError) { Calc::Q(9).bit(0.5) }
   end
 

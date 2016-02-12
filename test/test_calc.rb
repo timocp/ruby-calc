@@ -5,6 +5,15 @@ class TestCalc < Minitest::Test
     refute_nil ::Calc::VERSION
   end
 
+  def test_pi
+    pi = Calc.pi
+    assert_instance_of Calc::Q, pi
+    assert_equal Rational(157079632679489661923,50000000000000000000), pi
+
+    pi = Calc.pi("1e-5")
+    assert_equal Rational(314159,100000), pi
+  end
+
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)
     assert_respond_to Calc, m
     extra_args = [ruby_n] * extra_args_count
@@ -76,7 +85,6 @@ class TestCalc < Minitest::Test
     check_delegation :inverse
     check_delegation :isreal
     check_real_delegation :num
-    check_real_delegation :pi
     check_delegation :power, 2
     check_real_delegation :quomod, 2
     check_delegation :re

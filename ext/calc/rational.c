@@ -1065,34 +1065,6 @@ cq_log(int argc, VALUE * argv, VALUE self)
     return log_function(argc, argv, self, &qlog, &c_log);
 }
 
-/* Evaluates п (pi) to a specified accuracy
- *
- * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @example
- *  Calc::Q.pi          #=> Calc::Q(3.14159265358979323846)
- *  Calc::Q.pi("1e-40") #=> Calc::Q(3.1415926535897932384626433832795028841972)
- */
-static VALUE
-cq_pi(int argc, VALUE * argv, VALUE self)
-{
-    NUMBER *qepsilon;
-    VALUE epsilon, result;
-    setup_math_error();
-
-    result = cq_new();
-    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        DATA_PTR(result) = qpi(conf->epsilon);
-    }
-    else {
-        qepsilon = value_to_number(epsilon, 1);
-        DATA_PTR(result) = qpi(qepsilon);
-        qfree(qepsilon);
-    }
-
-    return result;
-}
-
 /* Evaluates a numeric power
  *
  * @param y [Numeric] power to raise by
@@ -1337,7 +1309,6 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, -1);
-    rb_define_module_function(cQ, "pi", cq_pi, -1);
 
     /* include Comparable */
     rb_include_module(cQ, rb_mComparable);

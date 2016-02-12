@@ -22,7 +22,7 @@ module Calc
     #  Calc::Q(1).arg  #=> Calc::Q(0)
     def arg(*args)
       if self < 0
-        Q.pi(*args)
+        Calc.pi(*args)
       else
         self.class.new(0)
       end
