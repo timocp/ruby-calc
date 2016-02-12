@@ -158,29 +158,34 @@ sqrt   | x [, b]    | square root of x within accuracy b
 tan    | x [, b]    | tangent of x within accuracy b
 tanh   | x [, b]    | hyperbolic tangent of x within accuracy b
 
-Each builtin is implemented as a class method of Calc::Q, Calc::C (or both) to allow object orientated style.  Their behaviour matches the calc builtins as closely as possible.  The receiver of these methods is what would have been the first parameter in calc.
+Builtins with at least one required parameter are implemented as class methods of Calc::Q, Calc::C (or both) to allow object orientated style.  Their behaviour matches the calc builtins as closely as possible.  The receiver of these methods is what would have been the first parameter in calc.
 
 ```ruby
-Calc::Q(1).sin
-Calc::Q(2).power(3)
+Calc::Q(1).sin      #=> Calc::Q(0.84147098480789650665)
+Calc::Q(2).power(3) #=> Calc::Q(8)
 ```
 
 If you prefer the C-like style of calc, these are also available as class methods on Calc.  This allows you to include Calc and use the builtins directly.  These will call the rational/complex version of the method based on the type of the first parameter.
 
 ```ruby
-Calc.sin(1)
-Calc.power(2,3)
-include Calc
-sin(1)
-power(2,3)
+Calc.sin(1)     #=> Calc::Q(0.84147098480789650665)
+Calc.power(2,3) #=> Calc::Q(8)
 ```
 
 Functions with no arguments (other than precision/rounding modes) are only available as class methods:
 
 ```ruby
-Calc.pi
+Calc.pi #=> Calc::Q(3.14159265358979323846)
 ```
 
+If you want usage as close to command line calc as possible, you can require calc/import which will mix all builtins into Kernal.  Be careful, this pollutes the namespace of almost every object.
+
+```ruby
+require "calc/import"
+sin(1)      #=> Calc::Q(0.84147098480789650665)
+power(2,3)  #=> Calc::Q(8)
+pi          #=> Calc::Q(3.14159265358979323846)
+```
 
 ### Trancendental functions
 

@@ -6,13 +6,20 @@ require "calc/c"
 
 module Calc
 
-  # module versions of calc builtins; implemented by turning the argument
-  # into the right class and calling the class method
+  # builtins implemented as instance methods on Calc::Q or Calc::C
+  BUILTINS1 = %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin
+                 asinh atan atan2 atanh bit bernoulli cos cosh cot coth csc
+                 csch den fact gd hypot im inverse isreal num power quomod re
+                 sec sech sin sinh tan tanh)
+  # builtins implemented as module methods on Calc
+  BUILTINS2 = %i(config freebernoulli pi)
+
+  ALL_BUILTINS = BUILTINS1 + BUILTINS2
+
+  # module versions of instance builtins; implemented by turning the first
+  # argument into the right class and calling the instance method
   class << self
-    %i(abs acos acosh acot acoth acsc acsch agd arg asec asech asin asinh atan
-    atan2 atanh bit bernoulli cos cosh cot coth csc csch den fact gd hypot im
-    inverse isreal num pi power quomod re sec sech sin sinh tan
-    tanh).each do |f|
+    BUILTINS1.each do |f|
       define_method f do |*args|
         x = args.shift
         if x.is_a?(Calc::Q) || x.is_a?(Calc::C)
