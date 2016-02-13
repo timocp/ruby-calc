@@ -130,7 +130,7 @@ atan   | x [, b]    | arctangent of x within accuracy b
 atan2  | y, x [, b] | angle determined by the point (x,y) within accuracy b
 atanh  | x [, b]    | hyperbolic arctangent of x within accuracy b
 bernoulli | x       | xth bernoulli number
-bit    | x, y       | whether bit y in value x is set (use `bit?` for boolean version)
+bit    | x, y       | whether bit y in value x is set (also: #bit?)
 cbrt   | x [, b]    | cube root of x within accuracy b
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b

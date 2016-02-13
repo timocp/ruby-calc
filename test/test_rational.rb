@@ -591,38 +591,21 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0).inverse }
   end
 
-  def test_bit?
-    assert_instance_of TrueClass, Calc::Q(9).bit?(0)
-    assert_instance_of FalseClass, Calc::Q(9).bit?(1)
-    assert_instance_of FalseClass, Calc::Q(9).bit?(2)
-    assert_instance_of TrueClass, Calc::Q(9).bit?(3)
-    assert_instance_of FalseClass, Calc::Q(9).bit?(4)
-    assert_instance_of FalseClass, Calc::Q(0).bit?(0)
-    assert_instance_of FalseClass, Calc::Q(9).bit?(-1)
-    assert_instance_of TrueClass, Calc::Q("1.25").bit?(-2)
-    assert_instance_of FalseClass, Calc::Q("1.25").bit?(-1)
-    assert_instance_of TrueClass, Calc::Q("1.25").bit?(0)
-    assert_instance_of TrueClass, Calc.pi.bit?(1)
-    assert_instance_of FalseClass, Calc.pi.bit?(-2)
-    assert_instance_of TrueClass, Calc.pi.bit?(-3)
-    assert_raises(Calc::MathError) { Calc::Q(9).bit?(0.5) }
-  end
-
   def test_bit
-    assert_rational_and_equal 1, Calc::Q(9).bit(0)
-    assert_rational_and_equal 0, Calc::Q(9).bit(1)
-    assert_rational_and_equal 0, Calc::Q(9).bit(2)
-    assert_rational_and_equal 1, Calc::Q(9).bit(3)
-    assert_rational_and_equal 0, Calc::Q(9).bit(4)
-    assert_rational_and_equal 0, Calc::Q(0).bit(0)
-    assert_rational_and_equal 0, Calc::Q(9).bit(-1)
-    assert_rational_and_equal 1, Calc::Q("1.25").bit(-2)
-    assert_rational_and_equal 0, Calc::Q("1.25").bit(-1)
-    assert_rational_and_equal 1, Calc::Q("1.25").bit(0)
-    assert_rational_and_equal 1, Calc.pi.bit(1)
-    assert_rational_and_equal 0, Calc.pi.bit(-2)
-    assert_rational_and_equal 1, Calc.pi.bit(-3)
-    assert_raises(Calc::MathError) { Calc::Q(9).bit(0.5) }
+    check_truthy Calc::Q(9), :bit, :bit?, 0
+    check_falsey Calc::Q(9), :bit, :bit?, 1
+    check_falsey Calc::Q(9), :bit, :bit?, 2
+    check_truthy Calc::Q(9), :bit, :bit?, 3
+    check_falsey Calc::Q(9), :bit, :bit?, 4
+    check_falsey Calc::Q(0), :bit, :bit?, 0
+    check_falsey Calc::Q(9), :bit, :bit?, -1
+    check_truthy Calc::Q("1.25"), :bit, :bit?, -2
+    check_falsey Calc::Q("1.25"), :bit, :bit?, -1
+    check_truthy Calc::Q("1.25"), :bit, :bit?, 0
+    check_truthy Calc.pi, :bit, :bit?, 1
+    check_falsey Calc.pi, :bit, :bit?, -2
+    check_truthy Calc.pi, :bit, :bit?, -3
+    assert_raises(Calc::MathError) { Calc::Q(9).bit?(0.5) }
   end
 
   def test_even

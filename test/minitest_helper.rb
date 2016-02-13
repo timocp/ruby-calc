@@ -41,15 +41,15 @@ module Minitest::Assertions
   end
 
   # check a pair of methods return 1/true
-  def check_truthy(v, qmethod, bmethod)
-    assert_rational_and_equal 1, v.__send__(qmethod)
-    assert_instance_of TrueClass, v.__send__(bmethod)
+  def check_truthy(v, qmethod, bmethod, *args)
+    assert_rational_and_equal 1, v.__send__(*([qmethod] + args))
+    assert_instance_of TrueClass, v.__send__(*([bmethod] + args))
   end
 
   # check a pair of methods return 0/false
-  def check_falsey(v, qmethod, bmethod)
-    assert_rational_and_equal 0, v.__send__(qmethod)
-    assert_instance_of FalseClass, v.__send__(bmethod)
+  def check_falsey(v, qmethod, bmethod, *args)
+    assert_rational_and_equal 0, v.__send__(*([qmethod] + args))
+    assert_instance_of FalseClass, v.__send__(*([bmethod] + args))
   end
 
   def with_epsilon(eps)
