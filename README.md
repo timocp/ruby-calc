@@ -178,15 +178,6 @@ Functions with no arguments (other than precision/rounding modes) are only avail
 Calc.pi #=> Calc::Q(3.14159265358979323846)
 ```
 
-If you want usage as close to command line calc as possible, you can require calc/import which will mix all builtins into Kernal.  Be careful, this pollutes the namespace of almost every object.
-
-```ruby
-require "calc/import"
-sin(1)      #=> Calc::Q(0.84147098480789650665)
-power(2,3)  #=> Calc::Q(8)
-pi          #=> Calc::Q(3.14159265358979323846)
-```
-
 ### Trancendental functions
 
 Transcendental functions such as sin, cos and pi, cannot be evaluated exactly as fractions.  The result will be a rational number within a specific accuracy of the correct value (usually an absolute difference).
