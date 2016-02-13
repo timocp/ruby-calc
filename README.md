@@ -133,6 +133,7 @@ atan2  | y, x [, b] | angle determined by the point (x,y) within accuracy b
 atanh  | x [, b]    | hyperbolic arctangent of x within accuracy b
 bernoulli | x       | xth bernoulli number
 bit    | x, y       | whether bit y in value x is set (also: #bit?)
+catalan| x          | Catalan number for index x
 cbrt   | x [, b]    | cube root of x within accuracy b
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b

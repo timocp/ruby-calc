@@ -620,4 +620,15 @@ class TestRational < MiniTest::Test
     check_falsey Calc::Q(0.5), :isodd, :odd?
   end
 
+  def test_catalan
+    assert_rational_and_equal 0, Calc::Q(-1).catalan
+    assert_rational_and_equal 2, Calc::Q(2).catalan
+    assert_rational_and_equal 5, Calc::Q(3).catalan
+    assert_rational_and_equal 14, Calc::Q(4).catalan
+    assert_rational_and_equal 6564120420, Calc::Q(20).catalan
+
+    assert_raises(Calc::MathError) { Calc::Q(0.5).catalan }
+    assert_raises(Calc::MathError) { Calc::Q(2**31).catalan }
+  end
+
 end

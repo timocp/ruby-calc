@@ -750,6 +750,39 @@ cq_bitp(VALUE self, VALUE y)
     return r ? Qtrue : Qfalse;
 }
 
+/* Returns the Catalan number for index self.  If self is negative, zero is
+ * returned.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is not an integer or >= 2^31
+ * @example
+ *  Calc::Q(2).catalan  #=> Calc::Q(2)
+ *  Calc::Q(5).catalan  #=> Calc::Q(42)
+ *  Calc::Q(20).catalan #=> Calc::Q(6564120420)
+ */
+static VALUE
+cq_catalan(VALUE self)
+{
+    VALUE result;
+    NUMBER *qself, *qresult;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "Non-integer value for catalan");
+    }
+    else if (zge31b(qself->num)) {
+        rb_raise(e_MathError, "Value too large for catalan");
+    }
+    qresult = qcatalan(qself);
+    if (!qresult) {
+        rb_raise(e_MathError, "qcatalan() returned NULL");
+    }
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1311,6 +1344,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "atanh", cq_atanh, -1);
     rb_define_method(cQ, "bernoulli", cq_bernoulli, 0);
     rb_define_method(cQ, "bit?", cq_bitp, 1);
+    rb_define_method(cQ, "catalan", cq_catalan, 0);
     rb_define_method(cQ, "cos", cq_cos, -1);
     rb_define_method(cQ, "cosh", cq_cosh, -1);
     rb_define_method(cQ, "cot", cq_cot, -1);

@@ -81,6 +81,7 @@ class TestCalc < Minitest::Test
     check_delegation :atanh
     check_real_delegation :bernoulli
     check_real_delegation :bit
+    check_real_delegation :catalan
     check_delegation :cos
     check_delegation :cosh
     check_delegation :cot
