@@ -145,7 +145,9 @@ freebernoulli |     | free memory storing calculated bernoulli numbers
 gd     | z [, b]    | gudermannian function of z within accuracy b
 inverse| x          | inverse of x
 iseven | x          | whether a value is even (also: #even?)
+isimag | x          | whether a value is imaginary (also: #imag?)
 isodd  | x          | whether a value is odd (also: #odd?)
+isreal | x          | whether a value is real (also: #real?)
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 num    | x          | numerator of x
@@ -332,7 +334,11 @@ builtin - returns 0 or 1 | returns true or false
 ------------------------ | ---------------------
 bit                      | bit?
 iseven                   | even?
+isimag                   | imag?
 isodd                    | odd?
+isreal                   | real?
+
+`isimag` isn't a real calc builtin but it is included anyway.
 
 Other differences:
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that

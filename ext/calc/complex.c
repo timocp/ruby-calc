@@ -177,6 +177,10 @@ trans_function2(int argc, VALUE * argv, VALUE self,
     return result;
 }
 
+/*****************************************************************************
+ * instance method implementations                                           *
+ *****************************************************************************/
+
 /* Performs complex multiplication.
  *
  * @param y [Numeric,Numeric::Calc]
@@ -537,6 +541,20 @@ cc_im(VALUE self)
     return result;
 }
 
+/* Returns true if the number is imaginary (ie, has zero real part and non-zero
+ * imaginary part)
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(0,1).imag? #=> true
+ *  Calc::C(1,1).imag? #=> false
+ */
+static VALUE
+cc_imagp(VALUE self)
+{
+    return cisimag((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
 /* Inverse of a complex number
  *
  * @return [Calc::C]
@@ -555,20 +573,6 @@ cc_inverse(VALUE self)
     return result;
 }
 
-/* Returns true if the number is imaginary (ie, has zero real part and non-zero
- * imaginary part)
- *
- * @return [Boolean]
- * @example
- *  Calc::C(0,1).imag? #=> true
- *  Calc::C(1,1).imag? #=> false
- */
-static VALUE
-cc_isimag(VALUE self)
-{
-    return cisimag((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
-}
-
 /* Returns true if the number is real (ie, has zero imaginary part)
  *
  * @return [Boolean]
@@ -577,7 +581,7 @@ cc_isimag(VALUE self)
  *  Calc::C(1,0).real? #=> true
  */
 static VALUE
-cc_isreal(VALUE self)
+cc_realp(VALUE self)
 {
     return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
@@ -730,12 +734,12 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "even?", cc_evenp, 0);
     rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
+    rb_define_method(cC, "imag?", cc_imagp, 0);
     rb_define_method(cC, "inverse", cc_inverse, 0);
-    rb_define_method(cC, "isimag", cc_isimag, 0);
-    rb_define_method(cC, "isreal", cc_isreal, 0);
     rb_define_method(cC, "odd?", cc_oddp, 0);
     rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
+    rb_define_method(cC, "real?", cc_realp, 0);
     rb_define_method(cC, "sin", cc_sin, -1);
     rb_define_method(cC, "sinh", cc_sinh, -1);
     rb_define_module_function(cC, "polar", cc_polar, -1);
@@ -743,6 +747,4 @@ define_calc_c(VALUE m)
     rb_define_alias(cC, "**", "power");
     rb_define_alias(cC, "imag", "im");
     rb_define_alias(cC, "real", "re");
-    rb_define_alias(cC, "real?", "isreal");
-    rb_define_alias(cC, "imag?", "isimag");
 }

@@ -84,6 +84,7 @@ class TestCalc < Minitest::Test
     check_delegation :im
     check_delegation :inverse
     check_delegation :iseven
+    check_delegation :isimag
     check_delegation :isreal
     check_delegation :isodd
     check_real_delegation :num

@@ -565,14 +565,12 @@ class TestRational < MiniTest::Test
     assert_in_epsilon 0.86576948323965862429, Calc::Q(1).gd
   end
 
-  def test_isreal
-    assert_instance_of TrueClass, Calc::Q(1).isreal
-    assert_alias Calc::Q(1), :isreal, :real?
+  def test_real
+    check_truthy Calc::Q(1), :isreal, :real?
   end
 
-  def test_isimag
-    assert_instance_of FalseClass, Calc::Q(1).isimag
-    assert_alias Calc::Q(1), :isimag, :imag?
+  def test_imag
+    check_falsey Calc::Q(1), :isimag, :imag?
   end
 
   def test_re

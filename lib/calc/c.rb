@@ -77,8 +77,30 @@ module Calc
       even? ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # Returns 1 if the number is imaginary (zero real part and non-zero
+    # imaginary part) otherwise returns 0.  See also [imag?].
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::C(0,1).isimag #=> Calc::Q(1)
+    #  Calc::C(1,1).isimag #=> Calc::Q(0)
+    def isimag
+      imag? ? Calc::Q(1) : Calc::Q(0)
+    end
+
     def isodd
       odd? ? Calc::Q(1) : Calc::Q(0)
+    end
+
+    # Returns 1 if the number has zero imaginary part, otherwise returns 0.
+    # See also [real?].
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::C(1,1).isreal #=> Calc::Q(0)
+    #  Calc::C(1,0).isreal #=> Calc::Q(1)
+    def isreal
+      real? ? Calc::Q(1) : Calc::Q(0)
     end
 
     # Trigonometric secant

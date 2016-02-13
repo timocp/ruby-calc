@@ -47,28 +47,60 @@ module Calc
       Calc::Q(0)
     end
 
-    def inspect
-      "Calc::Q(#{ to_s })"
+    # Returns true if the number is imaginary.  Instances of this class always
+    # return false.
+    #
+    # @return [Boolean]
+    # @example
+    #  Calc::Q(1).imag? #=> false
+    def imag?
+      false
     end
 
-    def isimag
-      false
+    def inspect
+      "Calc::Q(#{ to_s })"
     end
 
     def iseven
       even? ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # Returns 1 if the number is imaginary, otherwise returns 0.  Instance of
+    # this class always return 0.
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(1).isimag #=> Calc::Q(0)
+    def isimag
+      Calc::Q(0)
+    end
+
     def isodd
       odd? ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # Returns 1 if this number has zero imaginary part, otherwise returns 0.
+    # Instances of this class always return 1.
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(1).isreal #=> Calc::Q(1)
     def isreal
-      true
+      Calc::Q(1)
     end
 
     def re
       self
+    end
+
+    # Returns true if this number has zero imaginary part.  Instances of this
+    # class always return true.
+    #
+    # @return [Boolean]
+    # @example
+    #  Calc::Q(1).real? #=> true
+    def real?
+      true
     end
 
     def sqrt
@@ -87,8 +119,6 @@ module Calc
     end
 
     alias imag im
-    alias imag? isimag
-    alias real? isreal
     alias real re
   end
 end

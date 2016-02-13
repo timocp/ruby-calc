@@ -161,16 +161,16 @@ class TestComplex < MiniTest::Test
     assert_equal 5, Calc::C(3,-4).abs
   end
 
-  def test_real?
-    assert_instance_of TrueClass, Calc::C(1,0).real?
-    assert_instance_of FalseClass, Calc::C(1,1).real?
-    assert_instance_of FalseClass, Calc::C(0,1).real?
+  def test_real
+    check_truthy Calc::C(1,0), :isreal, :real?
+    check_falsey Calc::C(1,1), :isreal, :real?
+    check_falsey Calc::C(0,1), :isreal, :real?
   end
 
-  def test_imag?
-    assert_instance_of TrueClass, Calc::C(0,1).imag?
-    assert_instance_of FalseClass, Calc::C(1,1).imag?
-    assert_instance_of FalseClass, Calc::C(1,0).imag?
+  def test_imag
+    check_truthy Calc::C(0,1), :isimag, :imag?
+    check_falsey Calc::C(1,1), :isimag, :imag?
+    check_falsey Calc::C(1,0), :isimag, :imag?
   end
 
   def test_arg
