@@ -12,7 +12,7 @@ module Calc
                  csch den fact gd hypot im inverse iseven isimag isodd isreal
                  num power quomod re sec sech sin sinh tan tanh)
   # builtins implemented as module methods on Calc
-  BUILTINS2 = %i(config freebernoulli pi)
+  BUILTINS2 = %i(config freebernoulli pi polar)
 
   ALL_BUILTINS = BUILTINS1 + BUILTINS2
 

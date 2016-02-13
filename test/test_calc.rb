@@ -14,6 +14,16 @@ class TestCalc < Minitest::Test
     assert_equal Rational(314159,100000), pi
   end
 
+  def test_polar
+    assert_rational_and_equal 2, Calc.polar(2, 0)
+    assert_complex_parts Calc.polar(1, 2, "1e-5"), -0.41615, 0.9093
+    assert_complex_parts Calc.polar(2, Calc.pi/4), 1.4142135623730950488, 1.4142135623730950488
+
+    assert_raises(ArgumentError) { Calc.polar(1, Complex(0,1)) }
+    assert_raises(ArgumentError) { Calc.polar(Complex(0,1), 1) }
+    assert_raises(Calc::MathError) { Calc.polar(1, 1, -0.1) }
+  end
+
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)
     assert_respond_to Calc, m
     extra_args = [ruby_n] * extra_args_count

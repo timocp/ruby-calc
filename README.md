@@ -89,6 +89,8 @@ Calc::C(4+5i) #=> Calc::C(4+5i)
 # a modulus (radius) and argument (angle, in radians)
 Calc.polar(1,2) #=> Calc::C(-0.416146836547142387+0.9092974268256816954i)
 Calc.polar(c2.abs, c2.arg) #=> Calc::C(-1-1i)
+# Polar will return a rational number if the result is not complex
+Calc.polar(1, Calc.pi) #=> Calc::Q(-1)
 
 # If any other single numeric type is passed, it is used as the real part and
 # the imaginary part is set to zero:
