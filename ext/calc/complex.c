@@ -573,19 +573,6 @@ cc_inverse(VALUE self)
     return result;
 }
 
-/* Returns true if the number is real (ie, has zero imaginary part)
- *
- * @return [Boolean]
- * @example
- *  Calc::C(1,1).real? #=> false
- *  Calc::C(1,0).real? #=> true
- */
-static VALUE
-cc_realp(VALUE self)
-{
-    return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
-}
-
 /* Returns true if the number is real and odd
  *
  * @return [Boolean]
@@ -637,6 +624,19 @@ cc_re(VALUE self)
     result = cq_new();
     DATA_PTR(result) = qlink(cself->real);
     return result;
+}
+
+/* Returns true if the number is real (ie, has zero imaginary part)
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(1,1).real? #=> false
+ *  Calc::C(1,0).real? #=> true
+ */
+static VALUE
+cc_realp(VALUE self)
+{
+    return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
 /* Trigonometric sine
