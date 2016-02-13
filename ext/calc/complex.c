@@ -488,6 +488,24 @@ cc_cosh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &c_cosh);
 }
 
+/* Returns true if the number is real and even
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(2,0).even? #=> true
+ *  Calc::C(2,2).even? #=> false
+ */
+static VALUE
+cc_evenp(VALUE self)
+{
+    /* note that macro ciseven() doesn't match calc's actual behaviour */
+    COMPLEX *cself = DATA_PTR(self);
+    if (cisreal(cself) && qiseven(cself->real)) {
+        return Qtrue;
+    }
+    return Qfalse;
+}
+
 /* Gudermannian function
  *
  * @param eps [Calc::Q] (optional) calculation accuracy
@@ -562,6 +580,24 @@ static VALUE
 cc_isreal(VALUE self)
 {
     return cisreal((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
+/* Returns true if the number is real and odd
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(1,0).odd? #=> true
+ *  Calc::C(1,1).odd? #=> false
+ */
+static VALUE
+cc_oddp(VALUE self)
+{
+    /* note that macro cisodd() doesn't match calc's actual behaviour */
+    COMPLEX *cself = DATA_PTR(self);
+    if (cisreal(cself) && qisodd(cself->real)) {
+        return Qtrue;
+    }
+    return Qfalse;
 }
 
 /* Raise to a specified power
@@ -691,11 +727,13 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "atanh", cc_atanh, -1);
     rb_define_method(cC, "cos", cc_cos, -1);
     rb_define_method(cC, "cosh", cc_cosh, -1);
+    rb_define_method(cC, "even?", cc_evenp, 0);
     rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "inverse", cc_inverse, 0);
     rb_define_method(cC, "isimag", cc_isimag, 0);
     rb_define_method(cC, "isreal", cc_isreal, 0);
+    rb_define_method(cC, "odd?", cc_oddp, 0);
     rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
     rb_define_method(cC, "sin", cc_sin, -1);

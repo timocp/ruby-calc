@@ -305,4 +305,28 @@ class TestComplex < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::C(0,0).inverse }
   end
 
+  def test_even
+    check_truthy Calc::C(0,0), :iseven, :even?
+    check_falsey Calc::C(0,1), :iseven, :even?
+    check_falsey Calc::C(0,2), :iseven, :even?
+    check_falsey Calc::C(1,0), :iseven, :even?
+    check_falsey Calc::C(1,1), :iseven, :even?
+    check_falsey Calc::C(1,2), :iseven, :even?
+    check_truthy Calc::C(2,0), :iseven, :even?
+    check_falsey Calc::C(2,1), :iseven, :even?
+    check_falsey Calc::C(2,2), :iseven, :even?
+  end
+
+  def test_odd
+    check_falsey Calc::C(0,0), :isodd, :odd?
+    check_falsey Calc::C(0,1), :isodd, :odd?
+    check_falsey Calc::C(0,2), :isodd, :odd?
+    check_truthy Calc::C(1,0), :isodd, :odd?
+    check_falsey Calc::C(1,1), :isodd, :odd?
+    check_falsey Calc::C(1,2), :isodd, :odd?
+    check_falsey Calc::C(2,0), :isodd, :odd?
+    check_falsey Calc::C(2,1), :isodd, :odd?
+    check_falsey Calc::C(2,2), :isodd, :odd?
+  end
+
 end

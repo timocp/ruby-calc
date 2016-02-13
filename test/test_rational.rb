@@ -625,4 +625,18 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(9).bit(0.5) }
   end
 
+  def test_even
+    check_truthy Calc::Q(0), :iseven, :even?
+    check_falsey Calc::Q(1), :iseven, :even?
+    check_truthy Calc::Q(2), :iseven, :even?
+    check_falsey Calc::Q(0.5), :iseven, :even?
+  end
+
+  def test_odd
+    check_falsey Calc::Q(0), :isodd, :odd?
+    check_truthy Calc::Q(1), :isodd, :odd?
+    check_falsey Calc::Q(0), :isodd, :odd?
+    check_falsey Calc::Q(0.5), :isodd, :odd?
+  end
+
 end

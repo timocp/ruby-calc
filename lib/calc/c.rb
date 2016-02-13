@@ -73,6 +73,14 @@ module Calc
       sinh(*args).inverse
     end
 
+    def iseven
+      even? ? Calc::Q(1) : Calc::Q(0)
+    end
+
+    def isodd
+      odd? ? Calc::Q(1) : Calc::Q(0)
+    end
+
     # Trigonometric secant
     #
     # @param eps [Calc::Q] (optional) calculation accuracy

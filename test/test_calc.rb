@@ -83,7 +83,9 @@ class TestCalc < Minitest::Test
     check_real_delegation :hypot, 2
     check_delegation :im
     check_delegation :inverse
+    check_delegation :iseven
     check_delegation :isreal
+    check_delegation :isodd
     check_real_delegation :num
     check_delegation :power, 2
     check_real_delegation :quomod, 2

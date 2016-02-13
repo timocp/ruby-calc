@@ -144,6 +144,8 @@ fact   | x          | factorial of integer x
 freebernoulli |     | free memory storing calculated bernoulli numbers
 gd     | z [, b]    | gudermannian function of z within accuracy b
 inverse| x          | inverse of x
+iseven | x          | whether a value is even (also: #even?)
+isodd  | x          | whether a value is odd (also: #odd?)
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 num    | x          | numerator of x
@@ -295,6 +297,42 @@ Ruby doesn't have output parameters; for functions which in calc modify their pa
 q, r = Calc::Q(a).quomod(b)   # in calc: quomod(a, b, q, r)
                               # the actual calc return value is not available
 ```
+
+Predicate functions (usually starting with "is") return 0 or 1 indicating false or true, matching the original calc version.  In ruby, 0 is true so you shouldn't use these in a boolean context.  Each function has a more rubyish version named with a question mark which returns true or false.
+
+If in calc you would do this:
+
+```
+if (iseven(q)) {
+  something();
+}
+```
+
+Three options in ruby-calc:
+
+```ruby
+# preferred
+if q.even?
+  something
+end
+
+# or
+if q.iseven == 1
+  something
+end
+
+# or
+if Calc.iseven(q) == 1
+  something
+end
+```
+
+These builtins work this way:
+builtin - returns 0 or 1 | returns true or false
+------------------------ | ---------------------
+bit                      | bit?
+iseven                   | even?
+isodd                    | odd?
 
 Other differences:
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that

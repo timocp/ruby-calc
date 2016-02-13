@@ -547,6 +547,20 @@ cq_num(VALUE self)
     return result;
 }
 
+/* Returns true if the number is an odd integer
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(1).odd? #=> true
+ *  Calc::Q(2).odd? #=> false
+ */
+static VALUE
+cq_oddp(VALUE self)
+{
+    NUMBER *qself = DATA_PTR(self);
+    return qisodd(qself) ? Qtrue : Qfalse;
+}
+
 /* Converts this number to a core ruby integer (Fixnum or Bignum).
  *
  * If self is a fraction, the fractional part is truncated.
@@ -982,6 +996,20 @@ cq_exp(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qexp, NULL);
 }
 
+/* Returns true if the number is an even integer
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(1).even? #=> false
+ *  Calc::Q(2).even? #=> true
+ */
+static VALUE
+cq_evenp(VALUE self)
+{
+    NUMBER *qself = DATA_PTR(self);
+    return qiseven(qself) ? Qtrue : Qfalse;
+}
+
 /* Returns the hypotenuse of a right-angled triangle given the other sides
  *
  * @param y [Numeric,Calc::Numeric] other side
@@ -1012,22 +1040,6 @@ cq_inverse(VALUE self)
     result = cq_new();
     DATA_PTR(result) = qinv(DATA_PTR(self));
     return result;
-}
-
-/* Returns true if self is zero
- *
- * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @example
- *  Calc::Q(0).iszero #=> true
- *  Calc::Q(1).iszero #=> false
- */
-static VALUE
-cq_iszero(VALUE self)
-{
-    NUMBER *qself;
-    qself = DATA_PTR(self);
-    return qiszero(qself) ? Qtrue : Qfalse;
 }
 
 /* Logarithm
@@ -1247,6 +1259,22 @@ cq_tanh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qtanh, NULL);
 }
 
+/* Returns true if self is zero
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(0).zero? #=> true
+ *  Calc::Q(1).zero? #=> false
+ */
+static VALUE
+cq_zerop(VALUE self)
+{
+    NUMBER *qself;
+    qself = DATA_PTR(self);
+    return qiszero(qself) ? Qtrue : Qfalse;
+}
+
 /*****************************************************************************
  * class definition, called once from Init_calc when library is loaded       *
  *****************************************************************************/
@@ -1291,13 +1319,14 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "csch", cq_csch, -1);
     rb_define_method(cQ, "den", cq_den, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
+    rb_define_method(cQ, "even?", cq_evenp, 0);
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
-    rb_define_method(cQ, "iszero", cq_iszero, 0);
     rb_define_method(cQ, "ln", cq_ln, -1);
     rb_define_method(cQ, "log", cq_log, -1);
     rb_define_method(cQ, "num", cq_num, 0);
+    rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "root", cq_root, -1);
@@ -1309,6 +1338,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, -1);
+    rb_define_method(cQ, "zero?", cq_zerop, 0);
 
     /* include Comparable */
     rb_include_module(cQ, rb_mComparable);
@@ -1318,5 +1348,4 @@ define_calc_q(VALUE m)
     rb_define_alias(cQ, "magnitude", "abs");
     rb_define_alias(cQ, "modulo", "%");
     rb_define_alias(cQ, "numerator", "num");
-    rb_define_alias(cQ, "zero?", "iszero");
 }
