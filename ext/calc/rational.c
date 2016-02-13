@@ -321,21 +321,37 @@ log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER
  * instance method implementations                                           *
  *****************************************************************************/
 
-/* Unary minus.  Returns the receiver's value, negated.
+/* Computes the remainder for an integer quotient
  *
+ * @param y [Numeric,Calc::Q]
  * @return [Calc::Q]
- * @example
- *  -Calc::Q(1) #=> Calc::Q(-1)
+ * @example:
+ *  Calc::Q(11) % 5 #=> Calc::Q(1)
  */
 static VALUE
-cq_uminus(VALUE self)
+cq_mod(VALUE x, VALUE y)
 {
+    NUMBER *qy;
     VALUE result;
     setup_math_error();
 
+    qy = value_to_number(y, 0);
     result = cq_new();
-    DATA_PTR(result) = qsub(&_qzero_, DATA_PTR(self));
+    DATA_PTR(result) = qmod(DATA_PTR(x), qy, 0);
     return result;
+}
+
+/* Performs multiplication.
+ *
+ * @param y [Numeric,Calc::Q]
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(2) * 3 #=> Calc::Q(6)
+ */
+static VALUE
+cq_multiply(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &qmul, &qmuli);
 }
 
 /* Performs addition.
@@ -365,17 +381,21 @@ cq_subtract(VALUE x, VALUE y)
     return numeric_op(x, y, &qsub, NULL);
 }
 
-/* Performs multiplication.
+/* Unary minus.  Returns the receiver's value, negated.
  *
- * @param y [Numeric,Calc::Q]
  * @return [Calc::Q]
- * @example:
- *  Calc::Q(2) * 3 #=> Calc::Q(6)
+ * @example
+ *  -Calc::Q(1) #=> Calc::Q(-1)
  */
 static VALUE
-cq_multiply(VALUE x, VALUE y)
+cq_uminus(VALUE self)
 {
-    return numeric_op(x, y, &qmul, &qmuli);
+    VALUE result;
+    setup_math_error();
+
+    result = cq_new();
+    DATA_PTR(result) = qsub(&_qzero_, DATA_PTR(self));
+    return result;
 }
 
 /* Performs division.
@@ -392,26 +412,6 @@ cq_divide(VALUE x, VALUE y)
     return numeric_op(x, y, &qqdiv, &qdivi);
 }
 
-/* Computes the remainder for an integer quotient
- *
- * @param y [Numeric,Calc::Q]
- * @return [Calc::Q]
- * @example:
- *  Calc::Q(11) % 5 #=> Calc::Q(1)
- */
-static VALUE
-cq_mod(VALUE x, VALUE y)
-{
-    NUMBER *qy;
-    VALUE result;
-    setup_math_error();
-
-    qy = value_to_number(y, 0);
-    result = cq_new();
-    DATA_PTR(result) = qmod(DATA_PTR(x), qy, 0);
-    return result;
-}
-
 /* Left shift an integer by a given number of bits.  This multiplies the number
  * by the appropriate power of 2.
  *
@@ -426,22 +426,6 @@ static VALUE
 cq_shift_left(VALUE x, VALUE n)
 {
     return shift(x, n, 1);
-}
-
-/* Right shift an integer by a given number of bits.  This multiplies the
- * number by the appropriate power of 2.  Low bits are truncated.
- *
- * @param n [Numeric,Calc::Q] number of bits to shift
- * @return [Calc::Q]
- * @raise [Calc::MathError] if self is a non-integer
- * @raise [ArgumentError] if abs(n) is >= 2^31
- * @example:
- *  Calc::Q(8) >> 2 #=> Calc::Q(2)
- */
-static VALUE
-cq_shift_right(VALUE self, VALUE other)
-{
-    return shift(self, other, -1);
 }
 
 /* Comparison - Returns -1, 0, +1 or nil depending on whether `y` is less than,
@@ -489,155 +473,20 @@ cq_spaceship(VALUE self, VALUE other)
     return INT2FIX(result);
 }
 
-/* Returns the denominator.  Always positive.
+/* Right shift an integer by a given number of bits.  This multiplies the
+ * number by the appropriate power of 2.  Low bits are truncated.
  *
+ * @param n [Numeric,Calc::Q] number of bits to shift
  * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is a non-integer
+ * @raise [ArgumentError] if abs(n) is >= 2^31
  * @example:
- *  Calc::Q(1,3).den  #=> Calc::Q(3)
- *  Calc::Q(-1,3).den #=> Calc::Q(3)
+ *  Calc::Q(8) >> 2 #=> Calc::Q(2)
  */
 static VALUE
-cq_den(VALUE self)
+cq_shift_right(VALUE self, VALUE other)
 {
-    VALUE result;
-    setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qden(DATA_PTR(self));
-
-    return result;
-}
-
-/* Returns the factorial of a number.
- *
- * @return [Calc::Q]
- * @raise [Calc::MathError] if self is negative or not an integer
- * @raise [Calc::MathError] if abs(self) >= 2^31
- * @example:
- *  Calc::Q(10).fact #=> Calc::Q(3628800)
- */
-static VALUE
-cq_fact(VALUE self)
-{
-    VALUE result;
-    setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qfact(DATA_PTR(self));
-
-    return result;
-}
-
-/* Returns the numerator.  Return value has the same sign as self.
- *
- * @return [Calc::Q]
- * @example:
- *  Calc::Q(1,3).num  #=> Calc::Q(1)
- *  Calc::Q(-1,3).num #=> Calc::Q(-1)
- */
-static VALUE
-cq_num(VALUE self)
-{
-    VALUE result;
-    setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qnum(DATA_PTR(self));
-
-    return result;
-}
-
-/* Returns true if the number is an odd integer
- *
- * @return [Boolean]
- * @example
- *  Calc::Q(1).odd? #=> true
- *  Calc::Q(2).odd? #=> false
- */
-static VALUE
-cq_oddp(VALUE self)
-{
-    NUMBER *qself = DATA_PTR(self);
-    return qisodd(qself) ? Qtrue : Qfalse;
-}
-
-/* Converts this number to a core ruby integer (Fixnum or Bignum).
- *
- * If self is a fraction, the fractional part is truncated.
- *
- * @return [Fixnum,Bignum]
- * @example
- *  Calc::Q(42).to_i     #=> 42
- *  Calc::Q("1e19").to_i #=> 10000000000000000000
- *  Calc::Q(1,2).to_i    #=> 0
- */
-static VALUE
-cq_to_i(VALUE self)
-{
-    NUMBER *qself;
-    ZVALUE ztmp;
-    VALUE string, result;
-    char *s;
-    setup_math_error();
-
-    qself = DATA_PTR(self);
-    if (qisint(qself)) {
-        zcopy(qself->num, &ztmp);
-    }
-    else {
-        zquo(qself->num, qself->den, &ztmp, 0);
-    }
-    if (zgtmaxlong(ztmp)) {
-        /* too big to fit in a long, ztoi would return MAXLONG.  use a string
-         * intermediary */
-        math_divertio();
-        zprintval(ztmp, 0, 0);
-        s = math_getdivertedio();
-        string = rb_str_new2(s);
-        free(s);
-        result = rb_funcall(string, rb_intern("to_i"), 0);
-    }
-    else {
-        result = LONG2NUM(ztoi(ztmp));
-    }
-    zfree(ztmp);
-    return result;
-}
-
-/* Converts this number to a string.
- *
- * Format depends on the configuration parameters "mode" and "display.  The
- * mode can be overridden for individual calls.
- *
- * @param mode [String,Symbol] (optional) output mode, see [Calc::Config]
- * @return [String]
- * @example
- *  Calc::Q(1,2).to_s        #=> "0.5"
- *  Calc::Q(1,2).to_s(:frac) #=> "1/2"
- *  Calc::Q(42).to_s(:hex)   #=> "0x2a"
- */
-static VALUE
-cq_to_s(int argc, VALUE * argv, VALUE self)
-{
-    NUMBER *qself = DATA_PTR(self);
-    char *s;
-    int args;
-    VALUE rs, mode;
-    setup_math_error();
-
-    args = rb_scan_args(argc, argv, "01", &mode);
-    math_divertio();
-    if (args == 0) {
-        qprintnum(qself, MODE_DEFAULT);
-    }
-    else {
-        qprintnum(qself, value_to_mode(mode));
-    }
-    s = math_getdivertedio();
-    rs = rb_str_new2(s);
-    free(s);
-
-    return rs;
+    return shift(self, other, -1);
 }
 
 /* Absolute value
@@ -982,18 +831,23 @@ cq_csch(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qcsch, NULL);
 }
 
-/* Exponential function
+/* Returns the denominator.  Always positive.
  *
- * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
  * @return [Calc::Q]
- * @example
- *  Calc::Q(1).exp #=> Calc::Q(2.71828182845904523536)
- *  Calc::Q(2).exp #=> Calc::Q(7.38905609893065022723)
+ * @example:
+ *  Calc::Q(1,3).den  #=> Calc::Q(3)
+ *  Calc::Q(-1,3).den #=> Calc::Q(3)
  */
 static VALUE
-cq_exp(int argc, VALUE * argv, VALUE self)
+cq_den(VALUE self)
 {
-    return trans_function(argc, argv, self, &qexp, NULL);
+    VALUE result;
+    setup_math_error();
+
+    result = cq_new();
+    DATA_PTR(result) = qden(DATA_PTR(self));
+
+    return result;
 }
 
 /* Returns true if the number is an even integer
@@ -1008,6 +862,40 @@ cq_evenp(VALUE self)
 {
     NUMBER *qself = DATA_PTR(self);
     return qiseven(qself) ? Qtrue : Qfalse;
+}
+
+/* Exponential function
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).exp #=> Calc::Q(2.71828182845904523536)
+ *  Calc::Q(2).exp #=> Calc::Q(7.38905609893065022723)
+ */
+static VALUE
+cq_exp(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &qexp, NULL);
+}
+
+/* Returns the factorial of a number.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is negative or not an integer
+ * @raise [Calc::MathError] if abs(self) >= 2^31
+ * @example:
+ *  Calc::Q(10).fact #=> Calc::Q(3628800)
+ */
+static VALUE
+cq_fact(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+
+    result = cq_new();
+    DATA_PTR(result) = qfact(DATA_PTR(self));
+
+    return result;
 }
 
 /* Returns the hypotenuse of a right-angled triangle given the other sides
@@ -1075,6 +963,39 @@ static VALUE
 cq_log(int argc, VALUE * argv, VALUE self)
 {
     return log_function(argc, argv, self, &qlog, &c_log);
+}
+
+/* Returns the numerator.  Return value has the same sign as self.
+ *
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(1,3).num  #=> Calc::Q(1)
+ *  Calc::Q(-1,3).num #=> Calc::Q(-1)
+ */
+static VALUE
+cq_num(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+
+    result = cq_new();
+    DATA_PTR(result) = qnum(DATA_PTR(self));
+
+    return result;
+}
+
+/* Returns true if the number is an odd integer
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(1).odd? #=> true
+ *  Calc::Q(2).odd? #=> false
+ */
+static VALUE
+cq_oddp(VALUE self)
+{
+    NUMBER *qself = DATA_PTR(self);
+    return qisodd(qself) ? Qtrue : Qfalse;
 }
 
 /* Evaluates a numeric power
@@ -1259,6 +1180,85 @@ cq_tanh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qtanh, NULL);
 }
 
+/* Converts this number to a core ruby integer (Fixnum or Bignum).
+ *
+ * If self is a fraction, the fractional part is truncated.
+ *
+ * @return [Fixnum,Bignum]
+ * @example
+ *  Calc::Q(42).to_i     #=> 42
+ *  Calc::Q("1e19").to_i #=> 10000000000000000000
+ *  Calc::Q(1,2).to_i    #=> 0
+ */
+static VALUE
+cq_to_i(VALUE self)
+{
+    NUMBER *qself;
+    ZVALUE ztmp;
+    VALUE string, result;
+    char *s;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisint(qself)) {
+        zcopy(qself->num, &ztmp);
+    }
+    else {
+        zquo(qself->num, qself->den, &ztmp, 0);
+    }
+    if (zgtmaxlong(ztmp)) {
+        /* too big to fit in a long, ztoi would return MAXLONG.  use a string
+         * intermediary */
+        math_divertio();
+        zprintval(ztmp, 0, 0);
+        s = math_getdivertedio();
+        string = rb_str_new2(s);
+        free(s);
+        result = rb_funcall(string, rb_intern("to_i"), 0);
+    }
+    else {
+        result = LONG2NUM(ztoi(ztmp));
+    }
+    zfree(ztmp);
+    return result;
+}
+
+/* Converts this number to a string.
+ *
+ * Format depends on the configuration parameters "mode" and "display.  The
+ * mode can be overridden for individual calls.
+ *
+ * @param mode [String,Symbol] (optional) output mode, see [Calc::Config]
+ * @return [String]
+ * @example
+ *  Calc::Q(1,2).to_s        #=> "0.5"
+ *  Calc::Q(1,2).to_s(:frac) #=> "1/2"
+ *  Calc::Q(42).to_s(:hex)   #=> "0x2a"
+ */
+static VALUE
+cq_to_s(int argc, VALUE * argv, VALUE self)
+{
+    NUMBER *qself = DATA_PTR(self);
+    char *s;
+    int args;
+    VALUE rs, mode;
+    setup_math_error();
+
+    args = rb_scan_args(argc, argv, "01", &mode);
+    math_divertio();
+    if (args == 0) {
+        qprintnum(qself, MODE_DEFAULT);
+    }
+    else {
+        qprintnum(qself, value_to_mode(mode));
+    }
+    s = math_getdivertedio();
+    rs = rb_str_new2(s);
+    free(s);
+
+    return rs;
+}
+
 /* Returns true if self is zero
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1318,8 +1318,8 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "csc", cq_csc, -1);
     rb_define_method(cQ, "csch", cq_csch, -1);
     rb_define_method(cQ, "den", cq_den, 0);
-    rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "even?", cq_evenp, 0);
+    rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
