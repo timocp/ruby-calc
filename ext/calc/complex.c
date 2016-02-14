@@ -98,7 +98,6 @@ numeric_op(VALUE self, VALUE other,
            COMPLEX * (fcc) (COMPLEX *, COMPLEX *), COMPLEX * (fcq) (COMPLEX *, NUMBER *))
 {
     COMPLEX *cresult, *cother;
-    VALUE result;
     setup_math_error();
 
     if (CALC_C_P(other)) {
@@ -112,10 +111,7 @@ numeric_op(VALUE self, VALUE other,
         cresult = (*fcc) (DATA_PTR(self), cother);
         comfree(cother);
     }
-
-    result = cc_new();
-    DATA_PTR(result) = cresult;
-    return result;
+    return complex_to_value(cresult);
 }
 
 static VALUE
@@ -137,15 +133,7 @@ trans_function(int argc, VALUE * argv, VALUE self, COMPLEX * (*f) (COMPLEX *, NU
     if (!cresult) {
         rb_raise(e_MathError, "Complex transcendental function returned NULL");
     }
-    else if (cisreal(cresult)) {
-        result = cq_new();
-        DATA_PTR(result) = qlink(cresult->real);
-        comfree(cresult);
-    }
-    else {
-        result = cc_new();
-        DATA_PTR(result) = cresult;
-    }
+    result = complex_to_value(cresult);
     return result;
 }
 
@@ -153,28 +141,27 @@ static VALUE
 trans_function2(int argc, VALUE * argv, VALUE self,
                 COMPLEX * (f) (COMPLEX *, COMPLEX *, NUMBER *))
 {
-    VALUE arg, epsilon, result;
-    COMPLEX *carg;
+    VALUE arg, epsilon;
+    COMPLEX *carg, *cresult;
     NUMBER *qepsilon;
     setup_math_error();
 
-    result = cc_new();
     if (rb_scan_args(argc, argv, "11", &arg, &epsilon) == 1) {
         carg = value_to_complex(arg);
-        DATA_PTR(result) = (*f) (DATA_PTR(self), carg, conf->epsilon);
+        cresult = (*f) (DATA_PTR(self), carg, conf->epsilon);
         comfree(carg);
     }
     else {
         carg = value_to_complex(arg);
         qepsilon = value_to_number(epsilon, 1);
-        DATA_PTR(result) = (*f) (DATA_PTR(self), carg, qepsilon);
+        cresult = (*f) (DATA_PTR(self), carg, qepsilon);
         qfree(qepsilon);
         comfree(carg);
     }
-    if (!DATA_PTR(result)) {
+    if (!cresult) {
         rb_raise(e_MathError, "Complex transcendental function returned NULL");
     }
-    return result;
+    return complex_to_value(cresult);
 }
 
 /*****************************************************************************
@@ -229,12 +216,8 @@ cc_subtract(VALUE x, VALUE y)
 static VALUE
 cc_uminus(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cc_new();
-    DATA_PTR(result) = c_sub(&_czero_, DATA_PTR(self));
-    return result;
+    return complex_to_value(c_sub(&_czero_, DATA_PTR(self)));
 }
 
 /* Performs complex division.
@@ -565,12 +548,8 @@ cc_imagp(VALUE self)
 static VALUE
 cc_inverse(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cc_new();
-    DATA_PTR(result) = c_inv(DATA_PTR(self));
-    return result;
+    return complex_to_value(c_inv(DATA_PTR(self)));
 }
 
 /* Returns true if the number is real and odd

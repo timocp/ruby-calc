@@ -213,15 +213,7 @@ trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMB
         cresult = (*fcomplex) (cself, qepsilon ? qepsilon : conf->epsilon);
         comfree(cself);
         if (cresult) {
-            if (cisreal(cresult)) {
-                result = cq_new();
-                DATA_PTR(result) = qlink(cresult->real);
-                comfree(cresult);
-            }
-            else {
-                result = cc_new();
-                DATA_PTR(result) = cresult;
-            }
+            result = complex_to_value(cresult);
         }
         else {
             /* Can this happen? */
@@ -281,7 +273,7 @@ log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER
 {
     VALUE epsilon, result;
     NUMBER *qepsilon, *qself;
-    COMPLEX *cself, *cresult;
+    COMPLEX *cself;
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
@@ -299,17 +291,7 @@ log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER
         cself = comalloc();
         qfree(cself->real);
         cself->real = qlink(qself);
-        cresult = (*fc) (cself, qepsilon ? qepsilon : conf->epsilon);
-        comfree(cself);
-        if (cisreal(cresult)) {
-            result = cq_new();
-            DATA_PTR(result) = qlink(cresult->real);
-            comfree(cresult);
-        }
-        else {
-            result = cc_new();
-            DATA_PTR(result) = cresult;
-        }
+        result = complex_to_value((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
     }
     if (qepsilon) {
         qfree(qepsilon);
@@ -1047,7 +1029,7 @@ cq_power(int argc, VALUE * argv, VALUE self)
     /* ref: powervalue() in calc value.c.  handle cases NUM,NUM and NUM,COM */
     VALUE arg, epsilon, result;
     NUMBER *qself, *qarg, *qepsilon;
-    COMPLEX *cself, *carg, *cresult;
+    COMPLEX *cself, *carg;
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "11", &arg, &epsilon) == 1) {
@@ -1069,18 +1051,9 @@ cq_power(int argc, VALUE * argv, VALUE self)
         else {
             carg = value_to_complex(arg);
         }
-        cresult = c_power(cself, carg, qepsilon ? qepsilon : conf->epsilon);
+        result = complex_to_value(c_power(cself, carg, qepsilon ? qepsilon : conf->epsilon));
         comfree(cself);
         comfree(carg);
-        if (cisreal(cresult)) {
-            result = cq_new();
-            DATA_PTR(result) = qlink(cresult->real);
-            comfree(cresult);
-        }
-        else {
-            result = cc_new();
-            DATA_PTR(result) = cresult;
-        }
     }
     else {
         result = cq_new();

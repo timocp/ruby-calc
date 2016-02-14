@@ -60,13 +60,12 @@ calc_polar(int argc, VALUE * argv, VALUE self)
 {
     VALUE radius, angle, epsilon, result;
     NUMBER *qradius, *qangle, *qepsilon;
-    COMPLEX *cresult;
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "21", &radius, &angle, &epsilon) == 3) {
         qepsilon = value_to_number(epsilon, 1);
         if (qisneg(qepsilon) || qiszero(qepsilon)) {
-          rb_raise(e_MathError, "Negative or zero epsilon for polar");
+            rb_raise(e_MathError, "Negative or zero epsilon for polar");
         }
     }
     else {
@@ -74,16 +73,7 @@ calc_polar(int argc, VALUE * argv, VALUE self)
     }
     qradius = value_to_number(radius, 0);
     qangle = value_to_number(angle, 0);
-    cresult = c_polar(qradius, qangle, qepsilon ? qepsilon : conf->epsilon);
-    if (cisreal(cresult)) {
-        result = cq_new();
-        DATA_PTR(result) = qlink(cresult->real);
-        comfree(cresult);
-    }
-    else {
-        result = cc_new();
-        DATA_PTR(result) = cresult;
-    }
+    result = complex_to_value(c_polar(qradius, qangle, qepsilon ? qepsilon : conf->epsilon));
     if (qepsilon) {
         qfree(qepsilon);
     }

@@ -23,6 +23,7 @@ extern long value_to_mode(VALUE v);
 extern VALUE mode_to_string(long n);
 extern long value_to_config(VALUE v);
 extern COMPLEX *value_to_complex(VALUE arg);
+extern VALUE complex_to_value(COMPLEX * c);
 
 /* math_error.c */
 extern VALUE e_MathError;       /* Calc::MathError class (exception) */

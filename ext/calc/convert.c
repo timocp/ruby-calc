@@ -274,3 +274,23 @@ value_to_complex(VALUE arg)
 
     return cresult;
 }
+
+/* wrap a COMPLEX* into a ruby VALUE of class Calc::C (if there is a non-zero
+ * imaginary part) or Calc::Q (otherwise).
+ */
+VALUE
+complex_to_value(COMPLEX * c)
+{
+    VALUE result;
+
+    if (cisreal(c)) {
+        result = cq_new();
+        DATA_PTR(result) = qlink(c->real);
+        comfree(c);
+    }
+    else {
+        result = cc_new();
+        DATA_PTR(result) = c;
+    }
+    return result;
+}
