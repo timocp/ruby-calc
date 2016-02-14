@@ -631,4 +631,21 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(2**31).catalan }
   end
 
+  def test_fib
+    assert_rational_and_equal -55, Calc::Q(-10).fib
+    assert_rational_and_equal 34, Calc::Q(-9).fib
+    assert_rational_and_equal -1, Calc::Q(-2).fib
+    assert_rational_and_equal 1, Calc::Q(-1).fib
+    assert_rational_and_equal 0, Calc::Q(0).fib
+    assert_rational_and_equal 1, Calc::Q(1).fib
+    assert_rational_and_equal 1, Calc::Q(2).fib
+    assert_rational_and_equal 2, Calc::Q(3).fib
+    assert_rational_and_equal 3, Calc::Q(4).fib
+    assert_rational_and_equal 5, Calc::Q(5).fib
+    assert_rational_and_equal 34, Calc::Q(9).fib
+    assert_rational_and_equal 55, Calc::Q(10).fib
+
+    assert_raises(Calc::MathError) { Calc::Q(0.5).fib }
+  end
+
 end

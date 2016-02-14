@@ -90,6 +90,7 @@ class TestCalc < Minitest::Test
     check_delegation :csch
     check_real_delegation :den
     check_real_delegation :fact
+    check_real_delegation :fib
     check_delegation :gd
     check_real_delegation :hypot, 2
     check_delegation :im

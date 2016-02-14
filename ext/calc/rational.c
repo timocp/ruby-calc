@@ -913,6 +913,24 @@ cq_fact(VALUE self)
     return result;
 }
 
+/* Returns the Fibonacci number with index self.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is not an integer
+ * @raise [Calc::MathError] if abs(self) >= 2^31
+ * @example
+ *  Calc::Q(10).fib #=> Calc::Q(55)
+ */
+static VALUE
+cq_fib(VALUE self)
+{
+    VALUE result;
+    setup_math_error();
+    result = cq_new();
+    DATA_PTR(result) = qfib(DATA_PTR(self));
+    return result;
+}
+
 /* Returns the hypotenuse of a right-angled triangle given the other sides
  *
  * @param y [Numeric,Calc::Numeric] other side
@@ -1328,6 +1346,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "even?", cq_evenp, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
+    rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
     rb_define_method(cQ, "ln", cq_ln, -1);

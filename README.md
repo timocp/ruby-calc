@@ -144,6 +144,7 @@ csch   | x [, b]    | hyperbolic cosecant of x within accuracy b
 den    | x          | denominator of x
 exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
+fib    | z          | zth Fibonacci number
 freebernoulli |     | free memory storing calculated bernoulli numbers
 gd     | z [, b]    | gudermannian function of z within accuracy b
 inverse| x          | inverse of x
