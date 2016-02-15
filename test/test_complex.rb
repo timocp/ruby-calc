@@ -180,116 +180,116 @@ class TestComplex < MiniTest::Test
   end
 
   def test_cos
-    assert_complex_parts Calc::C(2,3).cos, -4.18962569096880723013, -9.10922789375533659798
+    assert_complex_parts [-4.18962569096880723013, -9.10922789375533659798], Calc::C(2,3).cos
   end
 
   def test_sin
-    assert_complex_parts Calc::C(2,3).sin, 9.15449914691142957347, -4.16890695996656435076
+    assert_complex_parts [9.15449914691142957347, -4.16890695996656435076], Calc::C(2,3).sin
   end
 
   def test_cosh
-    assert_complex_parts Calc::C(2,3).cosh, -3.72454550491532256548, 0.51182256998738460884
+    assert_complex_parts [-3.72454550491532256548, 0.51182256998738460884], Calc::C(2,3).cosh
   end
 
   def test_sinh
-    assert_complex_parts Calc::C(2,3).sinh, -3.59056458998577995202, 0.53092108624851980526
+    assert_complex_parts [-3.59056458998577995202, 0.53092108624851980526], Calc::C(2,3).sinh
   end
 
   def test_asin
-    assert_complex_parts Calc::C(2,3).asin, 0.57065278432109940071, 1.98338702991653543235
+    assert_complex_parts [0.57065278432109940071, 1.98338702991653543235], Calc::C(2,3).asin
   end
 
   def test_acos
-    assert_complex_parts Calc::C(2,3).acos, 1.00014354247379721852, -1.98338702991653543235
+    assert_complex_parts [1.00014354247379721852, -1.98338702991653543235], Calc::C(2,3).acos
   end
 
   def test_atan
-    assert_complex_parts Calc::C(2,3).atan, 1.40992104959657552253, 0.22907268296853876630
+    assert_complex_parts [1.40992104959657552253, 0.22907268296853876630], Calc::C(2,3).atan
   end
 
   def test_acot
-    assert_complex_parts Calc::C(2,3).acot, 0.1608752771983210967, -0.22907268296853876630
+    assert_complex_parts [0.1608752771983210967, -0.22907268296853876630], Calc::C(2,3).acot
   end
 
   def test_asec
-    assert_complex_parts Calc::C(2,3).asec, 1.42041072246703465598, 0.2313346985739733145
+    assert_complex_parts [1.42041072246703465598, 0.2313346985739733145], Calc::C(2,3).asec
   end
 
   def test_acsc
-    assert_complex_parts Calc::C(2,3).acsc, 0.15038560432786196325, -0.23133469857397331455
+    assert_complex_parts [0.15038560432786196325, -0.23133469857397331455], Calc::C(2,3).acsc
   end
 
   def test_asinh
-    assert_complex_parts Calc::C(2,3).asinh, 1.96863792579309629179, 0.96465850440760279204
+    assert_complex_parts [1.96863792579309629179, 0.96465850440760279204], Calc::C(2,3).asinh
   end
 
   def test_acosh
-    assert_complex_parts Calc::C(2,3).acosh, 1.98338702991653543235, 1.00014354247379721852
+    assert_complex_parts [1.98338702991653543235, 1.00014354247379721852], Calc::C(2,3).acosh
   end
 
   def test_atanh
-    assert_complex_parts Calc::C(2,3).atanh, 0.14694666622552975204, 1.33897252229449356112
+    assert_complex_parts [0.14694666622552975204, 1.33897252229449356112], Calc::C(2,3).atanh
   end
 
   def test_acoth
-    assert_complex_parts Calc::C(2,3).acoth, 0.14694666622552975204, -0.23182380450040305810
+    assert_complex_parts [0.14694666622552975204, -0.23182380450040305810], Calc::C(2,3).acoth
   end
 
   def test_asech
-    assert_complex_parts Calc::C(2,3).asech, 0.23133469857397331455, -1.42041072246703465598
+    assert_complex_parts [0.23133469857397331455, -1.42041072246703465598], Calc::C(2,3).asech
   end
 
   def test_acsch
-    assert_complex_parts Calc::C(2,3).acsch, 0.15735549884498542878, -0.22996290237720785451
+    assert_complex_parts [0.15735549884498542878, -0.22996290237720785451], Calc::C(2,3).acsch
   end
   
   def test_cot
-    assert_complex_parts Calc::C(2,3).cot, -0.00373971037633695666, -0.99675779656935831046
+    assert_complex_parts [-0.00373971037633695666, -0.99675779656935831046], Calc::C(2,3).cot
   end
 
   def test_coth
-    assert_complex_parts Calc::C(2,3).coth, 1.03574663776499539611, 0.01060478347033710175
+    assert_complex_parts [1.03574663776499539611, 0.01060478347033710175], Calc::C(2,3).coth
   end
 
   def test_csc
-    assert_complex_parts Calc::C(2,3).csc, 0.09047320975320743981, 0.04120098628857412646
+    assert_complex_parts [0.09047320975320743981, 0.04120098628857412646], Calc::C(2,3).csc
   end
 
   def test_csch
-    assert_complex_parts Calc::C(2,3).csch, -0.27254866146294019951, -0.04030057885689152187
+    assert_complex_parts [-0.27254866146294019951, -0.04030057885689152187], Calc::C(2,3).csch
   end
 
   def test_sec
-    assert_complex_parts Calc::C(2,3).sec, -0.04167496441114427005, 0.09061113719623759653
+    assert_complex_parts [-0.04167496441114427005, 0.09061113719623759653], Calc::C(2,3).sec
   end
 
   def test_sech
-    assert_complex_parts Calc::C(2,3).sech, -0.26351297515838930964, -0.03621163655876852087
+    assert_complex_parts [-0.26351297515838930964, -0.03621163655876852087], Calc::C(2,3).sech
   end
 
   def test_tan
-    assert_complex_parts Calc::C(2,3).tan, -0.00376402564150424829, 1.00323862735360980145
+    assert_complex_parts [-0.00376402564150424829, 1.00323862735360980145], Calc::C(2,3).tan
   end
 
   def test_tanh
-    assert_complex_parts Calc::C(2,3).tanh, 0.96538587902213312428, -0.00988437503832249372
+    assert_complex_parts [0.96538587902213312428, -0.00988437503832249372], Calc::C(2,3).tanh
   end
 
   def test_agd
-    assert_complex_parts Calc::C(1,2).agd, 0.22751065843194319695, 1.422911462459226797
+    assert_complex_parts [0.22751065843194319695, 1.422911462459226797], Calc::C(1,2).agd
     assert_equal 0, Calc::C(0,0).agd
   end
 
   def test_gd
     assert_rational_in_epsilon 0.86576948323965862429, Calc::C(1).gd
-    assert_complex_parts Calc::C(2,1).gd, 1.422911462459226797, 0.22751065843194319695
+    assert_complex_parts [1.422911462459226797, 0.22751065843194319695], Calc::C(2,1).gd
     assert_equal 0, Calc::C(0,0).gd
 
     assert_raises(Calc::MathError) { Calc::C(0, Calc.pi/2).gd }
   end
 
   def test_inverse
-    assert_complex_parts Calc::C(3,4).inverse, 0.12, -0.16
+    assert_complex_parts [0.12, -0.16], Calc::C(3,4).inverse
     assert_raises(Calc::MathError) { Calc::C(0,0).inverse }
   end
 

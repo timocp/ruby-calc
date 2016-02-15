@@ -236,7 +236,7 @@ class TestRational < MiniTest::Test
 
     assert_rational_in_epsilon 8.2207405646327461795, Calc::Q(1.2345).power(10)
     assert_rational_and_equal -8, Calc::Q(-2) ** 3
-    assert_complex_parts Calc::Q(-1) ** "0.1", 0.95105651629515357212, 0.3090169943749474241
+    assert_complex_parts [0.95105651629515357212, 0.3090169943749474241], Calc::Q(-1) ** "0.1"
   end
 
   def test_shift
@@ -337,13 +337,13 @@ class TestRational < MiniTest::Test
 
   def test_acos
     assert_rational_in_epsilon 1.04719755119659774615, Calc::Q(0.5).acos
-    assert_complex_parts Calc::Q(2).acos, 0, 1.31695789692481670863
+    assert_complex_parts [0, 1.31695789692481670863], Calc::Q(2).acos
   end
 
   def test_acosh
     assert_rational_and_equal 0, Calc::Q(1).acosh
     assert_rational_in_epsilon 1.31695789692481670862, Calc::Q(2).acosh
-    assert_complex_parts Calc::Q(0).acosh, 0, 1.57079632679489661923
+    assert_complex_parts [0, 1.57079632679489661923], Calc::Q(0).acosh
   end
 
   def test_acot
@@ -354,14 +354,14 @@ class TestRational < MiniTest::Test
 
   def test_acoth
     assert_rational_in_epsilon 0.5493061443340548457, Calc::Q(2).acoth
-    assert_complex_parts Calc::Q(0.5).acoth, 0.5493061443340548457, 1.57079632679489661923
+    assert_complex_parts [0.5493061443340548457, 1.57079632679489661923], Calc::Q(0.5).acoth
     assert_raises(Calc::MathError) { Calc::Q(0).acoth }
     assert_raises(Calc::MathError) { Calc::Q(1).acoth }
   end
 
   def test_acsc
     assert_rational_in_epsilon 1.57079632679489661923, Calc::Q(1).acsc
-    assert_complex_parts Calc::Q(0.5).acsc, 1.57079632679489661923, -1.31695789692481670863
+    assert_complex_parts [1.57079632679489661923, -1.31695789692481670863], Calc::Q(0.5).acsc
     assert_raises(Calc::MathError) { Calc::Q(0).acsc }
   end
 
@@ -373,21 +373,21 @@ class TestRational < MiniTest::Test
   def test_asec
     assert_rational_in_epsilon 3.14159265358979323846, Calc::Q(-1).asec
     assert_rational_and_equal 0, Calc::Q(1).asec
-    assert_complex_parts Calc::Q(0.5).asec, 0, 1.31695789692481670863
+    assert_complex_parts [0, 1.31695789692481670863], Calc::Q(0.5).asec
     assert_raises(Calc::MathError) { Calc::Q(0).asec }
   end
 
   def test_asech
     assert_rational_and_equal 0, Calc::Q(1).asech
     assert_rational_in_epsilon 1.31695789692481670862, Calc::Q(0.5).asech
-    assert_complex_parts Calc::Q(-0.5).asech, -1.31695789692481670863, 3.14159265358979323846
+    assert_complex_parts [-1.31695789692481670863, 3.14159265358979323846], Calc::Q(-0.5).asech
     assert_raises(Calc::MathError) { Calc::Q(0).asech }
   end
 
   def test_asin
     assert_rational_and_equal 0, Calc::Q(0).asin
     assert_rational_in_epsilon 1.57079632679489661923, Calc::Q(1).asin
-    assert_complex_parts Calc::Q(2).asin, 1.57079632679489661923, -1.3169578969248167086
+    assert_complex_parts [1.57079632679489661923, -1.3169578969248167086], Calc::Q(2).asin
   end
 
   def test_asinh
@@ -414,7 +414,7 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal 0, Calc::Q(0).atanh
     assert_rational_in_epsilon 0.5493061443340548457, Calc::Q(0.5).atanh
     assert_raises(Calc::MathError) { Calc::Q(1).atanh }
-    assert_complex_parts Calc::Q(2).atanh, 0.5493061443340548457, 1.57079632679489661923
+    assert_complex_parts [0.5493061443340548457, 1.57079632679489661923], Calc::Q(2).atanh
   end
 
   def test_cos
@@ -459,8 +459,8 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0).ln }
     assert_rational_and_equal 0, Calc::Q(1).ln
     assert_rational_in_epsilon Math.log(2), Calc::Q(2).ln
-    assert_complex_parts Calc::Q(-1).ln, 0, 3.14159265358979323846
-    assert_complex_parts Calc::Q(-2).ln, 0.69314718055994530942, 3.14159265358979323846
+    assert_complex_parts [0, 3.14159265358979323846], Calc::Q(-1).ln
+    assert_complex_parts [0.69314718055994530942, 3.14159265358979323846], Calc::Q(-2).ln
   end
 
   # libcalc log is equivalent to Math.log10 or Math.log(x, 10)
@@ -468,8 +468,8 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0).log }
     assert_rational_and_equal 0, Calc::Q(1).log
     assert_in_epsilon Math.log10(2), Calc::Q(2).log
-    assert_complex_parts Calc::Q(-1).log, 0, 1.36437635384184134748
-    assert_complex_parts Calc::Q(-2).log, 0.30102999566398119521, 1.36437635384184134748
+    assert_complex_parts [0, 1.36437635384184134748], Calc::Q(-1).log
+    assert_complex_parts [0.30102999566398119521, 1.36437635384184134748], Calc::Q(-2).log
   end
 
   def test_root

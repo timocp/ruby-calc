@@ -16,8 +16,8 @@ class TestCalc < Minitest::Test
 
   def test_polar
     assert_rational_and_equal 2, Calc.polar(2, 0)
-    assert_complex_parts Calc.polar(1, 2, "1e-5"), -0.41615, 0.9093
-    assert_complex_parts Calc.polar(2, Calc.pi/4), 1.4142135623730950488, 1.4142135623730950488
+    assert_complex_parts [-0.41615, 0.9093], Calc.polar(1, 2, "1e-5")
+    assert_complex_parts [1.4142135623730950488, 1.4142135623730950488], Calc.polar(2, Calc.pi/4)
 
     assert_raises(ArgumentError) { Calc.polar(1, Complex(0,1)) }
     assert_raises(ArgumentError) { Calc.polar(Complex(0,1), 1) }

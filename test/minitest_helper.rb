@@ -34,10 +34,19 @@ module Minitest::Assertions
     assert_in_epsilon expected, actual
   end
 
-  def assert_complex_parts(c, rp, ip)
-    assert_instance_of Calc::C, c
-    assert_in_epsilon rp, c.re
-    assert_in_epsilon ip, c.im
+  # expected is an array of [real_part, imag_part]
+  def assert_complex_parts(expected, actual)
+    assert_instance_of Calc::C, actual
+    if expected.first.integer?
+      assert_equal expected.first, actual.re
+    else
+      assert_in_epsilon expected.first, actual.re
+    end
+    if expected.last.integer?
+      assert_equal expected.last, actual.im
+    else
+      assert_in_epsilon expected.last, actual.im
+    end
   end
 
   # check a pair of methods return 1/true
