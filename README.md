@@ -123,6 +123,7 @@ acoth  | x [, b]    | inverse hyperbolic cotangent of x within accuracy b
 acsc   | x [, b]    | inverse cosecant of x within accuracy b
 acsch  | x [, b]    | inverse hyperbolic cosecant of x within accuracy b
 agd    | z [, b]    | inverse gudermannian function of z within accuracy b
+appr   | x [, e, r] | approximate x as a multiple of e with rounding r
 arg    | x [, b]    | argument (angle) of complex number x within acccuracy b
 asec   | x [, b]    | inverse secant of x within accuracy b
 asech  | x [, b]    | inverse hyperbolic secant of x within accuracy b
@@ -334,13 +335,11 @@ end
 ```
 
 These builtins work this way:
-builtin - returns 0 or 1 | returns true or false
------------------------- | ---------------------
-bit                      | bit?
-iseven                   | even?
-isimag                   | imag?
-isodd                    | odd?
-isreal                   | real?
+* bit / bit?
+* iseven / even?
+* isimag / imag?
+* odd / odd?
+* isreal / real?
 
 `isimag` isn't a real calc builtin but it is included anyway.
 

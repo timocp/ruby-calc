@@ -572,6 +572,46 @@ cq_acsch(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qacsch, &c_acsch);
 }
 
+static VALUE
+cq_appr(int argc, VALUE * argv, VALUE self)
+{
+    VALUE result, epsilon, rounding;
+    NUMBER *qepsilon, *qrounding;
+    long R = 0;
+    int n;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "02", &epsilon, &rounding);
+    if (n == 2) {
+        if (FIXNUM_P(rounding)) {
+            R = FIX2LONG(rounding);
+        }
+        else {
+            qrounding = value_to_number(rounding, 1);
+            if (qisfrac(qrounding)) {
+                rb_raise(e_MathError, "fractional rounding for appr");
+            }
+            R = qtoi(DATA_PTR(qrounding));
+            qfree(qrounding);
+        }
+    }
+    else {
+        R = conf->appr;
+    }
+    if (n >= 1) {
+        qepsilon = value_to_number(epsilon, 1);
+    }
+    else {
+        qepsilon = NULL;
+    }
+    result = cq_new();
+    DATA_PTR(result) = qmappr(DATA_PTR(self), qepsilon ? qepsilon : conf->epsilon, R);
+    if (qepsilon) {
+        qfree(qepsilon);
+    }
+    return result;
+}
+
 /* Inverse trigonometric secant
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1326,6 +1366,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "acoth", cq_acoth, -1);
     rb_define_method(cQ, "acsc", cq_acsc, -1);
     rb_define_method(cQ, "acsch", cq_acsch, -1);
+    rb_define_method(cQ, "appr", cq_appr, -1);
     rb_define_method(cQ, "asec", cq_asec, -1);
     rb_define_method(cQ, "asech", cq_asech, -1);
     rb_define_method(cQ, "asin", cq_asin, -1);

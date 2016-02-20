@@ -156,6 +156,7 @@ static nametype2 configs[] = {
     {"mode", CONFIG_MODE},
     {"display", CONFIG_DISPLAY},
     {"epsilon", CONFIG_EPSILON},
+    {"appr", CONFIG_APPR},
     {NULL, 0}
 };
 

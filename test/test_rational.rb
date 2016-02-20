@@ -648,4 +648,73 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0.5).fib }
   end
 
+  def test_appr
+    # test cases here are from examples in "help appr" - there are some
+    # mistakes in the help file, these match what calc actually does
+    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1", 0)
+    assert_rational_and_equal Calc::Q("5.4"), Calc::Q("5.44").appr("0.1", 0)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1, 0)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1, 0)
+
+    assert_rational_and_equal Calc::Q("-5.4"), Calc::Q("-5.44").appr("-.1", 0)
+    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("-.1", 0)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(-1, 0)
+    assert_rational_and_equal -5, Calc::Q("-5.7").appr(-1, 0)
+
+    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1", 3)
+    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("0.1", 3)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(1, 3)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1, 3)
+
+    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1", 4)
+    assert_rational_and_equal Calc::Q("5.4"), Calc::Q("5.44").appr("0.1", 4)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,4)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,4)
+
+    assert_rational_and_equal Calc::Q("-5.4"), Calc::Q("-5.44").appr("0.1",6)
+    assert_rational_and_equal Calc::Q("5.4"), Calc::Q("5.44").appr("0.1",6)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,6)
+    assert_rational_and_equal -5, Calc::Q("-5.7").appr(1,6)
+
+    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("-.1",6)
+    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("-.1",6)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(-1,6)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(-1,6)
+
+    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1",9)
+    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("0.1",9)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,9)
+    assert_rational_and_equal -5, Calc::Q("-5.7").appr(1,9)
+
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1",11)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("0.1",11)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,11)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,11)
+
+    assert_rational_and_equal Calc::Q("-.5"), Calc::Q("-.44").appr("-.1",11)
+    assert_rational_and_equal Calc::Q(".4"), Calc::Q(".44").appr("-.1",11)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(-1,11)
+    assert_rational_and_equal -5, Calc::Q("-5.7").appr(-1,11)
+
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1",12)
+    assert_rational_and_equal Calc::Q(".4"), Calc::Q(".44").appr("0.1",12)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(1,12)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,12)
+
+    assert_rational_and_equal Calc::Q("-.5"), Calc::Q("-.44").appr("-.1",12)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("-.1",12)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(-1,12)
+    assert_rational_and_equal -5, Calc::Q("-5.7").appr(-1,12)
+
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1",15)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("0.1",15)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,15)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,15)
+
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("-.1",15)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("-.1",15)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(-1,15)
+    assert_rational_and_equal -6, Calc::Q("-5.7").appr(-1,15)
+  end
+
 end
