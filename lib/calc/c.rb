@@ -86,6 +86,16 @@ module Calc
       sinh(*args).inverse
     end
 
+    # Returns true if self has integer real part and zero imaginary part
+    #
+    # @return [Boolean]
+    # @example
+    #   Calc::C(1,1).int?  #=> false
+    #   Calc::C(1,0).int?  #=> true
+    def int?
+      im.zero? ? re.int? : false
+    end
+
     def iseven
       even? ? Calc::Q(1) : Calc::Q(0)
     end
@@ -177,6 +187,9 @@ module Calc
     def inspect
       "Calc::C(#{ to_s })"
     end
+
+    # aliases for compatibility with ruby Complex
+    alias integer? int?
 
     private
 

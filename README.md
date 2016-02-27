@@ -153,6 +153,7 @@ gd     | z [, b]    | gudermannian function of z within accuracy b
 inverse| x          | inverse of x
 iseven | x          | whether a value is even (also: #even?)
 isimag | x          | whether a value is imaginary (also: #imag?)
+isint  | x          | whether a value is an integer (also: #int?)
 isodd  | x          | whether a value is odd (also: #odd?)
 isreal | x          | whether a value is real (also: #real?)
 ln     | x [, b]    | natural logarithm of x within accuracy b
@@ -364,8 +365,9 @@ These builtins work this way:
 * bit / bit?
 * iseven / even?
 * isimag / imag?
-* odd / odd?
+* isint / int?
 * isreal / real?
+* odd / odd?
 
 `isimag` isn't a real calc builtin but it is included anyway.
 

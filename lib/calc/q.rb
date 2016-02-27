@@ -110,7 +110,9 @@ module Calc
       Rational(self.numerator.to_i, self.denominator.to_i)
     end
 
+    # aliases for compatibility with ruby Fixnum/Bignum/Rational
     alias imag im
+    alias integer? int?
     alias real re
   end
 end

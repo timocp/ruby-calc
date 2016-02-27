@@ -739,4 +739,12 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal -5, Calc::Q(-4.56).floor
   end
 
+  def test_isint
+    check_truthy Calc::Q(-1), :isint, :int?
+    check_truthy Calc::Q(0), :isint, :int?
+    check_truthy Calc::Q(1), :isint, :int?
+    check_falsey Calc::Q(0.5), :isint, :int?
+    assert_alias Calc::Q(5), :int?, :integer?
+  end
+
 end

@@ -339,4 +339,11 @@ class TestComplex < MiniTest::Test
     assert_complex_parts [7, -10], Calc::C(7.8, -9.1).floor
   end
 
+  def test_isint
+    check_truthy Calc::C(1,0), :isint, :int?
+    check_falsey Calc::C(1,1), :isint, :int?
+    check_falsey Calc::C(0,-1), :isint, :int?
+    assert_alias Calc::C(1,1), :int?, :integer?
+  end
+
 end

@@ -43,6 +43,16 @@ module Calc
       appr(1,1)
     end
 
+    # Returns 1 if self is an integer, otherwise 0.
+    #
+    # @return [Calc::Q]
+    # @example
+    #   Calc::Q(1).isint    #=> Calc::Q(1)
+    #   Calc::Q(0.5).isint  #=> Calc::Q(0)
+    def isint
+      int? ? Calc::Q(1) : Calc::Q(0)
+    end
+
     # Floor
     # 
     # For real self, returns the greatest integer not greater than self.

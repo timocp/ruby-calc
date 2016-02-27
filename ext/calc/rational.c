@@ -997,6 +997,20 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
     return trans_function2(argc, argv, self, &qhypot);
 }
 
+/* Returns true if the number is an integer.
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(2).int?     #=> true
+ *  Calc::Q(0.1).int?   #=> false
+ */
+static VALUE
+cq_intp(VALUE self)
+{
+    NUMBER *qself = DATA_PTR(self);
+    return qisint(qself) ? Qtrue : Qfalse;
+}
+
 /* Inverse of a real number
  *
  * @return [Calc::Q]
@@ -1401,6 +1415,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
+    rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
     rb_define_method(cQ, "ln", cq_ln, -1);
     rb_define_method(cQ, "log", cq_log, -1);
