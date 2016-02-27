@@ -479,13 +479,6 @@ class TestRational < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(1).root(0) }
     assert_raises(Calc::MathError) { Calc::Q(0).root(-1) }
     assert_raises(Calc::MathError) { Calc::Q(-2).root(4) }
-
-    # these are currently implemented in terms of Q#root
-    # calc actually has a sqrt with many options, we're not exposing yet
-    assert_instance_of Calc::Q, Calc::Q(4).sqrt
-    assert_instance_of Calc::Q, Calc::Q(8).cbrt
-    assert_equal 2, Calc::Q(4).sqrt
-    assert_equal 2, Calc::Q(8).cbrt
   end
 
   def test_sec
@@ -715,6 +708,23 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("-.1",15)
     assert_rational_and_equal 5, Calc::Q("5.7").appr(-1,15)
     assert_rational_and_equal -6, Calc::Q("-5.7").appr(-1,15)
+  end
+
+  def test_sqrt
+    assert_rational_and_equal 2, Calc::Q(4).sqrt
+    assert_complex_parts [0, 2], Calc::Q(-4).sqrt
+    eps = Calc::Q("1e-4")
+    assert_rational_and_equal 2, Calc::Q(4).sqrt(eps, 0)
+    assert_rational_and_equal -2, Calc::Q(4).sqrt(eps, 64)
+    assert_rational_and_equal Calc::Q("1.4142"), Calc::Q(2).sqrt(eps, 0)
+    assert_rational_and_equal Calc::Q("1.4143"), Calc::Q(2).sqrt(eps, 1)
+    assert_rational_and_equal Calc::Q("1.4142"), Calc::Q(2).sqrt(eps, 24)
+    x = Calc::Q("1.2345678") ** 2
+    assert_rational_and_equal Calc::Q("1.2346"), x.sqrt(eps, 24)
+    assert_rational_and_equal Calc::Q("1.2345678"), x.sqrt(eps, 32)
+    assert_rational_and_equal Calc::Q("-1.2345678"), x.sqrt(eps, 96)
+    assert_rational_and_equal 0, (Calc::Q(".00005") ** 2).sqrt(eps, 24)
+    assert_rational_and_equal Calc::Q(".0002"), (Calc::Q(".00015") ** 2).sqrt(eps, 24)
   end
 
 end

@@ -317,4 +317,9 @@ class TestComplex < MiniTest::Test
     check_falsey Calc::C(2,2), :isodd, :odd?
   end
 
+  def test_sqrt
+    eps = Calc::Q("1e-4")
+    assert_complex_parts [2, 2], Calc::C(0,8).sqrt(eps, 0)
+    assert_complex_parts [-2, -2], Calc::C(0,8).sqrt(eps, 64)
+  end
 end

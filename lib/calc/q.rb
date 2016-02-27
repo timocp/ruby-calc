@@ -28,10 +28,6 @@ module Calc
       self.class.new(bit?(y) ? 1 : 0)
     end
 
-    def cbrt
-      root(3)
-    end
-
     # Gudermannian function
     # 
     # @param eps [Calc::Q] (optional) calculation accuracy
@@ -101,10 +97,6 @@ module Calc
     #  Calc::Q(1).real? #=> true
     def real?
       true
-    end
-
-    def sqrt
-      root(2)
     end
 
     # libcalc has no concept of floating point numbers.  so we use ruby's

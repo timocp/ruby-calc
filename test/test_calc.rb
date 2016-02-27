@@ -108,6 +108,7 @@ class TestCalc < Minitest::Test
     check_delegation :sech
     check_delegation :sin
     check_delegation :sinh
+    check_delegation :sqrt
     check_delegation :tan
     check_delegation :tanh
   end

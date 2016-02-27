@@ -52,4 +52,13 @@ class TestConfig < Minitest::Test
     assert_raises(ArgumentError) { Calc.config(:mode, "cat") }
   end
 
+  def test_sqrt
+    assert_equal 2, Calc::Q(4).sqrt
+    with_config(:sqrt, 24, 24+64) do
+      assert_equal -2, Calc::Q(4).sqrt
+    end
+    assert_raises(Calc::MathError) { Calc.config(:sqrt, 0.5) }
+    assert_raises(Calc::MathError) { Calc.config(:sqrt, -1) }
+  end
+
 end

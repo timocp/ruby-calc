@@ -163,7 +163,7 @@ sec    | x [, b]    | secant of x within accuracy b
 sech   | x [, b]    | hyperbolic secant within accuracy b
 sin    | x [, b]    | sine of x within accuracy b
 sinh   | x [, b]    | hyperbolic sine of x within accuracy b
-sqrt   | x [, b]    | square root of x within accuracy b
+sqrt   | x [, b, z] | square root of x within accuracy b with rounding/sign controlled by z
 tan    | x [, b]    | tangent of x within accuracy b
 tanh   | x [, b]    | hyperbolic tangent of x within accuracy b
 
@@ -288,9 +288,11 @@ Not all of calc's configuration is implemented (and only onese related to maths 
 
 Parameter | Default | Meaning
 --------- | ------- | -------
+appr      | 24      | rounding mode for `appr`
 display   | 20      | number of digits when converting to string (does NOT affect internal value)
 epsilon   | 1e-20   | default precision for transcendental functions
 mode      | :real   | default output mode when converting to string
+sqrt      | 24      | rounding mode and sign for `sqrt`
 
 For more details of these, type "help config" in calc.
 
