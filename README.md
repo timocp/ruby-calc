@@ -217,13 +217,11 @@ Calc.pi  #=> Calc::Q(3.14159265358979323846)
 # pi to 2 decimal places:
 Calc.pi("0.01") #=> Calc::Q(3.14)
 
-# Usually using a ruby float as a precision won't work as floating point
-# numbers are converted into rational number that may not be exactly the same
-Calc::Q(0.01).to_s(:frac)   #=> "5764607523034235/576460752303423488"
+# Avoid using a ruby float as a precision, since it won't exactly represent
+# what you expect (see below in "Differences from Calc").
 # For this reason it is recommended to use a Calc::Q or a string as the
 # epsilon.  Eg, pi to 400 decimal places:
-Calc::Q("0.01").to_s(:frac) #=> "1/100"
-
+Calc.pi("1e-400") #=> (long fraction omitted)
 ```
 
 The default epsilon can be changed via the Calc.config method and will affect all subsequent method calls:
@@ -250,7 +248,7 @@ Calc::C#to_c       | Converts to ruby Complex
 
 #### Converting to strings
 
-Internally, `Calc::Q` are always stored as a rational number (fraction).  Libcalc supports various output modes.  The default is "real" which will output as floating points.
+Internally, `Calc::Q` are always stored as a rational number (fraction).  Libcalc supports various output modes.  The default is "real" which will output in decimal format.
 
 ```ruby
 Calc.exp(1).to_s #=> "2.71828182845904523536"
@@ -302,12 +300,36 @@ For more details of these, type "help config" in calc.
 
 For people familiar with the command line interface to calc, here are some important differences to make this library more ruby-ish:
 
+### Literals
+
+In calc, a decimal literal is interpreted as a rational number, whereas in ruby it will be a floating point number.  In fact, libcalc does not use or allow C types float or double anywhere in its API.
+
+Although you can initialize Calc::Q objects from ruby floats, their internal representation will actually be a rational number as close as possible to the ruby float, which is not necessarily the same as what you typed.  This is also true for scientific notation.
+
+```ruby
+Calc::Q(1.2)              #=> Calc::Q(~1.19999999999999995559)
+Calc::Q(1.2).to_s(:frac)  #=> "5404319552844595/4503599627370496"
+Calc::Q(1e-5)             #=> Calc::Q(~0.00001000000000000000)
+Calc::Q(1e-5).to_s(:frac) #=> "5902958103587057/590295810358705651712"
+```
+
+In most cases where you can provide a numeric argument to a method, ruby-calc allows a string.  The string will be parsed using libcalc, so the exact intended value is stored.
+
+```ruby
+Calc::Q("1.2")  #=> Calc::Q(1.2)
+Calc::Q("1e-5") #=> Calc::Q(0.00001)
+```
+
+### Output Parameters
+
 Ruby doesn't have output parameters; for functions which in calc modify their parameters, ruby-calc instead returns values, eg:
 
 ```ruby
 q, r = Calc::Q(a).quomod(b)   # in calc: quomod(a, b, q, r)
                               # the actual calc return value is not available
 ```
+
+### Predicate Functions and Truthiness
 
 Predicate functions (usually starting with "is") return 0 or 1 indicating false or true, matching the original calc version.  In ruby, 0 is true so you shouldn't use these in a boolean context.  Each function has a more rubyish version named with a question mark which returns true or false.
 
@@ -347,7 +369,8 @@ These builtins work this way:
 
 `isimag` isn't a real calc builtin but it is included anyway.
 
-Other differences:
+### Other Differences
+
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that
 * Not all configuration items are implemented (and only ones related to maths will be)
 * You can't define/call calc functions (ie, eval() is not implemented)
