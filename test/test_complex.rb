@@ -330,4 +330,13 @@ class TestComplex < MiniTest::Test
     assert_complex_parts [2.70331, -0.55487], x.appr("1e-5", 2)
     assert_complex_parts [2.70332, -0.55488], x.appr("1e-5", 3)
   end
+
+  def test_ceil
+    assert_complex_parts [8, -9], Calc::C(7.8, -9.1).ceil
+  end
+
+  def test_floor
+    assert_complex_parts [7, -10], Calc::C(7.8, -9.1).floor
+  end
+
 end

@@ -8,10 +8,10 @@ module Calc
 
   # builtins implemented as instance methods on Calc::Q or Calc::C
   BUILTINS1 = %i(abs acos acosh acot acoth acsc acsch agd appr arg asec asech
-                 asin asinh atan atan2 atanh bit bernoulli catalan cos cosh cot
-                 coth csc csch den fact fib gd hypot im inverse iseven isimag
-                 isodd isreal num power quomod re sec sech sin sinh sqrt tan
-                 tanh)
+                 asin asinh atan atan2 atanh bit bernoulli catalan ceil cos
+                 cosh cot coth csc csch den fact fib floor gd hypot im inverse
+                 iseven isimag isodd isreal num power quomod re sec sech sin
+                 sinh sqrt tan tanh)
   # builtins implemented as module methods on Calc
   BUILTINS2 = %i(config freebernoulli pi polar)
 

@@ -136,6 +136,7 @@ bernoulli | x       | xth bernoulli number
 bit    | x, y       | whether bit y in value x is set (also: #bit?)
 catalan| x          | Catalan number for index x
 cbrt   | x [, b]    | cube root of x within accuracy b
+ceil   | x          | smallest integer greater than or equal to x
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b
 cot    | x [, b]    | cotangent of x within accuracy b
@@ -147,6 +148,7 @@ exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
 fib    | z          | zth Fibonacci number
 freebernoulli |     | free memory storing calculated bernoulli numbers
+floor  | x          | greatest integer less than or equal to x
 gd     | z [, b]    | gudermannian function of z within accuracy b
 inverse| x          | inverse of x
 iseven | x          | whether a value is even (also: #even?)

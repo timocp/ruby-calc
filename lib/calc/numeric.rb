@@ -28,6 +28,36 @@ module Calc
       end
     end
 
+    # Ceiling
+    #
+    # For real self, returns the least integer not less than self.
+    #
+    # For complex self, returns a complex number composed of the ceiling
+    # of the real and imaginary parts separately.
+    #
+    # @return [Calc::Q,Calc::C]
+    # @example
+    #   Calc::Q(1.23).ceil      #=> Calc::Q(2)
+    #   Calc::C(7.8, 9.1).ceil  #=> Calc::C(8+10i)
+    def ceil
+      appr(1,1)
+    end
+
+    # Floor
+    # 
+    # For real self, returns the greatest integer not greater than self.
+    #
+    # For complex self, returns a complex number composed of the floor of the
+    # real and imaginary parts separately.
+    #
+    # @return [Calc::Q,Calc::C]
+    # @example
+    #   Calc::Q(1.23).floor     #=> Calc::Q(1)
+    #   Calc::C(7.8, 9.1).floor #=> Calc::C(7+9i)
+    def floor
+      appr(1,0)
+    end
+
     def remainder(y)
       z = self % y
       if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))

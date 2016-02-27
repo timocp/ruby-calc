@@ -83,6 +83,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :bernoulli
     check_real_delegation :bit
     check_real_delegation :catalan
+    check_delegation :ceil
     check_delegation :cos
     check_delegation :cosh
     check_delegation :cot
@@ -92,6 +93,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :den
     check_real_delegation :fact
     check_real_delegation :fib
+    check_delegation :floor
     check_delegation :gd
     check_real_delegation :hypot, 2
     check_delegation :im

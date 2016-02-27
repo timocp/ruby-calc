@@ -727,4 +727,16 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(".0002"), (Calc::Q(".00015") ** 2).sqrt(eps, 24)
   end
 
+  def test_ceil
+    assert_rational_and_equal 27, Calc::Q(27).ceil
+    assert_rational_and_equal 2, Calc::Q(1.23).ceil
+    assert_rational_and_equal -4, Calc::Q(-4.56).ceil
+  end
+
+  def test_floor
+    assert_rational_and_equal 27, Calc::Q(27).floor
+    assert_rational_and_equal 1, Calc::Q(1.23).floor
+    assert_rational_and_equal -5, Calc::Q(-4.56).floor
+  end
+
 end
