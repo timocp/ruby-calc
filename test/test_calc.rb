@@ -24,6 +24,17 @@ class TestCalc < Minitest::Test
     assert_raises(Calc::MathError) { Calc.polar(1, 1, -0.1) }
   end
 
+  def test_avg
+    a4 = [1,2,3,4]
+    a5 = [1,2,3,4,5]
+    assert_rational_and_equal 3, Calc.avg(*a5)
+    assert_rational_and_equal Calc::Q("2.5"), Calc.avg(*a4)
+    assert_complex_parts [3,3], Calc.avg(*a5.map { |x| Calc::C(x,x) })
+    assert_complex_parts [Calc::Q("2.5"), Calc::Q("2.5")], Calc.avg(*a4.map { |x| Calc::C(x,x) })
+  end
+
+  # following tests are for checking that Calc.foo(x) correctly calls x.foo
+
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)
     assert_respond_to Calc, m
     extra_args = [ruby_n] * extra_args_count

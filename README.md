@@ -132,6 +132,7 @@ asinh  | x [, b]    | hyperbolic arcsine of x within accuracy b
 atan   | x [, b]    | arctangent of x within accuracy b
 atan2  | y, x [, b] | angle determined by the point (x,y) within accuracy b
 atanh  | x [, b]    | hyperbolic arctangent of x within accuracy b
+avg    | x, y, ...  | arithmetic mean of values
 bernoulli | x       | xth bernoulli number
 bit    | x, y       | whether bit y in value x is set (also: #bit?)
 catalan| x          | Catalan number for index x

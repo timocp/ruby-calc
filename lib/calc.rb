@@ -41,4 +41,17 @@ module Calc
   def self.C(*args)
     C.new(*args)
   end
+
+  def self.avg(*args)
+    args.map do |a|
+      if a.is_a?(Calc::Q) || a.is_a?(Calc::C)
+        a
+      elsif a.is_a?(Complex)
+        Calc::C(a)
+      else
+        Calc::Q(a)
+      end
+    end.inject(:+) / args.size
+  end
+
 end
