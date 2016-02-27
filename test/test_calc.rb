@@ -71,7 +71,7 @@ class TestCalc < Minitest::Test
     check_delegation :acsc
     check_delegation :acsch
     check_delegation :agd
-    check_real_delegation :appr
+    check_delegation :appr
     check_delegation :arg
     check_delegation :asec
     check_delegation :asech

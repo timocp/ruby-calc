@@ -322,4 +322,12 @@ class TestComplex < MiniTest::Test
     assert_complex_parts [2, 2], Calc::C(0,8).sqrt(eps, 0)
     assert_complex_parts [-2, -2], Calc::C(0,8).sqrt(eps, 64)
   end
+
+  def test_appr
+    x = Calc::C(7, -3).sqrt
+    assert_complex_parts [2.70331, -0.55488], x.appr("1e-5", 0)
+    assert_complex_parts [2.70332, -0.55487], x.appr("1e-5", 1)
+    assert_complex_parts [2.70331, -0.55487], x.appr("1e-5", 2)
+    assert_complex_parts [2.70332, -0.55488], x.appr("1e-5", 3)
+  end
 end

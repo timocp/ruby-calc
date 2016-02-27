@@ -572,6 +572,18 @@ cq_acsch(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qacsch, &c_acsch);
 }
 
+/* Approximate numbers by multiples of a specified number
+ *
+ * Returns the approximate value of self as specified by an error (defaults to
+ * Calc.config(:epsilon)) and rounding mode (defaults to Calc.config(:appr)).
+ *
+ * Type "help appr" in calc for a description of the rounding modes.
+ *
+ * @param y [Numeric,Calc::Q] (optional) error
+ * @param z [Interger] (optional) rounding mode
+ * @example
+ *  Calc::Q("5.44").appr("0.1",0) #=> Calc::Q(5.4)
+ */
 static VALUE
 cq_appr(int argc, VALUE * argv, VALUE self)
 {

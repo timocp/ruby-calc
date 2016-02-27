@@ -16,6 +16,19 @@ module Calc
       re.hypot(im, *args)
     end
 
+    # Approximate numbers of multiples of a specific number.
+    #
+    # c.appr(y,z) is equivalent to c.re.appr(y,z) + c.im.appr(y,z) * Calc::C(0,1)
+    def appr(*args)
+      q1 = re.appr(*args)
+      q2 = im.appr(*args)
+      if q2.zero?
+        q1
+      else
+        self.class.new(q1, q2)
+      end
+    end
+
     # Returns the argument (the angle or phase) of a complex number in radians.
     #
     # @param eps [Calc::Q] (optional) calculation accuracy
