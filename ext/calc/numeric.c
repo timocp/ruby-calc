@@ -45,7 +45,7 @@ cn_sqrt(int argc, VALUE * argv, VALUE self)
     else {
         R = conf->sqrt;
     }
-    if (CALC_Q_P(self) && !qisneg((NUMBER *)DATA_PTR(self))) {
+    if (CALC_Q_P(self) && !qisneg((NUMBER *) DATA_PTR(self))) {
         /* non-negative rational */
         result = cq_new();
         DATA_PTR(result) = qsqrt(DATA_PTR(self), qepsilon, R);

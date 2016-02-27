@@ -1,7 +1,7 @@
 #include "calc.h"
 
 static int
-getlen(NUMBER *q, LEN *lp)
+getlen(NUMBER * q, LEN * lp)
 {
     if (!qisint(q))
         return 1;
