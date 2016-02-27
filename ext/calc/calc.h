@@ -15,13 +15,11 @@ extern void reinitialize(void);
 
 /* config.c */
 extern VALUE calc_config(int argc, VALUE * argv, VALUE klass);
+extern long value_to_mode(VALUE v);
 
 /* convert.c */
 extern NUMBER *value_to_number(VALUE arg, int string_allowed);
 extern VALUE number_to_calc_q(NUMBER * n);
-extern long value_to_mode(VALUE v);
-extern VALUE mode_to_string(long n);
-extern long value_to_config(VALUE v);
 extern COMPLEX *value_to_complex(VALUE arg);
 extern VALUE complex_to_value(COMPLEX * c);
 
