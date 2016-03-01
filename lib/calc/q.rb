@@ -99,6 +99,27 @@ module Calc
       true
     end
 
+    # Returns a ruby Complex number with self as the real part and zero
+    # imaginary part.
+    #
+    # @return [Complex]
+    # @example
+    #  Calc::Q(2).to_c    #=> (2+0i)
+    #  Calc::Q(2.5).to_c  #=> ((5/2)+0i)
+    def to_c
+      Complex(int? ? to_i : to_r, 0)
+    end
+
+    # Returns a Calc::C complex number with self as the real part and zero
+    # imaginary part.
+    #
+    # @return [Calc::C]
+    # @example
+    #   Calc::Q(2).to_complex #=> Calc::C(2)
+    def to_complex
+      C.new(self, 0)
+    end
+
     # libcalc has no concept of floating point numbers.  so we use ruby's
     # Rational#to_f
     def to_f

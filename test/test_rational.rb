@@ -761,4 +761,15 @@ class TestRational < MiniTest::Test
     assert_alias Calc::Q(5), :int?, :integer?
   end
 
+  def test_to_c
+    assert_instance_of Complex, Calc::Q(2).to_c
+    assert_equal Complex(2,0), Calc::Q(2).to_c
+    assert_equal Complex(2.5,0), Calc::Q(2.5).to_c
+  end
+
+  def test_to_complex
+    assert_complex_parts [2,0], Calc::Q(2).to_complex
+    assert_complex_parts [2.5,0], Calc::Q(2.5).to_complex
+  end
+
 end
