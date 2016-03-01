@@ -16,6 +16,14 @@ VALUE cQ;
  * functions related to memory allocation and object initialization          *
  *****************************************************************************/
 
+static ID id_add;
+static ID id_coerce;
+static ID id_divide;
+static ID id_multiply;
+static ID id_new;
+static ID id_spaceship;
+static ID id_subtract;
+
 void
 cq_free(void *p)
 {
@@ -133,10 +141,10 @@ cq_initialize_copy(VALUE obj, VALUE orig)
 
 static VALUE
 numeric_op(VALUE self, VALUE other,
-           NUMBER * (*fqq) (NUMBER *, NUMBER *), NUMBER * (*fql) (NUMBER *, long))
+           NUMBER * (*fqq) (NUMBER *, NUMBER *), NUMBER * (*fql) (NUMBER *, long), ID func)
 {
     NUMBER *qother, *qresult;
-    VALUE result;
+    VALUE result, ary;
     setup_math_error();
 
     if (fql && TYPE(other) == T_FIXNUM) {
@@ -151,8 +159,19 @@ numeric_op(VALUE self, VALUE other,
         qresult = (*fqq) (DATA_PTR(self), qother);
         qfree(qother);
     }
+    else if (rb_respond_to(other, id_coerce)) {
+        if (TYPE(other) == T_COMPLEX) {
+            other = rb_funcall(cC, id_new, 1, other);
+        }
+        ary = rb_funcall(other, id_coerce, 1, self);
+        if (!RB_TYPE_P(ary, T_ARRAY) || RARRAY_LEN(ary) != 2) {
+            rb_raise(rb_eTypeError, "coerce must return [x, y]");
+        }
+        return rb_funcall(RARRAY_AREF(ary, 0), func, 1, RARRAY_AREF(ary, 1));
+    }
     else {
-        rb_raise(rb_eArgError, "expected number");
+        rb_raise(rb_eTypeError, "%" PRIsVALUE " can't (!) be coerced into %" PRIsVALUE,
+                 other, rb_obj_class(self));
     }
 
     result = cq_new();
@@ -333,7 +352,7 @@ cq_mod(VALUE x, VALUE y)
 static VALUE
 cq_multiply(VALUE x, VALUE y)
 {
-    return numeric_op(x, y, &qmul, &qmuli);
+    return numeric_op(x, y, &qmul, &qmuli, id_multiply);
 }
 
 /* Performs addition.
@@ -347,7 +366,7 @@ static VALUE
 cq_add(VALUE x, VALUE y)
 {
     /* fourth arg was &qaddi, but this segfaults with ruby 2.1.x */
-    return numeric_op(x, y, &qqadd, NULL);
+    return numeric_op(x, y, &qqadd, NULL, id_add);
 }
 
 /* Performs subtraction.
@@ -360,7 +379,7 @@ cq_add(VALUE x, VALUE y)
 static VALUE
 cq_subtract(VALUE x, VALUE y)
 {
-    return numeric_op(x, y, &qsub, NULL);
+    return numeric_op(x, y, &qsub, NULL, id_subtract);
 }
 
 /* Unary minus.  Returns the receiver's value, negated.
@@ -391,7 +410,7 @@ cq_uminus(VALUE self)
 static VALUE
 cq_divide(VALUE x, VALUE y)
 {
-    return numeric_op(x, y, &qqdiv, &qdivi);
+    return numeric_op(x, y, &qqdiv, &qdivi, id_divide);
 }
 
 /* Left shift an integer by a given number of bits.  This multiplies the number
@@ -429,6 +448,7 @@ cq_shift_left(VALUE x, VALUE n)
 static VALUE
 cq_spaceship(VALUE self, VALUE other)
 {
+    VALUE ary;
     NUMBER *qself, *qother;
     int result;
     setup_math_error();
@@ -447,6 +467,16 @@ cq_spaceship(VALUE self, VALUE other)
         qother = value_to_number(other, 0);
         result = qrel(qself, qother);
         qfree(qother);
+    }
+    else if (rb_respond_to(other, id_coerce)) {
+        if (TYPE(other) == T_COMPLEX) {
+            other = rb_funcall(cC, id_new, 1, other);
+        }
+        ary = rb_funcall(other, id_coerce, 1, self);
+        if (!RB_TYPE_P(ary, T_ARRAY) || RARRAY_LEN(ary) != 2) {
+            rb_raise(rb_eTypeError, "coerce must return [x, y]");
+        }
+        return rb_funcall(RARRAY_AREF(ary, 0), id_spaceship, 1, RARRAY_AREF(ary, 1));
     }
     else {
         return Qnil;
@@ -1442,4 +1472,12 @@ define_calc_q(VALUE m)
     rb_define_alias(cQ, "magnitude", "abs");
     rb_define_alias(cQ, "modulo", "%");
     rb_define_alias(cQ, "numerator", "num");
+
+    id_add = rb_intern("+");
+    id_coerce = rb_intern("coerce");
+    id_divide = rb_intern("/");
+    id_multiply = rb_intern("*");
+    id_new = rb_intern("new");
+    id_spaceship = rb_intern("<=>");
+    id_subtract = rb_intern("-");
 }

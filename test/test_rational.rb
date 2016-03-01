@@ -59,6 +59,8 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(BIG3) == BIG3            # large negative bugnum
     assert Calc::Q.new(2,3) == Rational(2,3)    # Q == Rational
     assert Calc::Q.new(0.5) == 0.5              # Q == Float
+    assert Calc::Q.new(2) == Complex(2,0)       # Q == Complex
+    assert Calc::Q.new(2) == Calc::C(2,0)       # Q == Calc::C
 
     assert Calc::Q.new(3) != Calc::Q.new(4)
     assert Calc::Q.new(3) != Calc::Q.new(4, 2)
@@ -67,6 +69,8 @@ class TestRational < MiniTest::Test
     assert Calc::Q.new(2,3) != Rational(3,4)
     assert Calc::Q.new(0.3) != 0.301
     assert Calc::Q.new(2,3) != "dog"
+    assert Calc::Q.new(2) != Complex(2,1)
+    assert Calc::Q.new(2) != Calc::C(2,1)
   end
 
   def test_reduction
@@ -151,6 +155,8 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Rational(1, 4)
     assert_rational_and_equal 0x800000000000002a, Calc::Q(42) + BIG2
+    assert_complex_parts [2,2], Calc::Q(2) + Complex(0,2)
+    assert_complex_parts [2,2], Calc::Q(2) + Calc::C(0,2)
   end
 
   def test_subtract
@@ -158,18 +164,24 @@ class TestRational < MiniTest::Test
     assert_rational_and_equal Calc::Q(-2,3), Calc::Q(1,3) - 1
     assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) - Rational(1,4)
     assert_rational_and_equal Rational(-0x17fffffffffffffff,3), Calc::Q(1,3) - BIG2
+    assert_complex_parts [2, -2], Calc::Q(2) - Complex(0,2)
+    assert_complex_parts [2, -2], Calc::Q(2) - Calc::C(0,2)
   end
 
   def test_multiply
     assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) * Calc::Q(1,4)
     assert_rational_and_equal Calc::Q(4,3),  Calc::Q(1,3) * 4
     assert_rational_and_equal Calc::Q(1,5),  Calc::Q(1,3) * Rational(3,5)
+    assert_complex_parts [0, 4], Calc::Q(2) * Complex(0,2)
+    assert_complex_parts [0, 4], Calc::Q(2) * Calc::C(0,2)
   end
 
   def test_divide
     assert_rational_and_equal Calc::Q(4,3),  Calc::Q(1,3) / Calc::Q(1,4)
     assert_rational_and_equal Calc::Q(1,6),  Calc::Q(1,3) / 2
     assert_rational_and_equal Calc::Q(5,3),  Calc::Q(1,3) / Rational(1,5)
+    assert_complex_parts [0, -1], Calc::Q(2) / Complex(0,2)
+    assert_complex_parts [0, -1], Calc::Q(2) / Calc::C(0,2)
   end
 
   def test_mod
@@ -237,6 +249,8 @@ class TestRational < MiniTest::Test
     assert_rational_in_epsilon 8.2207405646327461795, Calc::Q(1.2345).power(10)
     assert_rational_and_equal -8, Calc::Q(-2) ** 3
     assert_complex_parts [0.95105651629515357212, 0.3090169943749474241], Calc::Q(-1) ** "0.1"
+    assert_complex_parts [0.18345697474330167684, 0.98302774041124372059], Calc::Q(2) ** Complex(0,2)
+    assert_complex_parts [0.18345697474330167684, 0.98302774041124372059], Calc::Q(2) ** Calc::C(0,2)
   end
 
   def test_shift

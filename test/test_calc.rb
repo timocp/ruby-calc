@@ -31,6 +31,7 @@ class TestCalc < Minitest::Test
     assert_rational_and_equal Calc::Q("2.5"), Calc.avg(*a4)
     assert_complex_parts [3,3], Calc.avg(*a5.map { |x| Calc::C(x,x) })
     assert_complex_parts [Calc::Q("2.5"), Calc::Q("2.5")], Calc.avg(*a4.map { |x| Calc::C(x,x) })
+    assert_complex_parts [Calc::Q("0.75"), Calc::Q("-0.25")], Calc.avg(1, Complex(0,1), 2, Complex(0,-2))
   end
 
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
