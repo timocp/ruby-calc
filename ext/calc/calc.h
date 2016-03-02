@@ -61,4 +61,9 @@ extern void define_calc_c(VALUE m);
 #define CALC_Q_P(v) (rb_typeddata_is_kind_of((v), &calc_q_type))
 #define CALC_C_P(v) (rb_typeddata_is_kind_of((v), &calc_c_type))
 
+/* ruby before 2.1 doesn't have RARRAY_AREF */
+#ifndef RARRAY_AREF
+#define RARRAY_AREF(a, i) (RARRAY_PTR(a)[i])
+#endif
+
 #endif                          /* CALC_H */
