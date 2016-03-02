@@ -42,6 +42,23 @@ module Calc
       im.atan2(re, *args)
     end
 
+    # Round real and imaginary parts to the specified number of binary digits
+    #
+    # @return [Calc::C,Calc::Q]
+    # @param places [Integer] number of binary places to round to (default 0)
+    # @param rns [Integer] rounding flags (default Calc.config(:round))
+    # @example
+    #   Calc::C("7/32","-7/32").bround(3) #=> Calc::C(0.25-0.25i)
+    def bround(*args)
+      q1 = re.bround(*args)
+      q2 = im.bround(*args)
+      if q2.zero?
+        q1
+      else
+        Calc::C.new(q1, q2)
+      end
+    end
+
     # Trigonometric cotangent
     #
     # @param eps [Calc::Q] (optional) calculation accuracy
@@ -124,6 +141,22 @@ module Calc
     #  Calc::C(1,0).isreal #=> Calc::Q(1)
     def isreal
       real? ? Calc::Q(1) : Calc::Q(0)
+    end
+
+    # Round real and imaginary parts to the specified number of decimal digits
+    #
+    # @return [Calc::C,Calc::Q]
+    # @param places [Integer] number of decimal places to round to (default 0)
+    # @param rns [Integer] rounding flags (default Calc.config(:round))
+    #   Calc::C("7/32","-7/32").round(3) #=> Calc::C(0.218-0.219i)
+    def round(*args)
+      q1 = re.round(*args)
+      q2 = im.round(*args)
+      if q2.zero?
+        q1
+      else
+        Calc::C.new(q1, q2)
+      end
     end
 
     # Trigonometric secant

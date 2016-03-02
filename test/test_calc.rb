@@ -94,6 +94,7 @@ class TestCalc < Minitest::Test
     check_delegation :atanh
     check_real_delegation :bernoulli
     check_real_delegation :bit
+    check_delegation :bround
     check_real_delegation :catalan
     check_delegation :ceil
     check_delegation :cos
@@ -119,6 +120,7 @@ class TestCalc < Minitest::Test
     check_delegation :power, 2
     check_real_delegation :quomod, 2
     check_delegation :re
+    check_delegation :round
     check_delegation :sec
     check_delegation :sech
     check_delegation :sin

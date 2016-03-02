@@ -318,6 +318,54 @@ log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER
     return result;
 }
 
+static VALUE
+rounding_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, long, long))
+{
+    VALUE places, rnd, result;
+    NUMBER *qplaces, *qrnd;
+    long n, lplaces, lrnd;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "02", &places, &rnd);
+    if (n >= 1) {
+        if (FIXNUM_P(places)) {
+            lplaces = FIX2LONG(places);
+        }
+        else {
+            qplaces = value_to_number(places, 0);
+            if (qisfrac(qplaces)) {
+                qfree(qplaces);
+                rb_raise(e_MathError, "fractional places for round or bround");
+            }
+            lplaces = qtoi(qplaces);
+            qfree(qplaces);
+        }
+    }
+    else {
+        lplaces = 0;
+    }
+    if (n == 2) {
+        if (FIXNUM_P(rnd)) {
+            lrnd = FIX2LONG(rnd);
+        }
+        else {
+            qrnd = value_to_number(rnd, 0);
+            if (qisfrac(qrnd)) {
+                qfree(qrnd);
+                rb_raise(e_MathError, "fractional rounding flag for round or bround");
+            }
+            lrnd = qtoi(qrnd);
+            qfree(qrnd);
+        }
+    }
+    else {
+        lrnd = conf->round;
+    }
+    result = cq_new();
+    DATA_PTR(result) = (*f) (DATA_PTR(self), lplaces, lrnd);
+    return result;
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -814,6 +862,23 @@ cq_bitp(VALUE self, VALUE y)
     return r ? Qtrue : Qfalse;
 }
 
+/* Round to a specified number of binary digits
+ *
+ * Rounds self rounded to the specified number of significant binary digits.
+ * For the meanings of the rounding flags, see "help bround".
+ *
+ * @return [Calc::Q]
+ * @param places [Integer] number of binary digits to round to (default 0)
+ * @param rnd [Integer] rounding flags (default Calc.config(:round)
+ * @example
+ *  Calc::Q(7,32).bround(3)  #=> Calc::Q(0.25)
+ */
+static VALUE
+cq_bround(int argc, VALUE * argv, VALUE self)
+{
+    return rounding_function(argc, argv, self, &qbround);
+}
+
 /* Returns the Catalan number for index self.  If self is negative, zero is
  * returned.
  *
@@ -1222,6 +1287,23 @@ cq_root(int argc, VALUE * argv, VALUE self)
     return trans_function2(argc, argv, self, &qroot);
 }
 
+/* Round to a specified number of decimal places
+ *
+ * Rounds self rounded to the specified number of significant binary digits.
+ * For the meanings of the rounding flags, see "help round".
+ *
+ * @return [Calc::Q]
+ * @param places [Integer] number of decimal digits to round to (default 0)
+ * @param rnd [Integer] rounding flags (default Calc.config(:round))
+ * @example
+ *  Calc::Q(7,32).round(3)  #=> Calc::Q(0.219)
+ */
+static VALUE
+cq_round(int argc, VALUE * argv, VALUE self)
+{
+    return rounding_function(argc, argv, self, &qround);
+}
+
 /* Trigonometric secant
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1432,6 +1514,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "atanh", cq_atanh, -1);
     rb_define_method(cQ, "bernoulli", cq_bernoulli, 0);
     rb_define_method(cQ, "bit?", cq_bitp, 1);
+    rb_define_method(cQ, "bround", cq_bround, -1);
     rb_define_method(cQ, "catalan", cq_catalan, 0);
     rb_define_method(cQ, "cos", cq_cos, -1);
     rb_define_method(cQ, "cosh", cq_cosh, -1);
@@ -1454,6 +1537,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "root", cq_root, -1);
+    rb_define_method(cQ, "round", cq_round, -1);
     rb_define_method(cQ, "sec", cq_sec, -1);
     rb_define_method(cQ, "sech", cq_sech, -1);
     rb_define_method(cQ, "sin", cq_sin, -1);

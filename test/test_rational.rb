@@ -772,4 +772,42 @@ class TestRational < MiniTest::Test
     assert_complex_parts [2.5,0], Calc::Q(2.5).to_complex
   end
 
+  def test_bround
+    a = Calc::Q(7,32)
+    b = Calc::Q(-7,32)
+    assert_rational_and_equal 0, a.bround
+    assert_rational_and_equal Calc::Q(".25"), a.bround(3)
+    assert_rational_and_equal Calc::Q(".25"), a.bround(4)
+    assert_rational_and_equal Calc::Q(".21875"), a.bround(5)
+    assert_rational_and_equal Calc::Q(".1875"), a.bround(4,0)
+    assert_rational_and_equal Calc::Q(".25"), a.bround(4,1)
+    assert_rational_and_equal Calc::Q(".1875"), a.bround(4,2)
+    assert_rational_and_equal Calc::Q(".25"), a.bround(4,3)
+    assert_rational_and_equal 0, b.bround
+    assert_rational_and_equal Calc::Q("-.25"), b.bround(3)
+    assert_rational_and_equal Calc::Q("-.25"), b.bround(4)
+    assert_rational_and_equal Calc::Q("-.21875"), b.bround(5)
+    assert_rational_and_equal Calc::Q("-.25"), b.bround(4,0)
+    assert_rational_and_equal Calc::Q("-.1875"), b.bround(4,1)
+    assert_rational_and_equal Calc::Q("-.1875"), b.bround(4,2)
+    assert_rational_and_equal Calc::Q("-.25"), b.bround(4,3)
+  end
+
+  def test_round
+    a = Calc::Q(7,32)
+    b = Calc::Q(-7,32)
+    assert_rational_and_equal 0, a.round
+    assert_rational_and_equal Calc::Q(".219"), a.round(3)
+    assert_rational_and_equal Calc::Q(".218"), a.round(3,0)
+    assert_rational_and_equal Calc::Q(".219"), a.round(3,1)
+    assert_rational_and_equal Calc::Q(".218"), a.round(3,2)
+    assert_rational_and_equal Calc::Q(".219"), a.round(3,3)
+    assert_rational_and_equal 0, b.round
+    assert_rational_and_equal Calc::Q("-.219"), b.round(3)
+    assert_rational_and_equal Calc::Q("-.219"), b.round(3,0)
+    assert_rational_and_equal Calc::Q("-.218"), b.round(3,1)
+    assert_rational_and_equal Calc::Q("-.218"), b.round(3,2)
+    assert_rational_and_equal Calc::Q("-.219"), b.round(3,3)
+  end
+
 end

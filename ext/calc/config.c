@@ -36,6 +36,7 @@ static nametype2 configs[] = {
     {"epsilon", CONFIG_EPSILON},
     {"sqrt", CONFIG_SQRT},
     {"appr", CONFIG_APPR},
+    {"round", CONFIG_ROUND},
     {NULL, 0}
 };
 
@@ -188,6 +189,14 @@ calc_config(int argc, VALUE * argv, VALUE klass)
         }
         break;
 
+    case CONFIG_ROUND:
+        old_value = INT2FIX(conf->round);
+        if (args == 2) {
+            if (getlen(value_to_number(new_value, 1), &len))
+                rb_raise(e_MathError, "Illegal value for round");
+            conf->round = len;
+        }
+        break;
 
     default:
         rb_raise(rb_eArgError, "Invalid or unsupported config parameter");

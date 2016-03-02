@@ -135,6 +135,7 @@ atanh  | x [, b]    | hyperbolic arctangent of x within accuracy b
 avg    | x, y, ...  | arithmetic mean of values
 bernoulli | x       | xth bernoulli number
 bit    | x, y       | whether bit y in value x is set (also: #bit?)
+bround | x [, p, r] | round x to p binary places with rounding r
 catalan| x          | Catalan number for index x
 cbrt   | x [, b]    | cube root of x within accuracy b
 ceil   | x          | smallest integer greater than or equal to x
@@ -163,6 +164,7 @@ num    | x          | numerator of x
 pi     | [b]        | value of π within accuracy b
 power  | x, y [, b] | x raised to the power of y within accuracy b
 root   | x, n [, b] | nth root of x within accuracy b
+round  | x [, p, r] | round x to p decimal places with rounding r
 sec    | x [, b]    | secant of x within accuracy b
 sech   | x [, b]    | hyperbolic secant within accuracy b
 sin    | x [, b]    | sine of x within accuracy b
@@ -294,6 +296,7 @@ appr      | 24      | rounding mode for `appr`
 display   | 20      | number of digits when converting to string (does NOT affect internal value)
 epsilon   | 1e-20   | default precision for transcendental functions
 mode      | :real   | default output mode when converting to string
+round     | 24      | rounding mode for `bround` and `round`
 sqrt      | 24      | rounding mode and sign for `sqrt`
 
 For more details of these, type "help config" in calc.
@@ -367,8 +370,8 @@ These builtins work this way:
 * iseven / even?
 * isimag / imag?
 * isint / int?
+* isodd / odd?
 * isreal / real?
-* odd / odd?
 
 `isimag` isn't a real calc builtin but it is included anyway.
 

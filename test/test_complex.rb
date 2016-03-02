@@ -346,4 +346,20 @@ class TestComplex < MiniTest::Test
     assert_alias Calc::C(1,1), :int?, :integer?
   end
 
+  def test_round
+    a = Calc::Q(7,32)
+    c = Calc::C(a,-a)
+    assert_rational_and_equal 0, c.round
+    assert_complex_parts [Calc::Q(".219"), Calc::Q("-.219")], c.round(3)
+    assert_complex_parts [Calc::Q(".218"), Calc::Q("-.219")], c.round(3,0)
+  end
+
+  def test_bround
+    a = Calc::Q(7,32)
+    c = Calc::C(a,-a)
+    assert_rational_and_equal 0, c.bround
+    assert_complex_parts [Calc::Q(".25"), Calc::Q("-.25")], c.bround(3)
+    assert_complex_parts [Calc::Q(".125"), Calc::Q("-.25")], c.bround(3,0)
+  end
+
 end
