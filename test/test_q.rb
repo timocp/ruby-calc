@@ -1,6 +1,6 @@
 require 'minitest_helper'
 
-class TestRational < MiniTest::Test
+class TestQ < MiniTest::Test
 
   BIG  =  0x4000000000000000  # first BigNum
   BIG2 =  0x8000000000000000  # first Bignum that won't fit in a long

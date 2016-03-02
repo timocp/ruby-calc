@@ -37,14 +37,14 @@ extern void setup_math_error();
 extern VALUE cNumeric;          /* Calc::Numeric module */
 extern void define_calc_numeric(VALUE m);
 
-/* rational.c */
+/* q.c (rational numbers) */
 extern const rb_data_type_t calc_q_type;
 extern VALUE cQ;                /* Calc::Q class */
 
 extern VALUE cq_alloc(VALUE klass);
 extern void define_calc_q(VALUE m);
 
-/* complex.c */
+/* c.c (complex numbers) */
 extern const rb_data_type_t calc_c_type;
 extern VALUE cC;                /* Calc::C class */
 
