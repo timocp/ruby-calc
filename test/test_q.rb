@@ -810,4 +810,20 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("-.219"), b.round(3,3)
   end
 
+  def test_cfappr
+    x = Calc::Q(43,30)
+    assert_rational_and_equal x, x.cfappr(0)
+    assert_rational_and_equal Calc::Q("10/7"), x.cfappr(10,0)
+    assert_rational_and_equal Calc::Q("13/9"), x.cfappr(10,1)
+    assert_rational_and_equal Calc::Q("10/7"), x.cfappr(10,16)
+    pi = Calc.pi("1e-10")
+    assert_rational_and_equal Calc::Q("311/99"), pi.cfappr(100,16)
+    assert_rational_and_equal Calc::Q("22/7"), pi.cfappr(".01",16)
+    assert_rational_and_equal Calc::Q("355/113"), pi.cfappr("1e-6",16)
+    x = Calc::Q(17,12)
+    assert_rational_and_equal Calc::Q("4/3"), x.cfappr(4,0)
+    assert_rational_and_equal Calc::Q("3/2"), x.cfappr(4,1)
+    assert_rational_and_equal Calc::Q("3/2"), x.cfappr(4,16)
+  end
+
 end

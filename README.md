@@ -139,6 +139,7 @@ bround | x [, p, r] | round x to p binary places with rounding r
 catalan| x          | Catalan number for index x
 cbrt   | x [, b]    | cube root of x within accuracy b
 ceil   | x          | smallest integer greater than or equal to x
+cfappr | x [, e|n, r] | approximate x within accuracy e using continued fractions
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b
 cot    | x [, b]    | cotangent of x within accuracy b
@@ -293,6 +294,7 @@ Not all of calc's configuration is implemented (and only onese related to maths 
 Parameter | Default | Meaning
 --------- | ------- | -------
 appr      | 24      | rounding mode for `appr`
+cfappr    | 0       | rounding mode for `cfappr`
 display   | 20      | number of digits when converting to string (does NOT affect internal value)
 epsilon   | 1e-20   | default precision for transcendental functions
 mode      | :real   | default output mode when converting to string

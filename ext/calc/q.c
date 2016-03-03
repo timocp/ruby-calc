@@ -879,6 +879,50 @@ cq_catalan(VALUE self)
     return result;
 }
 
+/* Approximation using continued fractions
+ *
+ * If self is an integer or eps is zero, returns x.
+ *
+ * If abs(eps) < 1, returns the smallest denominator number in one of the three
+ * intervals [self, self+abs(eps)], [self-abs(eps), self], [self-abs(eps)/2,
+ * self+abs(eps)/2].
+ *
+ * If eps >= 1 and den(self) > n, returns the nearest above, below or
+ * approximation with denominatior less than or equal to n. 
+ *
+ * If den(self) <= eps, returns self.
+ *
+ * When the result is not self, the rounding is controlled by the final
+ * parameter; see "help cfappr" for details.
+ *
+ * @return [Calc::Q]
+ * @param eps [Numeric] epsilon or upper limit of denominator (default: Calc.config("epsilon"))
+ * @param rnd [Integer] rounding flags (default: Calc.config("cfappr"))
+ * @example
+ *  Calc.pi.cfappr(1).to_s(:frac)   #=> "3"
+ *  Calc.pi.cfappr(10).to_s(:frac)  #=> "25/8"
+ *  Calc.pi.cfappr(50).to_s(:frac)  #=> "157/50"
+ *  Calc.pi.cfappr(100).to_s(:frac) #=> "311/99"
+ */
+static VALUE
+cq_cfappr(int argc, VALUE * argv, VALUE self)
+{
+    VALUE eps, rnd, result;
+    NUMBER *q;
+    long n, R;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "02", &eps, &rnd);
+    q = (n >= 1) ? value_to_number(eps, 1) : conf->epsilon;
+    R = (n == 2) ? value_to_long(rnd) : conf->cfappr;
+    result = cq_new();
+    DATA_PTR(result) = qcfappr(DATA_PTR(self), q, R);
+    if (n >= 1) {
+        qfree(q);
+    }
+    return result;
+}
+
 /* Cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1483,6 +1527,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "bit?", cq_bitp, 1);
     rb_define_method(cQ, "bround", cq_bround, -1);
     rb_define_method(cQ, "catalan", cq_catalan, 0);
+    rb_define_method(cQ, "cfappr", cq_cfappr, -1);
     rb_define_method(cQ, "cos", cq_cos, -1);
     rb_define_method(cQ, "cosh", cq_cosh, -1);
     rb_define_method(cQ, "cot", cq_cot, -1);

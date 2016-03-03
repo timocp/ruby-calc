@@ -36,6 +36,7 @@ static nametype2 configs[] = {
     {"epsilon", CONFIG_EPSILON},
     {"sqrt", CONFIG_SQRT},
     {"appr", CONFIG_APPR},
+    {"cfappr", CONFIG_CFAPPR},
     {"round", CONFIG_ROUND},
     {NULL, 0}
 };
@@ -186,6 +187,15 @@ calc_config(int argc, VALUE * argv, VALUE klass)
             if (getlen(value_to_number(new_value, 1), &len))
                 rb_raise(e_MathError, "Illegal value for appr");
             conf->appr = len;
+        }
+        break;
+
+    case CONFIG_CFAPPR:
+        old_value = INT2FIX(conf->cfappr);
+        if (args == 2) {
+            if (getlen(value_to_number(new_value, 1), &len))
+                rb_raise(e_MathError, "Illegal value for cfappr");
+            conf->cfappr = len;
         }
         break;
 

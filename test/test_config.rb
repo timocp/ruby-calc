@@ -26,6 +26,13 @@ class TestConfig < Minitest::Test
     assert_raises(Calc::MathError) { Calc.config(:appr, -1) }
   end
 
+  def test_cfappr
+    assert_equal Calc::Q("311/99"), Calc.pi.cfappr(100)
+    with_config :cfappr, 0, 1 do
+      assert_equal Calc::Q("22/7"), Calc.pi.cfappr(100)
+    end
+  end
+
   def test_display
     assert_equal "~0.33333333333333333333", Calc::Q(1,3).to_s
     with_config(:display, 20, 5) do
