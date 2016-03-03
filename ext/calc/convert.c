@@ -178,3 +178,28 @@ complex_to_value(COMPLEX * c)
     }
     return result;
 }
+
+/* get a long out of a ruby VALUE.  if it is fractional, or too big to be
+ * represented, raises an error */
+long
+value_to_long(VALUE v)
+{
+    long l;
+    NUMBER *q;
+
+    if (FIXNUM_P(v)) {
+        return FIX2LONG(v);
+    }
+    q = value_to_number(v, 0);
+    if (qisfrac(q)) {
+        qfree(q);
+        rb_raise(rb_eTypeError, "Fraction (%" PRIsVALUE ") can't be converted to long", v);
+    }
+    if (zgtmaxlong(q->num)) {
+        qfree(q);
+        rb_raise(rb_eTypeError, "%" PRIsVALUE " is too large to convert to long", v);
+    }
+    l = qtoi(q);
+    qfree(q);
+    return l;
+}

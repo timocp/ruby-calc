@@ -322,47 +322,14 @@ static VALUE
 rounding_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, long, long))
 {
     VALUE places, rnd, result;
-    NUMBER *qplaces, *qrnd;
-    long n, lplaces, lrnd;
+    long n, p, r;
     setup_math_error();
 
     n = rb_scan_args(argc, argv, "02", &places, &rnd);
-    if (n >= 1) {
-        if (FIXNUM_P(places)) {
-            lplaces = FIX2LONG(places);
-        }
-        else {
-            qplaces = value_to_number(places, 0);
-            if (qisfrac(qplaces)) {
-                qfree(qplaces);
-                rb_raise(e_MathError, "fractional places for round or bround");
-            }
-            lplaces = qtoi(qplaces);
-            qfree(qplaces);
-        }
-    }
-    else {
-        lplaces = 0;
-    }
-    if (n == 2) {
-        if (FIXNUM_P(rnd)) {
-            lrnd = FIX2LONG(rnd);
-        }
-        else {
-            qrnd = value_to_number(rnd, 0);
-            if (qisfrac(qrnd)) {
-                qfree(qrnd);
-                rb_raise(e_MathError, "fractional rounding flag for round or bround");
-            }
-            lrnd = qtoi(qrnd);
-            qfree(qrnd);
-        }
-    }
-    else {
-        lrnd = conf->round;
-    }
+    p = (n >= 1) ? value_to_long(places) : 0;
+    r = (n == 2) ? value_to_long(rnd) : conf->round;
     result = cq_new();
-    DATA_PTR(result) = (*f) (DATA_PTR(self), lplaces, lrnd);
+    DATA_PTR(result) = (*f) (DATA_PTR(self), p, r);
     return result;
 }
 

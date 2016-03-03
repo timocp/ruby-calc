@@ -22,6 +22,7 @@ extern NUMBER *value_to_number(VALUE arg, int string_allowed);
 extern VALUE number_to_calc_q(NUMBER * n);
 extern COMPLEX *value_to_complex(VALUE arg);
 extern VALUE complex_to_value(COMPLEX * c);
+extern long value_to_long(VALUE n);
 
 /* math_error.c */
 extern VALUE e_MathError;       /* Calc::MathError class (exception) */
