@@ -129,7 +129,7 @@ value_to_len(VALUE v, const char *name)
 
     q = value_to_number(v, 1);
     if (!qisint(q)) {
-        qfree(q)
+        qfree(q);
         rb_raise(e_MathError, "Non-integer value for %s", name);
     }
     if (zge31b(q->num)) {
