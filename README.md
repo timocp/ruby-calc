@@ -141,6 +141,7 @@ cbrt   | x [, b]    | cube root of x within accuracy b
 ceil   | x          | smallest integer greater than or equal to x
 cfappr | x [, e|n, r] | approximate x within accuracy e using continued fractions
 cfsim  | x [, r]    | simplify x using continued fractions
+char   | x          | character corresponding to integer x
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b
 cot    | x [, b]    | cotangent of x within accuracy b

@@ -832,4 +832,10 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("33/23"), Calc::Q("43/30").cfsim(1)
   end
 
+  def test_char
+    assert_equal "", Calc::Q(0).char
+    assert_equal "X", Calc::Q(88).char
+    assert_raises(Calc::MathError) { Calc::Q(88.5).char }
+  end
+
 end

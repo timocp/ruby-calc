@@ -28,6 +28,24 @@ module Calc
       self.class.new(bit?(y) ? 1 : 0)
     end
 
+    # Returns a string containing the character corresponding to a value
+    #
+    # Note that this is for compatibility with calc, normally in ruby you
+    # should just #chr
+    #
+    # @return [String]
+    # @example
+    #  Calc::Q(88).char #=> "X"
+    def char
+      raise MathError, "Non-integer for char" if !self.int?
+      raise MathError, "Out of range for char" unless self.between?(0,255)
+      if self.zero?
+        ""
+      else
+        self.to_i.chr
+      end
+    end
+
     # Gudermannian function
     # 
     # @param eps [Calc::Q] (optional) calculation accuracy
