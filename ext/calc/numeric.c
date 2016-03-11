@@ -32,8 +32,7 @@ cn_cmp(VALUE self, VALUE other)
     VALUE result;
     NUMBER *qself, *qother;
     COMPLEX *cself, *cother, *cresult;
-    int r = 0;
-    int i = 0;
+    int r, i;
     setup_math_error();
 
     if (CALC_Q_P(self)) {
@@ -47,6 +46,7 @@ cn_cmp(VALUE self, VALUE other)
         else {
             qother = value_to_number(other, 0);
             r = qrel(qself, qother);
+            i = 0;
             qfree(qother);
         }
     }
