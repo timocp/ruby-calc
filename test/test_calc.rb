@@ -98,6 +98,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :catalan
     check_delegation :ceil
     check_real_delegation :cfappr
+    check_real_delegation :cfsim
     check_delegation :cos
     check_delegation :cosh
     check_delegation :cot

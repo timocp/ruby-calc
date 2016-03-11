@@ -923,6 +923,43 @@ cq_cfappr(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Simplify using continued fractions
+ *
+ * If self is not an integer, returns either the nearest above or below number
+ * with denominator less than self.den.
+ *
+ * Rounding is controlled by rnd (default: Calc.config(:cfsim)).
+ *
+ * See "help cfsim" for details of rounding values.
+ *
+ * Repeated calls to cfsim give a sequence of good approximations with
+ * decreasing denominators and correspondinlgy decreasing accuracy.
+ *
+ * @return [Calc::Q]
+ * @param rnd [Integer] rounding flags (default: Calc.config(:cfsim))
+ * @example
+ *   x = Calc.pi; while (!x.int?) do; x = x.cfsim; puts x.to_s(:frac) if x.den < 1e6; end
+ *   1146408/364913
+ *   312689/99532
+ *   104348/33215
+ *   355/113
+ *   22/7
+ *   3
+ */
+static VALUE
+cq_cfsim(int argc, VALUE * argv, VALUE self)
+{
+    VALUE rnd, result;
+    long n, R;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "01", &rnd);
+    R = (n >= 1) ? value_to_long(rnd) : conf->cfsim;
+    result = cq_new();
+    DATA_PTR(result) = qcfsim(DATA_PTR(self), R);
+    return result;
+}
+
 /* Cosine
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1528,6 +1565,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "bround", cq_bround, -1);
     rb_define_method(cQ, "catalan", cq_catalan, 0);
     rb_define_method(cQ, "cfappr", cq_cfappr, -1);
+    rb_define_method(cQ, "cfsim", cq_cfsim, -1);
     rb_define_method(cQ, "cos", cq_cos, -1);
     rb_define_method(cQ, "cosh", cq_cosh, -1);
     rb_define_method(cQ, "cot", cq_cot, -1);

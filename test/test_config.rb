@@ -33,6 +33,13 @@ class TestConfig < Minitest::Test
     end
   end
 
+  def test_cfsim
+    assert_equal Calc::Q("10/7"), Calc::Q("43/30").cfsim
+    with_config :cfsim, 8, 16 do
+      assert_equal Calc::Q("33/23"), Calc::Q("43/30").cfsim
+    end
+  end
+
   def test_display
     assert_equal "~0.33333333333333333333", Calc::Q(1,3).to_s
     with_config(:display, 20, 5) do
