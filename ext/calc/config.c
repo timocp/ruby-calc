@@ -121,17 +121,26 @@ value_to_config(VALUE v)
     return value_to_nametype_long(v, configs);
 }
 
-static int
-getlen(NUMBER * q, LEN * lp)
+static LEN
+value_to_len(VALUE v, const char *name)
 {
-    if (!qisint(q))
-        return 1;
-    if (zge31b(q->num))
-        return 2;
-    *lp = ztoi(q->num);
-    if (*lp < 0)
-        return -1;
-    return 0;
+    NUMBER *q;
+    LEN len = 0;
+
+    q = value_to_number(v, 1);
+    if (!qisint(q)) {
+        qfree(q)
+        rb_raise(e_MathError, "Non-integer value for %s", name);
+    }
+    if (zge31b(q->num)) {
+        qfree(q);
+        rb_raise(e_MathError, "Integer too big for %s", name);
+    }
+    len = ztoi(q->num);
+    qfree(q);
+    if (len < 0)
+        rb_raise(e_MathError, "Negative value for %s", name);
+    return len;
 }
 
 /* Unfortunately in this function we can't use the libcalc method setconfig()
@@ -147,7 +156,6 @@ VALUE
 calc_config(int argc, VALUE * argv, VALUE klass)
 {
     VALUE name, new_value, old_value;
-    LEN len = 0;
     int args;
     setup_math_error();
 
@@ -175,47 +183,32 @@ calc_config(int argc, VALUE * argv, VALUE klass)
 
     case CONFIG_SQRT:
         old_value = INT2FIX(conf->sqrt);
-        if (args == 2) {
-            if (getlen(value_to_number(new_value, 1), &len))
-                rb_raise(e_MathError, "Illegal value for sqrt");
-            conf->sqrt = len;
-        }
+        if (args == 2)
+            conf->sqrt = value_to_len(new_value, "sqrt");
         break;
 
     case CONFIG_APPR:
         old_value = INT2FIX(conf->appr);
-        if (args == 2) {
-            if (getlen(value_to_number(new_value, 1), &len))
-                rb_raise(e_MathError, "Illegal value for appr");
-            conf->appr = len;
-        }
+        if (args == 2)
+            conf->appr = value_to_len(new_value, "appr");
         break;
 
     case CONFIG_CFAPPR:
         old_value = INT2FIX(conf->cfappr);
-        if (args == 2) {
-            if (getlen(value_to_number(new_value, 1), &len))
-                rb_raise(e_MathError, "Illegal value for cfappr");
-            conf->cfappr = len;
-        }
+        if (args == 2)
+            conf->cfappr = value_to_len(new_value, "cfappr");
         break;
 
     case CONFIG_CFSIM:
         old_value = INT2FIX(conf->cfsim);
-        if (args == 2) {
-            if (getlen(value_to_number(new_value, 1), &len))
-                rb_raise(e_MathError, "Illegal value for cfsim");
-            conf->cfsim = len;
-        }
+        if (args == 2)
+            conf->cfsim = value_to_len(new_value, "cfsim");
         break;
 
     case CONFIG_ROUND:
         old_value = INT2FIX(conf->round);
-        if (args == 2) {
-            if (getlen(value_to_number(new_value, 1), &len))
-                rb_raise(e_MathError, "Illegal value for round");
-            conf->round = len;
-        }
+        if (args == 2)
+            conf->round = value_to_len(new_value, "round");
         break;
 
     default:
