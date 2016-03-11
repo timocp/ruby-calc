@@ -362,4 +362,18 @@ class TestC < MiniTest::Test
     assert_complex_parts [Calc::Q(".125"), Calc::Q("-.25")], c.bround(3,0)
   end
 
+  def test_cmp
+    assert_complex_parts [-1,-1], Calc::C(0,-4).cmp(5)
+    assert_complex_parts [1,-1], Calc::C(0,-4).cmp(-5)
+    assert_complex_parts [0,-1], Calc::C(0,3).cmp(Calc::C(0,4))
+    assert_rational_and_equal 0, Calc::C(0,4).cmp(Calc::C(0,4))
+    assert_complex_parts [0,1], Calc::C(0,5).cmp(Calc::C(0,4))
+    assert_complex_parts [-1,1], Calc::C(3,4).cmp(5)
+    assert_complex_parts [1,1], Calc::C(3,4).cmp(-5)
+    assert_rational_and_equal 0, Calc::C(3,4).cmp(Calc::C(3,4))
+    assert_complex_parts [0,1], Calc::C(3,4).cmp(Calc::C(3,-4))
+    assert_complex_parts [1,1], Calc::C(3,4).cmp(Calc::C(2,3))
+    assert_complex_parts [1,1], Calc::C(3,4).cmp(Calc::C(-4,-5))
+  end
+
 end

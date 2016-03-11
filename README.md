@@ -142,6 +142,7 @@ ceil   | x          | smallest integer greater than or equal to x
 cfappr | x [, e|n, r] | approximate x within accuracy e using continued fractions
 cfsim  | x [, r]    | simplify x using continued fractions
 char   | x          | character corresponding to integer x
+cmp    | x, y       | compare values returning -1, 0 or 1 real or complex
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b
 cot    | x [, b]    | cotangent of x within accuracy b

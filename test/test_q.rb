@@ -838,4 +838,14 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(88.5).char }
   end
 
+  def test_cmp
+    assert_rational_and_equal -1, Calc::Q(3).cmp(4)
+    assert_rational_and_equal 1, Calc::Q(4).cmp(3)
+    assert_rational_and_equal 0, Calc::Q(4).cmp(4)
+    assert_complex_parts [1,-1], Calc::Q(3).cmp(Calc::C(0,4))
+    assert_complex_parts [1,-1], Calc::Q(4).cmp(Calc::C(0,4))
+    assert_complex_parts [1,-1], Calc::Q(5).cmp(Calc::C(0,4))
+    assert_complex_parts [-1,-1], Calc::Q(-5).cmp(Calc::C(0,4))
+  end
+
 end

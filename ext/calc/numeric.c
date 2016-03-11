@@ -6,6 +6,83 @@
  */
 VALUE cNumeric;
 
+NUMBER *
+sign_of_int(int r)
+{
+    return (r > 0) ? qlink(&_qone_) : (r < 0) ? qlink(&_qnegone_) : qlink(&_qzero_);
+}
+
+/* Compare 2 values.
+ *
+ * If x and y are both real, returns -1, 0 or 1 according as x < y, x == y or
+ * x > y.
+ *
+ * If one or both of x and y are complex, returns a complex number composed
+ * of the real and imaginary parts being compared individually as above.
+ *
+ * @param y [Numeric] value to compare self to
+ * @example
+ *  Calc::Q(3).cmp(4)     #=> Calc::Q(-1)
+ *  Calc::Q(3).cmp(4+4i)  #=> Calc::C(-1-1i)
+ *  Calc::C(3i).cmp(3+3i) #=> Calc::Q(-1)
+ */
+static VALUE
+cn_cmp(VALUE self, VALUE other)
+{
+    VALUE result;
+    NUMBER *qself, *qother;
+    COMPLEX *cself, *cother, *cresult;
+    int r = 0;
+    int i = 0;
+    setup_math_error();
+
+    if (CALC_Q_P(self)) {
+        qself = DATA_PTR(self);
+        if (CALC_C_P(other) || TYPE(other) == T_COMPLEX) {
+            cother = value_to_complex(other);
+            r = qrel(qself, cother->real);
+            i = qrel(&_qzero_, cother->imag);
+            comfree(cother);
+        }
+        else {
+            qother = value_to_number(other, 0);
+            r = qrel(qself, qother);
+            qfree(qother);
+        }
+    }
+    else if (CALC_C_P(self)) {
+        cself = DATA_PTR(self);
+        if (CALC_C_P(other) || TYPE(other) == T_COMPLEX) {
+            cother = value_to_complex(other);
+            r = qrel(cself->real, cother->real);
+            i = qrel(cself->imag, cother->imag);
+        }
+        else {
+            qother = value_to_number(other, 0);
+            r = qrel(cself->real, qother);
+            i = qrel(cself->imag, &_qzero_);
+            qfree(qother);
+        }
+    }
+    else {
+        rb_raise(rb_eTypeError, "receiver must be Calc::Q or Calc::C");
+    }
+    if (i == 0) {
+        result = cq_new();
+        DATA_PTR(result) = sign_of_int(r);
+    }
+    else {
+        result = cc_new();
+        cresult = comalloc();
+        qfree(cresult->real);
+        cresult->real = sign_of_int(r);
+        qfree(cresult->imag);
+        cresult->imag = sign_of_int(i);
+        DATA_PTR(result) = cresult;
+    }
+    return result;
+}
+
 /* Square root
  *
  * Calculates the square root of self (rational or complex).  If eps
@@ -75,5 +152,6 @@ void
 define_calc_numeric(VALUE m)
 {
     cNumeric = rb_define_class_under(m, "Numeric", rb_cData);
+    rb_define_method(cNumeric, "cmp", cn_cmp, 1);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
 }
