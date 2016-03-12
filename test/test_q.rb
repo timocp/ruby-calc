@@ -848,4 +848,17 @@ class TestQ < MiniTest::Test
     assert_complex_parts [-1,-1], Calc::Q(-5).cmp(Calc::C(0,4))
   end
 
+  def test_comb
+    assert_rational_and_equal 35, Calc::Q(7).comb(3)
+    assert_rational_and_equal 35, Calc::Q(7).comb(4)
+    assert_rational_and_equal 21, Calc::Q(7).comb(5)
+    assert_rational_and_equal 7, Calc::Q(7).comb(1)
+    assert_rational_and_equal 1, Calc::Q(3).comb(0)
+    assert_rational_and_equal 1, Calc::Q(0).comb(0)
+    x = Calc::Q(2).power(31)
+    assert_rational_and_equal 2305843010287435776, (x + 1).comb(x - 1)
+    assert_rational_and_equal Calc::Q("715/16"), Calc::Q("7.5").comb(3)
+    assert_raises(Calc::MathError) { Calc::Q(7).comb(0.5) }
+  end
+
 end

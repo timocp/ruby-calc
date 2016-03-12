@@ -83,6 +83,92 @@ cn_cmp(VALUE self, VALUE other)
     return result;
 }
 
+/* combinatorial number
+ *
+ * Returns the number of combinations in which `other` things may be chosen
+ * from `self` items ignoring order.
+ *
+ * @param other [Integer]
+ * @return [Calc::Q,Calc::C]
+ * @raise [MathError] if `other` is too large or not a positive integer
+ * @example
+ *  Calc::Q(5).comb(3)     #=> Calc::Q(10)
+ *  Calc::Q(60).comb(30)   #=> Calc::Q(118264581564861424)
+ *  Calc::Q("5.1").comb(5) #=> Calc::Q(1.24780425)
+ *  Calc::C(8,9).comb(3)   #=> Calc::C(-227.5+97.5i)
+ */
+static VALUE
+cn_comb(VALUE self, VALUE other)
+{
+    VALUE result;
+    NUMBER *qother, *qresult, *qdiv, *qtmp;
+    COMPLEX *cresult, *ctmp1, *ctmp2;
+    long n;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    if (qisfrac(qother)) {
+        qfree(qother);
+        rb_raise(e_MathError, "non-integer argument to comb");
+    }
+    if (qisneg(qother)) {
+        qfree(qother);
+        result = cq_new();
+        DATA_PTR(result) = qlink(&_qzero_);
+        return result;
+    }
+    else if (qiszero(qother)) {
+        qfree(qother);
+        result = cq_new();
+        DATA_PTR(result) = qlink(&_qone_);
+        return result;
+    }
+    else if (qisone(qother)) {
+        qfree(qother);
+        return self;
+    }
+    else if (CALC_Q_P(self)) {
+        qresult = qcomb(DATA_PTR(self), qother);
+        qfree(qother);
+        if (qresult == NULL) {
+            rb_raise(e_MathError, "argument too large for comb");
+        }
+        result = cq_new();
+        DATA_PTR(result) = qresult;
+        return result;
+    }
+    /* if here, self is a Calc::C and qother is integer > 1.  algorithm based
+     * on calc's func.c, but only for COMPLEX*. */
+    if (zge24b(qother->num)) {
+        qfree(qother);
+        rb_raise(e_MathError, "argument too large for comb");
+    }
+    n = qtoi(qother);
+    cresult = clink((COMPLEX *) DATA_PTR(self));
+    ctmp1 = c_addq((COMPLEX *) DATA_PTR(self), &_qnegone_);
+    qdiv = qlink(&_qtwo_);
+    n--;
+    for (;;) {
+        ctmp2 = c_mul(cresult, ctmp1);
+        comfree(cresult);
+        cresult = c_divq(ctmp2, qdiv);
+        comfree(ctmp2);
+        if (--n == 0 || ciszero(cresult)) {
+            comfree(ctmp1);
+            qfree(qdiv);
+            result = cc_new();
+            DATA_PTR(result) = cresult;
+            return result;
+        }
+        ctmp2 = c_addq(ctmp1, &_qnegone_);
+        comfree(ctmp1);
+        ctmp1 = ctmp2;
+        qtmp = qinc(qdiv);
+        qfree(qdiv);
+        qdiv = qtmp;
+    }
+}
+
 /* Square root
  *
  * Calculates the square root of self (rational or complex).  If eps
@@ -153,5 +239,6 @@ define_calc_numeric(VALUE m)
 {
     cNumeric = rb_define_class_under(m, "Numeric", rb_cData);
     rb_define_method(cNumeric, "cmp", cn_cmp, 1);
+    rb_define_method(cNumeric, "comb", cn_comb, 1);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
 }

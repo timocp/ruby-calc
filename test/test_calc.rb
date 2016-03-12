@@ -101,6 +101,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :cfsim
     check_real_delegation :char
     check_delegation :cmp
+    check_delegation :comb
     check_delegation :cos
     check_delegation :cosh
     check_delegation :cot

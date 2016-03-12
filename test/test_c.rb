@@ -376,4 +376,8 @@ class TestC < MiniTest::Test
     assert_complex_parts [1,1], Calc::C(3,4).cmp(Calc::C(-4,-5))
   end
 
+  def test_comb
+    assert_complex_parts [Calc::Q("49/2"), Calc::Q("-329/6")], Calc::C(0,7).comb(3)
+  end
+
 end

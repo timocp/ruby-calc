@@ -143,6 +143,7 @@ cfappr | x [, e|n, r] | approximate x within accuracy e using continued fraction
 cfsim  | x [, r]    | simplify x using continued fractions
 char   | x          | character corresponding to integer x
 cmp    | x, y       | compare values returning -1, 0 or 1 real or complex
+comb   | x, y       | combinatorial number a!/b!(a-b)!
 cos    | x [, b]    | cosine of x within accuracy b
 cosh   | x [, b]    | hyperbolic cosine of x within accuracy b
 cot    | x [, b]    | cotangent of x within accuracy b
