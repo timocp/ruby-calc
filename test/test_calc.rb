@@ -1,6 +1,8 @@
 require 'minitest_helper'
 
 class TestCalc < Minitest::Test
+  DEBUG = ENV.fetch('DEBUG_DELEGATIONS', false)
+
   def test_that_it_has_a_version_number
     refute_nil ::Calc::VERSION
   end
@@ -40,8 +42,11 @@ class TestCalc < Minitest::Test
     assert_respond_to Calc, m
     extra_args = [ruby_n] * extra_args_count
     begin
+      print "Checking delegation #{ calc_n.inspect }.#{ m }(#{ extra_args.join(", ") }) => " if DEBUG
       expected = calc_n.__send__(*([m] + extra_args))
+      puts expected.inspect if DEBUG
     rescue => e
+      puts e.inspect if DEBUG
       refute_instance_of NoMethodError, e
       expected_exception = e.class
     end
@@ -55,7 +60,7 @@ class TestCalc < Minitest::Test
   end
 
   def check_real_delegation(m, arg_count = 1)
-    [-2, -1, 0, 0.5, 1, 2, "10"].map do |n|
+    [-2, -1, 0, 0.5, 1, 2, 10].map do |n|
       check_delegation_value(m, n, Calc::Q(n), arg_count - 1)
     end
   end
@@ -93,15 +98,15 @@ class TestCalc < Minitest::Test
     check_real_delegation :atan2, 2
     check_delegation :atanh
     check_real_delegation :bernoulli
-    check_real_delegation :bit
+    check_real_delegation :bit, 2
     check_delegation :bround
     check_real_delegation :catalan
     check_delegation :ceil
     check_real_delegation :cfappr
     check_real_delegation :cfsim
     check_real_delegation :char
-    check_delegation :cmp
-    check_delegation :comb
+    check_delegation :cmp, 2
+    check_delegation :comb, 2
     check_delegation :cos
     check_delegation :cosh
     check_delegation :cot
