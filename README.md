@@ -166,6 +166,7 @@ isreal | x          | whether a value is real (also: #real?)
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 num    | x          | numerator of x
+perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b
 power  | x, y [, b] | x raised to the power of y within accuracy b
 root   | x, n [, b] | nth root of x within accuracy b

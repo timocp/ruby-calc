@@ -1240,6 +1240,31 @@ cq_oddp(VALUE self)
     return qisodd(qself) ? Qtrue : Qfalse;
 }
 
+/* Permutation number
+ *
+ * Returns the number of permutations in which `other` things may be chosen
+ * from `self` items where order in which they are chosen matters.
+ *
+ * @return [Calc::Q]
+ * @param other [Integer]
+ * @example
+ *  Calc::Q(7).perm(3) #=> Calc::Q(210)
+ */
+static VALUE
+cq_perm(VALUE self, VALUE other)
+{
+    VALUE result;
+    NUMBER *qresult, *qother;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    qresult = qperm(DATA_PTR(self), qother);
+    qfree(qother);
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Evaluates a numeric power
  *
  * @param y [Numeric] power to raise by
@@ -1584,6 +1609,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "log", cq_log, -1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
+    rb_define_method(cQ, "perm", cq_perm, 1);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "root", cq_root, -1);

@@ -861,4 +861,14 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(7).comb(0.5) }
   end
 
+  def test_perm
+    assert_rational_and_equal 210, Calc::Q(7).perm(3)
+    assert_rational_and_equal 840, Calc::Q(7).perm(4)
+    assert_rational_and_equal 2520, Calc::Q(7).perm(5)
+    assert_rational_and_equal 1, Calc::Q(3).perm(0)
+    assert_rational_and_equal 1, Calc::Q(0).perm(0)
+    assert_rational_and_equal 9903520314283042197045510144, (Calc::Q(2).power(31) + 1).perm(3)
+    assert_raises(Calc::MathError) { Calc::Q(7).comb(0.5) }
+  end
+
 end
