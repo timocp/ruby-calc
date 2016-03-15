@@ -871,4 +871,8 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(7).comb(0.5) }
   end
 
+  def test_conj
+    assert_rational_and_equal 3, Calc::Q(3).conj
+  end
+
 end

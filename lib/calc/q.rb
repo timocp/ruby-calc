@@ -46,6 +46,17 @@ module Calc
       end
     end
 
+    # Complex conjugate
+    #
+    # As the conjugate of real x is x, this method returns self.
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(3).conj #=> 3
+    def conj
+      self
+    end
+
     # Gudermannian function
     # 
     # @param eps [Calc::Q] (optional) calculation accuracy

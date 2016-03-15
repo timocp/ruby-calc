@@ -107,6 +107,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :char
     check_delegation :cmp, 2
     check_delegation :comb, 2
+    check_delegation :conj
     check_delegation :cos
     check_delegation :cosh
     check_delegation :cot

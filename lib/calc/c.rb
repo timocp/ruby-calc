@@ -59,6 +59,18 @@ module Calc
       end
     end
 
+    # Complex conjugate
+    #
+    # Returns the complex conjugate of self (same real part and same imaginary
+    # part but with opposite sign)
+    #
+    # @return [Calc::C]
+    # @example
+    #  Calc::C(3,3).conj #=> Calc::C(3-3i)
+    def conj
+      Calc::C.new(re, -im)
+    end
+
     # Trigonometric cotangent
     #
     # @param eps [Calc::Q] (optional) calculation accuracy
