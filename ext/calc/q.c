@@ -1060,6 +1060,49 @@ cq_den(VALUE self)
     return result;
 }
 
+/* Returns the digit at the specified position on decimal or any other base.
+ *
+ * @return [Calc::Q]
+ * @param n [Integer] index. negative indices are to the right of any decimal point
+ * @param b [Integer] (optional) base >= 2 (default 10)
+ * @example
+ *  Calc::Q("123456.789").digit(3)
+ *  Calc::Q("123456.789").digit(-3)
+ */
+static VALUE
+cq_digit(int argc, VALUE * argv, VALUE self)
+{
+    VALUE pos, base, result;
+    NUMBER *qpos, *qbase, *qresult;
+    long n;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "11", &pos, &base);
+    qpos = value_to_number(pos, 1);
+    if (qisfrac(qpos)) {
+        qfree(qpos);
+        rb_raise(e_MathError, "non-integer position for digit");
+    }
+    if (n >= 2) {
+        qbase = value_to_number(base, 1);
+        if (qisfrac(qbase)) {
+            qfree(qpos);
+            qfree(qbase);
+            rb_raise(e_MathError, "non-integer base for digit");
+        }
+    }
+    qresult = qdigit(DATA_PTR(self), qpos->num, n >= 2 ? qbase->num : _ten_);
+    qfree(qpos);
+    if (n >= 2)
+        qfree(qbase);
+    if (qresult == NULL) {
+        rb_raise(e_MathError, "Invalid arguments for digit");
+    }
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Returns true if the number is an even integer
  *
  * @return [Boolean]
@@ -1598,6 +1641,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "csc", cq_csc, -1);
     rb_define_method(cQ, "csch", cq_csch, -1);
     rb_define_method(cQ, "den", cq_den, 0);
+    rb_define_method(cQ, "digit", cq_digit, -1);
     rb_define_method(cQ, "even?", cq_evenp, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);

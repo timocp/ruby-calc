@@ -152,6 +152,7 @@ coth   | x [, b]    | hyperbolic cotangent of x within accuracy b
 csc    | x [, b]    | cosecant of x within accuracy b
 csch   | x [, b]    | hyperbolic cosecant of x within accuracy b
 den    | x          | denominator of x
+digit  | x, n [, b] | nth digit of x in base b
 exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
 fib    | z          | zth Fibonacci number

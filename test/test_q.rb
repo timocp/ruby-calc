@@ -875,4 +875,38 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 3, Calc::Q(3).conj
   end
 
+  def test_digit
+    a = Calc::Q("123456.789")
+    assert_rational_and_equal 0, a.digit(6)
+    assert_rational_and_equal 1, a.digit(5)
+    assert_rational_and_equal 2, a.digit(4)
+    assert_rational_and_equal 3, a.digit(3)
+    assert_rational_and_equal 4, a.digit(2)
+    assert_rational_and_equal 5, a.digit(1)
+    assert_rational_and_equal 6, a.digit(0)
+    assert_rational_and_equal 7, a.digit(-1)
+    assert_rational_and_equal 8, a.digit(-2)
+    assert_rational_and_equal 9, a.digit(-3)
+    assert_rational_and_equal 0, a.digit(-4)
+    assert_rational_and_equal 0, a.digit(-5)
+    assert_rational_and_equal 0, a.digit(-6)
+    assert_rational_and_equal 0, a.digit(3, 100)
+    assert_rational_and_equal 12, a.digit(2, 100)
+    assert_rational_and_equal 34, a.digit(1, 100)
+    assert_rational_and_equal 56, a.digit(0, 100)
+    assert_rational_and_equal 78, a.digit(-1, 100)
+    assert_rational_and_equal 90, a.digit(-2, 100)
+    assert_rational_and_equal 0, a.digit(-3, 100)
+    b = Calc::Q("10/7")
+    assert_rational_and_equal 0, b.digit(1)
+    assert_rational_and_equal 1, b.digit(0)
+    assert_rational_and_equal 4, b.digit(-1)
+    assert_rational_and_equal 2, b.digit(-2)
+    assert_rational_and_equal 8, b.digit(-3)
+    assert_rational_and_equal 5, b.digit(-4)
+    assert_rational_and_equal 7, b.digit(-5)
+    assert_rational_and_equal 1, b.digit(-6)
+    assert_rational_and_equal 428571, b.digit("-7e1000", "1e6")
+  end
+
 end
