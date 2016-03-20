@@ -924,4 +924,14 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 15, Calc::Q(21791).digits(2)
   end
 
+  def test_euler
+    assert_rational_and_equal 1, Calc::Q(0).euler
+    assert_rational_and_equal 0, Calc::Q(1).euler
+    assert_rational_and_equal -1, Calc::Q(2).euler
+    assert_rational_and_equal 0, Calc::Q(3).euler
+    assert_rational_and_equal 5, Calc::Q(4).euler
+    assert_rational_and_equal 0, Calc::Q(5).euler
+    assert_rational_and_equal -61, Calc::Q(6).euler
+  end
+
 end

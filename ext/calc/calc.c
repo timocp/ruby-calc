@@ -4,14 +4,27 @@
  * 
  * @return [nil]
  * @example
- *  Calc::Q(100).bernoulli  #=> Calc::Q(...)
- *  Calc::Q.freebernoulli   #=> nil
+ *  Calc.freebernoulli  #=> nil
  */
 static VALUE
 calc_freebernoulli(VALUE self)
 {
     setup_math_error();
     qfreebern();
+    return Qnil;
+}
+
+/* Frees memory used to store calculated euler numbers.
+ *
+ * @return [nil]
+ * @example
+ *  Calc.freeeuler  #=> nil
+ */
+static VALUE
+calc_freeeuler(VALUE self)
+{
+    setup_math_error();
+    qfreeeuler();
     return Qnil;
 }
 
@@ -91,6 +104,7 @@ Init_calc(void)
     m = rb_define_module("Calc");
     rb_define_module_function(m, "config", calc_config, -1);
     rb_define_module_function(m, "freebernoulli", calc_freebernoulli, 0);
+    rb_define_module_function(m, "freeeuler", calc_freeeuler, 0);
     rb_define_module_function(m, "pi", calc_pi, -1);
     rb_define_module_function(m, "polar", calc_polar, -1);
     define_calc_math_error(m);

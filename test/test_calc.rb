@@ -36,6 +36,10 @@ class TestCalc < Minitest::Test
     assert_complex_parts [Calc::Q("0.75"), Calc::Q("-0.25")], Calc.avg(1, Complex(0,1), 2, Complex(0,-2))
   end
 
+  def test_freeeuler
+    assert_nil Calc.freeeuler
+  end
+
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
 
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)
@@ -117,6 +121,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :den
     check_real_delegation :digit, 2
     check_real_delegation :digits
+    check_real_delegation :euler
     check_real_delegation :fact
     check_real_delegation :fib
     check_delegation :floor

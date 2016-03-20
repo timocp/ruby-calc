@@ -1140,6 +1140,40 @@ cq_digits(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Euler number
+ *
+ * Returns the euler number of a specified index.
+ *
+ * Considerable runtime and memory are required for calculating the euler
+ * number for large even indices.  Calculated values are stored in a table so
+ * that later calls are executed quickly.  This memory can be freed with
+ * `Calc.freeeuler`.
+ *
+ * @example
+ *  Calc::Q(18).euler   #=> Calc::Q(-2404879675441)
+ *  Calc::Q(19).euler   #=> Calc::Q(0)
+ *  Calc::Q(20).euler   #=> Calc::Q(370371188237525)
+ */
+static VALUE
+cq_euler(VALUE self)
+{
+    VALUE result;
+    NUMBER *qself, *qresult;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "non-integer value for euler");
+    }
+    qresult = qeuler(qself->num);
+    if (qresult == NULL) {
+        rb_raise(e_MathError, "number too big or out of memory for euler");
+    }
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Returns true if the number is an even integer
  *
  * @return [Boolean]
@@ -1680,6 +1714,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "den", cq_den, 0);
     rb_define_method(cQ, "digit", cq_digit, -1);
     rb_define_method(cQ, "digits", cq_digits, -1);
+    rb_define_method(cQ, "euler", cq_euler, 0);
     rb_define_method(cQ, "even?", cq_evenp, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
