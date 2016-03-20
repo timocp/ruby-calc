@@ -1091,9 +1091,12 @@ cq_digit(int argc, VALUE * argv, VALUE self)
             rb_raise(e_MathError, "non-integer base for digit");
         }
     }
-    qresult = qdigit(DATA_PTR(self), qpos->num, n >= 2 ? qbase->num : _ten_);
+    else {
+        qbase = NULL;
+    }
+    qresult = qdigit(DATA_PTR(self), qpos->num, qbase ? qbase->num : _ten_);
     qfree(qpos);
-    if (n >= 2)
+    if (qbase)
         qfree(qbase);
     if (qresult == NULL) {
         rb_raise(e_MathError, "Invalid arguments for digit");
