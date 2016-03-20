@@ -1066,8 +1066,8 @@ cq_den(VALUE self)
  * @param n [Integer] index. negative indices are to the right of any decimal point
  * @param b [Integer] (optional) base >= 2 (default 10)
  * @example
- *  Calc::Q("123456.789").digit(3)
- *  Calc::Q("123456.789").digit(-3)
+ *  Calc::Q("123456.789").digit(3)  #=> Calc::Q(3)
+ *  Calc::Q("123456.789").digit(-3) #=> Calc::Q(9)
  */
 static VALUE
 cq_digit(int argc, VALUE * argv, VALUE self)
