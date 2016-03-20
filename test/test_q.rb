@@ -909,4 +909,19 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 428571, b.digit("-7e1000", "1e6")
   end
 
+  def test_digits
+    assert_rational_and_equal 3, Calc::Q(100).digits
+    assert_rational_and_equal 5, Calc::Q(23209).digits
+    assert_rational_and_equal 22, Calc::Q(2).power(72).digits
+    assert_rational_and_equal 1, Calc::Q(0).digits
+    assert_rational_and_equal 1, Calc::Q(1).digits
+    assert_rational_and_equal 1, Calc::Q(-1).digits
+    assert_rational_and_equal 4, Calc::Q(-1234).digits
+    assert_rational_and_equal 2, Calc::Q("12.3456").digits
+    assert_rational_and_equal 3, Calc::Q("107.207").digits
+    assert_rational_and_equal 463, (Calc::Q(17).power(463) - 1).digits(17)
+    assert_rational_and_equal 3, Calc::Q(10000).digits(100)
+    assert_rational_and_equal 15, Calc::Q(21791).digits(2)
+  end
+
 end

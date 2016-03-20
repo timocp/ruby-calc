@@ -1103,6 +1103,40 @@ cq_digit(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Returns the number of digits of the integral part of self in decimal or another base
+ *
+ * @return [Calc::Q]
+ * @param b [Integer] (optional) base >= 2 (default 10)
+ * @example
+ *  Calc::Q("12.3456").digits   #=> Calc::Q(2)
+ *  Calc::Q(-1234).digits       #=> Calc::Q(4)
+ *  Calc::Q(0).digits           #=> Calc::Q(1)
+ *  Calc::Q("-0.123").digits    #=> Calc::Q(1)
+ */
+static VALUE
+cq_digits(int argc, VALUE * argv, VALUE self)
+{
+    VALUE base, result;
+    NUMBER *qbase, *qresult;
+    long n;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "01", &base);
+    if (n >= 1) {
+        qbase = value_to_number(base, 1);
+        if (qisfrac(qbase) || qiszero(qbase) || qisunit(qbase)) {
+            qfree(qbase);
+            rb_raise(e_MathError, "base must be integer greater than 1 for digits");
+        }
+    }
+    qresult = itoq(qdigits(DATA_PTR(self), n >= 1 ? qbase->num : _ten_));
+    if (n >= 1)
+        qfree(qbase);
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Returns true if the number is an even integer
  *
  * @return [Boolean]
@@ -1642,6 +1676,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "csch", cq_csch, -1);
     rb_define_method(cQ, "den", cq_den, 0);
     rb_define_method(cQ, "digit", cq_digit, -1);
+    rb_define_method(cQ, "digits", cq_digits, -1);
     rb_define_method(cQ, "even?", cq_evenp, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);

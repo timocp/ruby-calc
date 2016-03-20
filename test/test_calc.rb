@@ -116,6 +116,7 @@ class TestCalc < Minitest::Test
     check_delegation :csch
     check_real_delegation :den
     check_real_delegation :digit, 2
+    check_real_delegation :digits
     check_real_delegation :fact
     check_real_delegation :fib
     check_delegation :floor
