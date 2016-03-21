@@ -158,6 +158,7 @@ estr   | x          | text representation of a value
 euler  | n          | nth euler number
 exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
+factor | x [, limit]| smallest prime factor of x not exceeding limit
 fib    | z          | zth Fibonacci number
 freebernoulli |     | free memory storing calculated bernoulli numbers
 freeeuler |         | free memory storing calculated euler numbers
@@ -391,6 +392,7 @@ These builtins work this way:
 ### Other Differences
 
 * `estr` return format is different, intended to be eval'd by ruby rather than calc
+* the "error" argument of `factor` is not implemented, mainly because I don't understand the purpose of it.  errors in `factor` will always raise exceptions
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that
 * Not all configuration items are implemented (and only ones related to maths will be)
 * You can't define/call calc functions (ie, eval() is not implemented)

@@ -125,6 +125,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :euler
     check_delegation :exp
     check_real_delegation :fact
+    check_real_delegation :factor
     check_real_delegation :fib
     check_delegation :floor
     check_delegation :gd

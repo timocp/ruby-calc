@@ -1222,6 +1222,61 @@ cq_fact(VALUE self)
     return result;
 }
 
+/* Smallest prime factor not exceeding specified limit
+ *
+ * Ignoring signs of self and limit; if self has a prime factor less than or
+ * equal to limit, then returns the smallest such factor.
+ *
+ * @param limit [Numeric] (optional) limit, defaults to 2^32-1
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self or limit are not integers
+ * @raise [Calc::MathError] if limit is >= 2^32
+ * @example
+ *  Calc::Q(2).power(32).+(1).factor #=> Calc::Q(641)
+ */
+static VALUE
+cq_factor(int argc, VALUE * argv, VALUE self)
+{
+    VALUE limit, result;
+    NUMBER *qself, *qlimit, *qfactor;
+    ZVALUE zlimit;
+    long a;
+    int res;
+    setup_math_error();
+
+    a = rb_scan_args(argc, argv, "01", &limit);
+    if (a >= 1) {
+        qlimit = value_to_number(limit, 0);
+        if (qisfrac(qlimit)) {
+            qfree(qlimit);
+            rb_raise(e_MathError, "non-integer limit for factor");
+        }
+        zcopy(qlimit->num, &zlimit);
+        qfree(qlimit);
+    }
+    else {
+        /* default limit is 2^32-1 */
+        utoz((FULL) 0xffffffff, &zlimit);
+    }
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        zfree(zlimit);
+        rb_raise(e_MathError, "non-integer for factor");
+    }
+
+    qfactor = qalloc();
+    res = zfactor(qself->num, zlimit, &(qfactor->num));
+    if (res < 0) {
+        qfree(qfactor);
+        zfree(zlimit);
+        rb_raise(e_MathError, "limit >= 2^32 for factor");
+    }
+    zfree(zlimit);
+    result = cq_new();
+    DATA_PTR(result) = qfactor;
+    return result;
+}
+
 /* Returns the Fibonacci number with index self.
  *
  * @return [Calc::Q]
@@ -1718,6 +1773,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "even?", cq_evenp, 0);
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
+    rb_define_method(cQ, "factor", cq_factor, -1);
     rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "int?", cq_intp, 0);
