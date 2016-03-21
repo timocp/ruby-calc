@@ -384,4 +384,13 @@ class TestC < MiniTest::Test
     assert_complex_parts [3, -4], Calc::C(3,4).conj
   end
 
+  def test_estr
+    assert_equal "Calc::C(0)", Calc::C(0).estr
+    assert_equal "Calc::C(4)", Calc::C(4).estr
+    assert_equal "Calc::C(-4)", Calc::C(-4).estr
+    assert_equal "Calc::C(0,-4)", Calc::C(0,-4).estr
+    assert_equal "Calc::C(Calc::Q(-1,2),2)", Calc::C(-Calc::Q(1,2),2).estr
+    assert_equal "Calc::C(-4,Calc::Q(1,3))", Calc::C(-4,Calc::Q(1,3)).estr
+  end
+
 end

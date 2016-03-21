@@ -154,6 +154,7 @@ csch   | x [, b]    | hyperbolic cosecant of x within accuracy b
 den    | x          | denominator of x
 digit  | x, n [, b] | nth digit of x in base b
 digits | x [, b]    | number of intgral digits of x in base b
+estr   | x          | text representation of a value
 euler  | n          | nth euler number
 exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
@@ -389,6 +390,7 @@ These builtins work this way:
 
 ### Other Differences
 
+* `estr` return format is different, intended to be eval'd by ruby rather than calc
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that
 * Not all configuration items are implemented (and only ones related to maths will be)
 * You can't define/call calc functions (ie, eval() is not implemented)

@@ -121,6 +121,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :den
     check_real_delegation :digit, 2
     check_real_delegation :digits
+    check_delegation :estr
     check_real_delegation :euler
     check_real_delegation :fact
     check_real_delegation :fib

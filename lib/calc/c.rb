@@ -115,6 +115,20 @@ module Calc
       sinh(*args).inverse
     end
 
+    # Returns a string which if evaluated creates a new object with the original value
+    #
+    # @return [String]
+    # @example
+    #   Calc::C(0.5,-2).estr #=> "Calc::C(Calc::Q(1,2),-2)"
+    def estr
+      s = self.class.name
+      s << "("
+      s << (re.int? ? re.to_s : re.estr)
+      s << "," + (im.int? ? im.to_s : im.estr) if !im.zero?
+      s << ")"
+      s
+    end
+
     # Returns true if self has integer real part and zero imaginary part
     #
     # @return [Boolean]

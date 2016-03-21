@@ -57,6 +57,19 @@ module Calc
       self
     end
 
+    # Returns a string which if evaluated creates a new object with the original value
+    #
+    # @return [String]
+    # @example
+    #  Calc::Q(0.5).estr #=> "Calc::Q(1,2)"
+    def estr
+      s = self.class.name
+      s << "("
+      s << (int? ? num.to_s : "#{ num },#{ den }")
+      s << ")"
+      s
+    end
+
     # Gudermannian function
     # 
     # @param eps [Calc::Q] (optional) calculation accuracy
