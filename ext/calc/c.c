@@ -493,6 +493,19 @@ cc_evenp(VALUE self)
     return Qfalse;
 }
 
+/* Exponential function
+ *
+ * @param eps [Numeric] (optional) calculation accuracy
+ * @return [Calc::C]
+ * @example
+ *  Calc::C(1,2).exp #=> Calc::C(-1.13120438375681363843+2.47172667200481892762i)
+ */
+static VALUE
+cc_exp(int argc, VALUE * argv, VALUE self)
+{
+    return trans_function(argc, argv, self, &c_exp);
+}
+
 /* Gudermannian function
  *
  * @param eps [Calc::Q] (optional) calculation accuracy
@@ -676,6 +689,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "cos", cc_cos, -1);
     rb_define_method(cC, "cosh", cc_cosh, -1);
     rb_define_method(cC, "even?", cc_evenp, 0);
+    rb_define_method(cC, "exp", cc_exp, -1);
     rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "imag?", cc_imagp, 0);

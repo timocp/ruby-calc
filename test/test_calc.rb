@@ -123,6 +123,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :digits
     check_delegation :estr
     check_real_delegation :euler
+    check_delegation :exp
     check_real_delegation :fact
     check_real_delegation :fib
     check_delegation :floor

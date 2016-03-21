@@ -10,7 +10,7 @@ module Calc
   BUILTINS1 = %i(abs acos acosh acot acoth acsc acsch agd appr arg asec asech
                  asin asinh atan atan2 atanh bit bernoulli bround catalan ceil
                  char cfappr cfsim cmp comb conj cos cosh cot coth csc csch den
-                 digit digits estr euler fact fib floor gd hypot im inverse
+                 digit digits estr euler exp fact fib floor gd hypot im inverse
                  iseven isimag isint isodd isreal num perm power quomod re
                  round sec sech sin sinh sqrt tan tanh)
   # builtins implemented as module methods on Calc
