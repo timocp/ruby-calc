@@ -958,4 +958,13 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(2).fcnt(0.5) }
     assert_raises(Calc::MathError) { Calc::Q(0.5).fcnt(2) }
   end
+
+  def test_frem
+    assert_rational_and_equal 7, Calc::Q(7).frem(4)
+    assert_rational_and_equal 6, Calc::Q(24).frem(4)
+    assert_rational_and_equal 3, Calc::Q(48).frem(4)
+    assert_rational_and_equal 3, Calc::Q(-48).frem(4)
+    assert_raises(Calc::MathError) { Calc::Q(0.5).frem(2) }
+    assert_raises(Calc::MathError) { Calc::Q(2).frem(0.5) }
+  end
 end

@@ -1308,6 +1308,32 @@ cq_fcnt(VALUE self, VALUE y)
     return result;
 }
 
+/* Remove specified integer factors from self.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self or y is non-integer
+ * @param y [Integer]
+ * @example
+ *  Calc::Q(7).frem(4)   #=> 7
+ *  Calc::Q(24).frem(4)  #=> 6
+ *  Calc::Q(48).frem(4)  #=> 3
+ *  Calc::Q(-48).frem(4) #=> 3
+ */
+static VALUE
+cq_frem(VALUE self, VALUE y)
+{
+    VALUE result;
+    NUMBER *qself, *qy;
+    ZVALUE ztmp;
+
+    qself = DATA_PTR(self);
+    qy = value_to_number(y, 0);
+    result = cq_new();
+    DATA_PTR(result) = qfacrem(qself, qy);
+    qfree(qy);
+    return result;
+}
+
 /* Returns the Fibonacci number with index self.
  *
  * @return [Calc::Q]
@@ -1806,6 +1832,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "factor", cq_factor, -1);
     rb_define_method(cQ, "fcnt", cq_fcnt, 1);
+    rb_define_method(cQ, "frem", cq_frem, 1);
     rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "int?", cq_intp, 0);
