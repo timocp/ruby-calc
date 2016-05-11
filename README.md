@@ -159,6 +159,7 @@ euler  | n          | nth euler number
 exp    | x [, b]    | exponential function of x within accuracy b
 fact   | x          | factorial of integer x
 factor | x [, limit]| smallest prime factor of x not exceeding limit
+fcnt   | x, y       | count number of times y divides x
 fib    | z          | zth Fibonacci number
 freebernoulli |     | free memory storing calculated bernoulli numbers
 freeeuler |         | free memory storing calculated euler numbers

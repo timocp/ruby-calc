@@ -951,4 +951,11 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 179951, Calc::Q(2).power(59).-(1).factor
   end
 
+  def test_fcnt
+    assert_rational_and_equal 0, Calc::Q(7).fcnt(4)
+    assert_rational_and_equal 1, Calc::Q(24).fcnt(4)
+    assert_rational_and_equal 2, Calc::Q(48).fcnt(4)
+    assert_raises(Calc::MathError) { Calc::Q(2).fcnt(0.5) }
+    assert_raises(Calc::MathError) { Calc::Q(0.5).fcnt(2) }
+  end
 end

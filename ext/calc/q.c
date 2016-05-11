@@ -1277,6 +1277,37 @@ cq_factor(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Count number of times an integer divides self.
+ *
+ * Returns the greatest non-negative n for which y^n is a divisor of self.
+ * Zero is returns if self is not divisible by y.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self or y is non-integer
+ * @param y [Integer]
+ * @example
+ *  Calc::Q(24).fcnt(4) #=> Calc::Q(1)
+ *  Calc::Q(48).fcnt(4) #=> Calc::Q(2)
+ */
+static VALUE
+cq_fcnt(VALUE self, VALUE y)
+{
+    VALUE result;
+    NUMBER *qself, *qy;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    qy = value_to_number(y, 0);
+    if (qisfrac(qself) || qisfrac(qy)) {
+        qfree(qy);
+        rb_raise(e_MathError, "non-integral argument for fcnt");
+    }
+    result = cq_new();
+    DATA_PTR(result) = itoq(zdivcount(qself->num, qy->num));
+    qfree(qy);
+    return result;
+}
+
 /* Returns the Fibonacci number with index self.
  *
  * @return [Calc::Q]
@@ -1774,6 +1805,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "exp", cq_exp, -1);
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "factor", cq_factor, -1);
+    rb_define_method(cQ, "fcnt", cq_fcnt, 1);
     rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "int?", cq_intp, 0);

@@ -128,6 +128,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :factor
     check_real_delegation :fib
     check_delegation :floor
+    check_real_delegation :fcnt, 2
     check_delegation :gd
     check_real_delegation :hypot, 2
     check_delegation :im
