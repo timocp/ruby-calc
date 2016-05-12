@@ -395,6 +395,7 @@ These builtins work this way:
 
 * `estr` return format is different, intended to be eval'd by ruby rather than calc
 * the "error" argument of `factor` is not implemented, mainly because I don't understand the purpose of it.  errors in `factor` will always raise exceptions
+* REDC related functions (`freeredc`, `rcin`, `rcmul`, `rcout`, `rcpow`, `rcsq` are not implemented for now since there are alternatives and anyone wanting the faster modular arithmetic probably shouldn't be using ruby-calc
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that
 * Not all configuration items are implemented (and only ones related to maths will be)
 * You can't define/call calc functions (ie, eval() is not implemented)

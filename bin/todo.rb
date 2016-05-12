@@ -119,7 +119,7 @@ builtins_done = Calc::Q(0)
   [:freebernoulli, Calc],
   [:freeeuler, Calc],
   # freeglobals - not necessary
-  [:freeredc, Calc],
+  # freeredc - no REDC
   # freestatics - not necessary
   # freopen - more File stuff
   # fscan
@@ -256,11 +256,11 @@ builtins_done = Calc::Q(0)
   # random
   # randombit
   # randperm
-  [:rcin, RAT],
-  [:rcmul, RAT],
-  [:rcout, RAT],
-  [:rcpow, RAT],
-  [:rcsq, RAT],
+  # rcin - no REDC
+  # rcmul - no REDC
+  # rcout - no REDC
+  # rcpow - no REDC
+  # rcsq - no REDC
   [:re, ALL],
   # remove - use Array
   # reverse - use Array/Matrix
