@@ -1375,6 +1375,38 @@ cq_fib(VALUE self)
     return result;
 }
 
+/* Greatest common divisor
+ *
+ * Returns the greatest common divisor of self and all arguments.  If no
+ * arguments, returns self.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(12).gcd(8)               #=> Calc::Q(4)
+ *  Calc::Q(12).gcd(8, 6)            #=> Calc::Q(2)
+ *  Calc.gcd("9/10", "11/5", "4/25") #=> Calc::Q(0.02)
+ */
+static VALUE
+cq_gcd(int argc, VALUE * argv, VALUE self)
+{
+    VALUE result;
+    NUMBER *qresult, *qarg, *qtmp;
+    int i;
+    setup_math_error();
+
+    qresult = qlink((NUMBER *) DATA_PTR(self));
+    for (i = 0; i < argc; i++) {
+        qarg = value_to_number(argv[i], 1);
+        qtmp = qgcd(qresult, qarg);
+        qfree(qarg);
+        qfree(qresult);
+        qresult = qtmp;
+    }
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Returns the hypotenuse of a right-angled triangle given the other sides
  *
  * @param y [Numeric,Calc::Numeric] other side
@@ -1858,6 +1890,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "frac", cq_frac, 0);
     rb_define_method(cQ, "frem", cq_frem, 1);
     rb_define_method(cQ, "fib", cq_fib, 0);
+    rb_define_method(cQ, "gcd", cq_gcd, -1);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);

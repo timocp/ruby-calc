@@ -131,6 +131,8 @@ class TestCalc < Minitest::Test
     check_real_delegation :fcnt, 2
     check_delegation :frac
     check_real_delegation :frem, 2
+    check_real_delegation :gcd, 2
+    check_real_delegation :gcd, 3
     check_delegation :gd
     check_real_delegation :hypot, 2
     check_delegation :im
