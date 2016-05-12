@@ -506,6 +506,19 @@ cc_exp(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &c_exp);
 }
 
+/* Return the fractional part of self
+ *
+ * @return [Calc::C]
+ * @example
+ *  Calc::C("2.15", "-3.25").frac #=> Calc::C(0.15-0.25i)
+ */
+static VALUE
+cc_frac(VALUE self)
+{
+    setup_math_error();
+    return complex_to_value(c_frac(DATA_PTR(self)));
+}
+
 /* Gudermannian function
  *
  * @param eps [Calc::Q] (optional) calculation accuracy
@@ -690,6 +703,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "cosh", cc_cosh, -1);
     rb_define_method(cC, "even?", cc_evenp, 0);
     rb_define_method(cC, "exp", cc_exp, -1);
+    rb_define_method(cC, "frac", cc_frac, 0);
     rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "imag?", cc_imagp, 0);

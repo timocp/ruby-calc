@@ -397,4 +397,9 @@ class TestC < MiniTest::Test
     assert_complex_parts [-1.13120438375681363843, 2.47172667200481892762], Calc::C(1,2).exp
   end
 
+  def test_frac
+    assert_complex_parts [Calc::Q("0.15"), Calc::Q("-0.25")], Calc::C("2.15", "-3.25").frac
+    assert_rational_and_equal 0.5, Calc::C(1.5, 0).frac
+  end
+
 end

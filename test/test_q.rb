@@ -967,4 +967,11 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0.5).frem(2) }
     assert_raises(Calc::MathError) { Calc::Q(2).frem(0.5) }
   end
+
+  def test_frac
+    assert_rational_and_equal 0, Calc::Q(3).frac
+    assert_rational_and_equal Calc::Q(1,7), Calc::Q(22,7).frac
+    assert_rational_and_equal Calc::Q(6,7), Calc::Q(27,7).frac
+    assert_rational_and_equal Calc::Q(-1,8), Calc::Q("-3.125").frac
+  end
 end

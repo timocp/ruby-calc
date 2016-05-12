@@ -1308,6 +1308,30 @@ cq_fcnt(VALUE self, VALUE y)
     return result;
 }
 
+/* Return the fractional part of self
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(22,7).frac.to_s(:frac) #=> "1/7"
+ */
+static VALUE
+cq_frac(VALUE self)
+{
+    VALUE result;
+    NUMBER *qself;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    result = cq_new();
+    if (qisint(qself)) {
+        DATA_PTR(result) = qlink(&_qzero_);
+    }
+    else {
+        DATA_PTR(result) = qfrac(qself);
+    }
+    return result;
+}
+
 /* Remove specified integer factors from self.
  *
  * @return [Calc::Q]
@@ -1324,7 +1348,6 @@ cq_frem(VALUE self, VALUE y)
 {
     VALUE result;
     NUMBER *qself, *qy;
-    ZVALUE ztmp;
 
     qself = DATA_PTR(self);
     qy = value_to_number(y, 0);
@@ -1832,6 +1855,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "fact", cq_fact, 0);
     rb_define_method(cQ, "factor", cq_factor, -1);
     rb_define_method(cQ, "fcnt", cq_fcnt, 1);
+    rb_define_method(cQ, "frac", cq_frac, 0);
     rb_define_method(cQ, "frem", cq_frem, 1);
     rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
