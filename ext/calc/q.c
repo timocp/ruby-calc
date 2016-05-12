@@ -1407,6 +1407,27 @@ cq_gcd(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Returns greatest integer divisor of self relatively prime to other
+ *
+ * @result [Calc::Q]
+ *  Calc::Q(6).gcdrem(15) #=> Calc::Q(2)
+ *  Calc::Q(15).gcdrem(6) #=> Calc::Q(5)
+ */
+static VALUE
+cq_gcdrem(VALUE self, VALUE other)
+{
+    VALUE result;
+    NUMBER *qother, *qresult;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    qresult = qgcdrem(DATA_PTR(self), qother);
+    qfree(qother);
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Returns the hypotenuse of a right-angled triangle given the other sides
  *
  * @param y [Numeric,Calc::Numeric] other side
@@ -1891,6 +1912,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "frem", cq_frem, 1);
     rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "gcd", cq_gcd, -1);
+    rb_define_method(cQ, "gcdrem", cq_gcdrem, 1);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);

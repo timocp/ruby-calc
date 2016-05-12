@@ -167,6 +167,7 @@ freebernoulli |     | free memory storing calculated bernoulli numbers
 freeeuler |         | free memory storing calculated euler numbers
 floor  | x          | greatest integer less than or equal to x
 gcd    | x [, ...]  | greatest common divisor
+gcdrem | x, y       | x divided repeatedly by gcd with b
 gd     | z [, b]    | gudermannian function of z within accuracy b
 inverse| x          | inverse of x
 iseven | x          | whether a value is even (also: #even?)

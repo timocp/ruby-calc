@@ -11,9 +11,9 @@ module Calc
                  asin asinh atan atan2 atanh bit bernoulli bround catalan ceil
                  char cfappr cfsim cmp comb conj cos cosh cot coth csc csch den
                  digit digits estr euler exp fact factor fcnt frac frem fib
-                 floor gcd gd hypot im inverse iseven isimag isint isodd isreal
-                 num perm power quomod re round sec sech sin sinh sqrt tan
-                 tanh)
+                 floor gcd gcdrem gd hypot im inverse iseven isimag isint isodd
+                 isreal num perm power quomod re round sec sech sin sinh sqrt
+                 tan tanh)
   # builtins implemented as module methods on Calc
   BUILTINS2 = %i(config freebernoulli freeeuler pi polar)
 
