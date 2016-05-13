@@ -139,6 +139,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :gcd, 3
     check_real_delegation :gcdrem, 2
     check_delegation :gd
+    check_real_delegation :highbit
     check_real_delegation :hypot, 2
     check_delegation :im
     check_delegation :inverse

@@ -1410,6 +1410,7 @@ cq_gcd(int argc, VALUE * argv, VALUE self)
 /* Returns greatest integer divisor of self relatively prime to other
  *
  * @return [Calc::Q]
+ * @example
  *  Calc::Q(6).gcdrem(15) #=> Calc::Q(2)
  *  Calc::Q(15).gcdrem(6) #=> Calc::Q(5)
  */
@@ -1425,6 +1426,39 @@ cq_gcdrem(VALUE self, VALUE other)
     qfree(qother);
     result = cq_new();
     DATA_PTR(result) = qresult;
+    return result;
+}
+
+/* Returns index of highest bit in binary representation of self
+ *
+ * If self is a non-zero integer, higbit  returns the index of the highest bit
+ * in the binary representation of abs(self).  Equivalently, x.highbit = n
+ * if 2^n <= abs(x) < 2^(n+1); the binary representation of x then has n + 1
+ * digits.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(4).highbit        #=> Calc::Q(2)
+ *  Calc::Q(2).**(27).highbit #=> Calc::Q(27)
+ */
+static VALUE
+cq_highbit(VALUE self)
+{
+    VALUE result;
+    NUMBER *qself;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "non-integer argument for highbit");
+    }
+    result = cq_new();
+    if (qiszero(qself)) {
+        DATA_PTR(result) = qlink(&_qnegone_);
+    }
+    else {
+        DATA_PTR(result) = itoq(zhighbit(qself->num));
+    }
     return result;
 }
 
@@ -1913,6 +1947,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "fib", cq_fib, 0);
     rb_define_method(cQ, "gcd", cq_gcd, -1);
     rb_define_method(cQ, "gcdrem", cq_gcdrem, 1);
+    rb_define_method(cQ, "highbit", cq_highbit, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);

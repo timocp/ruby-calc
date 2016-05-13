@@ -989,4 +989,14 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 35, Calc::Q(630).gcdrem(6)
     assert_rational_and_equal 1, Calc::Q(6).gcdrem(630)
   end
+
+  def test_highbit
+    assert_rational_and_equal(-1, Calc::Q(0).highbit)
+    assert_rational_and_equal 1, Calc::Q(2).highbit
+    assert_rational_and_equal 1, Calc::Q(3).highbit
+    assert_rational_and_equal 2, Calc::Q(4).highbit
+    assert_rational_and_equal 3, Calc::Q(-15).highbit
+    assert_rational_and_equal 27, Calc::Q(2).**(27).highbit
+    assert_raises(Calc::MathError) { Calc::Q(0.5).highbit }
+  end
 end

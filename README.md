@@ -169,6 +169,7 @@ floor  | x          | greatest integer less than or equal to x
 gcd    | x [, ...]  | greatest common divisor
 gcdrem | x, y       | x divided repeatedly by gcd with b
 gd     | z [, b]    | gudermannian function of z within accuracy b
+highbit| x          | high bit number in base 2 representation
 inverse| x          | inverse of x
 iseven | x          | whether a value is even (also: #even?)
 isimag | x          | whether a value is imaginary (also: #imag?)
