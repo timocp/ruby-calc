@@ -1,7 +1,7 @@
-require 'minitest_helper'
+require "minitest_helper"
 
 class TestCalc < Minitest::Test
-  DEBUG = ENV.fetch('DEBUG_DELEGATIONS', false)
+  DEBUG = ENV.fetch("DEBUG_DELEGATIONS", false)
 
   def test_that_it_has_a_version_number
     refute_nil ::Calc::VERSION
@@ -10,30 +10,32 @@ class TestCalc < Minitest::Test
   def test_pi
     pi = Calc.pi
     assert_instance_of Calc::Q, pi
-    assert_equal Rational(157079632679489661923,50000000000000000000), pi
+    assert_equal Rational(157079632679489661923, 50000000000000000000), pi
 
     pi = Calc.pi("1e-5")
-    assert_equal Rational(314159,100000), pi
+    assert_equal Rational(314159, 100000), pi
   end
 
   def test_polar
     assert_rational_and_equal 2, Calc.polar(2, 0)
     assert_complex_parts [-0.41615, 0.9093], Calc.polar(1, 2, "1e-5")
-    assert_complex_parts [1.4142135623730950488, 1.4142135623730950488], Calc.polar(2, Calc.pi/4)
+    assert_complex_parts [1.4142135623730950488, 1.4142135623730950488], Calc.polar(2, Calc.pi / 4)
 
-    assert_raises(ArgumentError) { Calc.polar(1, Complex(0,1)) }
-    assert_raises(ArgumentError) { Calc.polar(Complex(0,1), 1) }
+    assert_raises(ArgumentError) { Calc.polar(1, Complex(0, 1)) }
+    assert_raises(ArgumentError) { Calc.polar(Complex(0, 1), 1) }
     assert_raises(Calc::MathError) { Calc.polar(1, 1, -0.1) }
   end
 
   def test_avg
-    a4 = [1,2,3,4]
-    a5 = [1,2,3,4,5]
+    a4 = [1, 2, 3, 4]
+    a5 = [1, 2, 3, 4, 5]
     assert_rational_and_equal 3, Calc.avg(*a5)
     assert_rational_and_equal Calc::Q("2.5"), Calc.avg(*a4)
-    assert_complex_parts [3,3], Calc.avg(*a5.map { |x| Calc::C(x,x) })
-    assert_complex_parts [Calc::Q("2.5"), Calc::Q("2.5")], Calc.avg(*a4.map { |x| Calc::C(x,x) })
-    assert_complex_parts [Calc::Q("0.75"), Calc::Q("-0.25")], Calc.avg(1, Complex(0,1), 2, Complex(0,-2))
+    assert_complex_parts [3, 3], Calc.avg(*a5.map { |x| Calc::C(x, x) })
+    assert_complex_parts [Calc::Q("2.5"), Calc::Q("2.5")],
+                         Calc.avg(*a4.map { |x| Calc::C(x, x) })
+    assert_complex_parts [Calc::Q("0.75"), Calc::Q("-0.25")],
+                         Calc.avg(1, Complex(0, 1), 2, Complex(0, -2))
   end
 
   def test_freeeuler
@@ -46,7 +48,9 @@ class TestCalc < Minitest::Test
     assert_respond_to Calc, m
     extra_args = [ruby_n] * extra_args_count
     begin
-      print "Checking delegation #{ calc_n.inspect }.#{ m }(#{ extra_args.join(", ") }) => " if DEBUG
+      if DEBUG
+        print "Checking delegation #{ calc_n.inspect }.#{ m }(#{ extra_args.join(", ") }) => "
+      end
       expected = calc_n.__send__(*([m] + extra_args))
       puts expected.inspect if DEBUG
     rescue => e
@@ -70,8 +74,8 @@ class TestCalc < Minitest::Test
   end
 
   def check_complex_delegation(m, arg_count = 1)
-    [[1,1], [1,-1], [0,1], [0,-1], [-1,1], [-1,1]].map do |r,i|
-      check_delegation_value(m, Complex(r,i), Calc::C(r,i), arg_count - 1)
+    [[1, 1], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 1]].map do |r, i|
+      check_delegation_value(m, Complex(r, i), Calc::C(r, i), arg_count - 1)
     end
   end
 
@@ -157,5 +161,4 @@ class TestCalc < Minitest::Test
     check_delegation :tan
     check_delegation :tanh
   end
-
 end

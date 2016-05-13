@@ -40,7 +40,7 @@ module Calc
     #   Calc::Q(1.23).ceil      #=> Calc::Q(2)
     #   Calc::C(7.8, 9.1).ceil  #=> Calc::C(8+10i)
     def ceil
-      appr(1,1)
+      appr(1, 1)
     end
 
     # Returns 1 if self is an integer, otherwise 0.
@@ -54,7 +54,7 @@ module Calc
     end
 
     # Floor
-    # 
+    #
     # For real self, returns the greatest integer not greater than self.
     #
     # For complex self, returns a complex number composed of the floor of the
@@ -65,21 +65,21 @@ module Calc
     #   Calc::Q(1.23).floor     #=> Calc::Q(1)
     #   Calc::C(7.8, 9.1).floor #=> Calc::C(7+9i)
     def floor
-      appr(1,0)
+      appr(1, 0)
     end
 
     def remainder(y)
       z = self % y
-      if ((!z.zero?) && ((self < 0 && y > 0) || (self > 0 && y < 0)))
-        return z - y
+      if !z.zero? && ((self < 0 && y > 0) || (self > 0 && y < 0))
+        z - y
+      else
+        z
       end
-      return z
     end
 
     # Provides support for Ruby type coercion.
     def coerce(other)
       [self.class.new(other), self]
     end
-
   end
 end

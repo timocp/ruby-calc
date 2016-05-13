@@ -1,10 +1,9 @@
-require 'minitest_helper'
+require "minitest_helper"
 
 class TestConfig < Minitest::Test
-
   # test Calc.config() method and that they actually do something
 
-  def with_config(name, default_value, new_value, &block)
+  def with_config(name, default_value, new_value)
     # check expected default
     assert_equal default_value, Calc.config(name)
 
@@ -41,9 +40,9 @@ class TestConfig < Minitest::Test
   end
 
   def test_display
-    assert_equal "~0.33333333333333333333", Calc::Q(1,3).to_s
+    assert_equal "~0.33333333333333333333", Calc::Q(1, 3).to_s
     with_config(:display, 20, 5) do
-      assert_equal "~0.33333", Calc::Q(1,3).to_s
+      assert_equal "~0.33333", Calc::Q(1, 3).to_s
     end
     assert_raises(Calc::MathError) { Calc.config(:display, -1) }
   end
@@ -58,7 +57,7 @@ class TestConfig < Minitest::Test
   end
 
   def test_mode
-    q = Calc::Q(1,20)
+    q = Calc::Q(1, 20)
     assert_equal "0.05", q.to_s
     with_config(:mode, "real", "fraction") do
       assert_equal "1/20", q.to_s
@@ -77,11 +76,10 @@ class TestConfig < Minitest::Test
 
   def test_sqrt
     assert_equal 2, Calc::Q(4).sqrt
-    with_config(:sqrt, 24, 24+64) do
-      assert_equal -2, Calc::Q(4).sqrt
+    with_config(:sqrt, 24, 24 + 64) do
+      assert_equal(-2, Calc::Q(4).sqrt)
     end
     assert_raises(Calc::MathError) { Calc.config(:sqrt, 0.5) }
     assert_raises(Calc::MathError) { Calc.config(:sqrt, -1) }
   end
-
 end

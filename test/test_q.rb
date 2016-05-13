@@ -1,7 +1,6 @@
-require 'minitest_helper'
+require "minitest_helper"
 
 class TestQ < MiniTest::Test
-
   BIG  =  0x4000000000000000  # first BigNum
   BIG2 =  0x8000000000000000  # first Bignum that won't fit in a long
   BIG3 = -0x8000000000000001  # first negative bignum that won't fit in a long
@@ -13,9 +12,9 @@ class TestQ < MiniTest::Test
   def test_initialization
     # num/den versions
     assert_instance_of Calc::Q, Calc::Q.new(1, 3)           # Fixnum
-    assert_instance_of Calc::Q, Calc::Q.new(BIG, BIG+1)     # Bignum
-    assert_instance_of Calc::Q, Calc::Q.new(BIG2, BIG2+1)   # big Bignum
-    assert_instance_of Calc::Q, Calc::Q.new(BIG3, BIG3-1)   # small Bignum
+    assert_instance_of Calc::Q, Calc::Q.new(BIG, BIG + 1)   # Bignum
+    assert_instance_of Calc::Q, Calc::Q.new(BIG2, BIG2 + 1) # big Bignum
+    assert_instance_of Calc::Q, Calc::Q.new(BIG3, BIG3 - 1) # small Bignum
     assert_instance_of Calc::Q, Calc::Q.new("1", "3")       # strings
     assert_instance_of Calc::Q, Calc::Q("1e3", "1e-3")      # exponential string
     assert_instance_of Calc::Q, Calc::Q(0.3, 2.0)
@@ -28,7 +27,7 @@ class TestQ < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q.new("1/3")
     assert_instance_of Calc::Q, Calc::Q.new("1e3")
     assert_instance_of Calc::Q, Calc::Q.new("1e-3")
-    assert_instance_of Calc::Q, Calc::Q.new(Rational(1,3))
+    assert_instance_of Calc::Q, Calc::Q.new(Rational(1, 3))
     assert_instance_of Calc::Q, Calc::Q.new(0.3)
   end
 
@@ -42,7 +41,7 @@ class TestQ < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q(1, 3)
     assert_instance_of Calc::Q, Calc::Q(42)
   end
-  
+
   def test_dup
     q1 = Calc::Q(13, 4)
     q2 = q1.dup
@@ -51,26 +50,26 @@ class TestQ < MiniTest::Test
   end
 
   def test_equal
-    assert Calc::Q.new(3) == Calc::Q.new(3)     # Q == Q
+    assert Calc::Q.new(3) == Calc::Q.new(3)     # rubocop:disable Lint/UselessComparison
     assert Calc::Q.new(3) == Calc::Q.new(6, 2)  # Q == Q (reduced)
     assert Calc::Q.new(3) == 3                  # Q == Fixnum
     assert Calc::Q.new(BIG) == BIG              # Q == Bignum
     assert Calc::Q.new(BIG2) == BIG2            # large positive bignum
     assert Calc::Q.new(BIG3) == BIG3            # large negative bugnum
-    assert Calc::Q.new(2,3) == Rational(2,3)    # Q == Rational
+    assert Calc::Q.new(2, 3) == Rational(2, 3)  # Q == Rational
     assert Calc::Q.new(0.5) == 0.5              # Q == Float
-    assert Calc::Q.new(2) == Complex(2,0)       # Q == Complex
-    assert Calc::Q.new(2) == Calc::C(2,0)       # Q == Calc::C
+    assert Calc::Q.new(2) == Complex(2, 0)      # Q == Complex
+    assert Calc::Q.new(2) == Calc::C(2, 0)      # Q == Calc::C
 
     assert Calc::Q.new(3) != Calc::Q.new(4)
     assert Calc::Q.new(3) != Calc::Q.new(4, 2)
     assert Calc::Q.new(3) != 4
     assert Calc::Q.new(BIG) != BIG + 1
-    assert Calc::Q.new(2,3) != Rational(3,4)
+    assert Calc::Q.new(2, 3) != Rational(3, 4)
     assert Calc::Q.new(0.3) != 0.301
-    assert Calc::Q.new(2,3) != "dog"
-    assert Calc::Q.new(2) != Complex(2,1)
-    assert Calc::Q.new(2) != Calc::C(2,1)
+    assert Calc::Q.new(2, 3) != "dog"
+    assert Calc::Q.new(2) != Complex(2, 1)
+    assert Calc::Q.new(2) != Calc::C(2, 1)
   end
 
   def test_reduction
@@ -78,8 +77,8 @@ class TestQ < MiniTest::Test
     assert_equal 3, Calc::Q(4, 6).denominator
     assert_equal 2, Calc::Q("4/6").numerator
     assert_equal 3, Calc::Q("4/6").denominator
-    assert_equal 2, Calc::Q(Rational(4,6)).numerator
-    assert_equal 3, Calc::Q(Rational(4,6)).denominator
+    assert_equal 2, Calc::Q(Rational(4, 6)).numerator
+    assert_equal 3, Calc::Q(Rational(4, 6)).denominator
     assert_equal 1, Calc::Q(0.5).numerator
     assert_equal 2, Calc::Q(0.5).denominator
 
@@ -91,25 +90,25 @@ class TestQ < MiniTest::Test
     assert_equal 3, Calc::Q(Rational(1, 3)).denominator
 
     # check sign is always in numerator
-    assert_equal  1, Calc::Q.new( 1,  3).numerator
-    assert_equal  3, Calc::Q.new( 1,  3).denominator
-    assert_equal -1, Calc::Q.new(-1,  3).numerator
-    assert_equal  3, Calc::Q.new(-1,  3).denominator
-    assert_equal -1, Calc::Q.new( 1, -3).numerator
-    assert_equal  3, Calc::Q.new( 1, -3).denominator
-    assert_equal  1, Calc::Q.new(-1, -3).numerator
-    assert_equal  3, Calc::Q.new(-1, -3).denominator
+    assert_equal 1, Calc::Q.new(1, 3).numerator
+    assert_equal 3, Calc::Q.new(1, 3).denominator
+    assert_equal(-1, Calc::Q.new(-1, 3).numerator)
+    assert_equal 3, Calc::Q.new(-1, 3).denominator
+    assert_equal(-1, Calc::Q.new(1, -3).numerator)
+    assert_equal 3, Calc::Q.new(1, -3).denominator
+    assert_equal 1, Calc::Q.new(-1, -3).numerator
+    assert_equal 3, Calc::Q.new(-1, -3).denominator
   end
 
   def test_comparisons
     [
-      [ Calc::Q(1,3), Calc::Q(1,4),  Calc::Q(1,3),  Calc::Q(1,2)  ],
-      [ Calc::Q(3),   2,             3,             4             ],
-      [ Calc::Q(1),   0,             1,             2             ],
-      [ Calc::Q(1,3), Rational(1,4), Rational(1,3), Rational(1,2) ],
-      [ Calc::Q(0.3), 0.299,         0.3,           0.301         ],
+      [Calc::Q(1, 3), Calc::Q(1, 4),  Calc::Q(1, 3),  Calc::Q(1, 2)],
+      [Calc::Q(3),    2,              3,              4],
+      [Calc::Q(1),    0,              1,              2],
+      [Calc::Q(1, 3), Rational(1, 4), Rational(1, 3), Rational(1, 2)],
+      [Calc::Q(0.3),  0.299,          0.3,            0.301]
     ].each do |thing, other_lt, other_eq, other_gt|
-      assert_equal -1, thing <=> other_gt
+      assert_equal(-1, thing <=> other_gt)
       assert_equal  0, thing <=> other_eq
       assert_equal  1, thing <=> other_lt
 
@@ -135,18 +134,18 @@ class TestQ < MiniTest::Test
       refute thing.between?(other_gt, other_eq)
     end
 
-    assert_nil Calc::Q(1,3) <=> "cat"
-    assert_nil "cat" <=> Calc::Q(1,3)
-    assert_raises(ArgumentError) { Calc::Q(1,3) <  "cat" }
-    assert_raises(ArgumentError) { Calc::Q(1,3) <= "cat" }
-    assert_raises(ArgumentError) { Calc::Q(1,3) >  "cat" }
-    assert_raises(ArgumentError) { Calc::Q(1,3) >= "cat" }
+    assert_nil Calc::Q(1, 3) <=> "cat"
+    assert_nil "cat" <=> Calc::Q(1, 3)
+    assert_raises(ArgumentError) { Calc::Q(1, 3) <  "cat" }
+    assert_raises(ArgumentError) { Calc::Q(1, 3) <= "cat" }
+    assert_raises(ArgumentError) { Calc::Q(1, 3) >  "cat" }
+    assert_raises(ArgumentError) { Calc::Q(1, 3) >= "cat" }
   end
 
   def test_unary
-    assert_rational_and_equal  42, +Calc::Q( 42)
-    assert_rational_and_equal -42, +Calc::Q(-42)
-    assert_rational_and_equal -42, -Calc::Q( 42)
+    assert_rational_and_equal  42, +Calc::Q(42)
+    assert_rational_and_equal(-42, +Calc::Q(-42))
+    assert_rational_and_equal(-42, -Calc::Q(42))
     assert_rational_and_equal  42, -Calc::Q(-42)
   end
 
@@ -155,48 +154,48 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Calc::Q.new(1, 4)
     assert_rational_and_equal Calc::Q(7, 12), Calc::Q.new(1, 3) + Rational(1, 4)
     assert_rational_and_equal 0x800000000000002a, Calc::Q(42) + BIG2
-    assert_complex_parts [2,2], Calc::Q(2) + Complex(0,2)
-    assert_complex_parts [2,2], Calc::Q(2) + Calc::C(0,2)
+    assert_complex_parts [2, 2], Calc::Q(2) + Complex(0, 2)
+    assert_complex_parts [2, 2], Calc::Q(2) + Calc::C(0, 2)
   end
 
   def test_subtract
-    assert_rational_and_equal Calc::Q(-1,6), Calc::Q(1,3) - Calc::Q(1,2)
-    assert_rational_and_equal Calc::Q(-2,3), Calc::Q(1,3) - 1
-    assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) - Rational(1,4)
-    assert_rational_and_equal Rational(-0x17fffffffffffffff,3), Calc::Q(1,3) - BIG2
-    assert_complex_parts [2, -2], Calc::Q(2) - Complex(0,2)
-    assert_complex_parts [2, -2], Calc::Q(2) - Calc::C(0,2)
+    assert_rational_and_equal Calc::Q(-1, 6), Calc::Q(1, 3) - Calc::Q(1, 2)
+    assert_rational_and_equal Calc::Q(-2, 3), Calc::Q(1, 3) - 1
+    assert_rational_and_equal Calc::Q(1, 12), Calc::Q(1, 3) - Rational(1, 4)
+    assert_rational_and_equal Rational(-0x17fffffffffffffff, 3), Calc::Q(1, 3) - BIG2
+    assert_complex_parts [2, -2], Calc::Q(2) - Complex(0, 2)
+    assert_complex_parts [2, -2], Calc::Q(2) - Calc::C(0, 2)
   end
 
   def test_multiply
-    assert_rational_and_equal Calc::Q(1,12), Calc::Q(1,3) * Calc::Q(1,4)
-    assert_rational_and_equal Calc::Q(4,3),  Calc::Q(1,3) * 4
-    assert_rational_and_equal Calc::Q(1,5),  Calc::Q(1,3) * Rational(3,5)
-    assert_complex_parts [0, 4], Calc::Q(2) * Complex(0,2)
-    assert_complex_parts [0, 4], Calc::Q(2) * Calc::C(0,2)
+    assert_rational_and_equal Calc::Q(1, 12), Calc::Q(1, 3) * Calc::Q(1, 4)
+    assert_rational_and_equal Calc::Q(4, 3),  Calc::Q(1, 3) * 4
+    assert_rational_and_equal Calc::Q(1, 5),  Calc::Q(1, 3) * Rational(3, 5)
+    assert_complex_parts [0, 4], Calc::Q(2) * Complex(0, 2)
+    assert_complex_parts [0, 4], Calc::Q(2) * Calc::C(0, 2)
   end
 
   def test_divide
-    assert_rational_and_equal Calc::Q(4,3),  Calc::Q(1,3) / Calc::Q(1,4)
-    assert_rational_and_equal Calc::Q(1,6),  Calc::Q(1,3) / 2
-    assert_rational_and_equal Calc::Q(5,3),  Calc::Q(1,3) / Rational(1,5)
-    assert_complex_parts [0, -1], Calc::Q(2) / Complex(0,2)
-    assert_complex_parts [0, -1], Calc::Q(2) / Calc::C(0,2)
+    assert_rational_and_equal Calc::Q(4, 3),  Calc::Q(1, 3) / Calc::Q(1, 4)
+    assert_rational_and_equal Calc::Q(1, 6),  Calc::Q(1, 3) / 2
+    assert_rational_and_equal Calc::Q(5, 3),  Calc::Q(1, 3) / Rational(1, 5)
+    assert_complex_parts [0, -1], Calc::Q(2) / Complex(0, 2)
+    assert_complex_parts [0, -1], Calc::Q(2) / Calc::C(0, 2)
   end
 
   def test_mod
-    assert_rational_and_equal Calc::Q( 3,28), Calc::Q( 1,4) % Calc::Q( 1,7)
-    assert_rational_and_equal Calc::Q( 1,28), Calc::Q(-1,4) % Calc::Q( 1,7)
-    assert_rational_and_equal Calc::Q(-1,28), Calc::Q( 1,4) % Calc::Q(-1,7)
-    assert_rational_and_equal Calc::Q(-3,28), Calc::Q(-1,4) % Calc::Q(-1,7)
+    assert_rational_and_equal Calc::Q(3, 28), Calc::Q(1, 4) % Calc::Q(1, 7)
+    assert_rational_and_equal Calc::Q(1, 28), Calc::Q(-1, 4) % Calc::Q(1, 7)
+    assert_rational_and_equal Calc::Q(-1, 28), Calc::Q(1, 4) % Calc::Q(-1, 7)
+    assert_rational_and_equal Calc::Q(-3, 28), Calc::Q(-1, 4) % Calc::Q(-1, 7)
 
     # other arg types
-    assert_rational_and_equal Calc::Q(3,4),  Calc::Q(11,4) % 2
-    assert_rational_and_equal Calc::Q(1,12), Calc::Q(11,4) % Rational(1,3)
-    assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % BIG2
+    assert_rational_and_equal Calc::Q(3, 4),  Calc::Q(11, 4) % 2
+    assert_rational_and_equal Calc::Q(1, 12), Calc::Q(11, 4) % Rational(1, 3)
+    assert_rational_and_equal Calc::Q(1, 4), Calc::Q(1, 4) % BIG2
 
     # unlike Z and ruby, q % 0 == q
-    assert_rational_and_equal Calc::Q(1,4), Calc::Q(1,4) % 0
+    assert_rational_and_equal Calc::Q(1, 4), Calc::Q(1, 4) % 0
   end
 
   def test_abs
@@ -207,7 +206,7 @@ class TestQ < MiniTest::Test
   end
 
   def test_quomod
-    [5, BIG2, Calc::Q(5), Rational(5,1), 5.0].each do |p|
+    [5, BIG2, Calc::Q(5), Rational(5, 1), 5.0].each do |p|
       [Calc::Q(13).quomod(p)].each do |r|
         assert_instance_of Array, r
         assert_equal 2, r.size
@@ -218,14 +217,14 @@ class TestQ < MiniTest::Test
     assert_equal [2, 3], Calc::Q(13).quomod(5)
     assert_equal [-4, -2], Calc::Q(10).quomod(-3)
 
-    assert_equal [ 3,  1], Calc::Q( 13).quomod( 4)
-    assert_equal [-4, -3], Calc::Q( 13).quomod(-4)
-    assert_equal [-4,  3], Calc::Q(-13).quomod( 4)
-    assert_equal [ 3, -1], Calc::Q(-13).quomod(-4)
-    assert_equal [ 2, Calc::Q( 7,2)], Calc::Q( 23,2).quomod( 4)
-    assert_equal [-3, Calc::Q(-1,2)], Calc::Q( 23,2).quomod(-4)
-    assert_equal [-3, Calc::Q( 1,2)], Calc::Q(-23,2).quomod( 4)
-    assert_equal [ 2, Calc::Q(-7,2)], Calc::Q(-23,2).quomod(-4)
+    assert_equal [3, 1], Calc::Q(13).quomod(4)
+    assert_equal [-4, -3], Calc::Q(13).quomod(-4)
+    assert_equal [-4, 3], Calc::Q(-13).quomod(4)
+    assert_equal [3, -1], Calc::Q(-13).quomod(-4)
+    assert_equal [2, Calc::Q(7, 2)], Calc::Q(23, 2).quomod(4)
+    assert_equal [-3, Calc::Q(-1, 2)], Calc::Q(23, 2).quomod(-4)
+    assert_equal [-3, Calc::Q(1, 2)], Calc::Q(-23, 2).quomod(4)
+    assert_equal [2, Calc::Q(-7, 2)], Calc::Q(-23, 2).quomod(-4)
 
     assert_alias Calc::Q(1), :quomod, :divmod
   end
@@ -233,60 +232,60 @@ class TestQ < MiniTest::Test
   def test_modulo_and_remainder
     assert_equal  1, Calc::Q(13).modulo(4)
     assert_equal  1, Calc::Q(13).remainder(4)
-    skip {
+    skip do
       # behaviour with negatives is not quite right
-      assert_equal -3, Calc::Q(13).modulo(-4)
-      assert_equal  1, Calc::Q(13).remainder(-4)
-    }
+      assert_equal(-3, Calc::Q(13).modulo(-4))
+      assert_equal 1, Calc::Q(13).remainder(-4)
+    end
     assert_equal 3.5, Calc::Q(11.5).modulo(4)
   end
 
   def test_power
-    assert_rational_and_equal Calc::Q(3),     Calc::Q(81) ** Calc::Q(1,4)
-    assert_rational_in_epsilon Calc::Q(1,9),  Calc::Q(1,3) ** 2
-    assert_rational_and_equal Calc::Q(4),     Calc::Q(8) ** Rational(2,3)
+    assert_rational_and_equal Calc::Q(3), Calc::Q(81)**Calc::Q(1, 4)
+    assert_rational_in_epsilon Calc::Q(1, 9), Calc::Q(1, 3)**2
+    assert_rational_and_equal Calc::Q(4), Calc::Q(8)**Rational(2, 3)
 
     assert_rational_in_epsilon 8.2207405646327461795, Calc::Q(1.2345).power(10)
-    assert_rational_and_equal -8, Calc::Q(-2) ** 3
-    assert_complex_parts [0.95105651629515357212, 0.3090169943749474241], Calc::Q(-1) ** "0.1"
-    assert_complex_parts [0.18345697474330167684, 0.98302774041124372059], Calc::Q(2) ** Complex(0,2)
-    assert_complex_parts [0.18345697474330167684, 0.98302774041124372059], Calc::Q(2) ** Calc::C(0,2)
+    assert_rational_and_equal(-8, Calc::Q(-2)**3)
+    assert_complex_parts [0.95105651629515357212, 0.3090169943749474241], Calc::Q(-1)**"0.1"
+    assert_complex_parts [0.18345697474330167684, 0.98302774041124372059], Calc::Q(2)**Complex(0, 2)
+    assert_complex_parts [0.18345697474330167684, 0.98302774041124372059], Calc::Q(2)**Calc::C(0, 2)
   end
 
   def test_shift
     # both arguments have to be integers
-    assert_rational_and_equal  128, Calc::Q(4) << Calc::Q(5)
-    assert_rational_and_equal    0, Calc::Q(4) >> 5
-    assert_rational_and_equal   25, Calc::Q(100) >> Rational(2,1)
-    assert_rational_and_equal -320, Calc::Q(-20) << 4
-    assert_rational_and_equal   -1, Calc::Q(-20) >> 4
-    assert_rational_and_equal    1, Calc::Q(20) << -4
-    assert_rational_and_equal  320, Calc::Q(20) >> -4
-    assert_rational_and_equal  -12, Calc::Q(-50) << -2
-    assert_rational_and_equal -200, Calc::Q(-50) >> -2
+    assert_rational_and_equal 128, Calc::Q(4) << Calc::Q(5)
+    assert_rational_and_equal 0, Calc::Q(4) >> 5
+    assert_rational_and_equal 25, Calc::Q(100) >> Rational(2, 1)
+    assert_rational_and_equal(-320, Calc::Q(-20) << 4)
+    assert_rational_and_equal(-1, Calc::Q(-20) >> 4)
+    assert_rational_and_equal 1, Calc::Q(20) << -4
+    assert_rational_and_equal 320, Calc::Q(20) >> -4
+    assert_rational_and_equal(-12, Calc::Q(-50) << -2)
+    assert_rational_and_equal(-200, Calc::Q(-50) >> -2)
 
-    assert_raises(ArgumentError) { Calc::Q.new(2) << Calc::Q(1,3) }
-    assert_raises(ArgumentError) { Calc::Q.new(2) << Rational(1,3) }
-    assert_raises(Calc::MathError) { Calc::Q.new(1,3) << 1 }
+    assert_raises(ArgumentError) { Calc::Q.new(2) << Calc::Q(1, 3) }
+    assert_raises(ArgumentError) { Calc::Q.new(2) << Rational(1, 3) }
+    assert_raises(Calc::MathError) { Calc::Q.new(1, 3) << 1 }
     assert_raises(ArgumentError) { Calc::Q(2) << BIG }
     assert_raises(ArgumentError) { Calc::Q(2) << BIG2 }
   end
 
   def test_denominator
     assert_instance_of Calc::Q, Calc::Q(1, 2).den
-    assert_equal 4, Calc::Q( 13,  4).den
-    assert_equal 4, Calc::Q( 13, -4).den
-    assert_equal 4, Calc::Q(-13, -4).den
+    assert_equal 4, Calc::Q(13, 4).den
+    assert_equal 4, Calc::Q(13, -4).den
+    assert_equal 4, Calc::Q(-13, 4).den
     assert_equal 4, Calc::Q(-13, -4).den
     assert_alias Calc::Q(1), :denominator, :den
   end
 
   def test_numerator
     assert_instance_of Calc::Q, Calc::Q(1, 2).num
-    assert_equal  13, Calc::Q( 13,  4).num
-    assert_equal -13, Calc::Q(-13,  4).num
-    assert_equal -13, Calc::Q( 13, -4).num
-    assert_equal  13, Calc::Q(-13, -4).num
+    assert_equal 13, Calc::Q(13, 4).num
+    assert_equal(-13, Calc::Q(-13, 4).num)
+    assert_equal(-13, Calc::Q(13, -4).num)
+    assert_equal 13, Calc::Q(-13, -4).num
     assert_alias Calc::Q(1), :numerator, :num
   end
 
@@ -298,35 +297,35 @@ class TestQ < MiniTest::Test
     assert_equal 120, Calc::Q(5).fact
     assert_equal 3628800, Calc::Q(10).fact
     assert_raises(Calc::MathError) { Calc::Q(-1).fact }
-    assert_raises(Calc::MathError) { Calc::Q(1,4).fact }
+    assert_raises(Calc::MathError) { Calc::Q(1, 4).fact }
   end
 
   def test_to_f
-    assert_instance_of Float, Calc::Q(99,2).to_f
-    assert_equal 49.5, Calc::Q(99,2).to_f
+    assert_instance_of Float, Calc::Q(99, 2).to_f
+    assert_equal 49.5, Calc::Q(99, 2).to_f
   end
 
   def test_to_i
-    assert_instance_of Fixnum, Calc::Q(1,4).to_i
-    assert_instance_of Fixnum, Calc::Q(5,1).to_i
-    assert_equal 0, Calc::Q(1,4).to_i
-    assert_equal 5, Calc::Q(5,1).to_i
+    assert_instance_of Fixnum, Calc::Q(1, 4).to_i
+    assert_instance_of Fixnum, Calc::Q(5, 1).to_i
+    assert_equal 0, Calc::Q(1, 4).to_i
+    assert_equal 5, Calc::Q(5, 1).to_i
 
     # numbers larger than MAXLONG
-    assert_equal 90438207500880449001, (Calc::Q(99,2) ** 10).numerator
-    assert_equal 1024,                 (Calc::Q(99,2) ** 10).denominator
+    assert_equal 90438207500880449001, (Calc::Q(99, 2)**10).numerator
+    assert_equal 1024,                 (Calc::Q(99, 2)**10).denominator
   end
 
   def test_to_r
-    assert_instance_of Rational, Calc::Q(1,4).to_r
-    assert_equal 1, Calc::Q(1,4).to_r.numerator
-    assert_equal 4, Calc::Q(1,4).to_r.denominator
+    assert_instance_of Rational, Calc::Q(1, 4).to_r
+    assert_equal 1, Calc::Q(1, 4).to_r.numerator
+    assert_equal 4, Calc::Q(1, 4).to_r.denominator
   end
 
   def test_to_s
     # default (real)
     assert_equal "42", Calc::Q.new(42).to_s
-    assert_equal "0.05", Calc::Q(1,20).to_s
+    assert_equal "0.05", Calc::Q(1, 20).to_s
     assert_equal "4611686018427387904", Calc::Q.new(BIG).to_s
     assert_equal "9223372036854775808", Calc::Q(BIG2).to_s
 
@@ -339,14 +338,13 @@ class TestQ < MiniTest::Test
     assert_equal "052",       Calc::Q(42).to_s(:oct)
     assert_equal "0b101010",  Calc::Q(42).to_s(:bin)
 
-    assert_equal "1/20",      Calc::Q(1,20).to_s(:frac)
-    assert_equal "~0",        Calc::Q(1,20).to_s(:int)
-    assert_equal "0.05",      Calc::Q(1,20).to_s(:real)
-    assert_equal "5e-2",      Calc::Q(1,20).to_s(:sci)
-    assert_equal "1/0x14",    Calc::Q(1,20).to_s(:hex)
-    assert_equal "1/024",     Calc::Q(1,20).to_s(:oct)
-    assert_equal "1/0b10100", Calc::Q(1,20).to_s(:bin)
-
+    assert_equal "1/20",      Calc::Q(1, 20).to_s(:frac)
+    assert_equal "~0",        Calc::Q(1, 20).to_s(:int)
+    assert_equal "0.05",      Calc::Q(1, 20).to_s(:real)
+    assert_equal "5e-2",      Calc::Q(1, 20).to_s(:sci)
+    assert_equal "1/0x14",    Calc::Q(1, 20).to_s(:hex)
+    assert_equal "1/024",     Calc::Q(1, 20).to_s(:oct)
+    assert_equal "1/0b10100", Calc::Q(1, 20).to_s(:bin)
   end
 
   def test_acos
@@ -405,21 +403,21 @@ class TestQ < MiniTest::Test
   end
 
   def test_asinh
-    assert_rational_in_epsilon -0.88137358701954302523, Calc::Q(-1).asinh
+    assert_rational_in_epsilon(-0.88137358701954302523, Calc::Q(-1).asinh)
     assert_rational_and_equal 0, Calc::Q(0).asinh
     assert_rational_in_epsilon 0.88137358701954302523, Calc::Q(1).asinh
   end
 
   def test_atan
-    assert_rational_in_epsilon -0.78539816339744830962, Calc::Q(-1).atan
+    assert_rational_in_epsilon(-0.78539816339744830962, Calc::Q(-1).atan)
     assert_rational_and_equal 0, Calc::Q(0).atan
     assert_rational_in_epsilon 0.78539816339744830962, Calc::Q(1).atan
   end
 
   def test_atan2
-    [-1,0,1].each do |y|
-      [-1,0,1].each do |x|
-        assert_rational_in_epsilon Math.atan2(y,x), Calc::Q(y).atan2(x)
+    [-1, 0, 1].each do |y|
+      [-1, 0, 1].each do |x|
+        assert_rational_in_epsilon Math.atan2(y, x), Calc::Q(y).atan2(x)
       end
     end
   end
@@ -526,10 +524,10 @@ class TestQ < MiniTest::Test
   end
 
   def test_coerce
-    assert_instance_of Calc::Q, Rational(1,2) + Calc::Q(3,4)
-    assert_equal Calc::Q(5,4), Rational(1,2) + Calc::Q(3,4)
-    assert_equal Calc::Q(5,4), 0.5 + Calc::Q(3,4)
-    assert_equal Calc::Q(7,4), 1 + Calc::Q(3,4)
+    assert_instance_of Calc::Q, Rational(1, 2) + Calc::Q(3, 4)
+    assert_equal Calc::Q(5, 4), Rational(1, 2) + Calc::Q(3, 4)
+    assert_equal Calc::Q(5, 4), 0.5 + Calc::Q(3, 4)
+    assert_equal Calc::Q(7, 4), 1 + Calc::Q(3, 4)
   end
 
   def test_hypot
@@ -551,8 +549,8 @@ class TestQ < MiniTest::Test
 
     # even >= 2^31 is error.  odd >= 2^31 is 0
     assert_raises(Calc::MathError) { Calc::Q("1/2").bernoulli }
-    assert_raises(Calc::MathError) { (Calc::Q(2) ** 31).bernoulli }
-    assert_equal 0, (Calc::Q(2) ** 31 + 1).bernoulli
+    assert_raises(Calc::MathError) { (Calc::Q(2)**31).bernoulli }
+    assert_equal 0, (Calc::Q(2)**31 + 1).bernoulli
 
     assert_nil Calc.freebernoulli
   end
@@ -563,7 +561,7 @@ class TestQ < MiniTest::Test
     assert_instance_of Calc::C, Calc::Q(2).agd
     assert_in_epsilon 1.22619117088351707081, Calc::Q(1).agd
     assert_in_epsilon 1.5234524435626735209, Calc::Q(2).agd.re
-    assert_in_epsilon -3.14159265358979323846, Calc::Q(2).agd.im
+    assert_in_epsilon(-3.14159265358979323846, Calc::Q(2).agd.im)
   end
 
   def test_gd
@@ -591,8 +589,8 @@ class TestQ < MiniTest::Test
   end
 
   def test_inverse
-    assert_rational_and_equal Calc::Q(4,5), Calc::Q(5,4).inverse
-    assert_rational_and_equal Calc::Q(-7,2), Calc::Q(-2,7).inverse
+    assert_rational_and_equal Calc::Q(4, 5), Calc::Q(5, 4).inverse
+    assert_rational_and_equal Calc::Q(-7, 2), Calc::Q(-2, 7).inverse
     assert_raises(Calc::MathError) { Calc::Q(0).inverse }
   end
 
@@ -639,9 +637,9 @@ class TestQ < MiniTest::Test
   end
 
   def test_fib
-    assert_rational_and_equal -55, Calc::Q(-10).fib
+    assert_rational_and_equal(-55, Calc::Q(-10).fib)
     assert_rational_and_equal 34, Calc::Q(-9).fib
-    assert_rational_and_equal -1, Calc::Q(-2).fib
+    assert_rational_and_equal(-1, Calc::Q(-2).fib)
     assert_rational_and_equal 1, Calc::Q(-1).fib
     assert_rational_and_equal 0, Calc::Q(0).fib
     assert_rational_and_equal 1, Calc::Q(1).fib
@@ -661,67 +659,67 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1", 0)
     assert_rational_and_equal Calc::Q("5.4"), Calc::Q("5.44").appr("0.1", 0)
     assert_rational_and_equal 5, Calc::Q("5.7").appr(1, 0)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1, 0)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(1, 0))
 
     assert_rational_and_equal Calc::Q("-5.4"), Calc::Q("-5.44").appr("-.1", 0)
     assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("-.1", 0)
     assert_rational_and_equal 6, Calc::Q("5.7").appr(-1, 0)
-    assert_rational_and_equal -5, Calc::Q("-5.7").appr(-1, 0)
+    assert_rational_and_equal(-5, Calc::Q("-5.7").appr(-1, 0))
 
     assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1", 3)
     assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("0.1", 3)
     assert_rational_and_equal 6, Calc::Q("5.7").appr(1, 3)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1, 3)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(1, 3))
 
     assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1", 4)
     assert_rational_and_equal Calc::Q("5.4"), Calc::Q("5.44").appr("0.1", 4)
-    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,4)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,4)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1, 4)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(1, 4))
 
-    assert_rational_and_equal Calc::Q("-5.4"), Calc::Q("-5.44").appr("0.1",6)
-    assert_rational_and_equal Calc::Q("5.4"), Calc::Q("5.44").appr("0.1",6)
-    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,6)
-    assert_rational_and_equal -5, Calc::Q("-5.7").appr(1,6)
+    assert_rational_and_equal Calc::Q("-5.4"), Calc::Q("-5.44").appr("0.1", 6)
+    assert_rational_and_equal Calc::Q("5.4"), Calc::Q("5.44").appr("0.1", 6)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1, 6)
+    assert_rational_and_equal(-5, Calc::Q("-5.7").appr(1, 6))
 
-    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("-.1",6)
-    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("-.1",6)
-    assert_rational_and_equal 6, Calc::Q("5.7").appr(-1,6)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(-1,6)
+    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("-.1", 6)
+    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("-.1", 6)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(-1, 6)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(-1, 6))
 
-    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1",9)
-    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("0.1",9)
-    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,9)
-    assert_rational_and_equal -5, Calc::Q("-5.7").appr(1,9)
+    assert_rational_and_equal Calc::Q("-5.5"), Calc::Q("-5.44").appr("0.1", 9)
+    assert_rational_and_equal Calc::Q("5.5"), Calc::Q("5.44").appr("0.1", 9)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1, 9)
+    assert_rational_and_equal(-5, Calc::Q("-5.7").appr(1, 9))
 
-    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1",11)
-    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("0.1",11)
-    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,11)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,11)
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1", 11)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("0.1", 11)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1, 11)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(1, 11))
 
-    assert_rational_and_equal Calc::Q("-.5"), Calc::Q("-.44").appr("-.1",11)
-    assert_rational_and_equal Calc::Q(".4"), Calc::Q(".44").appr("-.1",11)
-    assert_rational_and_equal 6, Calc::Q("5.7").appr(-1,11)
-    assert_rational_and_equal -5, Calc::Q("-5.7").appr(-1,11)
+    assert_rational_and_equal Calc::Q("-.5"), Calc::Q("-.44").appr("-.1", 11)
+    assert_rational_and_equal Calc::Q(".4"), Calc::Q(".44").appr("-.1", 11)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(-1, 11)
+    assert_rational_and_equal(-5, Calc::Q("-5.7").appr(-1, 11))
 
-    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1",12)
-    assert_rational_and_equal Calc::Q(".4"), Calc::Q(".44").appr("0.1",12)
-    assert_rational_and_equal 6, Calc::Q("5.7").appr(1,12)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,12)
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1", 12)
+    assert_rational_and_equal Calc::Q(".4"), Calc::Q(".44").appr("0.1", 12)
+    assert_rational_and_equal 6, Calc::Q("5.7").appr(1, 12)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(1, 12))
 
-    assert_rational_and_equal Calc::Q("-.5"), Calc::Q("-.44").appr("-.1",12)
-    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("-.1",12)
-    assert_rational_and_equal 5, Calc::Q("5.7").appr(-1,12)
-    assert_rational_and_equal -5, Calc::Q("-5.7").appr(-1,12)
+    assert_rational_and_equal Calc::Q("-.5"), Calc::Q("-.44").appr("-.1", 12)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("-.1", 12)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(-1, 12)
+    assert_rational_and_equal(-5, Calc::Q("-5.7").appr(-1, 12))
 
-    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1",15)
-    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("0.1",15)
-    assert_rational_and_equal 5, Calc::Q("5.7").appr(1,15)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(1,15)
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("0.1", 15)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("0.1", 15)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(1, 15)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(1, 15))
 
-    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("-.1",15)
-    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("-.1",15)
-    assert_rational_and_equal 5, Calc::Q("5.7").appr(-1,15)
-    assert_rational_and_equal -6, Calc::Q("-5.7").appr(-1,15)
+    assert_rational_and_equal Calc::Q("-.4"), Calc::Q("-.44").appr("-.1", 15)
+    assert_rational_and_equal Calc::Q(".5"), Calc::Q(".44").appr("-.1", 15)
+    assert_rational_and_equal 5, Calc::Q("5.7").appr(-1, 15)
+    assert_rational_and_equal(-6, Calc::Q("-5.7").appr(-1, 15))
   end
 
   def test_sqrt
@@ -729,28 +727,28 @@ class TestQ < MiniTest::Test
     assert_complex_parts [0, 2], Calc::Q(-4).sqrt
     eps = Calc::Q("1e-4")
     assert_rational_and_equal 2, Calc::Q(4).sqrt(eps, 0)
-    assert_rational_and_equal -2, Calc::Q(4).sqrt(eps, 64)
+    assert_rational_and_equal(-2, Calc::Q(4).sqrt(eps, 64))
     assert_rational_and_equal Calc::Q("1.4142"), Calc::Q(2).sqrt(eps, 0)
     assert_rational_and_equal Calc::Q("1.4143"), Calc::Q(2).sqrt(eps, 1)
     assert_rational_and_equal Calc::Q("1.4142"), Calc::Q(2).sqrt(eps, 24)
-    x = Calc::Q("1.2345678") ** 2
+    x = Calc::Q("1.2345678")**2
     assert_rational_and_equal Calc::Q("1.2346"), x.sqrt(eps, 24)
     assert_rational_and_equal Calc::Q("1.2345678"), x.sqrt(eps, 32)
     assert_rational_and_equal Calc::Q("-1.2345678"), x.sqrt(eps, 96)
-    assert_rational_and_equal 0, (Calc::Q(".00005") ** 2).sqrt(eps, 24)
-    assert_rational_and_equal Calc::Q(".0002"), (Calc::Q(".00015") ** 2).sqrt(eps, 24)
+    assert_rational_and_equal 0, (Calc::Q(".00005")**2).sqrt(eps, 24)
+    assert_rational_and_equal Calc::Q(".0002"), (Calc::Q(".00015")**2).sqrt(eps, 24)
   end
 
   def test_ceil
     assert_rational_and_equal 27, Calc::Q(27).ceil
     assert_rational_and_equal 2, Calc::Q(1.23).ceil
-    assert_rational_and_equal -4, Calc::Q(-4.56).ceil
+    assert_rational_and_equal(-4, Calc::Q(-4.56).ceil)
   end
 
   def test_floor
     assert_rational_and_equal 27, Calc::Q(27).floor
     assert_rational_and_equal 1, Calc::Q(1.23).floor
-    assert_rational_and_equal -5, Calc::Q(-4.56).floor
+    assert_rational_and_equal(-5, Calc::Q(-4.56).floor)
   end
 
   def test_isint
@@ -763,67 +761,67 @@ class TestQ < MiniTest::Test
 
   def test_to_c
     assert_instance_of Complex, Calc::Q(2).to_c
-    assert_equal Complex(2,0), Calc::Q(2).to_c
-    assert_equal Complex(2.5,0), Calc::Q(2.5).to_c
+    assert_equal Complex(2, 0), Calc::Q(2).to_c
+    assert_equal Complex(2.5, 0), Calc::Q(2.5).to_c
   end
 
   def test_to_complex
-    assert_complex_parts [2,0], Calc::Q(2).to_complex
-    assert_complex_parts [2.5,0], Calc::Q(2.5).to_complex
+    assert_complex_parts [2, 0], Calc::Q(2).to_complex
+    assert_complex_parts [2.5, 0], Calc::Q(2.5).to_complex
   end
 
   def test_bround
-    a = Calc::Q(7,32)
-    b = Calc::Q(-7,32)
+    a = Calc::Q(7, 32)
+    b = Calc::Q(-7, 32)
     assert_rational_and_equal 0, a.bround
     assert_rational_and_equal Calc::Q(".25"), a.bround(3)
     assert_rational_and_equal Calc::Q(".25"), a.bround(4)
     assert_rational_and_equal Calc::Q(".21875"), a.bround(5)
-    assert_rational_and_equal Calc::Q(".1875"), a.bround(4,0)
-    assert_rational_and_equal Calc::Q(".25"), a.bround(4,1)
-    assert_rational_and_equal Calc::Q(".1875"), a.bround(4,2)
-    assert_rational_and_equal Calc::Q(".25"), a.bround(4,3)
+    assert_rational_and_equal Calc::Q(".1875"), a.bround(4, 0)
+    assert_rational_and_equal Calc::Q(".25"), a.bround(4, 1)
+    assert_rational_and_equal Calc::Q(".1875"), a.bround(4, 2)
+    assert_rational_and_equal Calc::Q(".25"), a.bround(4, 3)
     assert_rational_and_equal 0, b.bround
     assert_rational_and_equal Calc::Q("-.25"), b.bround(3)
     assert_rational_and_equal Calc::Q("-.25"), b.bround(4)
     assert_rational_and_equal Calc::Q("-.21875"), b.bround(5)
-    assert_rational_and_equal Calc::Q("-.25"), b.bround(4,0)
-    assert_rational_and_equal Calc::Q("-.1875"), b.bround(4,1)
-    assert_rational_and_equal Calc::Q("-.1875"), b.bround(4,2)
-    assert_rational_and_equal Calc::Q("-.25"), b.bround(4,3)
+    assert_rational_and_equal Calc::Q("-.25"), b.bround(4, 0)
+    assert_rational_and_equal Calc::Q("-.1875"), b.bround(4, 1)
+    assert_rational_and_equal Calc::Q("-.1875"), b.bround(4, 2)
+    assert_rational_and_equal Calc::Q("-.25"), b.bround(4, 3)
   end
 
   def test_round
-    a = Calc::Q(7,32)
-    b = Calc::Q(-7,32)
+    a = Calc::Q(7, 32)
+    b = Calc::Q(-7, 32)
     assert_rational_and_equal 0, a.round
     assert_rational_and_equal Calc::Q(".219"), a.round(3)
-    assert_rational_and_equal Calc::Q(".218"), a.round(3,0)
-    assert_rational_and_equal Calc::Q(".219"), a.round(3,1)
-    assert_rational_and_equal Calc::Q(".218"), a.round(3,2)
-    assert_rational_and_equal Calc::Q(".219"), a.round(3,3)
+    assert_rational_and_equal Calc::Q(".218"), a.round(3, 0)
+    assert_rational_and_equal Calc::Q(".219"), a.round(3, 1)
+    assert_rational_and_equal Calc::Q(".218"), a.round(3, 2)
+    assert_rational_and_equal Calc::Q(".219"), a.round(3, 3)
     assert_rational_and_equal 0, b.round
     assert_rational_and_equal Calc::Q("-.219"), b.round(3)
-    assert_rational_and_equal Calc::Q("-.219"), b.round(3,0)
-    assert_rational_and_equal Calc::Q("-.218"), b.round(3,1)
-    assert_rational_and_equal Calc::Q("-.218"), b.round(3,2)
-    assert_rational_and_equal Calc::Q("-.219"), b.round(3,3)
+    assert_rational_and_equal Calc::Q("-.219"), b.round(3, 0)
+    assert_rational_and_equal Calc::Q("-.218"), b.round(3, 1)
+    assert_rational_and_equal Calc::Q("-.218"), b.round(3, 2)
+    assert_rational_and_equal Calc::Q("-.219"), b.round(3, 3)
   end
 
   def test_cfappr
-    x = Calc::Q(43,30)
+    x = Calc::Q(43, 30)
     assert_rational_and_equal x, x.cfappr(0)
-    assert_rational_and_equal Calc::Q("10/7"), x.cfappr(10,0)
-    assert_rational_and_equal Calc::Q("13/9"), x.cfappr(10,1)
-    assert_rational_and_equal Calc::Q("10/7"), x.cfappr(10,16)
+    assert_rational_and_equal Calc::Q("10/7"), x.cfappr(10, 0)
+    assert_rational_and_equal Calc::Q("13/9"), x.cfappr(10, 1)
+    assert_rational_and_equal Calc::Q("10/7"), x.cfappr(10, 16)
     pi = Calc.pi("1e-10")
-    assert_rational_and_equal Calc::Q("311/99"), pi.cfappr(100,16)
-    assert_rational_and_equal Calc::Q("22/7"), pi.cfappr(".01",16)
-    assert_rational_and_equal Calc::Q("355/113"), pi.cfappr("1e-6",16)
-    x = Calc::Q(17,12)
-    assert_rational_and_equal Calc::Q("4/3"), x.cfappr(4,0)
-    assert_rational_and_equal Calc::Q("3/2"), x.cfappr(4,1)
-    assert_rational_and_equal Calc::Q("3/2"), x.cfappr(4,16)
+    assert_rational_and_equal Calc::Q("311/99"), pi.cfappr(100, 16)
+    assert_rational_and_equal Calc::Q("22/7"), pi.cfappr(".01", 16)
+    assert_rational_and_equal Calc::Q("355/113"), pi.cfappr("1e-6", 16)
+    x = Calc::Q(17, 12)
+    assert_rational_and_equal Calc::Q("4/3"), x.cfappr(4, 0)
+    assert_rational_and_equal Calc::Q("3/2"), x.cfappr(4, 1)
+    assert_rational_and_equal Calc::Q("3/2"), x.cfappr(4, 16)
   end
 
   def test_cfsim
@@ -839,13 +837,13 @@ class TestQ < MiniTest::Test
   end
 
   def test_cmp
-    assert_rational_and_equal -1, Calc::Q(3).cmp(4)
+    assert_rational_and_equal(-1, Calc::Q(3).cmp(4))
     assert_rational_and_equal 1, Calc::Q(4).cmp(3)
     assert_rational_and_equal 0, Calc::Q(4).cmp(4)
-    assert_complex_parts [1,-1], Calc::Q(3).cmp(Calc::C(0,4))
-    assert_complex_parts [1,-1], Calc::Q(4).cmp(Calc::C(0,4))
-    assert_complex_parts [1,-1], Calc::Q(5).cmp(Calc::C(0,4))
-    assert_complex_parts [-1,-1], Calc::Q(-5).cmp(Calc::C(0,4))
+    assert_complex_parts [1, -1], Calc::Q(3).cmp(Calc::C(0, 4))
+    assert_complex_parts [1, -1], Calc::Q(4).cmp(Calc::C(0, 4))
+    assert_complex_parts [1, -1], Calc::Q(5).cmp(Calc::C(0, 4))
+    assert_complex_parts [-1, -1], Calc::Q(-5).cmp(Calc::C(0, 4))
   end
 
   def test_comb
@@ -925,8 +923,8 @@ class TestQ < MiniTest::Test
   end
 
   def test_estr
-    assert_equal "Calc::Q(1,4)", Calc::Q(1,4).estr
-    assert_equal "Calc::Q(-11,15)", Calc::Q(-11,15).estr
+    assert_equal "Calc::Q(1,4)", Calc::Q(1, 4).estr
+    assert_equal "Calc::Q(-11,15)", Calc::Q(-11, 15).estr
     assert_equal "Calc::Q(0)", Calc::Q(0).estr
     assert_equal "Calc::Q(4)", Calc::Q(4).estr
   end
@@ -934,11 +932,11 @@ class TestQ < MiniTest::Test
   def test_euler
     assert_rational_and_equal 1, Calc::Q(0).euler
     assert_rational_and_equal 0, Calc::Q(1).euler
-    assert_rational_and_equal -1, Calc::Q(2).euler
+    assert_rational_and_equal(-1, Calc::Q(2).euler)
     assert_rational_and_equal 0, Calc::Q(3).euler
     assert_rational_and_equal 5, Calc::Q(4).euler
     assert_rational_and_equal 0, Calc::Q(5).euler
-    assert_rational_and_equal -61, Calc::Q(6).euler
+    assert_rational_and_equal(-61, Calc::Q(6).euler)
   end
 
   def test_factor
@@ -970,17 +968,17 @@ class TestQ < MiniTest::Test
 
   def test_frac
     assert_rational_and_equal 0, Calc::Q(3).frac
-    assert_rational_and_equal Calc::Q(1,7), Calc::Q(22,7).frac
-    assert_rational_and_equal Calc::Q(6,7), Calc::Q(27,7).frac
-    assert_rational_and_equal Calc::Q(-1,8), Calc::Q("-3.125").frac
+    assert_rational_and_equal Calc::Q(1, 7), Calc::Q(22, 7).frac
+    assert_rational_and_equal Calc::Q(6, 7), Calc::Q(27, 7).frac
+    assert_rational_and_equal Calc::Q(-1, 8), Calc::Q("-3.125").frac
   end
 
   def test_gcd
     assert_rational_and_equal 12, Calc::Q(12).gcd
     assert_rational_and_equal 4, Calc::Q(12).gcd(-8)
     assert_rational_and_equal 6, Calc::Q(12).gcd(-24, 30)
-    assert_rational_and_equal Calc::Q("0.02"), Calc::Q(9,10).gcd(Calc::Q(11,5), Calc::Q(4,25))
-    assert_rational_and_equal 0, Calc::Q(0).gcd(0,0,0,0)
+    assert_rational_and_equal Calc::Q("0.02"), Calc::Q(9, 10).gcd(Calc::Q(11, 5), Calc::Q(4, 25))
+    assert_rational_and_equal 0, Calc::Q(0).gcd(0, 0, 0, 0)
   end
 
   def test_gcdrem

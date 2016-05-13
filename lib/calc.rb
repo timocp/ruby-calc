@@ -5,7 +5,6 @@ require "calc/q"
 require "calc/c"
 
 module Calc
-
   # builtins implemented as instance methods on Calc::Q or Calc::C
   BUILTINS1 = %i(abs acos acosh acot acoth acsc acsch agd appr arg asec asech
                  asin asinh atan atan2 atanh bit bernoulli bround catalan ceil
@@ -13,9 +12,9 @@ module Calc
                  digit digits estr euler exp fact factor fcnt frac frem fib
                  floor gcd gcdrem gd hypot im inverse iseven isimag isint isodd
                  isreal num perm power quomod re round sec sech sin sinh sqrt
-                 tan tanh)
+                 tan tanh).freeze
   # builtins implemented as module methods on Calc
-  BUILTINS2 = %i(config freebernoulli freeeuler pi polar)
+  BUILTINS2 = %i(config freebernoulli freeeuler pi polar).freeze
 
   ALL_BUILTINS = BUILTINS1 + BUILTINS2
 
@@ -36,11 +35,11 @@ module Calc
     end
   end
 
-  def self.Q(*args)
+  def self.Q(*args) # rubocop:disable Style/MethodName
     Q.new(*args)
   end
-  
-  def self.C(*args)
+
+  def self.C(*args) # rubocop:disable Style/MethodName
     C.new(*args)
   end
 
@@ -55,5 +54,4 @@ module Calc
       end
     end.inject(:+) / args.size
   end
-
 end

@@ -4,10 +4,10 @@ require "bundler/setup"
 require "calc"
 
 q = Calc::Q(1)
-c = Calc::C(1,1)
-ALL = [Calc, q, c]
-RAT = [Calc, q]
-COM = [Calc, c]
+c = Calc::C(1, 1)
+all = [Calc, q, c]
+rat = [Calc, q]
+com = [Calc, c]
 builtins = Calc::Q(0)
 builtins_done = Calc::Q(0)
 
@@ -20,66 +20,66 @@ builtins_done = Calc::Q(0)
 # rand/random related functions are also excluded as there are other ruby
 # methods / libs for good random number generation.
 [
-  [:abs, ALL],
+  [:abs, all],
   # access - use File::Stat
-  [:acos, ALL],
-  [:acosh, ALL],
-  [:acot, ALL],
-  [:acoth, ALL],
-  [:acsc, ALL],
-  [:acsch, ALL],
-  [:agd, ALL],
+  [:acos, all],
+  [:acosh, all],
+  [:acot, all],
+  [:acoth, all],
+  [:acsc, all],
+  [:acsch, all],
+  [:agd, all],
   # append - use Arrays
-  [:appr, ALL],
-  [:arg, ALL],
+  [:appr, all],
+  [:arg, all],
   # argv - use ARGV
-  [:asec, ALL],
-  [:asech, ALL],
-  [:asin, ALL],
-  [:asinh, ALL],
+  [:asec, all],
+  [:asech, all],
+  [:asin, all],
+  [:asinh, all],
   # assoc - use {}
-  [:atan, ALL],
-  [:atan2, RAT],
-  [:atanh, ALL],
+  [:atan, all],
+  [:atan2, rat],
+  [:atanh, all],
   [:avg, Calc],
   # base - use Calc.config
   # base2 - unlikely to implement as config item
-  [:bernoulli, RAT],
-  [:bit, RAT],
+  [:bernoulli, rat],
+  [:bit, rat],
   # blk - not sure why you'd need these in a ruby script
   # blkcpy
   # bklfree
   # blocks
-  [:bround, ALL],
+  [:bround, all],
   # calc_tty
   # calcleve
   # calcpath
-  [:catalan, RAT],
-  [:ceil, ALL],
-  [:cfappr, RAT],
-  [:cfsim, RAT],
-  [:char, RAT],
+  [:catalan, rat],
+  [:ceil, all],
+  [:cfappr, rat],
+  [:cfsim, rat],
+  [:char, rat],
   # cmdbuf use ARGV
-  [:cmp, ALL],
-  [:comb, ALL],
+  [:cmp, all],
+  [:comb, all],
   # config - implement on Calc module
-  [:conj, ALL],
+  [:conj, all],
   # copy - block stuff
-  [:cos, ALL],
-  [:cosh, ALL],
-  [:cot, ALL],
-  [:coth, ALL],
+  [:cos, all],
+  [:cosh, all],
+  [:cot, all],
+  [:coth, all],
   # count - use Array#count{} etc
   # cp - use Vector#cross_product (from matrix lib)
-  [:csc, ALL],
-  [:csch, ALL],
+  [:csc, all],
+  [:csch, all],
   # ctime - use Time.now / Time.now.ctime
   # custom - n/a no plans to access custom compiled functions yet
   # delete - use Array#delete
-  [:den, RAT],
+  [:den, rat],
   # det - use Matrix#det
-  [:digit, RAT],
-  [:digits, RAT],
+  [:digit, rat],
+  [:digits, rat],
   # display - use Calc.config
   # dp - use Vector#dot
   # epsilon - use Calc.config
@@ -87,16 +87,16 @@ builtins_done = Calc::Q(0)
   # errmax - only useful in command line calc
   # errno - no libcalc interface
   # error - use raise and ruby exceptions
-  [:estr, ALL],
-  [:euler, RAT],
+  [:estr, all],
+  [:euler, rat],
   # eval - too hard for now :)
-  [:exp, ALL],
-  [:factor, RAT],
-  [:fcnt, RAT],
-  [:fib, RAT],
+  [:exp, all],
+  [:factor, rat],
+  [:fcnt, rat],
+  [:fib, rat],
   # forall - use ruby loops
-  [:frem, RAT],
-  [:fact, RAT],
+  [:frem, rat],
+  [:fact, rat],
   # fclose and other file related funcs: use File
   # feof
   # ferror
@@ -108,7 +108,7 @@ builtins_done = Calc::Q(0)
   # fgets
   # fgetstr
   # files
-  [:floor, RAT],
+  [:floor, rat],
   # fopen
   # fpathopen
   # fprintf
@@ -127,27 +127,27 @@ builtins_done = Calc::Q(0)
   # fseek
   # fsize
   # ftell
-  [:frac, ALL],
-  [:gcd, RAT],
-  [:gcdrem, RAT],
-  [:gd, ALL],
+  [:frac, all],
+  [:gcd, rat],
+  [:gcdrem, rat],
+  [:gd, all],
   # getenv - use ENV
   # hash - not necessary
   # head - use Array
-  [:highbit, RAT],
+  [:highbit, rat],
   [:hmean, Calc],
-  [:hnrmod, RAT],
-  [:hypot, RAT],
-  [:ilog, RAT],
-  [:ilog10, RAT],
-  [:ilog2, RAT],
-  [:im, ALL],
+  [:hnrmod, rat],
+  [:hypot, rat],
+  [:ilog, rat],
+  [:ilog10, rat],
+  [:ilog2, rat],
+  [:im, all],
   # indices - use ruby Hash/Matrix
   # inputlevel - calc / eval related
   # insert - use Array
-  [:int, ALL],
-  [:inverse, ALL],
-  [:iroot, RAT],
+  [:int, all],
+  [:inverse, all],
+  [:iroot, rat],
   # mostly the is* don't make sense in ruby, since only numbers are mapped to
   # ruby types.  the ones we do have are named as predicates (iseven-> even?)
   # isassoc
@@ -156,42 +156,42 @@ builtins_done = Calc::Q(0)
   # isconfig
   # isdefined
   # iserror   1     where a value is an error
-  [:iseven, ALL],
+  [:iseven, all],
   # isfile
   # ishash
   # isident
-  [:isint, ALL],
+  [:isint, all],
   # islist
   # ismat
-  [:ismult, RAT],
+  [:ismult, rat],
   # isnull
   # isnum
   # isobj
   # isobjtype
-  [:isodd, ALL],
+  [:isodd, all],
   # isoctet
-  [:isprime, RAT],
+  [:isprime, rat],
   # isptr
-  [:isqrt, RAT],
+  [:isqrt, rat],
   # isrand
   # israndom
-  [:isreal, RAT],
-  [:isrel, RAT],
+  [:isreal, rat],
+  [:isrel, rat],
   # isstr
   # issimple
-  [:issq, RAT],
+  [:issq, rat],
   # istype
-  [:jacobi, RAT],
+  [:jacobi, rat],
   # join - use Array#join
-  [:lcm, RAT],
-  [:lcmfact, RAT],
-  [:lfactor, RAT],
+  [:lcm, rat],
+  [:lcmfact, rat],
+  [:lfactor, rat],
   # links - interesting but not necessary
   # list - use Array
-  [:ln, ALL],
-  [:log, ALL],
-  [:lowbit, RAT],
-  [:ltol, RAT],
+  [:ln, all],
+  [:log, all],
+  [:lowbit, rat],
+  [:ltol, rat],
   # makelist - use Array
   # matdim, etc - use ruby Matrix library
   # matfill
@@ -202,21 +202,21 @@ builtins_done = Calc::Q(0)
   # mattrans
   [:max, Calc],
   # memsize - not exposed by libcalc
-  [:meq, RAT],
+  [:meq, rat],
   [:min, Calc],
-  [:minv, RAT],
-  [:mmin, ALL],
-  [:mne, RAT],
-  [:mod, ALL],
+  [:minv, rat],
+  [:mmin, all],
+  [:mne, rat],
+  [:mod, all],
   # modify - use Array/Matrix
   # name - block stuff
-  [:near, RAT],
+  [:near, rat],
   # newerror - use ruby exceptions
-  [:nextcand, RAT],
-  [:nextprime, RAT],
-  [:norm, ALL],
+  [:nextcand, rat],
+  [:nextprime, rat],
+  [:norm, all],
   # null - use ruby nil
-  [:num, RAT],
+  [:num, rat],
   # ord - use String#ord
   # isupper etc - use String
   # islower
@@ -230,27 +230,27 @@ builtins_done = Calc::Q(0)
   # isspace
   # isxdigit
   # param - use ruby method arguments
-  [:perm, RAT],
-  [:prevcand, RAT],
-  [:prevprime, RAT],
-  [:pfact, RAT],
+  [:perm, rat],
+  [:prevcand, rat],
+  [:prevprime, rat],
+  [:pfact, rat],
   [:pi, Calc],
-  [:pix, RAT],
-  [:places, RAT],
-  [:pmod, RAT],
-  [:polar, COM],
-  [:poly, ALL], # MAYBE - not in linklib
+  [:pix, rat],
+  [:places, rat],
+  [:pmod, rat],
+  [:polar, com],
+  [:poly, all], # MAYBE - not in linklib
   # pop - use Array
-  [:popcnt, RAT],
-  [:power, ALL],
+  [:popcnt, rat],
+  [:power, all],
   # protect - block stuff
-  [:ptest, RAT],
+  [:ptest, rat],
   # printf - use ruby printf
   # prompt - use gets (or highline, etc)
   # push - use array
   # putenv - use ENV
-  [:quo, ALL],
-  [:quomod, RAT],
+  [:quo, all],
+  [:quomod, rat],
   # rand - no random stuff needed
   # randbit
   # random
@@ -261,40 +261,40 @@ builtins_done = Calc::Q(0)
   # rcout - no REDC
   # rcpow - no REDC
   # rcsq - no REDC
-  [:re, ALL],
+  [:re, all],
   # remove - use Array
   # reverse - use Array/Matrix
   # rewind - use File
   # rm - use File
-  [:root, ALL],
-  [:round, ALL],
+  [:root, all],
+  [:round, all],
   # rsearch - use Matrix
   # runtime - use Process#times
   # saveval - not required
-  [:scale, ALL],
+  [:scale, all],
   # scan - use ruby i/o methods
   # scanf
   # search - use Array/Matrix methods
-  [:sec, ALL],
-  [:sech, ALL],
+  [:sec, all],
+  [:sech, all],
   # seed - for random stuff, not needed
   # segment - list/matrix related
   # select
   # setbit - not sure whta this is for
-  [:sgn, ALL],
+  [:sgn, all],
   # sha1 - use ruby digest module (actually, don't use sha1)
-  [:sin, ALL],
-  [:sinh, ALL],
+  [:sin, all],
+  [:sinh, all],
   # size - related to non-numeric types
   # sizeof - not necessary
   # sleep - use ruby sleep
   # sort - use ruby sort
-  [:sqrt, ALL],
+  [:sqrt, all],
   # srand - no random stuff
   # srandom
   [:ssq, Calc],
   # stoponerror - not in link library
-  [:str, ALL],
+  [:str, all],
   # strtoupper - use ruby Strings instead of this stuff
   # strtolower
   # strcat
@@ -316,21 +316,21 @@ builtins_done = Calc::Q(0)
   # system - use ruby system
   # systime - use Process#times
   # tail - use Array
-  [:tan, ALL],
-  [:tanh, ALL],
+  [:tan, all],
+  [:tanh, all],
   # test - not needed; truthiness in ruby is different. for Q/C, use !zero?
   # time - use Time.now.to_i
-  [:trunc, RAT],
+  [:trunc, rat],
   # ungetc - i/o stuff
   # usertime - use Process#times
   [:version, Calc],
-  [:xor, RAT],
+  [:xor, rat]
 ].each do |func, (*things)|
   builtins += 1
   missing = [*things].reject do |thing|
     thing.respond_to?(func)
   end
-  if missing.size > 0
+  if missing.any?
     puts("Expected method #{ func } on " + missing.map do |thing|
       thing.is_a?(Module) ? "module #{ thing }" : "class #{ thing.class }"
     end.join(", "))
@@ -341,8 +341,8 @@ end
 
 # check for compatibility with built in ruby equivalents
 
-ruby_r = Rational(1,2)
-ruby_c = Complex(1,2)
+ruby_r = Rational(1, 2)
+ruby_c = Complex(1, 2)
 
 (ruby_r.methods - q.methods).sort.each do |m|
   puts "Calc::Q needs method #{ m } for Rational compatibility"
@@ -355,7 +355,7 @@ end
 [
   ["ruby-calc builtins", builtins_done, builtins],
   ["Rational compatibility", (ruby_r.methods & q.methods).size, ruby_r.methods.size.to_f],
-  ["Complex compatibility", (ruby_c.methods & c.methods).size, ruby_c.methods.size.to_f],
+  ["Complex compatibility", (ruby_c.methods & c.methods).size, ruby_c.methods.size.to_f]
 ].each do |goal, done, total|
-  printf "%25s:  %3d/%3d (%3.1f%%)\n", goal, done, total, done/total*100
+  printf "%25s:  %3d/%3d (%3.1f%%)\n", goal, done, total, done / total * 100
 end

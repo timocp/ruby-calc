@@ -1409,7 +1409,7 @@ cq_gcd(int argc, VALUE * argv, VALUE self)
 
 /* Returns greatest integer divisor of self relatively prime to other
  *
- * @result [Calc::Q]
+ * @return [Calc::Q]
  *  Calc::Q(6).gcdrem(15) #=> Calc::Q(2)
  *  Calc::Q(15).gcdrem(6) #=> Calc::Q(5)
  */

@@ -37,12 +37,12 @@ module Calc
     # @example
     #  Calc::Q(88).char #=> "X"
     def char
-      raise MathError, "Non-integer for char" if !self.int?
-      raise MathError, "Out of range for char" unless self.between?(0,255)
-      if self.zero?
+      raise MathError, "Non-integer for char" unless int?
+      raise MathError, "Out of range for char" unless between?(0, 255)
+      if zero?
         ""
       else
-        self.to_i.chr
+        to_i.chr
       end
     end
 
@@ -71,7 +71,7 @@ module Calc
     end
 
     # Gudermannian function
-    # 
+    #
     # @param eps [Calc::Q] (optional) calculation accuracy
     # @return [Calc::Q]
     # @example
@@ -96,7 +96,7 @@ module Calc
     end
 
     def inspect
-      "Calc::Q(#{ to_s })"
+      "Calc::Q(#{ self })"
     end
 
     def iseven
@@ -165,12 +165,12 @@ module Calc
     # libcalc has no concept of floating point numbers.  so we use ruby's
     # Rational#to_f
     def to_f
-      self.to_r.to_f
+      to_r.to_f
     end
 
     # convert to a core ruby Rational
     def to_r
-      Rational(self.numerator.to_i, self.denominator.to_i)
+      Rational(numerator.to_i, denominator.to_i)
     end
 
     # aliases for compatibility with ruby Fixnum/Bignum/Rational

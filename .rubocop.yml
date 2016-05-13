@@ -1,0 +1,36 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: 2.0
+
+# module/class docs are in the c extension
+Style/Documentation:
+  Enabled: false
+
+Style/SpaceInsideStringInterpolation:
+  EnforcedStyle: space
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+
+# long classes are OK here
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Style/GlobalVars:
+  Exclude: [ "ext/**/extconf.rb" ]
+
+Style/NumericLiterals:
+  Exclude: [ "test/*.rb" ]
+
+Style/ClassAndModuleChildren:
+  Exclude: [ "test/*.rb" ]
+
+Metrics/MethodLength:
+  Exclude: [ "test/*.rb" ]

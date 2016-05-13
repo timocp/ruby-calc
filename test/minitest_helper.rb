@@ -1,10 +1,9 @@
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'calc'
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+require "calc"
 
-require 'minitest/autorun'
+require "minitest/autorun"
 
 module Minitest::Assertions
-
   def assert_alias(obj, m1, m2)
     assert obj.method(m1) == obj.method(m2), "expected ##{ m2 } to be an alias of ##{ m1 }"
   end
@@ -68,5 +67,4 @@ module Minitest::Assertions
   ensure
     Calc::Q.set_default_epsilon(old_eps)
   end
-
 end

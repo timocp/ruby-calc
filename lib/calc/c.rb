@@ -124,7 +124,7 @@ module Calc
       s = self.class.name
       s << "("
       s << (re.int? ? re.to_s : re.estr)
-      s << "," + (im.int? ? im.to_s : im.estr) if !im.zero?
+      s << "," + (im.int? ? im.to_s : im.estr) unless im.zero?
       s << ")"
       s
     end
@@ -230,21 +230,19 @@ module Calc
     end
 
     def to_s(*args)
-      r = self.re
-      i = self.im
-      if i.zero?
-        r.to_s(*args)
-      elsif r.zero?
-        imag_part(i, *args)
-      elsif i > 0
-        r.to_s(*args) + "+" + imag_part(i, *args)
+      if im.zero?
+        re.to_s(*args)
+      elsif re.zero?
+        imag_part(im, *args)
+      elsif im > 0
+        re.to_s(*args) + "+" + imag_part(im, *args)
       else
-        r.to_s(*args) + "-" + imag_part(i.abs, *args)
+        re.to_s(*args) + "-" + imag_part(im.abs, *args)
       end
     end
 
     def inspect
-      "Calc::C(#{ to_s })"
+      "Calc::C(#{ self })"
     end
 
     # aliases for compatibility with ruby Complex
