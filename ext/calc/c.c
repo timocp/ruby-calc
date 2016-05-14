@@ -670,6 +670,19 @@ cc_sinh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &c_sinh);
 }
 
+/* Returns true if real and imaginary parts are both zero
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::C(1, 1).zero? #=> false
+ *  Calc::C(0, 0).zero? #=> true
+ */
+static VALUE
+cc_zerop(VALUE self)
+{
+    return ciszero((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
 /* class initialization */
 
 void
@@ -714,6 +727,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "real?", cc_realp, 0);
     rb_define_method(cC, "sin", cc_sin, -1);
     rb_define_method(cC, "sinh", cc_sinh, -1);
+    rb_define_method(cC, "zero?", cc_zerop, 0);
 
     rb_define_alias(cC, "**", "power");
     rb_define_alias(cC, "imag", "im");
