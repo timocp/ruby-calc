@@ -168,6 +168,8 @@ class TestCalc < Minitest::Test
     check_delegation :isint
     check_delegation :isreal
     check_delegation :isodd
+    check_delegation :ln
+    check_delegation :log
     check_real_delegation :num
     check_real_delegation :perm
     check_delegation :power, 2

@@ -400,4 +400,16 @@ class TestC < MiniTest::Test
     assert_complex_parts [Calc::Q("0.15"), Calc::Q("-0.25")], Calc::C("2.15", "-3.25").frac
     assert_rational_and_equal 0.5, Calc::C(1.5, 0).frac
   end
+
+  def test_ln
+    assert_complex_parts [0, -Calc.pi / 2], Calc::C(0, -1).ln
+    assert_complex_parts [0, Calc.pi / 2], Calc::C(0, 1).ln
+    assert_complex_parts [1.03972077083991796413, 0.78539816339744830962], Calc::C(2, 2).ln
+  end
+
+  def test_log
+    assert_complex_parts [0, -0.68218817692092067374], Calc::C(0, -1).log
+    assert_complex_parts [0, 0.68218817692092067374], Calc::C(0, 1).log
+    assert_complex_parts [0.45154499349597179282, 0.34109408846046033687], Calc::C(2, 2).log
+  end
 end

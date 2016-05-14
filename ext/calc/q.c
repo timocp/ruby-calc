@@ -281,43 +281,6 @@ trans_function2(int argc, VALUE * argv, VALUE self,
     return result;
 }
 
-/* similar to trans_function, but for qln and qlog; unlike the normal qfunc's,
- * they will return wrong results for self < 0, so check that first and if
- * so call the complex version.
- * ref: f_ln() and f_log() in calc's func.c
- */
-static VALUE
-log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER *),
-             COMPLEX * (*fc) (COMPLEX *, NUMBER *))
-{
-    VALUE epsilon, result;
-    NUMBER *qepsilon, *qself;
-    COMPLEX *cself;
-    setup_math_error();
-
-    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        qepsilon = NULL;
-    }
-    else {
-        qepsilon = value_to_number(epsilon, 1);
-    }
-    qself = DATA_PTR(self);
-    if (!qisneg(qself) && !qiszero(qself)) {
-        result = cq_new();
-        DATA_PTR(result) = (*fq) (qself, qepsilon ? qepsilon : conf->epsilon);
-    }
-    else {
-        cself = comalloc();
-        qfree(cself->real);
-        cself->real = qlink(qself);
-        result = complex_to_value((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
-    }
-    if (qepsilon) {
-        qfree(qepsilon);
-    }
-    return result;
-}
-
 static VALUE
 rounding_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, long, long))
 {
@@ -1508,41 +1471,6 @@ cq_inverse(VALUE self)
     return result;
 }
 
-/* Logarithm
- *
- * Note that this is like using ruby's Math.log.
- *
- * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q,Calc::C]
- * @raise [Calc::MathError] if self is zero
- * @example
- *  Calc::Q(10).ln #=> Calc::Q(2.30258509299404568402)
- */
-static VALUE
-cq_ln(int argc, VALUE * argv, VALUE self)
-{
-    return log_function(argc, argv, self, &qln, &c_ln);
-}
-
-/* Base 10 logarithm
- *
- * Note that this is like using ruby's Math.log10.
- *
- * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q,Calc::C]
- * @raise [Calc::MathError] if self is zero
- * @example
- *  Calc::Q(-1).log     #=> Calc::C(~1.36437635384184134748i)
- *  Calc::Q(10).log     #=> Calc::Q(1)
- *  Calc::Q(100).log    #=> Calc::Q(2)
- *  Calc::Q("1e10").log #=> Calc::Q(10)
- */
-static VALUE
-cq_log(int argc, VALUE * argv, VALUE self)
-{
-    return log_function(argc, argv, self, &qlog, &c_log);
-}
-
 /* Returns the numerator.  Return value has the same sign as self.
  *
  * @return [Calc::Q]
@@ -1951,8 +1879,6 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "hypot", cq_hypot, -1);
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
-    rb_define_method(cQ, "ln", cq_ln, -1);
-    rb_define_method(cQ, "log", cq_log, -1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);

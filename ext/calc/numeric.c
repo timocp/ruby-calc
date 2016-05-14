@@ -6,6 +6,53 @@
  */
 VALUE cNumeric;
 
+/* similar to trans_function, but for ln and log; the rational versions (qln,
+ * qlog) return wrong results for self < 0, so call the complex version in that
+ * case.
+ * ref: f_ln() and f_log() in calc's func.c
+ */
+static VALUE
+log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER *),
+             COMPLEX * (*fc) (COMPLEX *, NUMBER *))
+{
+    VALUE epsilon, result;
+    NUMBER *qepsilon, *qself;
+    COMPLEX *cself;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
+        qepsilon = NULL;
+    }
+    else {
+        qepsilon = value_to_number(epsilon, 1);
+    }
+    if (CALC_Q_P(self)) {
+        qself = DATA_PTR(self);
+        if (!qisneg(qself) && !qiszero(qself)) {
+            result = cq_new();
+            DATA_PTR(result) = (*fq) (qself, qepsilon ? qepsilon : conf->epsilon);
+        }
+        else {
+            cself = comalloc();
+            qfree(cself->real);
+            cself->real = qlink(qself);
+            result = complex_to_value((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
+            comfree(cself);
+        }
+    }
+    else if (CALC_C_P(self)) {
+        cself = DATA_PTR(self);
+        result = complex_to_value((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
+    }
+    else {
+        rb_raise(e_MathError, "log_function called with invalid receiver");
+    }
+    if (qepsilon) {
+        qfree(qepsilon);
+    }
+    return result;
+}
+
 NUMBER *
 sign_of_int(int r)
 {
@@ -169,6 +216,44 @@ cn_comb(VALUE self, VALUE other)
     }
 }
 
+/* Natural logarithm
+ *
+ * Note that this is like using ruby's Math.log.
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q,Calc::C]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::Q(10).ln    #=> Calc::Q(2.30258509299404568402)
+ *  Calc::Q(-10).ln   #=> Calc::C(2.30258509299404568402+3.14159265358979323846i)
+ *  Calc::C(0, 10).ln #=> Calc::C(2.30258509299404568402+1.57079632679489661923i)
+ */
+static VALUE
+cn_ln(int argc, VALUE * argv, VALUE self)
+{
+    return log_function(argc, argv, self, &qln, &c_ln);
+}
+
+/* Base 10 logarithm
+ *
+ * Note that this is like using ruby's Math.log10.
+ *
+ * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
+ * @return [Calc::Q,Calc::C]
+ * @raise [Calc::MathError] if self is zero
+ * @example
+ *  Calc::Q(-1).log     #=> Calc::C(~1.36437635384184134748i)
+ *  Calc::Q(10).log     #=> Calc::Q(1)
+ *  Calc::Q(100).log    #=> Calc::Q(2)
+ *  Calc::Q("1e10").log #=> Calc::Q(10)
+ *  Calc::C(0, 10).log  #=> Calc::C(1+~0.68218817692092067374i)
+ */
+static VALUE
+cn_log(int argc, VALUE * argv, VALUE self)
+{
+    return log_function(argc, argv, self, &qlog, &c_log);
+}
+
 /* Square root
  *
  * Calculates the square root of self (rational or complex).  If eps
@@ -240,5 +325,7 @@ define_calc_numeric(VALUE m)
     cNumeric = rb_define_class_under(m, "Numeric", rb_cData);
     rb_define_method(cNumeric, "cmp", cn_cmp, 1);
     rb_define_method(cNumeric, "comb", cn_comb, 1);
+    rb_define_method(cNumeric, "ln", cn_ln, -1);
+    rb_define_method(cNumeric, "log", cn_log, -1);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
 }
