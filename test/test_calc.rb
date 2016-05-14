@@ -27,6 +27,7 @@ class TestCalc < Minitest::Test
   end
 
   def test_avg
+    assert_nil Calc.avg
     a4 = [1, 2, 3, 4]
     a5 = [1, 2, 3, 4, 5]
     assert_rational_and_equal 3, Calc.avg(*a5)
@@ -40,6 +41,20 @@ class TestCalc < Minitest::Test
 
   def test_freeeuler
     assert_nil Calc.freeeuler
+  end
+
+  def test_hmean
+    assert_nil Calc.hmean
+    assert_rational_and_equal 1, Calc.hmean(1)
+    assert_rational_and_equal Calc::Q("4/3"), Calc.hmean(1, 2)
+    assert_rational_and_equal Calc::Q("18/11"), Calc.hmean(1, 2, 3)
+    assert_rational_and_equal Calc::Q("48/25"), Calc.hmean(1, 2, 3, 4)
+    assert_rational_and_equal 0, Calc.hmean(1, 2, 0, 3)
+    assert_rational_and_equal Calc::Q("180/11"), Calc.hmean(10, 20, 30)
+    assert_complex_parts [0, Calc::Q("18/11")],
+                         Calc.hmean(Calc::C(0, 1), Calc::C(0, 2), Calc::C(0, 3))
+    assert_complex_parts [Calc::Q("8/5"), Calc::Q("4/5")], Calc.hmean(1, Calc::C(0, 2))
+    assert_complex_parts [2, 2], Calc.hmean(2, Complex(0, 2))
   end
 
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
