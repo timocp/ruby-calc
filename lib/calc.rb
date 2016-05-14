@@ -16,7 +16,9 @@ module Calc
   ).freeze
 
   # builtins implemented as module methods on Calc
-  BUILTINS2 = %i(avg config freebernoulli freeeuler hean pi polar).freeze
+  BUILTINS2 = %i(
+    avg config freebernoulli freeeuler hean hnrmod pi polar
+  ).freeze
 
   ALL_BUILTINS = BUILTINS1 + BUILTINS2
 

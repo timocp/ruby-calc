@@ -136,7 +136,7 @@ builtins_done = Calc::Q(0)
   # head - use Array
   [:highbit, rat],
   [:hmean, Calc],
-  [:hnrmod, rat],
+  [:hnrmod, Calc],
   [:hypot, rat],
   [:ilog, rat],
   [:ilog10, rat],

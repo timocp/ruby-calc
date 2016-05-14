@@ -57,6 +57,11 @@ class TestCalc < Minitest::Test
     assert_complex_parts [2, 2], Calc.hmean(2, Complex(0, 2))
   end
 
+  def test_hnrmod
+    assert_rational_and_equal 0, Calc.hnrmod(2**177 - 1, 1, 177, -1)
+    assert_rational_and_equal 33827019788296445, Calc.hnrmod(10**40, 17, 51, 1)
+  end
+
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
 
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)
