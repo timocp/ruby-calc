@@ -1009,4 +1009,22 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0).ilog(3) }
     assert_raises(Calc::MathError) { Calc::Q(10).ilog(1) }
   end
+
+  def test_ilog10
+    assert_rational_and_equal 0, Calc::Q(7).ilog10
+    assert_rational_and_equal 1, Calc::Q("77.7").ilog10
+    assert_rational_and_equal 2, Calc::Q(777).ilog10
+    assert_rational_and_equal(-3, Calc::Q(".00777").ilog10)
+    assert_rational_and_equal 27, Calc::Q("-1e27").ilog10
+    assert_raises(Calc::MathError) { Calc::Q(0).ilog10 }
+  end
+
+  def test_ilog2
+    assert_rational_and_equal 0, Calc::Q(1).ilog2
+    assert_rational_and_equal 1, Calc::Q(2).ilog2
+    assert_rational_and_equal 1, Calc::Q(3).ilog2
+    assert_rational_and_equal 2, Calc::Q(4).ilog2
+    assert_rational_and_equal(-4, Calc::Q("1/15").ilog2)
+    assert_raises(Calc::MathError) { Calc::Q(0).ilog2 }
+  end
 end

@@ -420,4 +420,18 @@ class TestC < MiniTest::Test
     assert_rational_and_equal 4, Calc::C(100, 100).ilog(3)
     assert_raises(Calc::MathError) { Calc::C(0, 10).ilog(1) }
   end
+
+  def test_ilog10
+    assert_rational_and_equal 0, Calc::C(0, 7).ilog10
+    assert_rational_and_equal 1, Calc::C(0, 99).ilog10
+    assert_rational_and_equal 2, Calc::C(0, 100).ilog10
+  end
+
+  def test_ilog2
+    assert_rational_and_equal 0, Calc::C(0, 1).ilog2
+    assert_rational_and_equal 1, Calc::C(0, 2).ilog2
+    assert_rational_and_equal 1, Calc::C(0, 3).ilog2
+    assert_rational_and_equal 2, Calc::C(0, 4).ilog2
+    assert_rational_and_equal(-4, Calc::C(0, "1/15").ilog2)
+  end
 end

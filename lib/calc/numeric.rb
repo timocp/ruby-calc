@@ -43,16 +43,6 @@ module Calc
       appr(1, 1)
     end
 
-    # Returns 1 if self is an integer, otherwise 0.
-    #
-    # @return [Calc::Q]
-    # @example
-    #   Calc::Q(1).isint    #=> Calc::Q(1)
-    #   Calc::Q(0.5).isint  #=> Calc::Q(0)
-    def isint
-      int? ? Calc::Q(1) : Calc::Q(0)
-    end
-
     # Floor
     #
     # For real self, returns the greatest integer not greater than self.
@@ -66,6 +56,44 @@ module Calc
     #   Calc::C(7.8, 9.1).floor #=> Calc::C(7+9i)
     def floor
       appr(1, 0)
+    end
+
+    # Floor of logarithm to base 10
+    #
+    # Returns the greatest integer n for which 10^n <= self.
+    #
+    # @return [Calc::Q]
+    # @raise [Calc::MathError] if self is zero
+    # @example
+    #   Calc::Q("1/15").ilog10 #=> Calc::Q(-2)
+    #   Calc::Q(777).ilog10    #=> Calc::Q(2)
+    #   Calc::C(10, 10).ilog10 #=> Calc::Q(1)
+    def ilog10
+      ilog 10
+    end
+
+    # Floor of logarithm to base 2
+    #
+    # Returns the greatest integer n for which 2^n <= self
+    #
+    # @return [Calc::Q]
+    # @raise [Calc::MathError] if self is zero
+    # @example
+    #   Calc::Q("1/15").ilog2 #=> Calc::Q(-4)
+    #   Calc::Q(777).ilog2    #=> Calc::Q(9)
+    #   Calc::C(10, 10).ilog2 #=> Calc::Q(3)
+    def ilog2
+      ilog 2
+    end
+
+    # Returns 1 if self is an integer, otherwise 0.
+    #
+    # @return [Calc::Q]
+    # @example
+    #   Calc::Q(1).isint    #=> Calc::Q(1)
+    #   Calc::Q(0.5).isint  #=> Calc::Q(0)
+    def isint
+      int? ? Calc::Q(1) : Calc::Q(0)
     end
 
     def remainder(y)
