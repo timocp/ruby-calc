@@ -172,6 +172,7 @@ gd     | z [, b]    | gudermannian function of z within accuracy b
 highbit| x          | high bit number in base 2 representation
 hmean  | x, y, ...  | harmonic mean
 hnrmod | v, h, n, r | computes v % (h * 2^n + r)
+ilog   | x, b       | floor of logarithm to base b
 inverse| x          | inverse of x
 iseven | x          | whether a value is even (also: #even?)
 isimag | x          | whether a value is imaginary (also: #imag?)

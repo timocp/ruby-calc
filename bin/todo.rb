@@ -138,9 +138,9 @@ builtins_done = Calc::Q(0)
   [:hmean, Calc],
   [:hnrmod, Calc],
   [:hypot, rat],
-  [:ilog, rat],
-  [:ilog10, rat],
-  [:ilog2, rat],
+  [:ilog, all],
+  [:ilog10, all],
+  [:ilog2, all],
   [:im, all],
   # indices - use ruby Hash/Matrix
   # inputlevel - calc / eval related

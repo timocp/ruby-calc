@@ -161,6 +161,7 @@ class TestCalc < Minitest::Test
     check_delegation :gd
     check_real_delegation :highbit
     check_real_delegation :hypot, 2
+    check_delegation :ilog, 2
     check_delegation :im
     check_delegation :inverse
     check_delegation :iseven

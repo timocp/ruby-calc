@@ -412,4 +412,12 @@ class TestC < MiniTest::Test
     assert_complex_parts [0, 0.68218817692092067374], Calc::C(0, 1).log
     assert_complex_parts [0.45154499349597179282, 0.34109408846046033687], Calc::C(2, 2).log
   end
+
+  def test_ilog
+    assert_rational_and_equal 2, Calc::C(10, 10).ilog(3)
+    assert_rational_and_equal 4, Calc::C(10, 100).ilog(3)
+    assert_rational_and_equal 4, Calc::C(100, 10).ilog(3)
+    assert_rational_and_equal 4, Calc::C(100, 100).ilog(3)
+    assert_raises(Calc::MathError) { Calc::C(0, 10).ilog(1) }
+  end
 end

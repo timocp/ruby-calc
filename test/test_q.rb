@@ -999,4 +999,14 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 27, Calc::Q(2).**(27).highbit
     assert_raises(Calc::MathError) { Calc::Q(0.5).highbit }
   end
+
+  def test_ilog
+    assert_rational_and_equal 0, Calc::Q(2).ilog(3)
+    assert_rational_and_equal 1, Calc::Q(8).ilog(3)
+    assert_rational_and_equal 1, Calc::Q("8.9").ilog(3)
+    assert_rational_and_equal(-2, Calc::Q("1/8").ilog(3))
+    assert_rational_and_equal 4, Calc::Q(100).ilog(3)
+    assert_raises(Calc::MathError) { Calc::Q(0).ilog(3) }
+    assert_raises(Calc::MathError) { Calc::Q(10).ilog(1) }
+  end
 end

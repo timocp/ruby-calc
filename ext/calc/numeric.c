@@ -216,6 +216,48 @@ cn_comb(VALUE self, VALUE other)
     }
 }
 
+/* floor of logarithm to specified integer base
+ *
+ * x.ilog(b) returns the greatest integer for which b^n <= abs(x)
+ *
+ * @param base [Integer]
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if x is zero, b is non-integer or b is <= 1
+ * @example
+ *  Calc::Q(2).ilog(3) #=> Calc::Q(0)
+ *  Calc::Q(8).ilog(3) #=> Calc::Q(1)
+ *  Calc::Q(9).ilog(3) #=> Calc::Q(2)
+ */
+static VALUE
+cn_ilog(VALUE self, VALUE base)
+{
+    VALUE result;
+    NUMBER *qbase, *qresult;
+    setup_math_error();
+
+    qbase = value_to_number(base, 0);
+    if (qisfrac(qbase) || qiszero(qbase) || qisunit(qbase) || qisneg(qbase)) {
+        qfree(qbase);
+        rb_raise(e_MathError, "base must be an integer > 1");
+    }
+    if (CALC_Q_P(self)) {
+        qresult = qilog(DATA_PTR(self), qbase->num);
+    }
+    else if (CALC_C_P(self)) {
+        qresult = c_ilog(DATA_PTR(self), qbase->num);
+    }
+    else {
+        rb_raise(rb_eTypeError, "cn_ilog called with invalid receiver");
+    }
+    qfree(qbase);
+    if (!qresult) {
+        rb_raise(e_MathError, "invalid argument for ilog");
+    }
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Natural logarithm
  *
  * Note that this is like using ruby's Math.log.
@@ -325,6 +367,7 @@ define_calc_numeric(VALUE m)
     cNumeric = rb_define_class_under(m, "Numeric", rb_cData);
     rb_define_method(cNumeric, "cmp", cn_cmp, 1);
     rb_define_method(cNumeric, "comb", cn_comb, 1);
+    rb_define_method(cNumeric, "ilog", cn_ilog, 1);
     rb_define_method(cNumeric, "ln", cn_ln, -1);
     rb_define_method(cNumeric, "log", cn_log, -1);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
