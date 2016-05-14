@@ -175,6 +175,7 @@ hnrmod | v, h, n, r | computes v % (h * 2^n + r)
 ilog   | x, b       | floor of logarithm to base b
 ilog10 | x          | floor of logarithm to base 10
 ilog2  | x          | floor of logarithm to base 2
+int    | x          | integer part of x
 inverse| x          | inverse of x
 iseven | x          | whether a value is even (also: #even?)
 isimag | x          | whether a value is imaginary (also: #imag?)

@@ -1439,6 +1439,30 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
     return trans_function2(argc, argv, self, &qhypot);
 }
 
+/* Integer part of the number
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(3).int      #=> Calc::Q(3)
+ *  Calc::Q("30/7").int #=> Calc::Q(4)
+ *  Calc::Q(-3.125).int #=> Calc::Q(-3)
+ */
+static VALUE
+cq_int(VALUE self)
+{
+    VALUE result;
+    NUMBER *qself;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisint(qself)) {
+        return self;
+    }
+    result = cq_new();
+    DATA_PTR(result) = qint(qself);
+    return result;
+}
+
 /* Returns true if the number is an integer.
  *
  * @return [Boolean]
@@ -1877,6 +1901,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "gcdrem", cq_gcdrem, 1);
     rb_define_method(cQ, "highbit", cq_highbit, 0);
     rb_define_method(cQ, "hypot", cq_hypot, -1);
+    rb_define_method(cQ, "int", cq_int, 0);
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
     rb_define_method(cQ, "num", cq_num, 0);

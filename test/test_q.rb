@@ -1027,4 +1027,11 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-4, Calc::Q("1/15").ilog2)
     assert_raises(Calc::MathError) { Calc::Q(0).ilog2 }
   end
+
+  def test_int
+    assert_rational_and_equal 3, Calc::Q(3).int
+    assert_rational_and_equal 3, Calc::Q("22/7").int
+    assert_rational_and_equal 3, Calc::Q("27/7").int
+    assert_rational_and_equal(-3, Calc::Q("-3.125").int)
+  end
 end

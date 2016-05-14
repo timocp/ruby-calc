@@ -564,6 +564,25 @@ cc_imagp(VALUE self)
     return cisimag((COMPLEX *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
+/* Integer parts of the number
+ *
+ * @return [Calc::C]
+ * @example
+ *   Calc::C("2.15", "-3.25").int #=> Calc::C(2-3i)
+ */
+static VALUE
+cc_int(VALUE self)
+{
+    COMPLEX *cself;
+    setup_math_error();
+
+    cself = DATA_PTR(self);
+    if (cisint(cself)) {
+        return self;
+    }
+    return complex_to_value(c_int(cself));
+}
+
 /* Inverse of a complex number
  *
  * @return [Calc::C]
@@ -720,6 +739,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "gd", cc_gd, -1);
     rb_define_method(cC, "im", cc_im, 0);
     rb_define_method(cC, "imag?", cc_imagp, 0);
+    rb_define_method(cC, "int", cc_int, 0);
     rb_define_method(cC, "inverse", cc_inverse, 0);
     rb_define_method(cC, "odd?", cc_oddp, 0);
     rb_define_method(cC, "power", cc_power, -1);

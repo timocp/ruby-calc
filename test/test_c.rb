@@ -434,4 +434,8 @@ class TestC < MiniTest::Test
     assert_rational_and_equal 2, Calc::C(0, 4).ilog2
     assert_rational_and_equal(-4, Calc::C(0, "1/15").ilog2)
   end
+
+  def test_int
+    assert_complex_parts [2, -3], Calc::C("2.15", "-3.25").int
+  end
 end

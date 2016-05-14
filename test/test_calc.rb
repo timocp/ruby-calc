@@ -165,6 +165,7 @@ class TestCalc < Minitest::Test
     check_delegation :ilog10
     check_delegation :ilog2
     check_delegation :im
+    check_delegation :int
     check_delegation :inverse
     check_delegation :iseven
     check_delegation :isimag

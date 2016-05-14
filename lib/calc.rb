@@ -11,7 +11,7 @@ module Calc
     atan atan2 atanh bit bernoulli bround catalan ceil char cfappr cfsim cmp
     comb conj cos cosh cot coth csc csch den digit digits estr euler exp fact
     factor fcnt frac frem fib floor gcd gcdrem gd highbit hypot ilog ilog10
-    ilog2 im inverse iseven isimag isint isodd isreal ln log num perm power
+    ilog2 im int inverse iseven isimag isint isodd isreal ln log num perm power
     quomod re round sec sech sin sinh sqrt tan tanh
   ).freeze
 
