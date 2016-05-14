@@ -7,6 +7,9 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
+Style/FirstArrayElementLineBreak:
+  Enabled: true
+
 Style/SpaceInsideStringInterpolation:
   EnforcedStyle: space
 
@@ -30,6 +33,9 @@ Style/NumericLiterals:
   Exclude: [ "test/*.rb" ]
 
 Style/ClassAndModuleChildren:
+  Exclude: [ "test/*.rb" ]
+
+Metrics/AbcSize:
   Exclude: [ "test/*.rb" ]
 
 Metrics/MethodLength:
