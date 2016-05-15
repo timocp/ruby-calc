@@ -1034,4 +1034,14 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 3, Calc::Q("27/7").int
     assert_rational_and_equal(-3, Calc::Q("-3.125").int)
   end
+
+  def test_iroot
+    assert_rational_and_equal 4, Calc::Q(100).iroot(3)
+    assert_rational_and_equal 6, Calc::Q(274).iroot(3)
+    assert_rational_and_equal 1, Calc::Q(1).iroot(9)
+    assert_rational_and_equal 6, Calc.pi.**(8).iroot(5)
+    assert_rational_and_equal(-3, Calc::Q(-44).iroot(3))
+    assert_raises(Calc::MathError) { Calc::Q(2).iroot(0) }
+    assert_raises(Calc::MathError) { Calc::Q(2).iroot(0.5) }
+  end
 end

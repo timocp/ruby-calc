@@ -177,6 +177,7 @@ ilog10 | x          | floor of logarithm to base 10
 ilog2  | x          | floor of logarithm to base 2
 int    | x          | integer part of x
 inverse| x          | inverse of x
+iroot  | x, n       | integer nth root of x
 iseven | x          | whether a value is even (also: #even?)
 isimag | x          | whether a value is imaginary (also: #imag?)
 isint  | x          | whether a value is an integer (also: #int?)

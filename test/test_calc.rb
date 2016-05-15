@@ -167,6 +167,7 @@ class TestCalc < Minitest::Test
     check_delegation :im
     check_delegation :int
     check_delegation :inverse
+    check_real_delegation :iroot
     check_delegation :iseven
     check_delegation :isimag
     check_delegation :isint

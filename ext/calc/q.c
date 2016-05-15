@@ -1495,6 +1495,31 @@ cq_inverse(VALUE self)
     return result;
 }
 
+/* Integer part of specified root
+ *
+ * x.iroot(n) returns the greatest integer v for which v^n <= x.
+ *
+ * @param n [Integer]
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if n is not a positive integer
+ * @example
+ *  Calc::Q(100).iroot(3) #=> Calc::Q(4)
+ */
+static VALUE
+cq_iroot(VALUE self, VALUE other)
+{
+    VALUE result;
+    NUMBER *qother, *qresult;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    qresult = qiroot(DATA_PTR(self), qother);
+    qfree(qother);
+    result = cq_new();
+    DATA_PTR(result) = qresult;
+    return result;
+}
+
 /* Returns the numerator.  Return value has the same sign as self.
  *
  * @return [Calc::Q]
@@ -1904,6 +1929,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "int", cq_int, 0);
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
+    rb_define_method(cQ, "iroot", cq_iroot, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);
