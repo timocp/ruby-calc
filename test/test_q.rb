@@ -1053,4 +1053,19 @@ class TestQ < MiniTest::Test
     check_falsey Calc::Q(13), :ismult, :mult?, Calc::Q("4/67")
     check_truthy Calc::Q(13), :ismult, :mult?, Calc::Q("7/56")
   end
+
+  def test_prime
+    check_truthy Calc::Q(-3), :isprime, :prime?
+    check_falsey Calc::Q(1), :isprime, :prime?
+    check_truthy Calc::Q(2), :isprime, :prime?
+    check_truthy Calc::Q(21701), :isprime, :prime?
+    check_truthy Calc::Q(1234577), :isprime, :prime?
+    check_falsey Calc::Q(1234579), :isprime, :prime?
+    check_falsey Calc::Q(2)**31 - 9, :isprime, :prime?
+    check_truthy Calc::Q(2)**31 - 1, :isprime, :prime?
+    check_truthy Calc::Q(2)**31 + 11, :isprime, :prime?
+    assert_raises(Calc::MathError) { Calc::Q(2).**(32).+(1).prime? }
+    assert_raises(Calc::MathError) { Calc::Q(3).**(99).prime? }
+    check_falsey Calc::Q(4)**99, :isprime, :prime?
+  end
 end

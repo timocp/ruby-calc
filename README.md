@@ -183,6 +183,7 @@ isimag | x          | whether a value is imaginary (also: #imag?)
 isint  | x          | whether a value is an integer (also: #int?)
 ismult | x, y       | whether a x exactly divides y (also: #mult?)
 isodd  | x          | whether a value is odd (also: #odd?)
+isprime| x          | tests if x is a small (< 2^32) prime (also: #prime?)
 isreal | x          | whether a value is real (also: #real?)
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
@@ -400,6 +401,7 @@ These builtins work this way:
 * isint / int?
 * ismult / mult?
 * isodd / odd?
+* isprime / prime?
 * isreal / real?
 
 `isimag` isn't a real calc builtin but it is included anyway.

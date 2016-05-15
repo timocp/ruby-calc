@@ -128,6 +128,18 @@ module Calc
       odd? ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # Returns 1 if self is prime, 0 if it is not prime.  This function can't
+    # be used for odd numbers > 2^32.
+    #
+    # @return [Calc::Q]
+    # @raise [Calc::MathError] if self is odd and > 2^32
+    # @example
+    #  Calc::Q(2**31 - 9).isprime #=> Calc::Q(0)
+    #  Calc::Q(2**31 - 1).isprime #=> Calc::Q(1)
+    def isprime
+      prime? ? Calc::Q(1) : Calc::Q(0)
+    end
+
     # Returns 1 if this number has zero imaginary part, otherwise returns 0.
     # Instances of this class always return 1.
     #

@@ -1653,6 +1653,38 @@ cq_power(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Small integer prime test
+ *
+ * Returns true if self is prime, false if it is not prime.
+ * This function can't be used for odd numbers > 2^32.
+ *
+ * @return [Boolean]
+ * @raise [Calc::MathError] if self is odd and > 2^32.
+ * @example
+ *  Calc::Q(2**31 - 9).prime? #=> false
+ *  Calc::Q(2**31 - 1).prime? #=> true
+ * @see Calc::Q#isprime
+ */
+static VALUE
+cq_primep(VALUE self)
+{
+    NUMBER *qself;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "non-integral for prime?");
+    }
+    switch (zisprime(qself->num)) {
+    case 0:
+        return Qfalse;
+    case 1:
+        return Qtrue;
+    default:
+        rb_raise(e_MathError, "prime? argument is an odd value > 2^32");
+    }
+}
+
 /* Returns the quotient and remainder from division
  *
  * @param y [Numeric,Calc::Q] number to divide by
@@ -1956,6 +1988,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);
     rb_define_method(cQ, "power", cq_power, -1);
+    rb_define_method(cQ, "prime?", cq_primep, 0);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "root", cq_root, -1);
     rb_define_method(cQ, "round", cq_round, -1);
