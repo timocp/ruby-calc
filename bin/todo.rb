@@ -343,9 +343,18 @@ end
 
 ruby_r = Rational(1, 2)
 ruby_c = Complex(1, 2)
+ruby_i = 1
 
-(ruby_r.methods - q.methods).sort.each do |m|
+((ruby_r.methods & ruby_i.methods) - q.methods).sort.each do |m|
+  puts "Calc::Q needs method #{ m } for Rational and Fixnum compatibility"
+end
+
+(ruby_r.methods - ruby_i.methods - q.methods).sort.each do |m|
   puts "Calc::Q needs method #{ m } for Rational compatibility"
+end
+
+(ruby_i.methods - ruby_r.methods - q.methods).sort.each do |m|
+  puts "Calc::Q needs method #{ m } for Fixnum compatibility"
 end
 
 (ruby_c.methods - c.methods).sort.each do |m|
@@ -355,6 +364,7 @@ end
 [
   ["ruby-calc builtins", builtins_done, builtins],
   ["Rational compatibility", (ruby_r.methods & q.methods).size, ruby_r.methods.size.to_f],
+  ["Fixnum compatibility", (ruby_i.methods & q.methods).size, ruby_i.methods.size.to_f],
   ["Complex compatibility", (ruby_c.methods & c.methods).size, ruby_c.methods.size.to_f]
 ].each do |goal, done, total|
   printf "%25s:  %3d/%3d (%3.1f%%)\n", goal, done, total, done / total * 100
