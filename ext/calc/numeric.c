@@ -36,13 +36,13 @@ log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER
             cself = comalloc();
             qfree(cself->real);
             cself->real = qlink(qself);
-            result = complex_to_value((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
+            result = wrap_complex((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
             comfree(cself);
         }
     }
     else if (CALC_C_P(self)) {
         cself = DATA_PTR(self);
-        result = complex_to_value((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
+        result = wrap_complex((*fc) (cself, qepsilon ? qepsilon : conf->epsilon));
     }
     else {
         rb_raise(e_MathError, "log_function called with invalid receiver");
@@ -353,7 +353,7 @@ cn_sqrt(int argc, VALUE * argv, VALUE self)
             /* complex */
             cresult = c_sqrt(DATA_PTR(self), qepsilon, R);
         }
-        result = complex_to_value(cresult);
+        result = wrap_complex(cresult);
     }
     if (n >= 1) {
         qfree(qepsilon);

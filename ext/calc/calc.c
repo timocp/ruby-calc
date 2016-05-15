@@ -150,7 +150,7 @@ calc_polar(int argc, VALUE * argv, VALUE self)
     }
     qradius = value_to_number(radius, 0);
     qangle = value_to_number(angle, 0);
-    result = complex_to_value(c_polar(qradius, qangle, qepsilon ? qepsilon : conf->epsilon));
+    result = wrap_complex(c_polar(qradius, qangle, qepsilon ? qepsilon : conf->epsilon));
     if (qepsilon) {
         qfree(qepsilon);
     }

@@ -159,26 +159,6 @@ value_to_complex(VALUE arg)
     return cresult;
 }
 
-/* wrap a COMPLEX* into a ruby VALUE of class Calc::C (if there is a non-zero
- * imaginary part) or Calc::Q (otherwise).
- */
-VALUE
-complex_to_value(COMPLEX * c)
-{
-    VALUE result;
-
-    if (cisreal(c)) {
-        result = cq_new();
-        DATA_PTR(result) = qlink(c->real);
-        comfree(c);
-    }
-    else {
-        result = cc_new();
-        DATA_PTR(result) = c;
-    }
-    return result;
-}
-
 /* get a long out of a ruby VALUE.  if it is fractional, or too big to be
  * represented, raises an error */
 long
@@ -202,4 +182,24 @@ value_to_long(VALUE v)
     l = qtoi(q);
     qfree(q);
     return l;
+}
+
+/* wrap a COMPLEX* into a ruby VALUE of class Calc::C (if there is a non-zero
+ * imaginary part) or Calc::Q (otherwise).
+ */
+VALUE
+wrap_complex(COMPLEX * c)
+{
+    VALUE result;
+
+    if (cisreal(c)) {
+        result = cq_new();
+        DATA_PTR(result) = qlink(c->real);
+        comfree(c);
+    }
+    else {
+        result = cc_new();
+        DATA_PTR(result) = c;
+    }
+    return result;
 }

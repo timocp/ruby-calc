@@ -111,7 +111,7 @@ numeric_op(VALUE self, VALUE other,
         cresult = (*fcc) (DATA_PTR(self), cother);
         comfree(cother);
     }
-    return complex_to_value(cresult);
+    return wrap_complex(cresult);
 }
 
 static VALUE
@@ -133,7 +133,7 @@ trans_function(int argc, VALUE * argv, VALUE self, COMPLEX * (*f) (COMPLEX *, NU
     if (!cresult) {
         rb_raise(e_MathError, "Complex transcendental function returned NULL");
     }
-    result = complex_to_value(cresult);
+    result = wrap_complex(cresult);
     return result;
 }
 
@@ -161,7 +161,7 @@ trans_function2(int argc, VALUE * argv, VALUE self,
     if (!cresult) {
         rb_raise(e_MathError, "Complex transcendental function returned NULL");
     }
-    return complex_to_value(cresult);
+    return wrap_complex(cresult);
 }
 
 /*****************************************************************************
@@ -217,7 +217,7 @@ static VALUE
 cc_uminus(VALUE self)
 {
     setup_math_error();
-    return complex_to_value(c_sub(&_czero_, DATA_PTR(self)));
+    return wrap_complex(c_sub(&_czero_, DATA_PTR(self)));
 }
 
 /* Performs complex division.
@@ -516,7 +516,7 @@ static VALUE
 cc_frac(VALUE self)
 {
     setup_math_error();
-    return complex_to_value(c_frac(DATA_PTR(self)));
+    return wrap_complex(c_frac(DATA_PTR(self)));
 }
 
 /* Gudermannian function
@@ -580,7 +580,7 @@ cc_int(VALUE self)
     if (cisint(cself)) {
         return self;
     }
-    return complex_to_value(c_int(cself));
+    return wrap_complex(c_int(cself));
 }
 
 /* Inverse of a complex number
@@ -594,7 +594,7 @@ static VALUE
 cc_inverse(VALUE self)
 {
     setup_math_error();
-    return complex_to_value(c_inv(DATA_PTR(self)));
+    return wrap_complex(c_inv(DATA_PTR(self)));
 }
 
 /* Returns true if the number is real and odd

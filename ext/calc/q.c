@@ -232,7 +232,7 @@ trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMB
         cresult = (*fcomplex) (cself, qepsilon ? qepsilon : conf->epsilon);
         comfree(cself);
         if (cresult) {
-            result = complex_to_value(cresult);
+            result = wrap_complex(cresult);
         }
         else {
             /* Can this happen? */
@@ -1637,7 +1637,7 @@ cq_power(int argc, VALUE * argv, VALUE self)
         else {
             carg = value_to_complex(arg);
         }
-        result = complex_to_value(c_power(cself, carg, qepsilon ? qepsilon : conf->epsilon));
+        result = wrap_complex(c_power(cself, carg, qepsilon ? qepsilon : conf->epsilon));
         comfree(cself);
         comfree(carg);
     }
