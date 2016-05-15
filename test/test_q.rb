@@ -1044,4 +1044,13 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(2).iroot(0) }
     assert_raises(Calc::MathError) { Calc::Q(2).iroot(0.5) }
   end
+
+  def test_mult
+    check_truthy Calc::Q(6), :ismult, :mult?, 2
+    check_falsey Calc::Q(2), :ismult, :mult?, 6
+    check_truthy Calc::Q("7.5"), :ismult, :mult?, Calc::Q("2.5")
+    check_truthy Calc::Q(4)**67, :ismult, :mult?, Calc::Q(2)**59
+    check_falsey Calc::Q(13), :ismult, :mult?, Calc::Q("4/67")
+    check_truthy Calc::Q(13), :ismult, :mult?, Calc::Q("7/56")
+  end
 end

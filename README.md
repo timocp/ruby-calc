@@ -181,6 +181,7 @@ iroot  | x, n       | integer nth root of x
 iseven | x          | whether a value is even (also: #even?)
 isimag | x          | whether a value is imaginary (also: #imag?)
 isint  | x          | whether a value is an integer (also: #int?)
+ismult | x, y       | whether a x exactly divides y (also: #mult?)
 isodd  | x          | whether a value is odd (also: #odd?)
 isreal | x          | whether a value is real (also: #real?)
 ln     | x [, b]    | natural logarithm of x within accuracy b
@@ -397,6 +398,7 @@ These builtins work this way:
 * iseven / even?
 * isimag / imag?
 * isint / int?
+* ismult / mult?
 * isodd / odd?
 * isreal / real?
 

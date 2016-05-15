@@ -11,8 +11,8 @@ module Calc
     atan atan2 atanh bit bernoulli bround catalan ceil char cfappr cfsim cmp
     comb conj cos cosh cot coth csc csch den digit digits estr euler exp fact
     factor fcnt frac frem fib floor gcd gcdrem gd highbit hypot ilog ilog10
-    ilog2 im int inverse iroot iseven isimag isint isodd isreal ln log num perm
-    power quomod re round sec sech sin sinh sqrt tan tanh
+    ilog2 im int inverse iroot iseven isimag isint ismult isodd isreal ln log
+    num perm power quomod re round sec sech sin sinh sqrt tan tanh
   ).freeze
 
   # builtins implemented as module methods on Calc

@@ -1520,6 +1520,27 @@ cq_iroot(VALUE self, VALUE other)
     return result;
 }
 
+/* Returns true if self exactly divides y, otherwise return false.
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(6).mult?(2) #=> true
+ *  Calc::Q(2).mult?(6) #=> false
+ * @see Calc::Q#ismult
+ */
+static VALUE
+cq_multp(VALUE self, VALUE other)
+{
+    VALUE result;
+    NUMBER *qother;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    result = qdivides(DATA_PTR(self), qother) ? Qtrue : Qfalse;
+    qfree(qother);
+    return result;
+}
+
 /* Returns the numerator.  Return value has the same sign as self.
  *
  * @return [Calc::Q]
@@ -1930,6 +1951,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
     rb_define_method(cQ, "iroot", cq_iroot, 1);
+    rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);

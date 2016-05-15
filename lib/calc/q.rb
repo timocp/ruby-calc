@@ -113,6 +113,17 @@ module Calc
       Calc::Q(0)
     end
 
+    # Returns 1 if self exactly divides y, otherwise return 0.
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(6).ismult(2) #=> Calc::Q(1)
+    #  Calc::Q(2).ismult(6) #=> Calc::Q(0)
+    # @see Calc::Q#mult?
+    def ismult(y)
+      mult?(y) ? Calc::Q(1) : Calc::Q(0)
+    end
+
     def isodd
       odd? ? Calc::Q(1) : Calc::Q(0)
     end
