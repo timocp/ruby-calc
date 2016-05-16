@@ -56,6 +56,17 @@ class TestConfig < Minitest::Test
     assert_raises(Calc::MathError) { Calc.config(:epsilon, -0.1) }
   end
 
+  def test_mod
+    assert_equal 1, Calc::Q(11).minv(5)
+    assert_equal 1, Calc::Q(11) % 5
+    with_config(:mod, 0, 1) do
+      assert_equal(-4, Calc::Q(11).minv(5))
+      assert_equal(-4, Calc::Q(11) % 5)
+    end
+    assert_raises(Calc::MathError) { Calc.config(:mod, 0.5) }
+    assert_raises(Calc::MathError) { Calc.config(:mod, -1) }
+  end
+
   def test_mode
     q = Calc::Q(1, 20)
     assert_equal "0.05", q.to_s

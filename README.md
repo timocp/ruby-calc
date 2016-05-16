@@ -337,6 +337,7 @@ appr      | 24      | rounding mode for `appr`
 cfappr    | 0       | rounding mode for `cfappr`
 display   | 20      | number of digits when converting to string (does NOT affect internal value)
 epsilon   | 1e-20   | default precision for transcendental functions
+mod       | 0       | rounding mode for `%`, default for `mod`
 mode      | :real   | default output mode when converting to string
 round     | 24      | rounding mode for `bround` and `round`
 sqrt      | 24      | rounding mode and sign for `sqrt`

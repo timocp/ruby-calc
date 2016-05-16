@@ -232,11 +232,8 @@ class TestQ < MiniTest::Test
   def test_modulo_and_remainder
     assert_equal  1, Calc::Q(13).modulo(4)
     assert_equal  1, Calc::Q(13).remainder(4)
-    skip do
-      # behaviour with negatives is not quite right
-      assert_equal(-3, Calc::Q(13).modulo(-4))
-      assert_equal 1, Calc::Q(13).remainder(-4)
-    end
+    assert_equal(-3, Calc::Q(13).modulo(-4))
+    assert_equal 1, Calc::Q(13).remainder(-4)
     assert_equal 3.5, Calc::Q(11.5).modulo(4)
   end
 

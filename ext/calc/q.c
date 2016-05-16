@@ -305,7 +305,7 @@ cq_mod(VALUE x, VALUE y)
     setup_math_error();
 
     qy = value_to_number(y, 0);
-    result = wrap_number(qmod(DATA_PTR(x), qy, 0));
+    result = wrap_number(qmod(DATA_PTR(x), qy, conf->mod));
     qfree(qy);
     return result;
 }
