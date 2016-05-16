@@ -1102,4 +1102,10 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 1, Calc::Q(2).jacobi(15)
     assert_rational_and_equal 1, Calc::Q(80).jacobi(199)
   end
+
+  def test_lcm
+    assert_rational_and_equal(-120, Calc::Q(12).lcm(-24, 30))
+    assert_rational_and_equal Calc::Q("79.2"), Calc::Q("9/10").lcm("11/5", "4/25")
+    assert_rational_and_equal 2, Calc::Q(2).lcm
+  end
 end

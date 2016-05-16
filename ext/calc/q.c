@@ -1487,6 +1487,36 @@ cq_jacobi(VALUE self, VALUE y)
     return wrap_number(qresult);
 }
 
+/* Least common multiple
+ *
+ * If no value is zero, lcm returns the least positive number which is a
+ * multiple of all values.  If at least one value is zero, the lcm is zero.
+ *
+ * @param v [Numeric] zero or more values
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(12).lcm(24, 30) #=> Calc::Q(120)
+ */
+static VALUE
+cq_lcm(int argc, VALUE * argv, VALUE self)
+{
+    NUMBER *qresult, *qarg, *qtmp;
+    int i;
+    setup_math_error();
+
+    qresult = qqabs(DATA_PTR(self));
+    for (i = 0; i < argc; i++) {
+        qarg = value_to_number(argv[i], 1);
+        qtmp = qlcm(qresult, qarg);
+        qfree(qarg);
+        qfree(qresult);
+        qresult = qtmp;
+        if (qiszero(qresult))
+            break;
+    }
+    return wrap_number(qresult);
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -1987,6 +2017,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "iroot", cq_iroot, 1);
     rb_define_method(cQ, "isqrt", cq_isqrt, 0);
     rb_define_method(cQ, "jacobi", cq_jacobi, 1);
+    rb_define_method(cQ, "lcm", cq_lcm, -1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
