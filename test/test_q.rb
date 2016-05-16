@@ -1076,4 +1076,13 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 14142135623730950488016887242, Calc::Q("2e56").isqrt
     assert_raises(Calc::MathError) { Calc::Q(-1).isqrt }
   end
+
+  def test_rel
+    check_truthy Calc::Q(6), :isrel, :rel?, 5
+    check_truthy Calc::Q(5), :isrel, :rel?, 6
+    check_truthy Calc::Q(-5), :isrel, :rel?, 6
+    check_falsey Calc::Q(6), :isrel, :rel?, 2
+    check_falsey Calc::Q(2), :isrel, :rel?, 6
+    check_falsey Calc::Q(-2), :isrel, :rel?, 6
+  end
 end

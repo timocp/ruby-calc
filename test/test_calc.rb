@@ -175,6 +175,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :isprime
     check_real_delegation :isqrt
     check_delegation :isreal
+    check_real_delegation :isrel, 2
     check_delegation :isodd
     check_delegation :ln
     check_delegation :log

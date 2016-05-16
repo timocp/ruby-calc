@@ -1636,6 +1636,34 @@ cq_quomod(VALUE self, VALUE other)
     return rb_assoc_new(wrap_number(qquo), wrap_number(qmod));
 }
 
+/* Returns true if both values are relatively prime
+ *
+ * @param other [Integer]
+ * @return [Boolean]
+ * @raise [Calc::MathError] if either values are non-integers
+ * @example
+ *  Calc::Q(6).rel?(5) #=> true
+ *  Calc::Q(6).rel?(2) #=> false
+ * @see Calc::Q#isrel
+ */
+static VALUE
+cq_relp(VALUE self, VALUE other)
+{
+    VALUE result;
+    NUMBER *qself, *qother;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    qother = value_to_number(other, 0);
+    if (qisfrac(qself) || qisfrac(qother)) {
+        qfree(qother);
+        rb_raise(e_MathError, "non-integer for rel?");
+    }
+    result = zrelprime(qself->num, qother->num) ? Qtrue : Qfalse;
+    qfree(qother);
+    return result;
+}
+
 /* Returns the nth root
  *
  * @param n [Numeric,Calc::Q] positive integer
@@ -1914,6 +1942,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prime?", cq_primep, 0);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
+    rb_define_method(cQ, "rel?", cq_relp, 1);
     rb_define_method(cQ, "root", cq_root, -1);
     rb_define_method(cQ, "round", cq_round, -1);
     rb_define_method(cQ, "sec", cq_sec, -1);

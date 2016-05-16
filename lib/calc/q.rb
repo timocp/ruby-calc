@@ -150,6 +150,19 @@ module Calc
       Calc::Q(1)
     end
 
+    # Returns 1 if both values are relatively prime
+    #
+    # @param other [Integer]
+    # @return [Calc::Q]
+    # @raise [Calc::MathError] if either values are non-integers
+    # @example
+    #  Calc::Q(6).isrel(5) #=> Calc::Q(1)
+    #  Calc::Q(6).isrel(2) #=> Calc::Q(0)
+    # @see Calc::Q#rel?
+    def isrel(y)
+      rel?(y) ? Calc::Q(1) : Calc::Q(0)
+    end
+
     def re
       self
     end
