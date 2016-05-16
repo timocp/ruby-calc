@@ -1587,6 +1587,36 @@ cq_lowbit(VALUE self)
     return wrap_number(itoq(index));
 }
 
+/* leg-to-leg - third side of a right angled triangle
+ *
+ * Returns the third side of a right-angled triangle with unit hypotenuse,
+ * given one other side.  x.ltol is equivalent to sqrt(1 - x**2).  Result
+ * is to nearest multiple of eps which defaults to Calc.config(:epsilon).
+ *
+ * @param eps [Numeric] (optional) calculation accuracy
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self it too large
+ * @example
+ *  Calc::Q("0.5").ltol #=> Calc::Q(0.86602540378443864676)
+ */
+static VALUE
+cq_ltol(int argc, VALUE * argv, VALUE self)
+{
+    VALUE epsilon;
+    NUMBER *qresult, *qepsilon;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
+        qresult = qlegtoleg(DATA_PTR(self), conf->epsilon, FALSE);
+    }
+    else {
+        qepsilon = value_to_number(epsilon, 1);
+        qresult = qlegtoleg(DATA_PTR(self), qepsilon, FALSE);
+        qfree(qepsilon);
+    }
+    return wrap_number(qresult);
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -2091,6 +2121,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "lcmfact", cq_lcmfact, 0);
     rb_define_method(cQ, "lfactor", cq_lfactor, 1);
     rb_define_method(cQ, "lowbit", cq_lowbit, 0);
+    rb_define_method(cQ, "ltol", cq_ltol, -1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);

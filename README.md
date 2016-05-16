@@ -195,6 +195,7 @@ lfactor| n, m       | lowest prime factor of n in first m primes
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 lowbit | x          | low bit number in base 2 representation
+ltol   | x [, b]    | leg-to-leg of unit right triangle within accuracy b
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b

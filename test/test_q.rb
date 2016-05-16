@@ -1144,4 +1144,10 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 0, Calc::Q(-15).lowbit
     assert_rational_and_equal 27, Calc::Q(2**27).lowbit
   end
+
+  def test_ltol
+    assert_rational_in_epsilon 0.91651513899116800132, Calc::Q("0.4").ltol
+    assert_rational_in_epsilon 0.86602540378443864676, Calc::Q("0.5").ltol
+    assert_rational_in_epsilon 0.866025, Calc::Q("0.5").ltol("1e-6")
+  end
 end
