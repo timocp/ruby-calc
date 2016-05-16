@@ -1517,6 +1517,22 @@ cq_lcm(int argc, VALUE * argv, VALUE self)
     return wrap_number(qresult);
 }
 
+/* Least common multiple of positive integers up to specified integer
+ *
+ * Retrurns the lcm of the integers 1, 2, ..., self
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(6).lcmfact #=> Calc::Q(60)
+ *  Calc::Q(7).lcmfact #=> Calc::Q(420)
+ */
+static VALUE
+cq_lcmfact(VALUE self)
+{
+    setup_math_error();
+    return wrap_number(qlcmfact(DATA_PTR(self)));
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -2018,6 +2034,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "isqrt", cq_isqrt, 0);
     rb_define_method(cQ, "jacobi", cq_jacobi, 1);
     rb_define_method(cQ, "lcm", cq_lcm, -1);
+    rb_define_method(cQ, "lcmfact", cq_lcmfact, 0);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);

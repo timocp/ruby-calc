@@ -190,6 +190,7 @@ isrel  | x, y       | tests if x and y are relatively prime
 issq   | x          | test if x is a square
 jacobi | x, y       | Jacobi symbol function
 lcm    | x [, ...]  | least common multiple
+lcmfact| x          | lcm of positive integers up to x
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
 num    | x          | numerator of x

@@ -1108,4 +1108,22 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("79.2"), Calc::Q("9/10").lcm("11/5", "4/25")
     assert_rational_and_equal 2, Calc::Q(2).lcm
   end
+
+  def test_lcmfact
+    assert_rational_and_equal 1, Calc::Q(1).lcmfact
+    assert_rational_and_equal 2, Calc::Q(2).lcmfact
+    assert_rational_and_equal 6, Calc::Q(3).lcmfact
+    assert_rational_and_equal 12, Calc::Q(4).lcmfact
+    assert_rational_and_equal 60, Calc::Q(5).lcmfact
+    assert_rational_and_equal 60, Calc::Q(6).lcmfact
+    assert_rational_and_equal 420, Calc::Q(7).lcmfact
+    assert_rational_and_equal 840, Calc::Q(8).lcmfact
+    assert_rational_and_equal 2520, Calc::Q(9).lcmfact
+    assert_rational_and_equal 2520, Calc::Q(10).lcmfact
+    assert_rational_and_equal 27720, Calc::Q(11).lcmfact
+    assert_rational_and_equal 27720, Calc::Q(12).lcmfact
+    assert_rational_and_equal 360360, Calc::Q(13).lcmfact
+    assert_rational_and_equal 360360, Calc::Q(14).lcmfact
+    assert_rational_and_equal 360360, Calc::Q(15).lcmfact
+  end
 end
