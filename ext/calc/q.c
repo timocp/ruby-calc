@@ -1748,6 +1748,31 @@ cq_sinh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qsinh, NULL);
 }
 
+/* Return true if this value is a square
+ *
+ * Returns true if there exists integers, b such that:
+ *   self == a^2 / b^2  (b != 0)
+ *
+ * Note that this function works on rationals, so:
+ *   Calc::Q(25, 15).sq? #=> true
+ * 
+ * If you want to test for perfect square integers, you need to exclude
+ * non-integer values before you test.
+ *
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(25).sq?     #=> true
+ *  Calc::Q(3).sq?      #=> false
+ *  Calc::Q("4/25").sq? #=> true
+ * @see Calc::Q#issq
+ */
+static VALUE
+cq_sqp(VALUE self)
+{
+    setup_math_error();
+    return qissquare(DATA_PTR(self)) ? Qtrue : Qfalse;
+}
+
 /* Trigonometric tangent
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -1949,6 +1974,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "sech", cq_sech, -1);
     rb_define_method(cQ, "sin", cq_sin, -1);
     rb_define_method(cQ, "sinh", cq_sinh, -1);
+    rb_define_method(cQ, "sq?", cq_sqp, 0);
     rb_define_method(cQ, "tan", cq_tan, -1);
     rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);

@@ -163,6 +163,18 @@ module Calc
       rel?(y) ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # Returns 1 if this value is a square
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(25).issq     #=> Calc::Q(1)
+    #  Calc::Q(3).issq      #=> Calc::Q(0)
+    #  Calc::Q("4/25").issq #=> Calc::Q(1)
+    # @see Calc::Q#sq?
+    def issq
+      sq? ? Calc::Q(1) : Calc::Q(0)
+    end
+
     def re
       self
     end

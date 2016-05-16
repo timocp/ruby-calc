@@ -1085,4 +1085,13 @@ class TestQ < MiniTest::Test
     check_falsey Calc::Q(2), :isrel, :rel?, 6
     check_falsey Calc::Q(-2), :isrel, :rel?, 6
   end
+
+  def test_sq
+    check_truthy Calc::Q(25), :issq, :sq?
+    check_falsey Calc::Q(3), :issq, :sq?
+    check_truthy Calc::Q(0), :issq, :sq?
+    check_truthy Calc::Q("4/25"), :issq, :sq?
+    check_falsey Calc::Q("-4/25"), :issq, :sq?
+    check_falsey Calc.pi, :issq, :sq?
+  end
 end
