@@ -62,6 +62,22 @@ class TestCalc < Minitest::Test
     assert_rational_and_equal 33827019788296445, Calc.hnrmod(10**40, 17, 51, 1)
   end
 
+  def test_max
+    assert_rational_and_equal 2, Calc.max(2)
+    assert_rational_and_equal 2, Calc.max(2, nil)
+    assert_rational_and_equal 9, Calc.max(5, 3, 7, 2, 9)
+    assert_rational_and_equal Calc::Q("8.7"), Calc.max("3.2", "-0.5", "8.7", "-1.2", "2.5")
+    assert_rational_and_equal 8, Calc.max(3, 5, 7, 6, 7, 8, 2)
+  end
+
+  def test_min
+    assert_rational_and_equal 2, Calc.min(2)
+    assert_rational_and_equal 2, Calc.min(2, nil)
+    assert_rational_and_equal 2, Calc.min(5, 3, 7, 2, 9)
+    assert_rational_and_equal Calc::Q("-1.2"), Calc.min("3.2", "-0.5", "8.7", "-1.2", "2.5")
+    assert_rational_and_equal 2, Calc.min(3, 5, 7, 6, 7, 8, 2)
+  end
+
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
 
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)

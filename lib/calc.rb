@@ -18,7 +18,7 @@ module Calc
 
   # builtins implemented as module methods on Calc
   BUILTINS2 = %i(
-    avg config freebernoulli freeeuler hean hnrmod pi polar
+    avg config freebernoulli freeeuler hean hnrmod max min pi polar
   ).freeze
 
   ALL_BUILTINS = BUILTINS1 + BUILTINS2
@@ -76,6 +76,28 @@ module Calc
     return nil if args.none?
     return Calc::Q(0) if args.detect(&:zero?)
     args.size / args.map { |n| to_calc_x(n) }.map(&:inverse).inject(:+)
+  end
+
+  # Maximum from provided values.
+  #
+  # Each argument must be convertable to Calc::Q.  If no values, returns nil.
+  #
+  # @return [Calc::Q]
+  # @example
+  #  Calc.max(5, 3, 7, 2, 9) #=> Calc::Q(9)
+  def self.max(*args)
+    args.compact.map { |n| Calc::Q(n) }.max
+  end
+
+  # Minimum from provided values
+  #
+  # Each argument must be convertable to Calc::Q.  If no values, returns nil.
+  #
+  # @return [Calc::Q]
+  # @example
+  #  Calc.min(5, 3, 7, 2, 9) #=> Calc::Q(2)
+  def self.min(*args)
+    args.compact.map { |n| Calc::Q(n) }.min
   end
 
   # returns a Calc::Q or Calc::C object, converting if necessary
