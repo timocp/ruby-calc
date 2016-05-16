@@ -11,4 +11,8 @@ wget -nv http://www.isthe.com/chongo/src/calc/${version}.tar.bz2
 tar xjf ${version}.tar.bz2
 cd $version
 patch -p0 < $patch
-make && make check && sudo make install
+if [ "$CI" = "true" ]; then
+    make && sudo make install
+else
+    make && make check && sudo make install
+fi
