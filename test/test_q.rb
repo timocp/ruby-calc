@@ -1094,4 +1094,11 @@ class TestQ < MiniTest::Test
     check_falsey Calc::Q("-4/25"), :issq, :sq?
     check_falsey Calc.pi, :issq, :sq?
   end
+
+  def test_jacobi
+    assert_rational_and_equal(-1, Calc::Q(2).jacobi(3))
+    assert_rational_and_equal(-1, Calc::Q(2).jacobi(5))
+    assert_rational_and_equal 1, Calc::Q(2).jacobi(15)
+    assert_rational_and_equal 1, Calc::Q(80).jacobi(199)
+  end
 end

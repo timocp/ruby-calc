@@ -178,6 +178,7 @@ class TestCalc < Minitest::Test
     check_delegation :isreal
     check_real_delegation :isrel, 2
     check_real_delegation :issq
+    check_real_delegation :jacobi
     check_delegation :ln
     check_delegation :log
     check_real_delegation :num

@@ -1461,6 +1461,32 @@ cq_isqrt(VALUE self)
     return wrap_number(qisqrt(DATA_PTR(self)));
 }
 
+/* Compute the Jacobi function (x = self / y)
+ *
+ * Returns:
+ * -1 if x is not quadratic residue mod y
+ *  1 if y is composite, or x is a quadratic residue of y]
+ *  0 if y is even or y is < 0
+ *
+ * @param y [Integer]
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if either value is not an integer
+ * @example
+ *  Calc::Q(2).jacobi(5)  #=> Calc::Q(-1)
+ *  Calc::Q(2).jacobi(15) #=> Calc::Q(1)
+ */
+static VALUE
+cq_jacobi(VALUE self, VALUE y)
+{
+    NUMBER *qy, *qresult;
+    setup_math_error();
+
+    qy = value_to_number(y, 0);
+    qresult = qjacobi(DATA_PTR(self), qy);
+    qfree(qy);
+    return wrap_number(qresult);
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -1960,6 +1986,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "inverse", cq_inverse, 0);
     rb_define_method(cQ, "iroot", cq_iroot, 1);
     rb_define_method(cQ, "isqrt", cq_isqrt, 0);
+    rb_define_method(cQ, "jacobi", cq_jacobi, 1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
