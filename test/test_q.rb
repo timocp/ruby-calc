@@ -979,6 +979,7 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 6, Calc::Q(12).gcd(-24, 30)
     assert_rational_and_equal Calc::Q("0.02"), Calc::Q(9, 10).gcd(Calc::Q(11, 5), Calc::Q(4, 25))
     assert_rational_and_equal 0, Calc::Q(0).gcd(0, 0, 0, 0)
+    assert_rational_and_equal 8, Calc::Q(-8).gcd
   end
 
   def test_gcdrem

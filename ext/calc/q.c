@@ -1299,7 +1299,7 @@ cq_gcd(int argc, VALUE * argv, VALUE self)
     int i;
     setup_math_error();
 
-    qresult = qlink((NUMBER *) DATA_PTR(self));
+    qresult = qqabs(DATA_PTR(self));
     for (i = 0; i < argc; i++) {
         qarg = value_to_number(argv[i], 1);
         qtmp = qgcd(qresult, qarg);
