@@ -1135,4 +1135,13 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 641, Calc::Q(2**32 + 1).lfactor(116)
     assert_rational_and_equal 179951, Calc::Q(2**59 - 1).lfactor("1e5")
   end
+
+  def test_lowbit
+    assert_rational_and_equal(-1, Calc::Q(0).lowbit)
+    assert_rational_and_equal 1, Calc::Q(2).lowbit
+    assert_rational_and_equal 0, Calc::Q(3).lowbit
+    assert_rational_and_equal 2, Calc::Q(4).lowbit
+    assert_rational_and_equal 0, Calc::Q(-15).lowbit
+    assert_rational_and_equal 27, Calc::Q(2**27).lowbit
+  end
 end

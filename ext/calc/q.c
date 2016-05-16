@@ -1556,6 +1556,37 @@ cq_lfactor(VALUE self, VALUE other)
     return wrap_number(qresult);
 }
 
+/* Index of lowest nonzero bit in binary representation
+ *
+ * Returns the index of the lowest nonzero bit in the binary representation of
+ * abs(self).  If self is zero, returns -1.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is not an integer
+ * @example
+ *  Calc::Q(2).lowbit     #=> Calc::Q(1)
+ *  Calc::Q(2**27).lowbit #=> Calc::Q(27)
+ */
+static VALUE
+cq_lowbit(VALUE self)
+{
+    NUMBER *qself;
+    long index;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qiszero(qself)) {
+        index = -1;
+    }
+    else if (qisfrac(qself)) {
+        rb_raise(e_MathError, "non-integer argument for lowbit");
+    }
+    else {
+        index = zlowbit(qself->num);
+    }
+    return wrap_number(itoq(index));
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -2059,6 +2090,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "lcm", cq_lcm, -1);
     rb_define_method(cQ, "lcmfact", cq_lcmfact, 0);
     rb_define_method(cQ, "lfactor", cq_lfactor, 1);
+    rb_define_method(cQ, "lowbit", cq_lowbit, 0);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
