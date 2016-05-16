@@ -202,6 +202,7 @@ class TestCalc < Minitest::Test
     check_delegation :log
     check_real_delegation :lowbit
     check_real_delegation :ltol
+    check_real_delegation :meq, 3
     check_real_delegation :num
     check_real_delegation :perm
     check_delegation :power, 2

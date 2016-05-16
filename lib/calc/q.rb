@@ -175,6 +175,21 @@ module Calc
       sq? ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # test for equaility modulo a specific number
+    #
+    # Returns 1 if self is congruent to y modulo md, otherwise 0.
+    # 
+    # @param y [Numeric]
+    # @param md [Numeric]
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(5).meq(33, 7) #=> Calc::Q(1)
+    #  Calc::Q(5).meq(32, 7) #=> Calc::Q(0
+    # @see Calc::Q#meq?
+    def meq(y, md)
+      meq?(y, md) ? Calc::Q(1) : Calc::Q(0)
+    end
+
     def re
       self
     end

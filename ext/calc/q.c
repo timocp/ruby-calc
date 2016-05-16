@@ -1617,6 +1617,35 @@ cq_ltol(int argc, VALUE * argv, VALUE self)
     return wrap_number(qresult);
 }
 
+/* test for equality modulo a specific number
+ *
+ * Returns true if self is congruent to y modulo md.
+ *
+ * @param y [Numeric]
+ * @param md [Numeric]
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(5).meq?(33, 7) #=> true
+ *  Calc::Q(5).meq?(32, 7) #=> false
+ * @see Calc::Q#meq
+ */
+static VALUE
+cq_meqp(VALUE self, VALUE y, VALUE md)
+{
+    VALUE result;
+    NUMBER *qy, *qmd, *qtmp;
+    setup_math_error();
+
+    qy = value_to_number(y, 1);
+    qmd = value_to_number(md, 1);
+    qtmp = qsub(DATA_PTR(self), qy);
+    result = qdivides(qtmp, qmd) ? Qtrue : Qfalse;
+    qfree(qtmp);
+    qfree(qmd);
+    qfree(qy);
+    return result;
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -2122,6 +2151,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "lfactor", cq_lfactor, 1);
     rb_define_method(cQ, "lowbit", cq_lowbit, 0);
     rb_define_method(cQ, "ltol", cq_ltol, -1);
+    rb_define_method(cQ, "meq?", cq_meqp, 2);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);

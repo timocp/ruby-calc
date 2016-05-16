@@ -1150,4 +1150,10 @@ class TestQ < MiniTest::Test
     assert_rational_in_epsilon 0.86602540378443864676, Calc::Q("0.5").ltol
     assert_rational_in_epsilon 0.866025, Calc::Q("0.5").ltol("1e-6")
   end
+
+  def test_meq
+    check_truthy Calc::Q(5), :meq, :meq?, 33, 7
+    check_truthy Calc::Q(".05"), :meq, :meq?, ".33", "-.07"
+    check_falsey Calc::Q(5), :meq, :meq?, 32, 7
+  end
 end

@@ -197,6 +197,7 @@ log    | x [, b]    | base 10 logarithm of x within accuracy b
 lowbit | x          | low bit number in base 2 representation
 ltol   | x [, b]    | leg-to-leg of unit right triangle within accuracy b
 max    | x [, ...]  | maximum of values
+meq    | x, y, m    | test for equality of x and y modulo m (also: #meq?)
 min    | x [, ...]  | minimum of values
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
@@ -415,6 +416,7 @@ These builtins work this way:
 * isprime / prime?
 * isreal / real?
 * isrel / rel?
+* meq / meq?
 
 `isimag` isn't a real calc builtin but it is included anyway.
 
