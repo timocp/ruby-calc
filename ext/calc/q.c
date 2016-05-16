@@ -1646,6 +1646,34 @@ cq_meqp(VALUE self, VALUE y, VALUE md)
     return result;
 }
 
+/* Inverse of an integer modulo a specified integer
+ *
+ * Finds x such that:
+ *   self * x = 1 (mod md)
+ * If self and md are not relatively prime, zero is returned.
+ *
+ * The canonical residues modulo md are determined by Calc.config(:mod)
+ * (run "help minv" in calc for details).
+ *
+ * @param md [Integer]
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self or md are non-integers
+ * @example
+ *  Calc::Q(3).minv(10)  #=> Calc::Q(7)
+ *  Calc::Q(-3).minv(10) #=> Calc::Q(3)
+ */
+static VALUE
+cq_minv(VALUE self, VALUE md)
+{
+    NUMBER *qmd, *qresult;
+    setup_math_error();
+
+    qmd = value_to_number(md, 1);
+    qresult = qminv(DATA_PTR(self), qmd);
+    qfree(qmd);
+    return wrap_number(qresult);
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -2152,6 +2180,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "lowbit", cq_lowbit, 0);
     rb_define_method(cQ, "ltol", cq_ltol, -1);
     rb_define_method(cQ, "meq?", cq_meqp, 2);
+    rb_define_method(cQ, "minv", cq_minv, 1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);

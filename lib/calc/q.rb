@@ -178,7 +178,7 @@ module Calc
     # test for equaility modulo a specific number
     #
     # Returns 1 if self is congruent to y modulo md, otherwise 0.
-    # 
+    #
     # @param y [Numeric]
     # @param md [Numeric]
     # @return [Calc::Q]

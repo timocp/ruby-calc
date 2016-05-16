@@ -199,6 +199,7 @@ ltol   | x [, b]    | leg-to-leg of unit right triangle within accuracy b
 max    | x [, ...]  | maximum of values
 meq    | x, y, m    | test for equality of x and y modulo m (also: #meq?)
 min    | x [, ...]  | minimum of values
+minv   | x, m       | inverse of x modulo m
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b

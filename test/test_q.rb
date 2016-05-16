@@ -1156,4 +1156,12 @@ class TestQ < MiniTest::Test
     check_truthy Calc::Q(".05"), :meq, :meq?, ".33", "-.07"
     check_falsey Calc::Q(5), :meq, :meq?, 32, 7
   end
+
+  def test_minv
+    assert_rational_and_equal 7, Calc::Q(3).minv(10)
+    assert_rational_and_equal 3, Calc::Q(-3).minv(10)
+    assert_rational_and_equal(-3, Calc::Q(3).minv(-10))
+    assert_rational_and_equal(-7, Calc::Q(-3).minv(-10))
+    assert_rational_and_equal 0, Calc::Q(4).minv(10)
+  end
 end
