@@ -1,17 +1,11 @@
 #include "calc.h"
 
 /* attempt to convert a bignum a long then to Calc::Q using itoq().
- * NUM2LONG will raise an exception if arg doesn't fit in a long */
+ * NUM2LONG will raise a RangeError if arg doesn't fit in a long */
 static VALUE
 bignum_to_calc_q_via_long(VALUE arg)
 {
-    VALUE result;
-    long tmp;
-
-    tmp = NUM2LONG(arg);
-    result = cq_new();
-    DATA_PTR(result) = itoq(tmp);
-    return result;
+    return wrap_number(itoq(NUM2LONG(arg)));
 }
 
 /* handles exceptions during via_long.  convert the arg to a string, then
@@ -19,18 +13,14 @@ bignum_to_calc_q_via_long(VALUE arg)
 static VALUE
 bignum_to_calc_q_via_string(VALUE arg, VALUE e)
 {
-    VALUE result, string;
+    VALUE string;
 
-    if (rb_obj_is_kind_of(e, rb_eRangeError)) {
-        string = rb_funcall(arg, rb_intern("to_s"), 0);
-        result = cq_new();
-        DATA_PTR(result) = str2q(StringValueCStr(string));
-    }
-    else {
+    if (!rb_obj_is_kind_of(e, rb_eRangeError)) {
         /* something other than RangeError; re-raise it */
         rb_exc_raise(e);
     }
-    return result;
+    string = rb_funcall(arg, rb_intern("to_s"), 0);
+    return wrap_number(str2q(StringValueCStr(string)));
 }
 
 /* convert a Bignum to Calc::Q
@@ -112,16 +102,6 @@ value_to_number(VALUE arg, int string_allowed)
     return qresult;
 }
 
-/* convert a NUMBER* to a new Calc::Q object */
-VALUE
-number_to_calc_q(NUMBER * n)
-{
-    VALUE q;
-    q = cq_new();
-    DATA_PTR(q) = qlink(n);
-    return q;
-}
-
 /* convert a ruby value into a COMPLEX*.  Allowed types:
  * - Complex
  * - Any type allowed by value_to_number (except string).
@@ -201,5 +181,16 @@ wrap_complex(COMPLEX * c)
         result = cc_new();
         DATA_PTR(result) = c;
     }
+    return result;
+}
+
+/* wrap a NUMBER* into a ruby VALUE of class Calc::Q. */
+VALUE
+wrap_number(NUMBER * n)
+{
+    VALUE result;
+
+    result = cq_new();
+    DATA_PTR(result) = n;
     return result;
 }

@@ -51,7 +51,6 @@ calc_freeeuler(VALUE self)
 static VALUE
 calc_hnrmod(VALUE self, VALUE v, VALUE h, VALUE n, VALUE r)
 {
-    VALUE result;
     NUMBER *qv, *qh, *qn, *qr, *qresult;
     ZVALUE zresult;
     setup_math_error();
@@ -85,9 +84,7 @@ calc_hnrmod(VALUE self, VALUE v, VALUE h, VALUE n, VALUE r)
     zhnrmod(qv->num, qh->num, qn->num, qr->num, &zresult);
     qresult = qalloc();
     qresult->num = zresult;
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Evaluates п (pi) to a specified accuracy
@@ -103,21 +100,19 @@ calc_hnrmod(VALUE self, VALUE v, VALUE h, VALUE n, VALUE r)
 static VALUE
 calc_pi(int argc, VALUE * argv, VALUE self)
 {
-    NUMBER *qepsilon;
-    VALUE epsilon, result;
+    NUMBER *qepsilon, *qresult;
+    VALUE epsilon;
     setup_math_error();
 
-    result = cq_new();
     if (rb_scan_args(argc, argv, "01", &epsilon) == 0) {
-        DATA_PTR(result) = qpi(conf->epsilon);
+        qresult = qpi(conf->epsilon);
     }
     else {
         qepsilon = value_to_number(epsilon, 1);
-        DATA_PTR(result) = qpi(qepsilon);
+        qresult = qpi(qepsilon);
         qfree(qepsilon);
     }
-
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Returns a new complex (or real) number specified by modulus (radius) and

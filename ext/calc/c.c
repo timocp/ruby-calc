@@ -540,14 +540,11 @@ cc_gd(int argc, VALUE * argv, VALUE self)
 static VALUE
 cc_im(VALUE self)
 {
-    VALUE result;
     COMPLEX *cself;
     setup_math_error();
 
     cself = DATA_PTR(self);
-    result = cq_new();
-    DATA_PTR(result) = qlink(cself->imag);
-    return result;
+    return wrap_number(qlink(cself->imag));
 }
 
 /* Returns true if the number is imaginary (ie, has zero real part and non-zero
@@ -640,14 +637,11 @@ cc_power(int argc, VALUE * argv, VALUE self)
 static VALUE
 cc_re(VALUE self)
 {
-    VALUE result;
     COMPLEX *cself;
     setup_math_error();
 
     cself = DATA_PTR(self);
-    result = cq_new();
-    DATA_PTR(result) = qlink(cself->real);
-    return result;
+    return wrap_number(qlink(cself->real));
 }
 
 /* Returns true if the number is real (ie, has zero imaginary part)

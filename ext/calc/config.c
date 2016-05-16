@@ -176,7 +176,7 @@ calc_config(int argc, VALUE * argv, VALUE klass)
         break;
 
     case CONFIG_EPSILON:
-        old_value = number_to_calc_q(conf->epsilon);
+        old_value = wrap_number(qlink(conf->epsilon));
         if (args == 2)
             setepsilon(value_to_number(new_value, 1));
         break;

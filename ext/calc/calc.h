@@ -19,7 +19,6 @@ extern long value_to_mode(VALUE v);
 
 /* convert.c */
 extern NUMBER *value_to_number(VALUE arg, int string_allowed);
-extern VALUE number_to_calc_q(NUMBER * n);
 extern COMPLEX *value_to_complex(VALUE arg);
 extern long value_to_long(VALUE n);
 extern VALUE wrap_complex(COMPLEX * c);

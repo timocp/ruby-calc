@@ -144,7 +144,7 @@ numeric_op(VALUE self, VALUE other,
            NUMBER * (*fqq) (NUMBER *, NUMBER *), NUMBER * (*fql) (NUMBER *, long), ID func)
 {
     NUMBER *qother, *qresult;
-    VALUE result, ary;
+    VALUE ary;
     setup_math_error();
 
     if (fql && TYPE(other) == T_FIXNUM) {
@@ -173,17 +173,13 @@ numeric_op(VALUE self, VALUE other,
         rb_raise(rb_eTypeError, "%" PRIsVALUE " can't (!) be coerced into %" PRIsVALUE,
                  other, rb_obj_class(self));
     }
-
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 static VALUE
 shift(VALUE self, VALUE other, int sign)
 {
     NUMBER *qother;
-    VALUE result;
     long n;
     setup_math_error();
 
@@ -199,9 +195,7 @@ shift(VALUE self, VALUE other, int sign)
     }
     n = qtoi(qother);
     qfree(qother);
-    result = cq_new();
-    DATA_PTR(result) = qshift(DATA_PTR(self), n * sign);
-    return result;
+    return wrap_number(qshift(DATA_PTR(self), n * sign));
 }
 
 static VALUE
@@ -221,8 +215,7 @@ trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMB
     }
     qresult = (*f) (DATA_PTR(self), qepsilon ? qepsilon : conf->epsilon);
     if (qresult) {
-        result = cq_new();
-        DATA_PTR(result) = qresult;
+        result = wrap_number(qresult);
     }
     else if (fcomplex) {
         /* non-real result, call complex version.  see calc's func.c */
@@ -258,42 +251,39 @@ static VALUE
 trans_function2(int argc, VALUE * argv, VALUE self,
                 NUMBER * (*f) (NUMBER *, NUMBER *, NUMBER *))
 {
-    NUMBER *qarg, *qepsilon;
-    VALUE arg, epsilon, result;
+    NUMBER *qarg, *qepsilon, *qresult;
+    VALUE arg, epsilon;
     setup_math_error();
 
-    result = cq_new();
     if (rb_scan_args(argc, argv, "11", &arg, &epsilon) == 1) {
         qarg = value_to_number(arg, 0);
-        DATA_PTR(result) = (*f) (DATA_PTR(self), qarg, conf->epsilon);
+        qresult = (*f) (DATA_PTR(self), qarg, conf->epsilon);
         qfree(qarg);
     }
     else {
         qarg = value_to_number(arg, 0);
         qepsilon = value_to_number(epsilon, 1);
-        DATA_PTR(result) = (*f) (DATA_PTR(self), qarg, qepsilon);
+        qresult = (*f) (DATA_PTR(self), qarg, qepsilon);
         qfree(qarg);
         qfree(qepsilon);
     }
-    if (!DATA_PTR(result)) {
+    if (!qresult) {
         rb_raise(e_MathError, "Transcendental function returned NULL");
     }
-    return result;
+    return wrap_number(qresult);
 }
 
 static VALUE
 rounding_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, long, long))
 {
-    VALUE places, rnd, result;
+    VALUE places, rnd;
     long n, p, r;
     setup_math_error();
 
     n = rb_scan_args(argc, argv, "02", &places, &rnd);
     p = (n >= 1) ? value_to_long(places) : 0;
     r = (n == 2) ? value_to_long(rnd) : conf->round;
-    result = cq_new();
-    DATA_PTR(result) = (*f) (DATA_PTR(self), p, r);
-    return result;
+    return wrap_number((*f) (DATA_PTR(self), p, r));
 }
 
 /*****************************************************************************
@@ -315,8 +305,8 @@ cq_mod(VALUE x, VALUE y)
     setup_math_error();
 
     qy = value_to_number(y, 0);
-    result = cq_new();
-    DATA_PTR(result) = qmod(DATA_PTR(x), qy, 0);
+    result = wrap_number(qmod(DATA_PTR(x), qy, 0));
+    qfree(qy);
     return result;
 }
 
@@ -369,12 +359,8 @@ cq_subtract(VALUE x, VALUE y)
 static VALUE
 cq_uminus(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qsub(&_qzero_, DATA_PTR(self));
-    return result;
+    return wrap_number(qsub(&_qzero_, DATA_PTR(self)));
 }
 
 /* Performs division.
@@ -489,12 +475,8 @@ cq_shift_right(VALUE self, VALUE other)
 static VALUE
 cq_abs(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qqabs(DATA_PTR(self));
-    return result;
+    return wrap_number(qqabs(DATA_PTR(self)));
 }
 
 /* Inverse trigonometric cosine
@@ -624,8 +606,7 @@ cq_appr(int argc, VALUE * argv, VALUE self)
     else {
         qepsilon = NULL;
     }
-    result = cq_new();
-    DATA_PTR(result) = qmappr(DATA_PTR(self), qepsilon ? qepsilon : conf->epsilon, R);
+    result = wrap_number(qmappr(DATA_PTR(self), qepsilon ? qepsilon : conf->epsilon, R));
     if (qepsilon) {
         qfree(qepsilon);
     }
@@ -740,7 +721,6 @@ cq_atanh(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_bernoulli(VALUE self)
 {
-    VALUE result;
     NUMBER *qself, *qresult;
     setup_math_error();
 
@@ -748,13 +728,11 @@ cq_bernoulli(VALUE self)
     if (qisfrac(qself)) {
         rb_raise(e_MathError, "Non-integer argument for bernoulli");
     }
-    qresult = qbern(((NUMBER *) DATA_PTR(self))->num);
+    qresult = qbern(qself->num);
     if (!qresult) {
         rb_raise(e_MathError, "Bad argument for bern");
     }
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Returns true if binary bit y is set in self, otherwise false.
@@ -822,7 +800,6 @@ cq_bround(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_catalan(VALUE self)
 {
-    VALUE result;
     NUMBER *qself, *qresult;
     setup_math_error();
 
@@ -837,9 +814,7 @@ cq_catalan(VALUE self)
     if (!qresult) {
         rb_raise(e_MathError, "qcatalan() returned NULL");
     }
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Approximation using continued fractions
@@ -878,8 +853,7 @@ cq_cfappr(int argc, VALUE * argv, VALUE self)
     n = rb_scan_args(argc, argv, "02", &eps, &rnd);
     q = (n >= 1) ? value_to_number(eps, 1) : conf->epsilon;
     R = (n == 2) ? value_to_long(rnd) : conf->cfappr;
-    result = cq_new();
-    DATA_PTR(result) = qcfappr(DATA_PTR(self), q, R);
+    result = wrap_number(qcfappr(DATA_PTR(self), q, R));
     if (n >= 1) {
         qfree(q);
     }
@@ -912,15 +886,13 @@ cq_cfappr(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_cfsim(int argc, VALUE * argv, VALUE self)
 {
-    VALUE rnd, result;
+    VALUE rnd;
     long n, R;
     setup_math_error();
 
     n = rb_scan_args(argc, argv, "01", &rnd);
     R = (n >= 1) ? value_to_long(rnd) : conf->cfsim;
-    result = cq_new();
-    DATA_PTR(result) = qcfsim(DATA_PTR(self), R);
-    return result;
+    return wrap_number(qcfsim(DATA_PTR(self), R));
 }
 
 /* Cosine
@@ -1014,13 +986,8 @@ cq_csch(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_den(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qden(DATA_PTR(self));
-
-    return result;
+    return wrap_number(qden(DATA_PTR(self)));
 }
 
 /* Returns the digit at the specified position on decimal or any other base.
@@ -1035,7 +1002,7 @@ cq_den(VALUE self)
 static VALUE
 cq_digit(int argc, VALUE * argv, VALUE self)
 {
-    VALUE pos, base, result;
+    VALUE pos, base;
     NUMBER *qpos, *qbase, *qresult;
     long n;
     setup_math_error();
@@ -1064,9 +1031,7 @@ cq_digit(int argc, VALUE * argv, VALUE self)
     if (qresult == NULL) {
         rb_raise(e_MathError, "Invalid arguments for digit");
     }
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Returns the number of digits of the integral part of self in decimal or another base
@@ -1082,7 +1047,7 @@ cq_digit(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_digits(int argc, VALUE * argv, VALUE self)
 {
-    VALUE base, result;
+    VALUE base;
     NUMBER *qbase, *qresult;
     long n;
     setup_math_error();
@@ -1098,9 +1063,7 @@ cq_digits(int argc, VALUE * argv, VALUE self)
     qresult = itoq(qdigits(DATA_PTR(self), n >= 1 ? qbase->num : _ten_));
     if (n >= 1)
         qfree(qbase);
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Euler number
@@ -1120,7 +1083,6 @@ cq_digits(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_euler(VALUE self)
 {
-    VALUE result;
     NUMBER *qself, *qresult;
     setup_math_error();
 
@@ -1132,9 +1094,7 @@ cq_euler(VALUE self)
     if (qresult == NULL) {
         rb_raise(e_MathError, "number too big or out of memory for euler");
     }
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Returns true if the number is an even integer
@@ -1147,8 +1107,7 @@ cq_euler(VALUE self)
 static VALUE
 cq_evenp(VALUE self)
 {
-    NUMBER *qself = DATA_PTR(self);
-    return qiseven(qself) ? Qtrue : Qfalse;
+    return qiseven((NUMBER *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
 /* Exponential function
@@ -1176,13 +1135,8 @@ cq_exp(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_fact(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qfact(DATA_PTR(self));
-
-    return result;
+    return wrap_number(qfact(DATA_PTR(self)));
 }
 
 /* Smallest prime factor not exceeding specified limit
@@ -1200,7 +1154,7 @@ cq_fact(VALUE self)
 static VALUE
 cq_factor(int argc, VALUE * argv, VALUE self)
 {
-    VALUE limit, result;
+    VALUE limit;
     NUMBER *qself, *qlimit, *qfactor;
     ZVALUE zlimit;
     long a;
@@ -1235,9 +1189,7 @@ cq_factor(int argc, VALUE * argv, VALUE self)
         rb_raise(e_MathError, "limit >= 2^32 for factor");
     }
     zfree(zlimit);
-    result = cq_new();
-    DATA_PTR(result) = qfactor;
-    return result;
+    return wrap_number(qfactor);
 }
 
 /* Count number of times an integer divides self.
@@ -1265,8 +1217,7 @@ cq_fcnt(VALUE self, VALUE y)
         qfree(qy);
         rb_raise(e_MathError, "non-integral argument for fcnt");
     }
-    result = cq_new();
-    DATA_PTR(result) = itoq(zdivcount(qself->num, qy->num));
+    result = wrap_number(itoq(zdivcount(qself->num, qy->num)));
     qfree(qy);
     return result;
 }
@@ -1280,19 +1231,16 @@ cq_fcnt(VALUE self, VALUE y)
 static VALUE
 cq_frac(VALUE self)
 {
-    VALUE result;
     NUMBER *qself;
     setup_math_error();
 
     qself = DATA_PTR(self);
-    result = cq_new();
     if (qisint(qself)) {
-        DATA_PTR(result) = qlink(&_qzero_);
+        return wrap_number(qlink(&_qzero_));
     }
     else {
-        DATA_PTR(result) = qfrac(qself);
+        return wrap_number(qfrac(qself));
     }
-    return result;
 }
 
 /* Remove specified integer factors from self.
@@ -1310,12 +1258,10 @@ static VALUE
 cq_frem(VALUE self, VALUE y)
 {
     VALUE result;
-    NUMBER *qself, *qy;
+    NUMBER *qy;
 
-    qself = DATA_PTR(self);
     qy = value_to_number(y, 0);
-    result = cq_new();
-    DATA_PTR(result) = qfacrem(qself, qy);
+    result = wrap_number(qfacrem(DATA_PTR(self), qy));
     qfree(qy);
     return result;
 }
@@ -1331,11 +1277,8 @@ cq_frem(VALUE self, VALUE y)
 static VALUE
 cq_fib(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-    result = cq_new();
-    DATA_PTR(result) = qfib(DATA_PTR(self));
-    return result;
+    return wrap_number(qfib(DATA_PTR(self)));
 }
 
 /* Greatest common divisor
@@ -1352,7 +1295,6 @@ cq_fib(VALUE self)
 static VALUE
 cq_gcd(int argc, VALUE * argv, VALUE self)
 {
-    VALUE result;
     NUMBER *qresult, *qarg, *qtmp;
     int i;
     setup_math_error();
@@ -1365,9 +1307,7 @@ cq_gcd(int argc, VALUE * argv, VALUE self)
         qfree(qresult);
         qresult = qtmp;
     }
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Returns greatest integer divisor of self relatively prime to other
@@ -1380,16 +1320,13 @@ cq_gcd(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_gcdrem(VALUE self, VALUE other)
 {
-    VALUE result;
     NUMBER *qother, *qresult;
     setup_math_error();
 
     qother = value_to_number(other, 0);
     qresult = qgcdrem(DATA_PTR(self), qother);
     qfree(qother);
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Returns index of highest bit in binary representation of self
@@ -1407,7 +1344,6 @@ cq_gcdrem(VALUE self, VALUE other)
 static VALUE
 cq_highbit(VALUE self)
 {
-    VALUE result;
     NUMBER *qself;
     setup_math_error();
 
@@ -1415,14 +1351,12 @@ cq_highbit(VALUE self)
     if (qisfrac(qself)) {
         rb_raise(e_MathError, "non-integer argument for highbit");
     }
-    result = cq_new();
     if (qiszero(qself)) {
-        DATA_PTR(result) = qlink(&_qnegone_);
+        return wrap_number(qlink(&_qnegone_));
     }
     else {
-        DATA_PTR(result) = itoq(zhighbit(qself->num));
+        return wrap_number(itoq(zhighbit(qself->num)));
     }
-    return result;
 }
 
 /* Returns the hypotenuse of a right-angled triangle given the other sides
@@ -1450,7 +1384,6 @@ cq_hypot(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_int(VALUE self)
 {
-    VALUE result;
     NUMBER *qself;
     setup_math_error();
 
@@ -1458,9 +1391,7 @@ cq_int(VALUE self)
     if (qisint(qself)) {
         return self;
     }
-    result = cq_new();
-    DATA_PTR(result) = qint(qself);
-    return result;
+    return wrap_number(qint(qself));
 }
 
 /* Returns true if the number is an integer.
@@ -1473,8 +1404,7 @@ cq_int(VALUE self)
 static VALUE
 cq_intp(VALUE self)
 {
-    NUMBER *qself = DATA_PTR(self);
-    return qisint(qself) ? Qtrue : Qfalse;
+    return qisint((NUMBER *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
 /* Inverse of a real number
@@ -1487,12 +1417,8 @@ cq_intp(VALUE self)
 static VALUE
 cq_inverse(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qinv(DATA_PTR(self));
-    return result;
+    return wrap_number(qinv(DATA_PTR(self)));
 }
 
 /* Integer part of specified root
@@ -1508,16 +1434,13 @@ cq_inverse(VALUE self)
 static VALUE
 cq_iroot(VALUE self, VALUE other)
 {
-    VALUE result;
     NUMBER *qother, *qresult;
     setup_math_error();
 
     qother = value_to_number(other, 0);
     qresult = qiroot(DATA_PTR(self), qother);
     qfree(qother);
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Returns true if self exactly divides y, otherwise return false.
@@ -1551,13 +1474,8 @@ cq_multp(VALUE self, VALUE other)
 static VALUE
 cq_num(VALUE self)
 {
-    VALUE result;
     setup_math_error();
-
-    result = cq_new();
-    DATA_PTR(result) = qnum(DATA_PTR(self));
-
-    return result;
+    return wrap_number(qnum(DATA_PTR(self)));
 }
 
 /* Returns true if the number is an odd integer
@@ -1570,8 +1488,7 @@ cq_num(VALUE self)
 static VALUE
 cq_oddp(VALUE self)
 {
-    NUMBER *qself = DATA_PTR(self);
-    return qisodd(qself) ? Qtrue : Qfalse;
+    return qisodd((NUMBER *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
 /* Permutation number
@@ -1587,16 +1504,13 @@ cq_oddp(VALUE self)
 static VALUE
 cq_perm(VALUE self, VALUE other)
 {
-    VALUE result;
     NUMBER *qresult, *qother;
     setup_math_error();
 
     qother = value_to_number(other, 0);
     qresult = qperm(DATA_PTR(self), qother);
     qfree(qother);
-    result = cq_new();
-    DATA_PTR(result) = qresult;
-    return result;
+    return wrap_number(qresult);
 }
 
 /* Evaluates a numeric power
@@ -1642,9 +1556,8 @@ cq_power(int argc, VALUE * argv, VALUE self)
         comfree(carg);
     }
     else {
-        result = cq_new();
         qarg = value_to_number(arg, 1);
-        DATA_PTR(result) = qpower(qself, qarg, qepsilon ? qepsilon : conf->epsilon);
+        result = wrap_number(qpower(qself, qarg, qepsilon ? qepsilon : conf->epsilon));
         qfree(qarg)
     }
     if (qepsilon) {
@@ -1697,18 +1610,12 @@ static VALUE
 cq_quomod(VALUE self, VALUE other)
 {
     NUMBER *qother, *qquo, *qmod;
-    VALUE quo, mod;
     setup_math_error();
 
     qother = value_to_number(other, 0);
     qquomod(DATA_PTR(self), qother, &qquo, &qmod, 0);
     qfree(qother);
-    quo = cq_new();
-    mod = cq_new();
-    DATA_PTR(quo) = qquo;
-    DATA_PTR(mod) = qmod;
-
-    return rb_assoc_new(quo, mod);
+    return rb_assoc_new(wrap_number(qquo), wrap_number(qmod));
 }
 
 /* Returns the nth root
@@ -1911,9 +1818,7 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
 static VALUE
 cq_zerop(VALUE self)
 {
-    NUMBER *qself;
-    qself = DATA_PTR(self);
-    return qiszero(qself) ? Qtrue : Qfalse;
+    return qiszero((NUMBER *) DATA_PTR(self)) ? Qtrue : Qfalse;
 }
 
 /*****************************************************************************
