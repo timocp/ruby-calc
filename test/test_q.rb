@@ -1126,4 +1126,13 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 360360, Calc::Q(14).lcmfact
     assert_rational_and_equal 360360, Calc::Q(15).lcmfact
   end
+
+  def test_lfactor
+    assert_rational_and_equal 1, Calc::Q(35).lfactor(2)
+    assert_rational_and_equal 5, Calc::Q(35).lfactor(3)
+    assert_rational_and_equal 5, Calc::Q(-35).lfactor(3)
+    assert_rational_and_equal 1, Calc::Q(2**32 + 1).lfactor(115)
+    assert_rational_and_equal 641, Calc::Q(2**32 + 1).lfactor(116)
+    assert_rational_and_equal 179951, Calc::Q(2**59 - 1).lfactor("1e5")
+  end
 end

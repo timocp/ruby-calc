@@ -181,6 +181,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :jacobi
     check_real_delegation :lcm
     check_real_delegation :lcmfact
+    check_real_delegation :lfactor
     check_delegation :ln
     check_delegation :log
     check_real_delegation :num

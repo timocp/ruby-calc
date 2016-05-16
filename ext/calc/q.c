@@ -1533,6 +1533,29 @@ cq_lcmfact(VALUE self)
     return wrap_number(qlcmfact(DATA_PTR(self)));
 }
 
+/* Smallest prime factor in first specified number of primes
+ *
+ * If n is nonzero and abs(n) has a prime factor in the first m primes (2, 3,
+ * 5, ...), then n.lfactor(m) returns the smallest such factor.  Otherwise it
+ * returns 1.
+ *
+ * @param m [Numeric]
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(2**32 + 1).lfactor(116) #=> Calc::Q(641)
+ */
+static VALUE
+cq_lfactor(VALUE self, VALUE other)
+{
+    NUMBER *qother, *qresult;
+    setup_math_error();
+
+    qother = value_to_number(other, 1);
+    qresult = qlowfactor(DATA_PTR(self), qother);
+    qfree(qother);
+    return wrap_number(qresult);
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -2035,6 +2058,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "jacobi", cq_jacobi, 1);
     rb_define_method(cQ, "lcm", cq_lcm, -1);
     rb_define_method(cQ, "lcmfact", cq_lcmfact, 0);
+    rb_define_method(cQ, "lfactor", cq_lfactor, 1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);

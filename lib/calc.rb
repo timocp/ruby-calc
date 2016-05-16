@@ -12,8 +12,8 @@ module Calc
     comb conj cos cosh cot coth csc csch den digit digits estr euler exp fact
     factor fcnt frac frem fib floor gcd gcdrem gd highbit hypot ilog ilog10
     ilog2 im int inverse iroot iseven isimag isint ismult isodd isprime isqrt
-    isreal isrel issq jacobi lcm lcmfact ln log num perm power quomod re round
-    sec sech sin sinh sqrt tan tanh
+    isreal isrel issq jacobi lcm lcmfact lfactor ln log num perm power quomod
+    re round sec sech sin sinh sqrt tan tanh
   ).freeze
 
   # builtins implemented as module methods on Calc
