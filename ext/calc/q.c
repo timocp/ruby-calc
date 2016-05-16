@@ -1443,6 +1443,24 @@ cq_iroot(VALUE self, VALUE other)
     return wrap_number(qresult);
 }
 
+/* Integer part of square root
+ *
+ * x.isqrt returns the greatest integer n for which n^2 <= x.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is negative
+ * @example
+ *  Calc::Q("8.5").isqrt #=> Calc::Q(2)
+ *  Calc::Q(200).isqrt   #=> Calc::Q(14)
+ *  Calc::Q("2e6").isqrt #=> Calc::Q(1414)
+ */
+static VALUE
+cq_isqrt(VALUE self)
+{
+    setup_math_error();
+    return wrap_number(qisqrt(DATA_PTR(self)));
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -1888,6 +1906,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "int?", cq_intp, 0);
     rb_define_method(cQ, "inverse", cq_inverse, 0);
     rb_define_method(cQ, "iroot", cq_iroot, 1);
+    rb_define_method(cQ, "isqrt", cq_isqrt, 0);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);

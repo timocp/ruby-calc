@@ -1068,4 +1068,12 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(3).**(99).prime? }
     check_falsey Calc::Q(4)**99, :isprime, :prime?
   end
+
+  def test_isqrt
+    assert_rational_and_equal 2, Calc::Q("8.5").isqrt
+    assert_rational_and_equal 14, Calc::Q(200).isqrt
+    assert_rational_and_equal 1414, Calc::Q("2e6").isqrt
+    assert_rational_and_equal 14142135623730950488016887242, Calc::Q("2e56").isqrt
+    assert_raises(Calc::MathError) { Calc::Q(-1).isqrt }
+  end
 end

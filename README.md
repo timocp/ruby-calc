@@ -184,6 +184,7 @@ isint  | x          | whether a value is an integer (also: #int?)
 ismult | x, y       | whether a x exactly divides y (also: #mult?)
 isodd  | x          | whether a value is odd (also: #odd?)
 isprime| x          | tests if x is a small (< 2^32) prime (also: #prime?)
+isqrt  | x          | integer part of square root of x
 isreal | x          | whether a value is real (also: #real?)
 ln     | x [, b]    | natural logarithm of x within accuracy b
 log    | x [, b]    | base 10 logarithm of x within accuracy b
