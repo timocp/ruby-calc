@@ -110,6 +110,19 @@ module Calc
       int? ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # least-absol;ute-value residues modulo a specified number
+    #
+    # x.mmin(md) is equivalent to x.mod(md, 16)
+    #
+    # @param md [Numeric]
+    # @return [Calc::Numeric]
+    # @example
+    #  Calc::Q(3).mmin(6)    #=> Calc::Q(3)
+    #  Calc::C(0, 3).mmin(6) #=> Calc::C(3i)
+    def mmin(md)
+      mod md, 16
+    end
+
     def remainder(y)
       z = self % y
       if !z.zero? && ((self < 0 && y > 0) || (self > 0 && y < 0))

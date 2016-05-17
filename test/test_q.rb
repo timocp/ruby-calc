@@ -1172,4 +1172,15 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-7, Calc::Q(-3).minv(-10))
     assert_rational_and_equal 0, Calc::Q(4).minv(10)
   end
+
+  def test_mmin
+    assert_rational_and_equal 3, Calc::Q(3).mmin(6)
+    assert_rational_and_equal(-2, Calc::Q(4).mmin(6))
+    assert_rational_and_equal(-1, Calc::Q(5).mmin(6))
+    assert_rational_and_equal 0, Calc::Q(6).mmin(6)
+    assert_rational_and_equal 1, Calc::Q(7).mmin(6)
+    assert_rational_and_equal Calc::Q("1.25"), Calc::Q("1.25").mmin(Calc::Q("2.5"))
+    assert_rational_and_equal Calc::Q("1.25"), Calc::Q("-1.25").mmin(Calc::Q("2.5"))
+    assert_rational_and_equal Calc::Q("-1.25"), Calc::Q("1.25").mmin(Calc::Q("-2.5"))
+  end
 end

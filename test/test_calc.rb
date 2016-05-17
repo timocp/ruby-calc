@@ -204,6 +204,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :ltol
     check_real_delegation :meq, 3
     check_real_delegation :minv, 2
+    check_delegation :mmin, 2
     check_delegation :mod, 2
     check_real_delegation :num
     check_real_delegation :perm

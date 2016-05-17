@@ -451,4 +451,12 @@ class TestC < MiniTest::Test
     assert_complex_parts [0, 4], Calc::C(0, -11) % 5
     assert_complex_parts [0, -1], Calc::C(0, -11) % -5
   end
+
+  def test_mmin
+    assert_complex_parts [0, 3], Calc::C(0, 3).mmin(6)
+    assert_complex_parts [0, -2], Calc::C(0, 4).mmin(6)
+    assert_complex_parts [0, -1], Calc::C(0, 5).mmin(6)
+    assert_rational_and_equal 0, Calc::C(0, 6).mmin(6)
+    assert_complex_parts [0, 1], Calc::C(0, 7).mmin(6)
+  end
 end
