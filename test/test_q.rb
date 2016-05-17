@@ -1299,4 +1299,15 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(2**32).pix }
     assert_raises(Calc::MathError) { Calc::Q(0.5).pix }
   end
+
+  def test_places
+    assert_rational_and_equal 0, Calc::Q(3).places
+    assert_rational_and_equal 4, Calc::Q("0.0123").places
+    assert_rational_and_equal 1, Calc::Q("3.70").places
+    assert_rational_and_equal 10, Calc::Q("1e-10").places
+    assert_nil Calc::Q("3/7").places
+    assert_nil Calc::Q("0.0123").places(2)
+    assert_rational_and_equal 3, Calc::Q(".625").places(2)
+    assert_rational_and_equal 1, Calc::Q(".625").places(8)
+  end
 end

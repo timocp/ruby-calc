@@ -1951,6 +1951,49 @@ cq_pix(VALUE self)
     rb_raise(e_MathError, "pix arg is >= 2^32");
 }
 
+/* Number of decimal (or other) places in fractional part
+ *
+ * Returns the number of digits needed to express the fractional part of this
+ * number in base b.  If self is an integer, returns 0.  If the expansion in
+ * base b is infinite, returns nil.
+ *
+ * @param b [Integer] base (default 10)
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if base is invalid
+ * @example
+ *  Calc::Q(3).places           #=> Calc::Q(0)
+ *  Calc::Q("0.0123").places    #=> Calc::Q(4)
+ *  Calc::Q("0.0123").places(2) #=> nil
+ *  Calc::Q(".625").places(2)   #=> Calc::Q(3)
+ */
+static VALUE
+cq_places(int argc, VALUE * argv, VALUE self)
+{
+    VALUE base;
+    NUMBER *qbase;
+    long places setup_math_error();
+
+    if (rb_scan_args(argc, argv, "01", &base) == 0) {
+        places = qdecplaces(DATA_PTR(self));
+    }
+    else {
+        qbase = value_to_number(base, 0);
+        if (qisfrac(qbase)) {
+            qfree(qbase);
+            rb_raise(e_MathError, "non-integer base for places");
+        }
+        places = qplaces(DATA_PTR(self), qbase->num);
+        qfree(qbase);
+        if (places == -2) {
+            rb_raise(e_MathError, "invalid base for places");
+        }
+    }
+    if (places == -1) {
+        return Qnil;
+    }
+    return wrap_number(itoq(places));
+}
+
 /* Evaluates a numeric power
  *
  * @param y [Numeric] power to raise by
@@ -2507,6 +2550,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "perm", cq_perm, 1);
     rb_define_method(cQ, "pfact", cq_pfact, 0);
     rb_define_method(cQ, "pix", cq_pix, 0);
+    rb_define_method(cQ, "places", cq_places, -1);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prevcand", cq_prevcand, -1);
     rb_define_method(cQ, "prevprime", cq_prevprime, 0);
