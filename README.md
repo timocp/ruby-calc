@@ -206,6 +206,7 @@ mod    | x, y [, r] | x modulo y with rounding r
 near   | x, y [, b] | nearness test (sign of (abs(x-y) - b)
 nextcand| x [, ...] | next candidate prime
 nextprime| x        | next small prime after x
+norm   | x          | norm (square of absolute value)
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b

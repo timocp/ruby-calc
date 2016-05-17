@@ -210,6 +210,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :near, 2
     check_real_delegation :nextcand
     check_real_delegation :nextprime
+    check_delegation :norm
     check_real_delegation :num
     check_real_delegation :perm
     check_delegation :power, 2

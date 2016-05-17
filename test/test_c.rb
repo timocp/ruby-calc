@@ -459,4 +459,9 @@ class TestC < MiniTest::Test
     assert_rational_and_equal 0, Calc::C(0, 6).mmin(6)
     assert_complex_parts [0, 1], Calc::C(0, 7).mmin(6)
   end
+
+  def test_norm
+    assert_rational_and_equal 25, Calc::C(3, 4).norm
+    assert_rational_and_equal 41, Calc::C(4, -5).norm
+  end
 end

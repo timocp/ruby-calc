@@ -13,7 +13,7 @@ module Calc
     factor fcnt frac frem fib floor gcd gcdrem gd highbit hypot ilog ilog10
     ilog2 im int inverse iroot iseven isimag isint ismult isodd isprime isqrt
     isreal isrel issq jacobi lcm lcmfact lfactor ln log lowbit ltol meq minv
-    mmin mne mod near nextcand nextprime num perm power prevcand prevprime
+    mmin mne mod near nextcand nextprime norm num perm power prevcand prevprime
     ptest quomod re round sec sech sin sinh sqrt tan tanh
   ).freeze
 

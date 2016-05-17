@@ -1268,4 +1268,9 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0.5).prevprime }
     assert_raises(Calc::MathError) { Calc::Q(2**32).prevprime }
   end
+
+  def test_norm
+    assert_rational_and_equal Calc::Q("11.56"), Calc::Q("3.4").norm
+    assert_rational_and_equal Calc::Q("11.56"), Calc::Q("-3.4").norm
+  end
 end

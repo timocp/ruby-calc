@@ -1843,6 +1843,22 @@ cq_nextprime(VALUE self)
     return wrap_number(utoq(next_prime));
 }
 
+/* Norm of a value
+ *
+ * For real values, norm is the square of the absolute value.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q("3.4").norm  #=> Calc::Q(11.56)
+ *  Calc::Q("-3.4").norm #=> Calc::Q(11.56)
+ */
+static VALUE
+cq_norm(VALUE self)
+{
+    setup_math_error();
+    return wrap_number(qsquare(DATA_PTR(self)));
+}
+
 /* Returns the numerator.  Return value has the same sign as self.
  *
  * @return [Calc::Q]
@@ -2442,6 +2458,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "near", cq_near, -1);
     rb_define_method(cQ, "nextcand", cq_nextcand, -1);
     rb_define_method(cQ, "nextprime", cq_nextprime, 0);
+    rb_define_method(cQ, "norm", cq_norm, 0);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);

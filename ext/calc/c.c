@@ -594,6 +594,31 @@ cc_inverse(VALUE self)
     return wrap_complex(c_inv(DATA_PTR(self)));
 }
 
+/* Norm of a value
+ *
+ * For complex values, norm is the sum of re.norm and im.norm.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::C(3, 4).norm  #=> Calc::Q(25)
+ *  Calc::C(4, -5).norm #=> Calc::Q(41)
+ */
+static VALUE
+cc_norm(VALUE self)
+{
+    COMPLEX *cself;
+    NUMBER *q1, *q2, *qresult;
+    setup_math_error();
+
+    cself = DATA_PTR(self);
+    q1 = qsquare(cself->real);
+    q2 = qsquare(cself->imag);
+    qresult = qqadd(q1, q2);
+    qfree(q1);
+    qfree(q2);
+    return wrap_number(qresult);
+}
+
 /* Returns true if the number is real and odd
  *
  * @return [Boolean]
@@ -735,6 +760,7 @@ define_calc_c(VALUE m)
     rb_define_method(cC, "imag?", cc_imagp, 0);
     rb_define_method(cC, "int", cc_int, 0);
     rb_define_method(cC, "inverse", cc_inverse, 0);
+    rb_define_method(cC, "norm", cc_norm, 0);
     rb_define_method(cC, "odd?", cc_oddp, 0);
     rb_define_method(cC, "power", cc_power, -1);
     rb_define_method(cC, "re", cc_re, 0);
