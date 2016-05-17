@@ -209,10 +209,12 @@ class TestCalc < Minitest::Test
     check_delegation :mod, 2
     check_real_delegation :near, 2
     check_real_delegation :nextcand
+    check_real_delegation :nextprime
     check_real_delegation :num
     check_real_delegation :perm
     check_delegation :power, 2
     check_real_delegation :prevcand
+    check_real_delegation :prevprime
     check_real_delegation :ptest
     check_real_delegation :quomod, 2
     check_delegation :re

@@ -1804,6 +1804,45 @@ cq_nextcand(int argc, VALUE * argv, VALUE self)
     return cand_navigation(argc, argv, self, &znextcand);
 }
 
+/* libcalc constant for 2^32+15 - can't include prime.h for this */
+extern NUMBER _nxtprime_;
+
+/* Next prime number
+ *
+ * If self is >= 2**32, raises an exception.  Otherwise returns the next prime
+ * number.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is >= 2**32
+ * @example
+ *  Calc::Q(2).nextprime         #=> Calc::Q(3)
+ *  Calc::Q(10).nextprime        #=> Calc::Q(11)
+ *  Calc::Q(100).nextprime       #=> Calc::Q(101)
+ *  Calc::Q("1e6").nextprime     #=> Calc::Q(1000003)
+ *  Calc::Q(2**32 - 1).nextprime #=> Calc::Q(4294967311)
+ */
+static VALUE
+cq_nextprime(VALUE self)
+{
+    NUMBER *qself;
+    FULL next_prime;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "non-integral for nextprime");
+    }
+    next_prime = znprime(qself->num);
+    if (next_prime == 0) {
+        /* return 2^32+15 */
+        return wrap_number(qlink(&_nxtprime_));
+    }
+    else if (next_prime == 1) {
+        rb_raise(e_MathError, "nextprime arg is >= 2^32");
+    }
+    return wrap_number(utoq(next_prime));
+}
+
 /* Returns the numerator.  Return value has the same sign as self.
  *
  * @return [Calc::Q]
@@ -1930,6 +1969,41 @@ static VALUE
 cq_prevcand(int argc, VALUE * argv, VALUE self)
 {
     return cand_navigation(argc, argv, self, &zprevcand);
+}
+
+/* Previous prime number
+ *
+ * If self <= 2, returns nil.  If self is >= 2**32, raises an exception.
+ * Otherwise returns the previous prime number.
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is >= 2**32
+ * @example
+ *  Calc::Q(2).prevprime         #=> nil
+ *  Calc::Q(10).prevprime        #=> Calc::Q(7)
+ *  Calc::Q(100).prevprime       #=> Calc::Q(97)
+ *  Calc::Q("1e6").prevprime     #=> Calc::Q(999983)
+ *  Calc::Q(2**32 - 1).prevprime #=> Calc::Q(4294967291)
+ */
+static VALUE
+cq_prevprime(VALUE self)
+{
+    NUMBER *qself;
+    FULL prev_prime;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "non-integral for prevprime");
+    }
+    prev_prime = zpprime(qself->num);
+    if (prev_prime == 0) {
+        return Qnil;
+    }
+    else if (prev_prime == 1) {
+        rb_raise(e_MathError, "prevprime arg is >= 2^32");
+    }
+    return wrap_number(utoq(prev_prime));
 }
 
 /* Small integer prime test
@@ -2367,11 +2441,13 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "near", cq_near, -1);
     rb_define_method(cQ, "nextcand", cq_nextcand, -1);
+    rb_define_method(cQ, "nextprime", cq_nextprime, 0);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prevcand", cq_prevcand, -1);
+    rb_define_method(cQ, "prevprime", cq_prevprime, 0);
     rb_define_method(cQ, "prime?", cq_primep, 0);
     rb_define_method(cQ, "ptest?", cq_ptestp, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);

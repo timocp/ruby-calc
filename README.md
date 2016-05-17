@@ -205,11 +205,13 @@ mne    | x, y, m    | test for inequality of x and y module m (also: #mne?)
 mod    | x, y [, r] | x modulo y with rounding r
 near   | x, y [, b] | nearness test (sign of (abs(x-y) - b)
 nextcand| x [, ...] | next candidate prime
+nextprime| x        | next small prime after x
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b
 power  | x, y [, b] | x raised to the power of y within accuracy b
 prevcand| x [, ...] | previous candidate prime
+prevprime| x        | previous small prime before x
 ptest  | n, [, c [, s] | probabilistic test of primality (also: #ptest?)
 root   | x, n [, b] | nth root of x within accuracy b
 round  | x [, p, r] | round x to p decimal places with rounding r
@@ -435,7 +437,8 @@ These builtins work this way:
 
 * `estr` return format is different, intended to be eval'd by ruby rather than calc
 * `nextcand` and `prevcand` return nil instead of 0 if a candidate prime is not found
-* the "error" argument of `factor` is not implemented, mainly because I don't understand the purpose of it.  errors in `factor` will always raise exceptions
+* `prevprime` returns nil instead of 0 for arguments <= 2
+* the "error" argument of `factor`, `nextprime` and `prevprime` is not implemented.  errors in these methods will always raise exceptions instead of returning the supplied error value.
 * REDC related functions (`freeredc`, `rcin`, `rcmul`, `rcout`, `rcpow`, `rcsq` are not implemented for now since there are alternatives and anyone wanting the faster modular arithmetic probably shouldn't be using ruby-calc
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that
 * Not all configuration items are implemented (and only ones related to maths will be)

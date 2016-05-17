@@ -1248,4 +1248,24 @@ class TestQ < MiniTest::Test
                               Calc::Q("2e60").nextcand(1, 1, 31, "1e30")
     assert_raises(Calc::MathError) { Calc::Q(0.5).nextcand }
   end
+
+  def test_nextprime
+    assert_rational_and_equal 11, Calc::Q(10).nextprime
+    assert_rational_and_equal 101, Calc::Q(100).nextprime
+    assert_rational_and_equal 1000003, Calc::Q("1e6").nextprime
+    assert_rational_and_equal 4294967311, Calc::Q(2**32 - 1).nextprime
+    assert_raises(Calc::MathError) { Calc::Q(0.5).nextprime }
+    assert_raises(Calc::MathError) { Calc::Q(2**32).nextprime }
+  end
+
+  def test_prevprime
+    assert_rational_and_equal 7, Calc::Q(10).prevprime
+    assert_rational_and_equal 97, Calc::Q(100).prevprime
+    assert_rational_and_equal 999983, Calc::Q("1e6").prevprime
+    assert_rational_and_equal 4294967291, Calc::Q(2**32 - 1).prevprime
+    assert_nil Calc::Q(2).prevprime
+    assert_nil Calc::Q(1).prevprime
+    assert_raises(Calc::MathError) { Calc::Q(0.5).prevprime }
+    assert_raises(Calc::MathError) { Calc::Q(2**32).prevprime }
+  end
 end
