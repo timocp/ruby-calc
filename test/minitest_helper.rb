@@ -60,11 +60,10 @@ module Minitest::Assertions
     assert_instance_of FalseClass, v.__send__(*([bmethod] + args))
   end
 
-  def with_epsilon(eps)
-    old_eps = Calc::Q.get_default_epsilon
-    Calc::Q.set_default_epsilon(eps)
+  def with_config(name, value)
+    orig = Calc.config(name, value)
     yield
   ensure
-    Calc::Q.set_default_epsilon(old_eps)
+    Calc.config(name, orig)
   end
 end

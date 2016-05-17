@@ -213,6 +213,7 @@ pi     | [b]        | value of π within accuracy b
 pix    | x          | number of primes not exceeding x
 pfact  | x          | produt of primes up to x
 places | x [, b]    | number of places in fractional part in base b
+pmod   | x, y, m    | mod of a power (x ^ y (mod m))
 power  | x, y [, b] | x raised to the power of y within accuracy b
 prevcand| x [, ...] | previous candidate prime
 prevprime| x        | previous small prime before x

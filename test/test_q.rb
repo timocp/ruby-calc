@@ -1310,4 +1310,17 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 3, Calc::Q(".625").places(2)
     assert_rational_and_equal 1, Calc::Q(".625").places(8)
   end
+
+  def test_pmod
+    assert_rational_and_equal 8, Calc::Q(2).pmod(3, 10)
+    assert_rational_and_equal 2, Calc::Q(2).pmod(5, 10)
+    assert_rational_and_equal(-2, Calc::Q(2).pmod(3, -10))
+    assert_rational_and_equal(-8, Calc::Q(2).pmod(5, -10))
+    with_config(:mod, 16) do
+      assert_rational_and_equal(-2, Calc::Q(2).pmod(3, 10))
+      assert_rational_and_equal 2, Calc::Q(2).pmod(5, 10)
+      assert_rational_and_equal(-2, Calc::Q(2).pmod(3, -10))
+      assert_rational_and_equal 2, Calc::Q(2).pmod(5, -10)
+    end
+  end
 end

@@ -1994,6 +1994,33 @@ cq_places(int argc, VALUE * argv, VALUE self)
     return wrap_number(itoq(places));
 }
 
+/* Integral power of an interger modulo a specified integer
+ *
+ * x.pmod(n, md) returns the integer value of the canonical reidue of
+ * x^n modulo md.  The canonical residue is determined by Calc.config(:mod).
+ * See "help pmod" for full details.
+ *
+ * @param n [Integer]
+ * @param md [Integer]
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(2).pmod(3, 10) #=> Calc::Q(8)
+ *  Calc::Q(2).pmod(5, 10) #=> Calc::Q(2)
+ */
+static VALUE
+cq_pmod(VALUE self, VALUE n, VALUE md)
+{
+    NUMBER *qn, *qmd, *qresult;
+    setup_math_error();
+
+    qn = value_to_number(n, 0);
+    qmd = value_to_number(md, 0);
+    qresult = qpowermod(DATA_PTR(self), qn, qmd);
+    qfree(qn);
+    qfree(qmd);
+    return wrap_number(qresult);
+}
+
 /* Evaluates a numeric power
  *
  * @param y [Numeric] power to raise by
@@ -2551,6 +2578,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "pfact", cq_pfact, 0);
     rb_define_method(cQ, "pix", cq_pix, 0);
     rb_define_method(cQ, "places", cq_places, -1);
+    rb_define_method(cQ, "pmod", cq_pmod, 2);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prevcand", cq_prevcand, -1);
     rb_define_method(cQ, "prevprime", cq_prevprime, 0);
