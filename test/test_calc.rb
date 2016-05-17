@@ -213,6 +213,7 @@ class TestCalc < Minitest::Test
     check_delegation :norm
     check_real_delegation :num
     check_real_delegation :perm
+    check_real_delegation :pfact
     check_delegation :power, 2
     check_real_delegation :prevcand
     check_real_delegation :prevprime

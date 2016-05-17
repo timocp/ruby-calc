@@ -1273,4 +1273,14 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("11.56"), Calc::Q("3.4").norm
     assert_rational_and_equal Calc::Q("11.56"), Calc::Q("-3.4").norm
   end
+
+  def test_pfact
+    [
+      1, 1, 2, 6, 6, 30, 30, 210, 210, 210, 210, 2310, 2310, 30030, 30030, 30030, 30030
+    ].each_with_index do |expected, i|
+      assert_rational_and_equal expected, Calc::Q(i).pfact
+    end
+    assert_raises(Calc::MathError) { Calc::Q(0.5).pfact }
+    assert_raises(Calc::MathError) { Calc::Q(-1).pfact }
+  end
 end

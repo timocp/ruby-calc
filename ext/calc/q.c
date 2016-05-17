@@ -1908,6 +1908,22 @@ cq_perm(VALUE self, VALUE other)
     return wrap_number(qresult);
 }
 
+/* Product of primes up to specified integer
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is not a positive integer
+ * @example
+ *  Calc::Q(2).pfact   #=> Calc::Q(2)
+ *  Calc::Q(10).pfact  #=> Calc::Q(210)
+ *  Calc::Q(100).pfact #=> Calc::Q(2305567963945518424753102147331756070)
+ */
+static VALUE
+cq_pfact(VALUE self)
+{
+    setup_math_error();
+    return wrap_number(qpfact(DATA_PTR(self)));
+}
+
 /* Evaluates a numeric power
  *
  * @param y [Numeric] power to raise by
@@ -2462,6 +2478,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);
+    rb_define_method(cQ, "pfact", cq_pfact, 0);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prevcand", cq_prevcand, -1);
     rb_define_method(cQ, "prevprime", cq_prevprime, 0);

@@ -210,6 +210,7 @@ norm   | x          | norm (square of absolute value)
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b
+pfact  | x          | produt of primes up to x
 power  | x, y [, b] | x raised to the power of y within accuracy b
 prevcand| x [, ...] | previous candidate prime
 prevprime| x        | previous small prime before x
