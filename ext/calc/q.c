@@ -1924,6 +1924,33 @@ cq_pfact(VALUE self)
     return wrap_number(qpfact(DATA_PTR(self)));
 }
 
+/* Number of primes not exceeded specified number
+ *
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self is >= 2**32
+ * @example
+ *  Calc::Q(10).pix    #=> Calc::Q(4)
+ *  Calc::Q(100).pix   #=> Calc::Q(25)
+ *  Calc::Q(10**9).pix #=> Calc::Q(50847534)
+ */
+static VALUE
+cq_pix(VALUE self)
+{
+    NUMBER *qself;
+    long value;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisfrac(qself)) {
+        rb_raise(e_MathError, "non-integer value for pix");
+    }
+    value = zpix(qself->num);
+    if (value >= 0) {
+        return wrap_number(utoq(value));
+    }
+    rb_raise(e_MathError, "pix arg is >= 2^32");
+}
+
 /* Evaluates a numeric power
  *
  * @param y [Numeric] power to raise by
@@ -2479,6 +2506,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);
     rb_define_method(cQ, "pfact", cq_pfact, 0);
+    rb_define_method(cQ, "pix", cq_pix, 0);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prevcand", cq_prevcand, -1);
     rb_define_method(cQ, "prevprime", cq_prevprime, 0);

@@ -210,6 +210,7 @@ norm   | x          | norm (square of absolute value)
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b
+pix    | x          | number of primes not exceeding x
 pfact  | x          | produt of primes up to x
 power  | x, y [, b] | x raised to the power of y within accuracy b
 prevcand| x [, ...] | previous candidate prime
@@ -440,7 +441,7 @@ These builtins work this way:
 * `estr` return format is different, intended to be eval'd by ruby rather than calc
 * `nextcand` and `prevcand` return nil instead of 0 if a candidate prime is not found
 * `prevprime` returns nil instead of 0 for arguments <= 2
-* the "error" argument of `factor`, `nextprime` and `prevprime` is not implemented.  errors in these methods will always raise exceptions instead of returning the supplied error value.
+* the "error" argument of `factor`, `nextprime`, `prevprime` and `pix` is not implemented.  errors in these methods will always raise exceptions instead of returning the supplied error value.
 * REDC related functions (`freeredc`, `rcin`, `rcmul`, `rcout`, `rcpow`, `rcsq` are not implemented for now since there are alternatives and anyone wanting the faster modular arithmetic probably shouldn't be using ruby-calc
 * Non-maths builtin functions are not implemented - use the normal ruby way of doing that
 * Not all configuration items are implemented (and only ones related to maths will be)

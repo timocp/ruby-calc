@@ -1283,4 +1283,20 @@ class TestQ < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::Q(0.5).pfact }
     assert_raises(Calc::MathError) { Calc::Q(-1).pfact }
   end
+
+  def test_pix
+    [
+      0, 0, 1, 2, 2, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 6, 6, 7, 7, 8, 8
+    ].each_with_index do |expected, i|
+      assert_rational_and_equal expected, Calc::Q(i).pix
+    end
+    assert_rational_and_equal 25, Calc::Q(100).pix
+    assert_rational_and_equal 168, Calc::Q(1000).pix
+    assert_rational_and_equal 1229, Calc::Q("1e4").pix
+    assert_rational_and_equal 9592, Calc::Q("1e5").pix
+    assert_rational_and_equal 78498, Calc::Q("1e6").pix
+    assert_rational_and_equal 203280221, Calc::Q(2**32 - 1).pix
+    assert_raises(Calc::MathError) { Calc::Q(2**32).pix }
+    assert_raises(Calc::MathError) { Calc::Q(0.5).pix }
+  end
 end
