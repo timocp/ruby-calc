@@ -203,6 +203,7 @@ minv   | x, m       | inverse of x modulo m
 mmin   | x, y       | x mod y value with smallest abs value
 mne    | x, y, m    | test for inequality of x and y module m (also: #mne?)
 mod    | x, y [, r] | x modulo y with rounding r
+near   | x, y [, b] | nearness test (sign of (abs(x-y) - b)
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b

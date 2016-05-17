@@ -207,6 +207,7 @@ class TestCalc < Minitest::Test
     check_delegation :mmin, 2
     check_real_delegation :mne, 3
     check_delegation :mod, 2
+    check_real_delegation :near, 2
     check_real_delegation :num
     check_real_delegation :perm
     check_delegation :power, 2

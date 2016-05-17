@@ -1698,6 +1698,38 @@ cq_multp(VALUE self, VALUE other)
     return result;
 }
 
+/* Compare nearness of two numbers with a standard
+ *
+ * Returns:
+ *  -1 if abs(self - other) < abs(eps)
+ *   0 if abs(self - other) = abs(eps)
+ *   1 if abs(self - other) > abs(eps)
+ *
+ * @param other [Numeric]
+ * @param eps [Numeric] (optional) defaults to Calc.config(:epsilon)
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q("22/7").near("3.15", ".01")  #=> Calc::Q(-1)
+ *  Calc::Q("22/7").near("3.15", ".005") #=> Calc::Q(1)
+ */
+static VALUE
+cq_near(int argc, VALUE * argv, VALUE self)
+{
+    VALUE other, epsilon;
+    NUMBER *qother, *qepsilon, *qresult;
+    int n;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "11", &other, &epsilon);
+    qother = value_to_number(other, 1);
+    qepsilon = (n == 2) ? value_to_number(epsilon, 1) : conf->epsilon;
+    qresult = itoq((long) qnear(DATA_PTR(self), qother, qepsilon));
+    qfree(qother);
+    if (n == 2)
+        qfree(qepsilon);
+    return wrap_number(qresult);
+}
+
 /* Returns the numerator.  Return value has the same sign as self.
  *
  * @return [Calc::Q]
@@ -2185,6 +2217,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "minv", cq_minv, 1);
     rb_define_method(cQ, "mod", cq_mod, -1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
+    rb_define_method(cQ, "near", cq_near, -1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);

@@ -1190,4 +1190,10 @@ class TestQ < MiniTest::Test
     check_truthy Calc::Q(5), :mne, :mne?, 15, 7
     check_truthy Calc::Q(5), :mne, :mne?, 7, 0
   end
+
+  def test_near
+    assert_rational_and_equal 0, Calc::Q(8).near(8 - Calc.config(:epsilon))
+    assert_rational_and_equal(-1, Calc::Q("22/7").near("3.15", ".01"))
+    assert_rational_and_equal 1, Calc::Q("22/7").near("3.15", ".005")
+  end
 end
