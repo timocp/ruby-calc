@@ -1,5 +1,19 @@
 module Calc
   class Numeric
+    # Modulo operator
+    #
+    # x % y is equivalent to x.mod(y).  Rounding mode is determined by
+    # Calc.config(:mod).
+    #
+    # @param y [Integer]
+    # @return [Calc::Numeric]
+    # @example
+    #   Calc::Q(11).mod(5)     #=> Calc::Q(1)
+    #   Calc::C(11, 11).mod(5) #=> Calc::C(1+1i)
+    def %(other)
+      mod other
+    end
+
     # Unary plus.  Returns the receiver's value.
     #
     # @return [Calc::Numeric]

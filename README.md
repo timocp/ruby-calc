@@ -200,6 +200,7 @@ max    | x [, ...]  | maximum of values
 meq    | x, y, m    | test for equality of x and y modulo m (also: #meq?)
 min    | x [, ...]  | minimum of values
 minv   | x, m       | inverse of x modulo m
+mod    | x, y [, r] | x modulo y with rounding r
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b

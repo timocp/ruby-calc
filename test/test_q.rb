@@ -196,6 +196,17 @@ class TestQ < MiniTest::Test
 
     # unlike Z and ruby, q % 0 == q
     assert_rational_and_equal Calc::Q(1, 4), Calc::Q(1, 4) % 0
+
+    # function version; 2nd arg is rounding mode, defaults to Calc.config(:mod)
+    assert_rational_and_equal 1, Calc::Q(11).mod(5)
+    assert_rational_and_equal 1, Calc::Q(11).mod(5, 0)
+    assert_rational_and_equal(-4, Calc::Q(11).mod(5, 1))
+    assert_rational_and_equal(-1, Calc::Q(-11).mod(5, 2))
+    assert_rational_and_equal 4, Calc::Q(-11).mod(-5, 3)
+    assert_rational_and_equal Calc::Q("2.5"), Calc::Q("12.5").mod(5, 16)
+    assert_rational_and_equal Calc::Q("-2.5"), Calc::Q("12.5").mod(5, 17)
+    assert_rational_and_equal Calc::Q("2.5"), Calc::Q("12.5").mod(5, 24)
+    assert_rational_and_equal Calc::Q("2.5"), Calc::Q("-7.5").mod(-5, 24)
   end
 
   def test_abs

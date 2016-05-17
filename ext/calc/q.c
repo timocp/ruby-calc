@@ -290,26 +290,6 @@ rounding_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, lo
  * instance method implementations                                           *
  *****************************************************************************/
 
-/* Computes the remainder for an integer quotient
- *
- * @param y [Numeric,Calc::Q]
- * @return [Calc::Q]
- * @example:
- *  Calc::Q(11) % 5 #=> Calc::Q(1)
- */
-static VALUE
-cq_mod(VALUE x, VALUE y)
-{
-    NUMBER *qy;
-    VALUE result;
-    setup_math_error();
-
-    qy = value_to_number(y, 0);
-    result = wrap_number(qmod(DATA_PTR(x), qy, conf->mod));
-    qfree(qy);
-    return result;
-}
-
 /* Performs multiplication.
  *
  * @param y [Numeric,Calc::Q]
@@ -1674,6 +1654,29 @@ cq_minv(VALUE self, VALUE md)
     return wrap_number(qresult);
 }
 
+/* Computes the remainder for an integer quotient
+ *
+ * @param y [Numeric,Calc::Q]
+ * @param rnd [Integer] rounding flags (default Calc.config(:mod))
+ * @return [Calc::Q]
+ * @example:
+ *  Calc::Q(11).mod(5) #=> Calc::Q(1)
+ */
+static VALUE
+cq_mod(int argc, VALUE * argv, VALUE self)
+{
+    VALUE other, rnd;
+    NUMBER *qother, *qresult;
+    long n;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "11", &other, &rnd);
+    qother = value_to_number(other, 0);
+    qresult = qmod(DATA_PTR(self), qother, (n == 2) ? value_to_long(rnd) : conf->mod);
+    qfree(qother);
+    return wrap_number(qresult);
+}
+
 /* Returns true if self exactly divides y, otherwise return false.
  *
  * @return [Boolean]
@@ -2116,7 +2119,6 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "initialize", cq_initialize, -1);
     rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);
 
-    rb_define_method(cQ, "%", cq_mod, 1);
     rb_define_method(cQ, "*", cq_multiply, 1);
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "-", cq_subtract, 1);
@@ -2181,6 +2183,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "ltol", cq_ltol, -1);
     rb_define_method(cQ, "meq?", cq_meqp, 2);
     rb_define_method(cQ, "minv", cq_minv, 1);
+    rb_define_method(cQ, "mod", cq_mod, -1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
@@ -2208,7 +2211,7 @@ define_calc_q(VALUE m)
     rb_define_alias(cQ, "denominator", "den");
     rb_define_alias(cQ, "divmod", "quomod");
     rb_define_alias(cQ, "magnitude", "abs");
-    rb_define_alias(cQ, "modulo", "%");
+    rb_define_alias(cQ, "modulo", "mod");
     rb_define_alias(cQ, "numerator", "num");
 
     id_add = rb_intern("+");

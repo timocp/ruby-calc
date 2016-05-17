@@ -169,6 +169,26 @@ module Calc
       real? ? Calc::Q(1) : Calc::Q(0)
     end
 
+    # Computes the remainder for an integer quotient
+    #
+    # Result is equivalent to applying the mod function separately to the real
+    # and imaginary parts.
+    #
+    # @param y [Integer]
+    # @param r [Integer] (optional) rounding mode (see "help mod")
+    # @return [Calc::C]
+    # @example
+    #   Calc::C(0, 11).mod(5) #=> Calc::C(1i)
+    def mod(*args)
+      q1 = re.mod(*args)
+      q2 = im.mod(*args)
+      if q2.zero?
+        q1
+      else
+        Calc::C(q1, q2)
+      end
+    end
+
     # Round real and imaginary parts to the specified number of decimal digits
     #
     # @return [Calc::C,Calc::Q]

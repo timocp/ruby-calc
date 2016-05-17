@@ -438,4 +438,17 @@ class TestC < MiniTest::Test
   def test_int
     assert_complex_parts [2, -3], Calc::C("2.15", "-3.25").int
   end
+
+  def test_mod
+    assert_complex_parts [0, 1], Calc::C(0, 11).mod(5)
+    assert_complex_parts [0, 1], Calc::C(0, 11).mod(5, 0)
+    assert_complex_parts [0, -4], Calc::C(0, 11).mod(5, 1)
+    assert_complex_parts [0, 1], Calc::C(0, 11).mod(5, 2)
+    assert_complex_parts [0, -4], Calc::C(0, 11).mod(5, 3)
+
+    assert_complex_parts [0, 1], Calc::C(0, 11) % 5
+    assert_complex_parts [0, -4], Calc::C(0, 11) % -5
+    assert_complex_parts [0, 4], Calc::C(0, -11) % 5
+    assert_complex_parts [0, -1], Calc::C(0, -11) % -5
+  end
 end
