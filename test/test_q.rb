@@ -1183,4 +1183,11 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("1.25"), Calc::Q("-1.25").mmin(Calc::Q("2.5"))
     assert_rational_and_equal Calc::Q("-1.25"), Calc::Q("1.25").mmin(Calc::Q("-2.5"))
   end
+
+  def test_mne
+    check_falsey Calc::Q(5), :mne, :mne?, 33, 7
+    check_falsey Calc::Q(5), :mne, :mne?, -23, 7
+    check_truthy Calc::Q(5), :mne, :mne?, 15, 7
+    check_truthy Calc::Q(5), :mne, :mne?, 7, 0
+  end
 end

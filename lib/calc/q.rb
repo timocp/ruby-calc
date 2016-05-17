@@ -184,10 +184,41 @@ module Calc
     # @return [Calc::Q]
     # @example
     #  Calc::Q(5).meq(33, 7) #=> Calc::Q(1)
-    #  Calc::Q(5).meq(32, 7) #=> Calc::Q(0
+    #  Calc::Q(5).meq(32, 7) #=> Calc::Q(0)
     # @see Calc::Q#meq?
     def meq(y, md)
       meq?(y, md) ? Calc::Q(1) : Calc::Q(0)
+    end
+
+    # test for inequality modulo a specific number
+    #
+    # Reurns 1 if self is not congruent to y modulo md, otherwise 0.
+    # This is the opposite of #meq.
+    #
+    # @param y [Numeric]
+    # @param md [Numeric]
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(5).mne(33, 7) #=> Calc::Q(0)
+    #  Calc::Q(5).mne(32, 7) #=> Calc::Q(1)
+    # @see Calc::Q#mne?
+    def mne(y, md)
+      meq?(y, md) ? Calc::Q(0) : Calc::Q(1)
+    end
+
+    # test for inequality modulo a specific number
+    #
+    # Returns true of self is not congruent to y modulo md.
+    # This is the opposiute of #meq?.
+    #
+    # @param y [Numeric]
+    # @param md [Numeric]
+    # @return [Boolean]
+    # @example
+    #   Calc::Q(5).mne?(33, 7) #=> false
+    #   Calc::Q(5).mne?(32, 6) #=> true
+    def mne?(y, md)
+      !meq?(y, md)
     end
 
     def re

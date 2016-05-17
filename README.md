@@ -201,6 +201,7 @@ meq    | x, y, m    | test for equality of x and y modulo m (also: #meq?)
 min    | x [, ...]  | minimum of values
 minv   | x, m       | inverse of x modulo m
 mmin   | x, y       | x mod y value with smallest abs value
+mne    | x, y, m    | test for inequality of x and y module m (also: #mne?)
 mod    | x, y [, r] | x modulo y with rounding r
 num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
@@ -421,6 +422,7 @@ These builtins work this way:
 * isreal / real?
 * isrel / rel?
 * meq / meq?
+* mne / mne?
 
 `isimag` isn't a real calc builtin but it is included anyway.
 

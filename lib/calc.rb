@@ -13,7 +13,7 @@ module Calc
     factor fcnt frac frem fib floor gcd gcdrem gd highbit hypot ilog ilog10
     ilog2 im int inverse iroot iseven isimag isint ismult isodd isprime isqrt
     isreal isrel issq jacobi lcm lcmfact lfactor ln log lowbit ltol meq minv
-    mmin mod num perm power quomod re round sec sech sin sinh sqrt tan tanh
+    mmin mne mod num perm power quomod re round sec sech sin sinh sqrt tan tanh
   ).freeze
 
   # builtins implemented as module methods on Calc
