@@ -238,7 +238,7 @@ builtins_done = Calc::Q(0)
   [:pix, rat],
   [:places, rat],
   [:pmod, rat],
-  [:polar, com],
+  [:polar, Calc],
   [:poly, all], # MAYBE - not in linklib
   # pop - use Array
   [:popcnt, rat],
