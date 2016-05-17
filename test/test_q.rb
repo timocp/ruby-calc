@@ -1216,4 +1216,36 @@ class TestQ < MiniTest::Test
     check_truthy a, :ptest, :ptest?, 20, 2
     check_falsey a, :ptest, :ptest?, 21, 2
   end
+
+  def test_prevcand
+    assert_rational_and_equal 47, Calc::Q(50).prevcand
+    assert_nil Calc::Q(2).prevcand
+    assert_rational_and_equal 113, Calc::Q(125).prevcand(-1)
+    assert_rational_and_equal 113, Calc::Q(125).prevcand(-2)
+    assert_rational_and_equal 97, Calc::Q(100).prevcand(1, 1, 1, 6)
+    assert_rational_and_equal 89, Calc::Q(100).prevcand(1, 1, -1, 6)
+    assert_rational_and_equal 2, Calc::Q(100).prevcand(1, 1, 2, 6)
+    assert_nil Calc::Q(100).prevcand(1, 1, 4, 6)
+    assert_rational_and_equal 53, Calc::Q(100).prevcand(1, 1, 53, 0)
+    assert_rational_and_equal 53, Calc::Q(100).prevcand(1, 1, 53, 106)
+    assert_rational_and_equal 113, Calc::Q(125).prevcand(1, 3)
+    assert_rational_and_equal 121, Calc::Q(125).prevcand(-1, 3)
+    assert_rational_and_equal 113, Calc::Q(125).prevcand(-2, 3)
+    assert_rational_and_equal 1999999999999999999999999999914000000000000000000000000000031,
+                              Calc::Q("2e60").prevcand(1, 1, 31, "1e30")
+    assert_raises(Calc::MathError) { Calc::Q(0.5).prevcand }
+  end
+
+  def test_nextcand
+    assert_rational_and_equal 53, Calc::Q(50).nextcand
+    assert_rational_and_equal 112153, Calc::Q(112140).nextcand(-2)
+    assert_rational_and_equal 112153, Calc::Q(112140).nextcand(-3)
+    assert_rational_and_equal 103, Calc::Q(100).nextcand(1, 1, 1, 6)
+    assert_rational_and_equal 101, Calc::Q(100).nextcand(1, 1, -1, 6)
+    assert_nil Calc::Q(100).nextcand(1, 1, 2, 6)
+    assert_rational_and_equal 101, Calc::Q(100).nextcand(1, 1, 303, 202)
+    assert_rational_and_equal 2000000000000000000000000000053000000000000000000000000000031,
+                              Calc::Q("2e60").nextcand(1, 1, 31, "1e30")
+    assert_raises(Calc::MathError) { Calc::Q(0.5).nextcand }
+  end
 end

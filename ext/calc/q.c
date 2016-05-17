@@ -286,6 +286,54 @@ rounding_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, lo
     return wrap_number((*f) (DATA_PTR(self), p, r));
 }
 
+static VALUE
+cand_navigation(int argc, VALUE * argv, VALUE self,
+                BOOL(f) (ZVALUE, long, ZVALUE, ZVALUE, ZVALUE, ZVALUE *))
+{
+    VALUE count, skip, residue, modulus;
+    NUMBER *qself, *qcount, *qskip, *qresidue, *qmodulus, *qresult;
+    ZVALUE tmp;
+    int n;
+    const char *error = NULL;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "04", &count, &skip, &residue, &modulus);
+    qself = DATA_PTR(self);
+    qcount = (n >= 1) ? value_to_number(count, 1) : qlink(&_qone_);
+    qskip = (n >= 2) ? value_to_number(skip, 1) : qlink(&_qone_);
+    qresidue = (n >= 3) ? value_to_number(residue, 1) : qlink(&_qzero_);
+    qmodulus = (n >= 4) ? value_to_number(modulus, 1) : qlink(&_qone_);
+    qresult = NULL;
+
+    if (!qisint(qself) || !qisint(qcount) || !qisint(qskip) || !qisint(qresidue)
+        || !qisint(qmodulus)) {
+        error = "receiver and all arguments must be integers";
+    }
+    else if (zge24b(qcount->num)) {
+        error = "count must be < 2^24";
+    }
+    else {
+        if ((*f)
+            (qself->num, ztoi(qcount->num), qskip->num, qresidue->num, qmodulus->num, &tmp)) {
+            qresult = qalloc();
+            qresult->num = tmp;
+        }
+    }
+
+    qfree(qcount);
+    qfree(qskip);
+    qfree(qresidue);
+    qfree(qmodulus);
+
+    if (error) {
+        rb_raise(e_MathError, error);
+    }
+    else if (qresult) {
+        return wrap_number(qresult);
+    }
+    return Qnil;
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -1730,6 +1778,32 @@ cq_near(int argc, VALUE * argv, VALUE self)
     return wrap_number(qresult);
 }
 
+/* Next candidate for primeness
+ *
+ * Returns the least positive integer i greater than abs(self) expressible as
+ * residue + k * modulus, where k is an integer, for which i.ptest?(count, skip)
+ * is true, or if there is no such integer i, nil.
+ *
+ * See `ptest?` for a description of `count` and `skip`.  For basic purposes,
+ * use default values and count > 1.  Higher counts increase the probability
+ * that the returned value is prime.
+ *
+ * @param count [Integer] number of tests for ptest (default 1)
+ * @param skip [Integer] base selection mode for ptest (default 1)
+ * @param residue [Integer] (default 0)
+ * @param modulus [Integer] (default 1)
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self or any parameter is not an integer
+ * @example
+ *  Calc::Q(100).nextcand(10)        #=> Calc::Q(101)
+ *  Calc::Q(5000000000).nextcand(10) #=> Calc::Q(5000000029)
+ */
+static VALUE
+cq_nextcand(int argc, VALUE * argv, VALUE self)
+{
+    return cand_navigation(argc, argv, self, &znextcand);
+}
+
 /* Returns the numerator.  Return value has the same sign as self.
  *
  * @return [Calc::Q]
@@ -1830,6 +1904,32 @@ cq_power(int argc, VALUE * argv, VALUE self)
         qfree(qepsilon);
     }
     return result;
+}
+
+/* Previous candidate for primeness
+ *
+ * Returns the greatest positive integer i less than abs(self) expressible as
+ * residue + k * modulus, where k is an integer, for which ptest?(count, skip)
+ * is true, or if there is no such integer i, nil.
+ *
+ * See `ptest?` for a description of `count` and `skip`.  For basic purposes,
+ * use default values and count > 1.  Higher counts increase the probability
+ * that the returned value is prime.
+ *
+ * @param count [Integer] number of tests for ptest (default 1)
+ * @param skip [Integer] base selection mode for ptest (default 1)
+ * @param residue [Integer] (default 0)
+ * @param modulus [Integer] (default 1)
+ * @return [Calc::Q]
+ * @raise [Calc::MathError] if self or any parameter is not an integer
+ * @example
+ *  Calc::Q(100).prevcand(10)        #=> Calc::Q(97)
+ *  Calc::Q(5000000000).prevcand(10) #=> Calc::Q(4999999937)
+ */
+static VALUE
+cq_prevcand(int argc, VALUE * argv, VALUE self)
+{
+    return cand_navigation(argc, argv, self, &zprevcand);
 }
 
 /* Small integer prime test
@@ -2266,10 +2366,12 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "mod", cq_mod, -1);
     rb_define_method(cQ, "mult?", cq_multp, 1);
     rb_define_method(cQ, "near", cq_near, -1);
+    rb_define_method(cQ, "nextcand", cq_nextcand, -1);
     rb_define_method(cQ, "num", cq_num, 0);
     rb_define_method(cQ, "odd?", cq_oddp, 0);
     rb_define_method(cQ, "perm", cq_perm, 1);
     rb_define_method(cQ, "power", cq_power, -1);
+    rb_define_method(cQ, "prevcand", cq_prevcand, -1);
     rb_define_method(cQ, "prime?", cq_primep, 0);
     rb_define_method(cQ, "ptest?", cq_ptestp, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
