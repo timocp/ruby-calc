@@ -1196,4 +1196,24 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-1, Calc::Q("22/7").near("3.15", ".01"))
     assert_rational_and_equal 1, Calc::Q("22/7").near("3.15", ".005")
   end
+
+  def test_ptest
+    check_falsey Calc::Q(103**3 * 3931), :ptest, :ptest?
+    check_truthy Calc::Q(103**3 * 3931), :ptest, :ptest?, 0
+    check_truthy Calc::Q(4294967291), :ptest, :ptest?
+    check_truthy Calc::Q(4294967291), :ptest, :ptest?, 0
+
+    check_falsey Calc::Q(121), :ptest, :ptest?, -1, 2
+    check_truthy Calc::Q(121), :ptest, :ptest?, -1, 3
+    check_falsey Calc::Q(121), :ptest, :ptest?, -2, 2
+
+    check_truthy Calc::Q(151 * 751 * 28351), :ptest, :ptest?, -4, 1
+    check_falsey Calc::Q(151 * 751 * 28351), :ptest, :ptest?, -5, 1
+
+    a = Calc::Q(24444516448431392447461 * 48889032896862784894921)
+    check_truthy a, :ptest, :ptest?, 11, 1
+    check_falsey a, :ptest, :ptest?, 12, 1
+    check_truthy a, :ptest, :ptest?, 20, 2
+    check_falsey a, :ptest, :ptest?, 21, 2
+  end
 end

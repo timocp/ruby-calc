@@ -208,6 +208,7 @@ num    | x          | numerator of x
 perm   | x, y       | permutation number x!/(x-y)!
 pi     | [b]        | value of π within accuracy b
 power  | x, y [, b] | x raised to the power of y within accuracy b
+ptest  | n, [, c [, s] | probabilistic test of primality (also: #ptest?)
 root   | x, n [, b] | nth root of x within accuracy b
 round  | x [, p, r] | round x to p decimal places with rounding r
 sec    | x [, b]    | secant of x within accuracy b
@@ -424,6 +425,7 @@ These builtins work this way:
 * isrel / rel?
 * meq / meq?
 * mne / mne?
+* ptest / ptest?
 
 `isimag` isn't a real calc builtin but it is included anyway.
 

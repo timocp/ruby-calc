@@ -221,6 +221,18 @@ module Calc
       !meq?(y, md)
     end
 
+    # Probabilistic primacy test
+    #
+    # Returns 1 if ptest? would have returned true, otherwise 0.
+    #
+    # @param count [Integer]
+    # @param skip [Integer]
+    # @return [Calc::Q]
+    # @see Calc::Q#ptest?
+    def ptest(*args)
+      ptest?(*args) ? Calc::Q(1) : Calc::Q(0)
+    end
+
     def re
       self
     end

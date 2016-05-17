@@ -1864,6 +1864,54 @@ cq_primep(VALUE self)
     }
 }
 
+/* Probabilistic test of primality
+ *
+ * Returns false if self is definitely not a prime.  Returns true if self is
+ * probably prime.
+ *
+ * If self is < 2**32, essentially calles prime? and returns true only if self
+ * is prime.
+ *
+ * If self is > 2**32 and is divisible by a prime <= 101, returns false.
+ *
+ * In other cases, performs abs(count) tests of bases of possible primality.  
+ *
+ * `skip` specifies how to select bases for testing:
+ *  0: random in [2, self-2]
+ *  1: successive primes [2, 3, 5, ...] not exceeding min(self, 65536)
+ *  otherwise: integers starting from `skip`
+ *
+ * For a full explanation of the tests, see "help ptest".
+ *
+ * Returning true from this function means self is either prime or a strong
+ * psuedoprime.  The probability that a composite number returns true is less
+ * than (1/4)**count.  For example, ptest(10) incorrectly returns true less
+ * than once in a million numbers; ptest(20) incorrectly returns true less
+ * than once in a quadrillion numbers.
+ *
+ * @param count [Integer] (optional: default 1)
+ * @param skip [Integer] (optional: default 1)
+ * @return [Boolean]
+ * @example
+ *  Calc::Q(4294967291).ptest?(10) #=> true
+ */
+static VALUE
+cq_ptestp(int argc, VALUE * argv, VALUE self)
+{
+    VALUE count, skip, result;
+    NUMBER *qcount, *qskip;
+    int n;
+    setup_math_error();
+
+    n = rb_scan_args(argc, argv, "02", &count, &skip);
+    qcount = (n >= 1) ? value_to_number(count, 0) : qlink(&_qone_);
+    qskip = (n >= 2) ? value_to_number(skip, 0) : qlink(&_qone_);
+    result = qprimetest(DATA_PTR(self), qcount, qskip) ? Qtrue : Qfalse;
+    qfree(qcount);
+    qfree(qskip);
+    return result;
+}
+
 /* Returns the quotient and remainder from division
  *
  * @param y [Numeric,Calc::Q] number to divide by
@@ -2223,6 +2271,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "perm", cq_perm, 1);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prime?", cq_primep, 0);
+    rb_define_method(cQ, "ptest?", cq_ptestp, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "rel?", cq_relp, 1);
     rb_define_method(cQ, "root", cq_root, -1);

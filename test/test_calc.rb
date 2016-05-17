@@ -211,6 +211,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :num
     check_real_delegation :perm
     check_delegation :power, 2
+    check_real_delegation :ptest
     check_real_delegation :quomod, 2
     check_delegation :re
     check_delegation :round
