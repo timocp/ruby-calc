@@ -137,6 +137,7 @@ calc_polar(int argc, VALUE * argv, VALUE self)
     if (rb_scan_args(argc, argv, "21", &radius, &angle, &epsilon) == 3) {
         qepsilon = value_to_number(epsilon, 1);
         if (qisneg(qepsilon) || qiszero(qepsilon)) {
+            qfree(qepsilon);
             rb_raise(e_MathError, "Negative or zero epsilon for polar");
         }
     }
