@@ -76,6 +76,15 @@ class TestConfig < Minitest::Test
     assert_raises(ArgumentError) { Calc.config(:mode, "cat") }
   end
 
+  def test_quo
+    assert_rational_and_equal 2, Calc::Q(11).quo(5)
+    with_config(:quo, 2, 1) do
+      assert_rational_and_equal 3, Calc::Q(11).quo(5)
+    end
+    assert_raises(Calc::MathError) { Calc.config(:quo, 0.5) }
+    assert_raises(Calc::MathError) { Calc.config(:quo, -1) }
+  end
+
   def test_round
     assert_rational_and_equal Calc::Q("3.14159"), Calc.pi.round(5)
     with_config(:round, 24, 1) do

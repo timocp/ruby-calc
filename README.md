@@ -357,6 +357,7 @@ display   | 20      | number of digits when converting to string (does NOT affec
 epsilon   | 1e-20   | default precision for transcendental functions
 mod       | 0       | rounding mode for `%`, default for `mod`
 mode      | :real   | default output mode when converting to string
+quo       | 2       | rounding mode for `quo`
 round     | 24      | rounding mode for `bround` and `round`
 sqrt      | 24      | rounding mode and sign for `sqrt`
 
