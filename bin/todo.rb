@@ -7,7 +7,6 @@ q = Calc::Q(1)
 c = Calc::C(1, 1)
 all = [Calc, q, c]
 rat = [Calc, q]
-com = [Calc, c]
 builtins = Calc::Q(0)
 builtins_done = Calc::Q(0)
 
