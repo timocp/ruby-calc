@@ -14,8 +14,8 @@ module Calc
     ilog2 im int inverse iroot iseven isimag isint ismult isodd isprime isqrt
     isreal isrel issq jacobi lcm lcmfact lfactor ln log lowbit ltol meq minv
     mmin mne mod near nextcand nextprime norm num perm pfact pix places pmod
-    power prevcand prevprime ptest quomod re round sec sech sin sinh sqrt tan
-    tanh
+    popcnt power prevcand prevprime ptest quomod re round sec sech sin sinh
+    sqrt tan tanh
   ).freeze
 
   # builtins implemented as module methods on Calc

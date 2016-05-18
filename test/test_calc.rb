@@ -236,6 +236,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :pix
     check_real_delegation :places
     check_real_delegation :pmod
+    check_real_delegation :popcnt
     check_delegation :power, 2
     check_real_delegation :prevcand
     check_real_delegation :prevprime

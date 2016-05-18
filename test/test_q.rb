@@ -1323,4 +1323,12 @@ class TestQ < MiniTest::Test
       assert_rational_and_equal 2, Calc::Q(2).pmod(5, -10)
     end
   end
+
+  def test_popcnt
+    assert_rational_and_equal 15, Calc::Q(32767).popcnt
+    assert_rational_and_equal 15, Calc::Q(-32767).popcnt
+    assert_rational_and_equal 3, Calc::Q("3/2").popcnt
+    assert_rational_and_equal 69, Calc.pi.popcnt(0)
+    assert_rational_and_equal 65, Calc.pi.popcnt(1)
+  end
 end

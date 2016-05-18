@@ -2021,6 +2021,41 @@ cq_pmod(VALUE self, VALUE n, VALUE md)
     return wrap_number(qresult);
 }
 
+/* Number of bits that match 0 or 1
+ *
+ * Counts of number of bits in abs(self) that match bitval (1 or 0, default 1)
+ *
+ * @param bitval [Integer] 0 or 1 (default 1)
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(32767).popcnt    #=> Calc::Q(15)
+ *  Calc::Q(32767).popcnt(0) #=> Calc::Q(0)
+ */
+static VALUE
+cq_popcnt(int argc, VALUE * argv, VALUE self)
+{
+    VALUE bitval;
+    NUMBER *qself, *qbitval, *qresult;
+    int b = 1;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "01", &bitval) == 1) {
+        qbitval = value_to_number(bitval, 0);
+        if (qiszero(qbitval)) {
+            b = 0;
+        }
+        qfree(qbitval);
+    }
+    qself = DATA_PTR(self);
+    if (qisint(qself)) {
+        qresult = itoq(zpopcnt(qself->num, b));
+    }
+    else {
+        qresult = itoq(zpopcnt(qself->num, b) + zpopcnt(qself->den, b));
+    }
+    return wrap_number(qresult);
+}
+
 /* Evaluates a numeric power
  *
  * @param y [Numeric] power to raise by
@@ -2579,6 +2614,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "pix", cq_pix, 0);
     rb_define_method(cQ, "places", cq_places, -1);
     rb_define_method(cQ, "pmod", cq_pmod, 2);
+    rb_define_method(cQ, "popcnt", cq_popcnt, -1);
     rb_define_method(cQ, "power", cq_power, -1);
     rb_define_method(cQ, "prevcand", cq_prevcand, -1);
     rb_define_method(cQ, "prevprime", cq_prevprime, 0);
