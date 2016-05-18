@@ -102,6 +102,83 @@ module Calc
     args.compact.map { |n| Calc::Q(n) }.min
   end
 
+  # Evaluate a polynomial
+  #
+  # First case:
+  #   poly(a_0, a_1, ..., a_n, x)
+  # returns:
+  #   a_n + (a_n-1 + ... + (a_1 + a_0 * x) * x ..) * x
+  # In particular:
+  #   poly(a, x) -> a
+  #   poly(a, b, x) -> b + a * x
+  #   poly(a, b, c, x) -> c + (b + a * x) * x
+  #                    or a*x**2 + b*x + c
+  #
+  # In the second case, the first parameter is an array of coefficients, ie:
+  #   poly([a_0, a_1, ... a_n], x)
+  # returns:
+  #   a_0 + (a_n-1 + (a_2 + ... a_n * x) * x)
+  # Note that the order of coeffecients is reverse of the first case.
+  #
+  # If one or more elements of clist is another array, and there is more than
+  # one argument (x, y, ...) the coefficient corresponding to such an element
+  # is the value of the poly for that list and the next argument in x, y, ...
+  # For example:
+  #   poly([[a, b, c], [d, e], f], x, y)
+  # Returns:
+  #   (a + b * y + c * y^2) + (d + e * y) * x + f * x^2
+  #
+  # For more explanation and examples on how the nested arrays works, see
+  # "help poly" bearning in mind that a calc list is equivament to a ruby
+  # array.
+  #
+  # @return [Calc::Numeric]
+  # @example
+  #   # 2 * 7**2 + 3 * 7 + 5
+  #   Calc.poly(2, 3, 5, 7) #=> Calc::Q(124)
+  def self.poly(*args)
+    raise ArgumentError, "Need at least one argument for poly" if args.none?
+    if args.first.respond_to?(:each)
+      # second case
+      clist = args.shift
+      evalpoly(clist, args.flatten, 0)
+    else
+      # first case
+      x = to_calc_x(args.pop)
+      return x if args.none?
+      args.reverse.each_with_index.map { |coeff, i| to_calc_x(coeff) * x**i }.reduce(:+)
+    end
+  end
+
+  # evalpoly and evp are modelled on functions of the same name in libcalc,
+  # which we can't use because they use VALUE and LIST types.  because the
+  # libcalc versions use doubly linked lists, the ruby versions has to pass
+  # around an index to the coeffecients array instead.
+  def self.evalpoly(clist, lp, x)
+    return nil if clist.none?
+    if lp[x].nil?
+      if clist.first.respond_to?(:each)
+        evalpoly(clist.first, lp, x + 1)
+      else
+        to_calc_x(clist.first)
+      end
+    else
+      evp(clist, lp, x)
+    end
+  end
+  private_class_method :evalpoly
+
+  def self.evp(clist, lp, x)
+    clist.reverse.reduce(Calc::Q(0)) do |vres, v|
+      (vres * lp[x]) + if v.respond_to?(:each)
+                         evalpoly(v, lp, x + 1) || Calc::Q(0)
+                       else
+                         to_calc_x(v)
+                       end
+    end
+  end
+  private_class_method :evp
+
   # returns a Calc::Q or Calc::C object, converting if necessary
   def self.to_calc_x(n)
     if n.is_a?(Calc::Q) || n.is_a?(Calc::C)

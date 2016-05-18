@@ -78,6 +78,25 @@ class TestCalc < Minitest::Test
     assert_rational_and_equal 2, Calc.min(3, 5, 7, 6, 7, 8, 2)
   end
 
+  def test_poly
+    assert_rational_and_equal 7, Calc.poly(7)
+    assert_rational_and_equal 124, Calc.poly(2, 3, 5, 7)
+    assert_rational_and_equal 124, Calc.poly([5, 3, 2], 7)
+    assert_complex_parts [26, 98], Calc.poly(Calc::C(0, 2), 3, 5, 7)
+    assert_complex_parts [103, 21], Calc.poly(2, Calc::C(0, 3), 5, 7)
+    assert_complex_parts [119, 5], Calc.poly(2, 3, Calc::C(0, 5), 7)
+    assert_complex_parts [-93, 21], Calc.poly(2, 3, 5, Calc::C(0, 7))
+    assert_complex_parts [-21, -93], Calc.poly(
+      Calc::C(0, 2), Calc::C(0, 3), Calc::C(0, 5), Calc::C(0, 7)
+    )
+    p = [[0, 0, 1], [0, 2], 3]
+    x = 4
+    y = 5
+    assert_rational_and_equal 113, Calc.poly(p, x, y)
+    assert_rational_and_equal 113, Calc.poly(p, [x, y])
+    assert_raises(ArgumentError) { Calc.poly }
+  end
+
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
 
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)

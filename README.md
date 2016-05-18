@@ -215,6 +215,7 @@ pfact  | x          | produt of primes up to x
 places | x [, b]    | number of places in fractional part in base b
 pmod   | x, y, m    | mod of a power (x ^ y (mod m))
 polar  | r, t [, b] | complex number using polar coordinates
+poly   | ...        | evaluate a polynomial given coefficients or coefficient list
 power  | x, y [, b] | x raised to the power of y within accuracy b
 prevcand| x [, ...] | previous candidate prime
 prevprime| x        | previous small prime before x
