@@ -24,24 +24,6 @@ module Calc
       self
     end
 
-    # Returns the argument (the angle or phase) of a complex number in radians.
-    #
-    # This this method is used by non-complex classes, it will be 0 for
-    # positive values, pi() otherwise
-    #
-    # @param eps [Calc::Q] (optional) calculation accuracy
-    # @return [Calc::Q]
-    # @example
-    #  Calc::Q(-1).arg #=> Calc::Q(3.14159265358979323846)
-    #  Calc::Q(1).arg  #=> Calc::Q(0)
-    def arg(*args)
-      if self < 0
-        Calc.pi(*args)
-      else
-        self.class.new(0)
-      end
-    end
-
     # Ceiling
     #
     # For real self, returns the least integer not less than self.
@@ -107,7 +89,7 @@ module Calc
     #   Calc::Q(1).isint    #=> Calc::Q(1)
     #   Calc::Q(0.5).isint  #=> Calc::Q(0)
     def isint
-      int? ? Calc::Q(1) : Calc::Q(0)
+      int? ? Q::ONE : Q::ZERO
     end
 
     # least-absol;ute-value residues modulo a specified number

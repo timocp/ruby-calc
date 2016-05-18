@@ -76,7 +76,7 @@ module Calc
   #   Calc.hmean(2, Complex(0, 2)) #=> Calc::C(2+2i)
   def self.hmean(*args)
     return nil if args.none?
-    return Calc::Q(0) if args.detect(&:zero?)
+    return Q::ZERO if args.detect(&:zero?)
     args.size / args.map { |n| to_calc_x(n) }.map(&:inverse).inject(:+)
   end
 
@@ -169,9 +169,9 @@ module Calc
   private_class_method :evalpoly
 
   def self.evp(clist, lp, x)
-    clist.reverse.reduce(Calc::Q(0)) do |vres, v|
+    clist.reverse.reduce(Q::ZERO) do |vres, v|
       (vres * lp[x]) + if v.respond_to?(:each)
-                         evalpoly(v, lp, x + 1) || Calc::Q(0)
+                         evalpoly(v, lp, x + 1) || Q::ZERO
                        else
                          to_calc_x(v)
                        end

@@ -1,5 +1,8 @@
 module Calc
   class Q
+    ZERO = new(0)
+    ONE = new(1)
+
     def **(other)
       power(other)
     end
@@ -16,6 +19,24 @@ module Calc
       r.real? ? r.re : r
     end
 
+    # Returns the argument (the angle or phase) of a complex number in radians.
+    #
+    # This this method is used by non-complex classes, it will be 0 for
+    # positive values, pi() otherwise
+    #
+    # @param eps [Calc::Q] (optional) calculation accuracy
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(-1).arg #=> Calc::Q(3.14159265358979323846)
+    #  Calc::Q(1).arg  #=> Calc::Q(0)
+    def arg(*args)
+      if self < 0
+        Calc.pi(*args)
+      else
+        ZERO
+      end
+    end
+
     # Returns 1 if binary bit y is set in self, otherwise 0.
     #
     # @param y [Numeric] bit position
@@ -25,7 +46,7 @@ module Calc
     #  Calc::Q(9).bit(1) #=> Calc::Q(0)
     # @see bit?
     def bit(y)
-      self.class.new(bit?(y) ? 1 : 0)
+      bit?(y) ? ONE : ZERO
     end
 
     # Returns a string containing the character corresponding to a value
@@ -82,7 +103,7 @@ module Calc
     end
 
     def im
-      Calc::Q(0)
+      ZERO
     end
 
     # Returns true if the number is imaginary.  Instances of this class always
@@ -100,7 +121,7 @@ module Calc
     end
 
     def iseven
-      even? ? Calc::Q(1) : Calc::Q(0)
+      even? ? ONE : ZERO
     end
 
     # Returns 1 if the number is imaginary, otherwise returns 0.  Instance of
@@ -110,7 +131,7 @@ module Calc
     # @example
     #  Calc::Q(1).isimag #=> Calc::Q(0)
     def isimag
-      Calc::Q(0)
+      ZERO
     end
 
     # Returns 1 if self exactly divides y, otherwise return 0.
@@ -121,11 +142,11 @@ module Calc
     #  Calc::Q(2).ismult(6) #=> Calc::Q(0)
     # @see Calc::Q#mult?
     def ismult(y)
-      mult?(y) ? Calc::Q(1) : Calc::Q(0)
+      mult?(y) ? ONE : ZERO
     end
 
     def isodd
-      odd? ? Calc::Q(1) : Calc::Q(0)
+      odd? ? ONE : ZERO
     end
 
     # Returns 1 if self is prime, 0 if it is not prime.  This function can't
@@ -137,7 +158,7 @@ module Calc
     #  Calc::Q(2**31 - 9).isprime #=> Calc::Q(0)
     #  Calc::Q(2**31 - 1).isprime #=> Calc::Q(1)
     def isprime
-      prime? ? Calc::Q(1) : Calc::Q(0)
+      prime? ? ONE : ZERO
     end
 
     # Returns 1 if this number has zero imaginary part, otherwise returns 0.
@@ -147,7 +168,7 @@ module Calc
     # @example
     #  Calc::Q(1).isreal #=> Calc::Q(1)
     def isreal
-      Calc::Q(1)
+      ONE
     end
 
     # Returns 1 if both values are relatively prime
@@ -160,7 +181,7 @@ module Calc
     #  Calc::Q(6).isrel(2) #=> Calc::Q(0)
     # @see Calc::Q#rel?
     def isrel(y)
-      rel?(y) ? Calc::Q(1) : Calc::Q(0)
+      rel?(y) ? ONE : ZERO
     end
 
     # Returns 1 if this value is a square
@@ -172,7 +193,7 @@ module Calc
     #  Calc::Q("4/25").issq #=> Calc::Q(1)
     # @see Calc::Q#sq?
     def issq
-      sq? ? Calc::Q(1) : Calc::Q(0)
+      sq? ? ONE : ZERO
     end
 
     # test for equaility modulo a specific number
@@ -187,7 +208,7 @@ module Calc
     #  Calc::Q(5).meq(32, 7) #=> Calc::Q(0)
     # @see Calc::Q#meq?
     def meq(y, md)
-      meq?(y, md) ? Calc::Q(1) : Calc::Q(0)
+      meq?(y, md) ? ONE : ZERO
     end
 
     # test for inequality modulo a specific number
@@ -203,7 +224,7 @@ module Calc
     #  Calc::Q(5).mne(32, 7) #=> Calc::Q(1)
     # @see Calc::Q#mne?
     def mne(y, md)
-      meq?(y, md) ? Calc::Q(0) : Calc::Q(1)
+      meq?(y, md) ? ZERO : ONE
     end
 
     # test for inequality modulo a specific number
@@ -230,7 +251,7 @@ module Calc
     # @return [Calc::Q]
     # @see Calc::Q#ptest?
     def ptest(*args)
-      ptest?(*args) ? Calc::Q(1) : Calc::Q(0)
+      ptest?(*args) ? ONE : ZERO
     end
 
     def re

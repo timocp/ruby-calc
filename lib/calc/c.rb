@@ -140,7 +140,7 @@ module Calc
     end
 
     def iseven
-      even? ? Calc::Q(1) : Calc::Q(0)
+      even? ? Q::ONE : Q::ZERO
     end
 
     # Returns 1 if the number is imaginary (zero real part and non-zero
@@ -151,11 +151,11 @@ module Calc
     #  Calc::C(0,1).isimag #=> Calc::Q(1)
     #  Calc::C(1,1).isimag #=> Calc::Q(0)
     def isimag
-      imag? ? Calc::Q(1) : Calc::Q(0)
+      imag? ? Q::ONE : Q::ZERO
     end
 
     def isodd
-      odd? ? Calc::Q(1) : Calc::Q(0)
+      odd? ? Q::ONE : Q::ZERO
     end
 
     # Returns 1 if the number has zero imaginary part, otherwise returns 0.
@@ -166,7 +166,7 @@ module Calc
     #  Calc::C(1,1).isreal #=> Calc::Q(0)
     #  Calc::C(1,0).isreal #=> Calc::Q(1)
     def isreal
-      real? ? Calc::Q(1) : Calc::Q(0)
+      real? ? Q::ONE : Q::ZERO
     end
 
     # Computes the remainder for an integer quotient
