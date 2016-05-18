@@ -1331,4 +1331,16 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 69, Calc.pi.popcnt(0)
     assert_rational_and_equal 65, Calc.pi.popcnt(1)
   end
+
+  def test_quo
+    assert_rational_and_equal 2, Calc::Q(11).quo(5)
+    assert_rational_and_equal 2, Calc::Q(11).quo(5, 0)
+    assert_rational_and_equal 3, Calc::Q(11).quo(5, 1)
+    assert_rational_and_equal(-2, Calc::Q(-11).quo(5, 2))
+    assert_rational_and_equal 3, Calc::Q(-11).quo(-5, 3)
+    assert_rational_and_equal 2, Calc::Q("12.5").quo(5, 16)
+    assert_rational_and_equal 3, Calc::Q("12.5").quo(5, 17)
+    assert_rational_and_equal 2, Calc::Q("12.5").quo(5, 24)
+    assert_rational_and_equal 2, Calc::Q("-7.5").quo(-5, 24)
+  end
 end

@@ -296,6 +296,47 @@ cn_log(int argc, VALUE * argv, VALUE self)
     return log_function(argc, argv, self, &qlog, &c_log);
 }
 
+/* Compute integer quotient of a value by a real number (integer division)
+ *
+ * If y is zero, returns zero.
+ *
+ * @param y [Numeric]
+ * @param rnd [Integer] rounding flags, default Calc.config(:quo)
+ * @return [Calc::Q,Calc::C]
+ * @example
+ *  Calc::Q(11,5) #=> Calc::Q(2)
+ */
+static VALUE
+cn_quo(int argc, VALUE * argv, VALUE self)
+{
+    VALUE y, rnd;
+    NUMBER *qy, *qresult;
+    COMPLEX *cself, *cresult;
+    long r;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "11", &y, &rnd) == 2) {
+        r = value_to_long(rnd);
+    }
+    else {
+        r = conf->quo;
+    }
+    qy = value_to_number(y, 1);
+    if (CALC_Q_P(self)) {
+        qresult = qquo(DATA_PTR(self), qy, r);
+        qfree(qy);
+        return wrap_number(qresult);
+    }
+    cself = DATA_PTR(self);
+    cresult = comalloc();
+    qfree(cresult->real);
+    qfree(cresult->imag);
+    cresult->real = qquo(cself->real, qy, r);
+    cresult->imag = qquo(cself->imag, qy, r);
+    qfree(qy);
+    return wrap_complex(cresult);
+}
+
 /* Square root
  *
  * Calculates the square root of self (rational or complex).  If eps
@@ -370,5 +411,6 @@ define_calc_numeric(VALUE m)
     rb_define_method(cNumeric, "ilog", cn_ilog, 1);
     rb_define_method(cNumeric, "ln", cn_ln, -1);
     rb_define_method(cNumeric, "log", cn_log, -1);
+    rb_define_method(cNumeric, "quo", cn_quo, -1);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
 }
