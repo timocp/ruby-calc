@@ -493,12 +493,14 @@ class TestQ < MiniTest::Test
   end
 
   def test_root
-    assert_instance_of Calc::Q, Calc::Q(7).root(4)
-    assert_in_epsilon 1.62658, Calc::Q(7).root(4)
+    assert_rational_and_equal(-8, Calc::Q(-8).root(1))
+    assert_rational_in_epsilon 1.62657656169778574321, Calc::Q(7).root(4)
+    assert_rational_in_epsilon 1.62658, Calc::Q(7).root(4, "1e-5")
+    assert_complex_parts [1, 1.73205080756887729353], Calc::Q(-8).root(3)
+    assert_complex_parts [1.05853417471250289584, 0.09808763630065831473], Calc::Q(-8).root(34)
 
     assert_raises(Calc::MathError) { Calc::Q(1).root(0) }
     assert_raises(Calc::MathError) { Calc::Q(0).root(-1) }
-    assert_raises(Calc::MathError) { Calc::Q(-2).root(4) }
   end
 
   def test_sec

@@ -244,6 +244,7 @@ class TestCalc < Minitest::Test
     check_delegation :quo, 2
     check_real_delegation :quomod, 2
     check_delegation :re
+    check_delegation :root
     check_delegation :round
     check_delegation :sec
     check_delegation :sech

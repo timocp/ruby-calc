@@ -2298,21 +2298,6 @@ cq_relp(VALUE self, VALUE other)
     return result;
 }
 
-/* Returns the nth root
- *
- * @param n [Numeric,Calc::Q] positive integer
- * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
- * @return [Calc::Q]
- * @raise [Calc::MathError] if n is not a positive integer
- * @example
- *  Calc::Q(7).root(4) #=> Calc::Q(1.62657656169778574321)
- */
-static VALUE
-cq_root(int argc, VALUE * argv, VALUE self)
-{
-    return trans_function2(argc, argv, self, &qroot);
-}
-
 /* Round to a specified number of decimal places
  *
  * Rounds self rounded to the specified number of significant binary digits.
@@ -2622,7 +2607,6 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "ptest?", cq_ptestp, -1);
     rb_define_method(cQ, "quomod", cq_quomod, 1);
     rb_define_method(cQ, "rel?", cq_relp, 1);
-    rb_define_method(cQ, "root", cq_root, -1);
     rb_define_method(cQ, "round", cq_round, -1);
     rb_define_method(cQ, "sec", cq_sec, -1);
     rb_define_method(cQ, "sech", cq_sech, -1);

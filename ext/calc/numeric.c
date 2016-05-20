@@ -337,6 +337,68 @@ cn_quo(int argc, VALUE * argv, VALUE self)
     return wrap_complex(cresult);
 }
 
+/* Root of a number
+ *
+ * x.root(n) returns the nth root of x.  x can be real or complex, n must be
+ * a positive integer.
+ *
+ * If the nth root of x is a multiple of eps, it will be returned exactly.
+ * Otherwise the returned value will be a multiple of eps close to the real
+ * nth root of x.
+ *
+ * @param n [Integer]
+ * @param eps [Numeric] optional epsilon, default Calc.config(:epsilon)
+ * @return [Calc::Q,Calc::C]
+ * @raise [Calc::MathError] if n is not a positive integer
+ * @example
+ *  Calc::Q(7).root(4)    #=> Calc::Q(1.62657656169778574321)
+ *  Calc::Q(-7).root(4)   #=> Calc::C(1.15016331689560300254+1.15016331689560300254i)
+ *  Calc::C(7, 7).root(4) #=> Calc::C(1.73971135785495811228+0.34605010474820910752i)
+ */
+static VALUE
+cn_root(int argc, VALUE * argv, VALUE self)
+{
+    VALUE n, epsilon, result;
+    NUMBER *qn, *qepsilon, *qself;
+    COMPLEX ctmp;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "11", &n, &epsilon) > 1) {
+        qepsilon = value_to_number(epsilon, 1);
+        if (qiszero(qepsilon)) {
+            qfree(qepsilon);
+            rb_raise(e_MathError, "zero epsilon for root");
+        }
+    }
+    else {
+        qepsilon = qlink(conf->epsilon);
+    }
+    qn = value_to_number(n, 0);
+    if (qisneg(qn) || qiszero(qn) || qisfrac(qn)) {
+        qfree(qepsilon);
+        qfree(qn);
+        rb_raise(e_MathError, "non-positive integer root");
+    }
+    if (CALC_Q_P(self)) {
+        qself = DATA_PTR(self);
+        if (!qisneg(qself)) {
+            result = wrap_number(qroot(qself, qn, qepsilon));
+        }
+        else {
+            ctmp.real = qself;
+            ctmp.imag = &_qzero_;
+            ctmp.links = 1;
+            result = wrap_complex(c_root(&ctmp, qn, qepsilon));
+        }
+    }
+    else {
+        result = wrap_complex(c_root(DATA_PTR(self), qn, qepsilon));
+    }
+    qfree(qepsilon);
+    qfree(qn);
+    return result;
+}
+
 /* Square root
  *
  * Calculates the square root of self (rational or complex).  If eps
@@ -412,5 +474,6 @@ define_calc_numeric(VALUE m)
     rb_define_method(cNumeric, "ln", cn_ln, -1);
     rb_define_method(cNumeric, "log", cn_log, -1);
     rb_define_method(cNumeric, "quo", cn_quo, -1);
+    rb_define_method(cNumeric, "root", cn_root, -1);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
 }
