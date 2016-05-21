@@ -177,28 +177,6 @@ numeric_op(VALUE self, VALUE other,
 }
 
 static VALUE
-shift(VALUE self, VALUE other, int sign)
-{
-    NUMBER *qother;
-    long n;
-    setup_math_error();
-
-    qother = value_to_number(other, 0);
-    if (qisfrac(qother)) {
-        qfree(qother);
-        rb_raise(rb_eArgError, "shift by non-integer");
-    }
-    /* check it will actually fit in a long (otherwise qtoi will be wrong) */
-    if (zge31b(qother->num)) {
-        qfree(qother);
-        rb_raise(rb_eArgError, "shift by too many bits");
-    }
-    n = qtoi(qother);
-    qfree(qother);
-    return wrap_number(qshift(DATA_PTR(self), n * sign));
-}
-
-static VALUE
 trans_function(int argc, VALUE * argv, VALUE self, NUMBER * (*f) (NUMBER *, NUMBER *),
                COMPLEX * (*fcomplex) (COMPLEX *, NUMBER *))
 {
@@ -405,22 +383,6 @@ cq_divide(VALUE x, VALUE y)
     return numeric_op(x, y, &qqdiv, &qdivi, id_divide);
 }
 
-/* Left shift an integer by a given number of bits.  This multiplies the number
- * by the appropriate power of 2.
- *
- * @param n [Numeric,Calc::Q] number of bits to shift
- * @return [Calc::Q]
- * @raise [Calc::MathError] if self is a non-integer
- * @raise [Calc::MathError] if abs(n) is >= 2^31
- * @example:
- *  Calc::Q(2) << 3 #=> Calc::Q(16)
- */
-static VALUE
-cq_shift_left(VALUE x, VALUE n)
-{
-    return shift(x, n, 1);
-}
-
 /* Comparison - Returns -1, 0, +1 or nil depending on whether `y` is less than,
  * equal to, or greater than `x`.
  *
@@ -475,22 +437,6 @@ cq_spaceship(VALUE self, VALUE other)
     }
 
     return INT2FIX(result);
-}
-
-/* Right shift an integer by a given number of bits.  This multiplies the
- * number by the appropriate power of 2.  Low bits are truncated.
- *
- * @param n [Numeric,Calc::Q] number of bits to shift
- * @return [Calc::Q]
- * @raise [Calc::MathError] if self is a non-integer
- * @raise [ArgumentError] if abs(n) is >= 2^31
- * @example:
- *  Calc::Q(8) >> 2 #=> Calc::Q(2)
- */
-static VALUE
-cq_shift_right(VALUE self, VALUE other)
-{
-    return shift(self, other, -1);
 }
 
 /* Absolute value
@@ -2527,9 +2473,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "-", cq_subtract, 1);
     rb_define_method(cQ, "-@", cq_uminus, 0);
     rb_define_method(cQ, "/", cq_divide, 1);
-    rb_define_method(cQ, "<<", cq_shift_left, 1);
     rb_define_method(cQ, "<=>", cq_spaceship, 1);
-    rb_define_method(cQ, ">>", cq_shift_right, 1);
     rb_define_method(cQ, "abs", cq_abs, 0);
     rb_define_method(cQ, "acos", cq_acos, -1);
     rb_define_method(cQ, "acosh", cq_acosh, -1);

@@ -485,4 +485,16 @@ class TestC < MiniTest::Test
     assert_complex_parts [1.5, -2], Calc::C(3, -4).scale(-1)
     assert_complex_parts [0.75, -1], Calc::C(3, -4).scale(-2)
   end
+
+  def test_shift
+    assert_complex_parts [96, 128], Calc::C(3, 4) << 5
+    assert_rational_and_equal 0, Calc::C(3, 4) >> 5
+    assert_complex_parts [-96, -128], Calc::C(-3, -4) << 5
+    assert_complex_parts [-1, -2], Calc::C(-3, -4) >> 1
+    assert_complex_parts [0, -1], Calc::C(-3, -4) >> 2
+
+    assert_raises(ArgumentError) { Calc::C(2, 2) << Calc::Q("1/3") }
+    assert_raises(Calc::MathError) { Calc::C("1/3", "1/3") << 1 }
+    assert_raises(ArgumentError) { Calc::C(2, 2) << (2**31) }
+  end
 end

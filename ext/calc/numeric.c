@@ -53,10 +53,72 @@ log_function(int argc, VALUE * argv, VALUE self, NUMBER * (fq) (NUMBER *, NUMBER
     return result;
 }
 
+static VALUE
+shift(VALUE self, VALUE other, BOOL rightshift)
+{
+    NUMBER *qother;
+    long n;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    if (qisfrac(qother)) {
+        qfree(qother);
+        rb_raise(rb_eArgError, "shift by non-integer");
+    }
+    if (zge31b(qother->num)) {
+        qfree(qother);
+        rb_raise(rb_eArgError, "shift by too many bits");
+    }
+    n = qtoi(qother);
+    qfree(qother);
+    if (rightshift) {
+        n = -n;
+    }
+    if (CALC_Q_P(self)) {
+        return wrap_number(qshift(DATA_PTR(self), n));
+    }
+    return wrap_complex(c_shift(DATA_PTR(self), n));
+}
+
+
 NUMBER *
 sign_of_int(int r)
 {
     return (r > 0) ? qlink(&_qone_) : (r < 0) ? qlink(&_qnegone_) : qlink(&_qzero_);
+}
+
+/* Left shift an integer by a given number of bits.  This multiplies the number
+ * by the appropriate power of 2.
+ *
+ * @param n [Integer] number of bits to shift
+ * @return [Calc::C,Calc::Q]
+ * @raise [Calc::MathError] if self is a non-integer
+ * @raise [ArgumentError] if abs(n) is >= 2^31
+ * @example:
+ *  Calc::Q(2) << 3    #=> Calc::Q(16)
+ *  Calc::C(2, 3) << 3 #=> Calc::C(16+24i)
+ */
+static VALUE
+cn_shift_left(VALUE self, VALUE other)
+{
+    return shift(self, other, FALSE);
+}
+
+/* Right shift an integer by a given number of bits.  This multiplies the
+ * number by the appropriate power of 2.  Low bits are truncated.
+ *
+ * @param n [Integer] number of bits to shift
+ * @return [Calc::C,Calc::Q]
+ * @raise [Calc::MathError] if self is a non-integer
+ * @raise [ArgumentError] if abs(n) is >= 2^31
+ * @example:
+ *  Calc::Q(8) >> 2     #=> Calc::Q(2)
+ *  Calc::C(8, 12) >> 2 #=> Calc::C(2+3i)
+ */
+static VALUE
+cn_shift_right(VALUE self, VALUE other)
+{
+    return shift(self, other, TRUE);
 }
 
 /* Compare 2 values.
@@ -508,6 +570,8 @@ void
 define_calc_numeric(VALUE m)
 {
     cNumeric = rb_define_class_under(m, "Numeric", rb_cData);
+    rb_define_method(cNumeric, "<<", cn_shift_left, 1);
+    rb_define_method(cNumeric, ">>", cn_shift_right, 1);
     rb_define_method(cNumeric, "cmp", cn_cmp, 1);
     rb_define_method(cNumeric, "comb", cn_comb, 1);
     rb_define_method(cNumeric, "ilog", cn_ilog, 1);
