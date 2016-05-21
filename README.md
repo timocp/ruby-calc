@@ -237,6 +237,7 @@ sum    | ...        | sum of values
 tan    | x [, b]    | tangent of x within accuracy b
 tanh   | x [, b]    | hyperbolic tangent of x within accuracy b
 trunc  | x [, p]    | truncate x to p decimal places
+version|            | version of calc that ruby-calc was compiled with
 
 Builtins with at least one required parameter are implemented as class methods of Calc::Q, Calc::C (or both) to allow object orientated style.  Their behaviour matches the calc builtins as closely as possible.  The receiver of these methods is what would have been the first parameter in calc.
 

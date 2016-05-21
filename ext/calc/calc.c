@@ -155,6 +155,22 @@ calc_polar(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Returns the calc version string
+ *
+ * This will return a string specifying the version of calc/libcalc which
+ * ruby-calc was compiled against.
+ *
+ * For the version of ruby-calc itself, use `Calc::VERSION`.
+ *
+ * @example
+ *  Calc.version #=> "2.12.5.0"
+ */
+static VALUE
+calc_version(VALUE self)
+{
+    return rb_str_new_cstr(version());
+}
+
 void
 Init_calc(void)
 {
@@ -168,6 +184,7 @@ Init_calc(void)
     rb_define_module_function(m, "hnrmod", calc_hnrmod, 4);
     rb_define_module_function(m, "pi", calc_pi, -1);
     rb_define_module_function(m, "polar", calc_polar, -1);
+    rb_define_module_function(m, "version", calc_version, 0);
     define_calc_math_error(m);
     define_calc_numeric(m);
     define_calc_q(m);

@@ -117,6 +117,11 @@ class TestCalc < Minitest::Test
     assert_rational_and_equal 38, Calc.sum([3, 5], 7, [6, [7, 8], 2])
   end
 
+  def test_version
+    assert_instance_of String, Calc.version
+    assert_match(/\A\d[\.\d]+\d\z/, Calc.version)
+  end
+
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
 
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)

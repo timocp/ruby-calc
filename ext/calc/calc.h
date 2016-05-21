@@ -8,6 +8,7 @@
  * copying things we need here for now. */
 extern void libcalc_call_me_first(void);
 extern void reinitialize(void);
+extern char *version(void);
 
 #include <calc/cmath.h>
 #include <calc/config.h>
