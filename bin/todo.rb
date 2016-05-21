@@ -293,7 +293,7 @@ builtins_done = Calc::Q(0)
   # srandom
   [:ssq, Calc],
   # stoponerror - not in link library
-  [:str, all],
+  # str - use to_s
   # strtoupper - use ruby Strings instead of this stuff
   # strtolower
   # strcat
