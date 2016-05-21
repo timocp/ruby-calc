@@ -249,6 +249,7 @@ class TestCalc < Minitest::Test
     check_delegation :scale, 2
     check_delegation :sec
     check_delegation :sech
+    check_delegation :sgn
     check_delegation :sin
     check_delegation :sinh
     check_delegation :sqrt

@@ -1353,4 +1353,11 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("1.5"), Calc::Q(3).scale(-1)
     assert_rational_and_equal Calc::Q(".75"), Calc::Q(3).scale(-2)
   end
+
+  def test_sgn
+    assert_rational_and_equal 1, Calc::Q(27).sgn
+    assert_rational_and_equal 1, Calc::Q("1e-20").sgn
+    assert_rational_and_equal 0, Calc::Q(0).sgn
+    assert_rational_and_equal(-1, Calc::Q(-45).sgn)
+  end
 end

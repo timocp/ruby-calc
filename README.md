@@ -227,6 +227,7 @@ round  | x [, p, r] | round x to p decimal places with rounding r
 scale  | x, y       | scale value up or down by a power of two
 sec    | x [, b]    | secant of x within accuracy b
 sech   | x [, b]    | hyperbolic secant within accuracy b
+sgn    | x          | sign of x (-1, 0, 1)
 sin    | x [, b]    | sine of x within accuracy b
 sinh   | x [, b]    | hyperbolic sine of x within accuracy b
 sqrt   | x [, b, z] | square root of x within accuracy b with rounding/sign controlled by z

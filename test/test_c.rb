@@ -497,4 +497,13 @@ class TestC < MiniTest::Test
     assert_raises(Calc::MathError) { Calc::C("1/3", "1/3") << 1 }
     assert_raises(ArgumentError) { Calc::C(2, 2) << (2**31) }
   end
+
+  def test_sgn
+    assert_complex_parts [1, 1], Calc::C(2, 3).sgn
+    assert_complex_parts [0, 1], Calc::C(0, 6).sgn
+    assert_complex_parts [-1, 1], Calc::C(-7, 4).sgn
+    assert_rational_and_equal(-1, Calc::C(-6, 0).sgn)
+    assert_complex_parts [-1, -1], Calc::C(-6, -3).sgn
+    assert_complex_parts [0, -1], Calc::C(0, -2).sgn
+  end
 end

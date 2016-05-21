@@ -501,6 +501,40 @@ cn_scale(VALUE self, VALUE other)
     }
 }
 
+/* Indicates sign of a real or complex number
+ *
+ * For real x, x.sgn returns
+ *   -1 if x < 0
+ *    0 if x == 0
+ *    1 if x > 0
+ *
+ * For complex x, x.sgn returns Calc::C(x.re.sgn, x.im.sgn)
+ *
+ * @return [Calc::C,Calc::Q]
+ * @example
+ *  Calc::Q(9).sgn     #=> Calc::Q(1)
+ *  Calc::Q(0).sgn     #=> Calc::Q(0)
+ *  Calc::Q(-9).sgn    #=> Calc::Q(-1)
+ *  Calc::C(1, -1).sgn #=> Calc::C(1-1i)
+ */
+static VALUE
+cn_sgn(VALUE self)
+{
+    COMPLEX *cself, *cresult;
+    setup_math_error();
+
+    if (CALC_Q_P(self)) {
+        return wrap_number(qsign(DATA_PTR(self)));
+    }
+    cself = DATA_PTR(self);
+    cresult = comalloc();
+    qfree(cresult->real);
+    qfree(cresult->imag);
+    cresult->real = qsign(cself->real);
+    cresult->imag = qsign(cself->imag);
+    return wrap_complex(cresult);
+}
+
 /* Square root
  *
  * Calculates the square root of self (rational or complex).  If eps
@@ -580,5 +614,6 @@ define_calc_numeric(VALUE m)
     rb_define_method(cNumeric, "quo", cn_quo, -1);
     rb_define_method(cNumeric, "root", cn_root, -1);
     rb_define_method(cNumeric, "scale", cn_scale, 1);
+    rb_define_method(cNumeric, "sgn", cn_sgn, 0);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
 }
