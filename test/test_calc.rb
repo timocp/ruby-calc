@@ -31,6 +31,8 @@ class TestCalc < Minitest::Test
     a4 = [1, 2, 3, 4]
     a5 = [1, 2, 3, 4, 5]
     assert_rational_and_equal 3, Calc.avg(*a5)
+    assert_rational_and_equal 3, Calc.avg(a5)
+    assert_rational_and_equal 3, Calc.avg(1, 2, [3, 4, 5])
     assert_rational_and_equal Calc::Q("2.5"), Calc.avg(*a4)
     assert_complex_parts [3, 3], Calc.avg(*a5.map { |x| Calc::C(x, x) })
     assert_complex_parts [Calc::Q("2.5"), Calc::Q("2.5")],
@@ -49,6 +51,7 @@ class TestCalc < Minitest::Test
     assert_rational_and_equal Calc::Q("4/3"), Calc.hmean(1, 2)
     assert_rational_and_equal Calc::Q("18/11"), Calc.hmean(1, 2, 3)
     assert_rational_and_equal Calc::Q("48/25"), Calc.hmean(1, 2, 3, 4)
+    assert_rational_and_equal Calc::Q("48/25"), Calc.hmean(1, [2, [3, 4]])
     assert_rational_and_equal 0, Calc.hmean(1, 2, 0, 3)
     assert_rational_and_equal Calc::Q("180/11"), Calc.hmean(10, 20, 30)
     assert_complex_parts [0, Calc::Q("18/11")],
@@ -103,6 +106,15 @@ class TestCalc < Minitest::Test
     assert_rational_and_equal 87, Calc.ssq([2, 3, 5], 7)
     assert_rational_and_equal 204, Calc.ssq(1, 2, 3, 4, 5, 6, 7, 8)
     assert_rational_and_equal 204, Calc.ssq(1, 2, [3, 4, [5, 6]], [], 7, 8)
+  end
+
+  def test_sum
+    assert_nil Calc.sum
+    assert_rational_and_equal 2, Calc.sum(2)
+    assert_rational_and_equal 26, Calc.sum(5, 3, 7, 2, 9)
+    assert_complex_parts [26, 5], Calc.sum(5, 3, 7, 2, 9, Calc::C(0, 5))
+    assert_rational_and_equal Calc::Q("12.7"), Calc.sum("3.2", "-0.5", "8.7", "-1.2", "2.5")
+    assert_rational_and_equal 38, Calc.sum([3, 5], 7, [6, [7, 8], 2])
   end
 
   # following tests are for checking that Calc.foo(x) correctly calls x.foo

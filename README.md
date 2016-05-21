@@ -232,6 +232,7 @@ sin    | x [, b]    | sine of x within accuracy b
 sinh   | x [, b]    | hyperbolic sine of x within accuracy b
 sqrt   | x [, b, z] | square root of x within accuracy b with rounding/sign controlled by z
 ssq    | ...        | sum of squares of values
+sum    | ...        | sum of values
 tan    | x [, b]    | tangent of x within accuracy b
 tanh   | x [, b]    | hyperbolic tangent of x within accuracy b
 

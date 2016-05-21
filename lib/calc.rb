@@ -20,7 +20,7 @@ module Calc
 
   # builtins implemented as module methods on Calc
   BUILTINS2 = %i(
-    avg config freebernoulli freeeuler hean hnrmod max min pi polar ssq
+    avg config freebernoulli freeeuler hean hnrmod max min pi polar ssq sum
   ).freeze
 
   ALL_BUILTINS = BUILTINS1 + BUILTINS2
@@ -61,6 +61,7 @@ module Calc
   #   Calc.avg(1, 2, 3)          #=> Calc::Q(2)
   #   Calc.avg(4, Calc::C(2, 2)) #=> Calc::C(3+1i)
   def self.avg(*args)
+    args.flatten!
     return nil if args.none?
     args.map { |n| to_calc_x(n) }.inject(:+) / args.size
   end
@@ -75,6 +76,7 @@ module Calc
   #   Calc.hmean(1, 2, 4)          #=> Calc::Q(12/7)
   #   Calc.hmean(2, Complex(0, 2)) #=> Calc::C(2+2i)
   def self.hmean(*args)
+    args.flatten!
     return nil if args.none?
     return Q::ZERO if args.detect(&:zero?)
     args.size / args.map { |n| to_calc_x(n) }.map(&:inverse).inject(:+)
@@ -190,7 +192,11 @@ module Calc
   #  Calc.ssq(1, 2, 3)       #=> Calc::Q(14)
   #  Calc.ssq(1+2i, 3-4i, 5) #=> Calc::C(15-20i)
   def self.ssq(*args)
-    args.map { |term| term.respond_to?(:each) ? ssq(*term) : to_calc_x(term)**2 }.compact.inject(:+)
+    args.flatten.map { |term| to_calc_x(term)**2 }.inject(:+)
+  end
+
+  def self.sum(*args)
+    args.flatten.map { |t| to_calc_x(t) }.compact.inject(:+)
   end
 
   # returns a Calc::Q or Calc::C object, converting if necessary

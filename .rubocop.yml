@@ -19,8 +19,11 @@ Style/StringLiterals:
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
 
-# long classes are OK here
+# long modules / classes are OK here
 Metrics/ClassLength:
+  Enabled: false
+
+Metrics/ModuleLength:
   Enabled: false
 
 Metrics/LineLength:
