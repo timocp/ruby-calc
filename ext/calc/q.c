@@ -313,6 +313,24 @@ cand_navigation(int argc, VALUE * argv, VALUE self,
     return Qnil;
 }
 
+static VALUE
+trunc_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, NUMBER *))
+{
+    VALUE places;
+    NUMBER *qplaces, *qresult;
+    setup_math_error();
+
+    if (rb_scan_args(argc, argv, "01", &places) == 1) {
+        qplaces = value_to_number(places, 0);
+        qresult = (*f) (DATA_PTR(self), qplaces);
+        qfree(qplaces);
+    }
+    else {
+        qresult = (*f) (DATA_PTR(self), &_qzero_);
+    }
+    return wrap_number(qresult);
+}
+
 /*****************************************************************************
  * instance method implementations                                           *
  *****************************************************************************/
@@ -760,6 +778,23 @@ static VALUE
 cq_bround(int argc, VALUE * argv, VALUE self)
 {
     return rounding_function(argc, argv, self, &qbround);
+}
+
+/* Truncate to a number of binary places
+ *
+ * Truncates to j binary places.  If j is omitted, 0 places is assumed.
+ * Truncation of a non-integer prouces values nearer to zero.
+ *
+ * @param j [Integer]
+ * @return [Calc::Q]
+ * @example
+ *  Calc.pi.btrunc    #=> Calc::Q(3)
+ *  Calc.pi.btrunc(5) #=> Calc::Q(3.125)
+ */
+static VALUE
+cq_btrunc(int argc, VALUE * argv, VALUE self)
+{
+    return trunc_function(argc, argv, self, &qbtrunc);
 }
 
 /* Returns the Catalan number for index self.  If self is negative, zero is
@@ -2444,6 +2479,23 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
     return rs;
 }
 
+/* Truncate to a number of decimal places
+ *
+ * Truncates to j decimal places.  If j is omitted, 0 places is assumed.
+ * Truncation of a non-integer prouces values nearer to zero.
+ *
+ * @param j [Integer]
+ * @return [Calc::Q]
+ * @example
+ *  Calc.pi.trunc    #=> Calc::Q(3)
+ *  Calc.pi.trunc(5) #=> Calc::Q(3.14159)
+ */
+static VALUE
+cq_trunc(int argc, VALUE * argv, VALUE self)
+{
+    return trunc_function(argc, argv, self, &qtrunc);
+}
+
 /* Returns true if self is zero
  *
  * @param eps [Numeric,Calc::Q] (optional) calculation accuracy
@@ -2493,6 +2545,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "bernoulli", cq_bernoulli, 0);
     rb_define_method(cQ, "bit?", cq_bitp, 1);
     rb_define_method(cQ, "bround", cq_bround, -1);
+    rb_define_method(cQ, "btrunc", cq_btrunc, -1);
     rb_define_method(cQ, "catalan", cq_catalan, 0);
     rb_define_method(cQ, "cfappr", cq_cfappr, -1);
     rb_define_method(cQ, "cfsim", cq_cfsim, -1);
@@ -2562,6 +2615,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "tanh", cq_tanh, -1);
     rb_define_method(cQ, "to_i", cq_to_i, 0);
     rb_define_method(cQ, "to_s", cq_to_s, -1);
+    rb_define_method(cQ, "trunc", cq_trunc, -1);
     rb_define_method(cQ, "zero?", cq_zerop, 0);
 
     /* include Comparable */

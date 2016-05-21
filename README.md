@@ -136,6 +136,7 @@ avg    | x, y, ...  | arithmetic mean of values
 bernoulli | x       | xth bernoulli number
 bit    | x, y       | whether bit y in value x is set (also: #bit?)
 bround | x [, p, r] | round x to p binary places with rounding r
+btrunc | x [, p]    | truncate x to p binary places
 catalan| x          | Catalan number for index x
 cbrt   | x [, b]    | cube root of x within accuracy b
 ceil   | x          | smallest integer greater than or equal to x
@@ -235,6 +236,7 @@ ssq    | ...        | sum of squares of values
 sum    | ...        | sum of values
 tan    | x [, b]    | tangent of x within accuracy b
 tanh   | x [, b]    | hyperbolic tangent of x within accuracy b
+trunc  | x [, p]    | truncate x to p decimal places
 
 Builtins with at least one required parameter are implemented as class methods of Calc::Q, Calc::C (or both) to allow object orientated style.  Their behaviour matches the calc builtins as closely as possible.  The receiver of these methods is what would have been the first parameter in calc.
 

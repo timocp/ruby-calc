@@ -1360,4 +1360,32 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 0, Calc::Q(0).sgn
     assert_rational_and_equal(-1, Calc::Q(-45).sgn)
   end
+
+  def test_btrunc
+    assert_rational_and_equal 3, Calc.pi.btrunc
+    assert_rational_and_equal Calc::Q("3.140625"), Calc.pi.btrunc(10)
+    assert_rational_and_equal 3, Calc::Q("3.3").btrunc
+    assert_rational_and_equal 3, Calc::Q("3.7").btrunc
+    assert_rational_and_equal Calc::Q("3.25"), Calc::Q("3.3").btrunc(2)
+    assert_rational_and_equal Calc::Q("3.5"), Calc::Q("3.7").btrunc(2)
+    assert_rational_and_equal Calc::Q(-3), Calc::Q("-3.3").btrunc
+    assert_rational_and_equal Calc::Q(-3), Calc::Q("-3.7").btrunc
+    assert_rational_and_equal Calc::Q("-3.25"), Calc::Q("-3.3").btrunc(2)
+    assert_rational_and_equal Calc::Q("-3.5"), Calc::Q("-3.7").btrunc(2)
+    assert_rational_and_equal 48, Calc::Q("55.123").btrunc(-4)
+    assert_rational_and_equal Calc::Q(-48), Calc::Q("-55.123").btrunc(-4)
+  end
+
+  def test_trunc
+    assert_rational_and_equal 3, Calc.pi.trunc
+    assert_rational_and_equal Calc::Q("3.14159"), Calc.pi.trunc(5)
+    assert_rational_and_equal 3, Calc::Q("3.333").trunc
+    assert_rational_and_equal 3, Calc::Q("3.789").trunc
+    assert_rational_and_equal Calc::Q("3.33"), Calc::Q("3.333").trunc(2)
+    assert_rational_and_equal Calc::Q("3.78"), Calc::Q("3.789").trunc(2)
+    assert_rational_and_equal Calc::Q(-3), Calc::Q("-3.333").trunc
+    assert_rational_and_equal Calc::Q(-3), Calc::Q("-3.789").trunc
+    assert_rational_and_equal Calc::Q("-3.33"), Calc::Q("-3.333").trunc(2)
+    assert_rational_and_equal Calc::Q("-3.78"), Calc::Q("-3.789").trunc(2)
+  end
 end

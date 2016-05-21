@@ -183,6 +183,7 @@ class TestCalc < Minitest::Test
     check_real_delegation :bernoulli
     check_real_delegation :bit, 2
     check_delegation :bround
+    check_real_delegation :btrunc
     check_real_delegation :catalan
     check_delegation :ceil
     check_real_delegation :cfappr
@@ -275,5 +276,6 @@ class TestCalc < Minitest::Test
     check_delegation :sqrt
     check_delegation :tan
     check_delegation :tanh
+    check_real_delegation :trunc
   end
 end

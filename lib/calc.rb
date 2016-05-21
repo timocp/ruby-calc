@@ -8,14 +8,14 @@ module Calc
   # builtins implemented as instance methods on Calc::Q or Calc::C
   BUILTINS1 = %i(
     abs acos acosh acot acoth acsc acsch agd appr arg asec asech asin asinh
-    atan atan2 atanh bit bernoulli bround catalan ceil char cfappr cfsim cmp
-    comb conj cos cosh cot coth csc csch den digit digits estr euler exp fact
-    factor fcnt frac frem fib floor gcd gcdrem gd highbit hypot ilog ilog10
-    ilog2 im int inverse iroot iseven isimag isint ismult isodd isprime isqrt
-    isreal isrel issq jacobi lcm lcmfact lfactor ln log lowbit ltol meq minv
-    mmin mne mod near nextcand nextprime norm num perm pfact pix places pmod
-    popcnt power prevcand prevprime ptest quo quomod re root round scale sgn
-    sec sech sin sinh sqrt tan tanh
+    atan atan2 atanh bernoulli bit bround btrunc catalan ceil cfappr cfsim char
+    cmp comb conj cos cosh cot coth csc csch den digit digits estr euler exp
+    fact factor fcnt fib floor frac frem gcd gcdrem gd highbit hypot ilog
+    ilog10 ilog2 im int inverse iroot iseven isimag isint ismult isodd isprime
+    isqrt isreal isrel issq jacobi lcm lcmfact lfactor ln log lowbit ltol meq
+    minv mmin mne mod near nextcand nextprime norm num perm pfact pix places
+    pmod popcnt power prevcand prevprime ptest quo quomod re root round scale
+    sec sech sgn sin sinh sqrt tan tanh trunc
   ).freeze
 
   # builtins implemented as module methods on Calc

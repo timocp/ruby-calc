@@ -50,6 +50,7 @@ builtins_done = Calc::Q(0)
   # bklfree
   # blocks
   [:bround, all],
+  [:btrunc, rat],
   # calc_tty
   # calcleve
   # calcpath
