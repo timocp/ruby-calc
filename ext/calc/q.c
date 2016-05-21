@@ -23,6 +23,7 @@ static ID id_multiply;
 static ID id_new;
 static ID id_spaceship;
 static ID id_subtract;
+static ID id_xor;
 
 void
 cq_free(void *p)
@@ -456,6 +457,21 @@ cq_spaceship(VALUE self, VALUE other)
     }
 
     return INT2FIX(result);
+}
+
+/* Bitwise exclusive or (xor)
+ *
+ * Note that for ruby compatibility, ^ is an xor operator, unlike in calc
+ * where it is a power operator.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(5).xor(3) #=> Calc::Q(6)
+ */
+static VALUE
+cq_xor(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &qxor, NULL, id_xor);
 }
 
 /* Absolute value
@@ -2527,6 +2543,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "-@", cq_uminus, 0);
     rb_define_method(cQ, "/", cq_divide, 1);
     rb_define_method(cQ, "<=>", cq_spaceship, 1);
+    rb_define_method(cQ, "^", cq_xor, 1);
     rb_define_method(cQ, "abs", cq_abs, 0);
     rb_define_method(cQ, "acos", cq_acos, -1);
     rb_define_method(cQ, "acosh", cq_acosh, -1);
@@ -2634,4 +2651,5 @@ define_calc_q(VALUE m)
     id_new = rb_intern("new");
     id_spaceship = rb_intern("<=>");
     id_subtract = rb_intern("-");
+    id_xor = rb_intern("^");
 }

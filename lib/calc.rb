@@ -15,7 +15,7 @@ module Calc
     isqrt isreal isrel issq jacobi lcm lcmfact lfactor ln log lowbit ltol meq
     minv mmin mne mod near nextcand nextprime norm num perm pfact pix places
     pmod popcnt power prevcand prevprime ptest quo quomod re root round scale
-    sec sech sgn sin sinh sqrt tan tanh trunc
+    sec sech sgn sin sinh sqrt tan tanh trunc xor
   ).freeze
 
   # builtins implemented as module methods on Calc

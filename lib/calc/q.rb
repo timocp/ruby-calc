@@ -300,6 +300,19 @@ module Calc
       Rational(numerator.to_i, denominator.to_i)
     end
 
+    # Bitwise exclusive or of a set of integers
+    #
+    # xor(a, b, c, ...) is equivalent to (((a ^ b) ^ c) ... )
+    # note that ^ is the ruby xor operator, not the calc power operator.
+    #
+    # @return [Calc::Q]
+    # @example
+    #   Calc::Q(3).xor(5)           #=> Calc::Q(6)
+    #   Calc::Q(5).xor(3, -7, 2, 9) #=> Calc::Q(-12)
+    def xor(*args)
+      args.inject(self, :^)
+    end
+
     # aliases for compatibility with ruby Fixnum/Bignum/Rational
     alias imag im
     alias integer? int?

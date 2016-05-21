@@ -450,6 +450,12 @@ These builtins work this way:
 
 `isimag` isn't a real calc builtin but it is included anyway.
 
+### xor / power
+
+In calc, the `^` operator raises to a power.  In ruby, it is a bitwise exclusive or operator.
+
+If you want to raise to a power, use `**`, which behaves the same in both calc and ruby.  Alternatively, you can use the methods named `power` and `xor`.
+
 ### Other Differences
 
 * `estr` return format is different, intended to be eval'd by ruby rather than calc

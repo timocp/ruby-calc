@@ -1388,4 +1388,14 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("-3.33"), Calc::Q("-3.333").trunc(2)
     assert_rational_and_equal Calc::Q("-3.78"), Calc::Q("-3.789").trunc(2)
   end
+
+  def test_xor
+    assert_rational_and_equal 6, Calc::Q(5) ^ 3
+    assert_rational_and_equal(-8, Calc::Q(5) ^ -3)
+    assert_rational_and_equal(-8, Calc::Q(-5) ^ 3)
+    assert_rational_and_equal 6, Calc::Q(-5) ^ -3
+    assert_rational_and_equal 2, Calc::Q(2).xor
+    assert_rational_and_equal 6, Calc::Q(5).xor(3)
+    assert_rational_and_equal(-12, Calc::Q(5).xor(3, -7, 2, 9))
+  end
 end

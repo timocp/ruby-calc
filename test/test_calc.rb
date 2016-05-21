@@ -282,5 +282,6 @@ class TestCalc < Minitest::Test
     check_delegation :tan
     check_delegation :tanh
     check_real_delegation :trunc
+    check_real_delegation :xor, 2
   end
 end
