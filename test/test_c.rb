@@ -477,4 +477,12 @@ class TestC < MiniTest::Test
     assert_complex_parts [1.34241, 0.59361], Calc::C(1, 3).root(3, "1e-5")
     assert_complex_parts [0.99987663248166059864, 0.01570731731182067575], Calc::C(0, 1).root(100)
   end
+
+  def test_scale
+    assert_complex_parts [12, -16], Calc::C(3, -4).scale(2)
+    assert_complex_parts [6, -8], Calc::C(3, -4).scale(1)
+    assert_complex_parts [3, -4], Calc::C(3, -4).scale(0)
+    assert_complex_parts [1.5, -2], Calc::C(3, -4).scale(-1)
+    assert_complex_parts [0.75, -1], Calc::C(3, -4).scale(-2)
+  end
 end

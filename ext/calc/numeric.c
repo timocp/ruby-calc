@@ -399,6 +399,46 @@ cn_root(int argc, VALUE * argv, VALUE self)
     return result;
 }
 
+/* Scale a number by a power of 2
+ *
+ * x.scale(n) returns the value of 2**n * x.
+ *
+ * Unlike the << and >> operators, this function works on fractional x.
+ *
+ * @param n [Integer]
+ * @return [Calc::C,Calc::Q]
+ * @raise [ArgumentError] if n isn't an integer < 2^31
+ * @example
+ *  Calc::Q(3).scale(2)    #=> Calc::Q(12)
+ *  Calc::Q(3).scale(-2)   #=> Calc::Q(0.75)
+ *  Calc::C(3, 3).scale(2) #=> Calc::C(12+12i)
+ */
+static VALUE
+cn_scale(VALUE self, VALUE other)
+{
+    NUMBER *qother;
+    long n;
+    setup_math_error();
+
+    qother = value_to_number(other, 0);
+    if (qisfrac(qother)) {
+        qfree(qother);
+        rb_raise(rb_eArgError, "scale by non-integer");
+    }
+    if (zge31b(qother->num)) {
+        qfree(qother);
+        rb_raise(rb_eArgError, "scale factor must be < 2^31");
+    }
+    n = qtoi(qother);
+    qfree(qother);
+    if (CALC_Q_P(self)) {
+        return wrap_number(qscale(DATA_PTR(self), n));
+    }
+    else {
+        return wrap_complex(c_scale(DATA_PTR(self), n));
+    }
+}
+
 /* Square root
  *
  * Calculates the square root of self (rational or complex).  If eps
@@ -475,5 +515,6 @@ define_calc_numeric(VALUE m)
     rb_define_method(cNumeric, "log", cn_log, -1);
     rb_define_method(cNumeric, "quo", cn_quo, -1);
     rb_define_method(cNumeric, "root", cn_root, -1);
+    rb_define_method(cNumeric, "scale", cn_scale, 1);
     rb_define_method(cNumeric, "sqrt", cn_sqrt, -1);
 }

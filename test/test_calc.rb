@@ -246,6 +246,7 @@ class TestCalc < Minitest::Test
     check_delegation :re
     check_delegation :root
     check_delegation :round
+    check_delegation :scale, 2
     check_delegation :sec
     check_delegation :sech
     check_delegation :sin

@@ -224,6 +224,7 @@ ptest  | n, [, c [, s] | probabilistic test of primality (also: #ptest?)
 quo    | x, y [, r] | integer quotient of a by b with rounding r
 root   | x, n [, b] | nth root of x within accuracy b
 round  | x [, p, r] | round x to p decimal places with rounding r
+scale  | x, y       | scale value up or down by a power of two
 sec    | x [, b]    | secant of x within accuracy b
 sech   | x [, b]    | hyperbolic secant within accuracy b
 sin    | x [, b]    | sine of x within accuracy b
