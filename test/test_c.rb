@@ -506,4 +506,10 @@ class TestC < MiniTest::Test
     assert_complex_parts [-1, -1], Calc::C(-6, -3).sgn
     assert_complex_parts [0, -1], Calc::C(0, -2).sgn
   end
+
+  def test_abs2
+    assert_rational_in_epsilon 29, Calc::C(5, 2).abs2
+    assert_rational_and_equal 1, Calc::C(-1).abs2
+    assert_rational_and_equal 25, Calc::C(3, -4).abs2
+  end
 end

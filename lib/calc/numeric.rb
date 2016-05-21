@@ -24,6 +24,18 @@ module Calc
       self
     end
 
+    # Returns the square of the absolute value
+    #
+    # This method exists for compatibility with ruby Complex/Numeric.
+    #
+    # @return [Calc::C,Calc::Q]
+    # @example
+    #   Calc::Q(5).abs2     #=> Calc::Q(25)
+    #   Calc::C(3, -4).abs2 #=> Calc:c::Q(25)
+    def abs2
+      abs * abs
+    end
+
     # Ceiling
     #
     # For real self, returns the least integer not less than self.

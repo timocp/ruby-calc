@@ -1398,4 +1398,11 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 6, Calc::Q(5).xor(3)
     assert_rational_and_equal(-12, Calc::Q(5).xor(3, -7, 2, 9))
   end
+
+  def test_abs2
+    assert_rational_and_equal 25, Calc::Q(5).abs2
+    assert_rational_and_equal 25, Calc::Q(-5).abs2
+    assert_rational_and_equal Calc::Q("25/4"), Calc::Q(5, 2).abs2
+    assert_rational_and_equal Calc::Q("25/4"), Calc::Q(-5, 2).abs2
+  end
 end
