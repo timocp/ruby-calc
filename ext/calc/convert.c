@@ -92,7 +92,8 @@ value_to_number(VALUE arg, int string_allowed)
         }
     }
     else {
-        rb_raise(rb_eArgError, "Can't convert %s to Calc::Q", rb_class2name(CLASS_OF(arg)));
+        rb_raise(rb_eArgError, "%" PRIsVALUE " (%" PRIsVALUE ") can't be converted to Calc::Q",
+                 arg, rb_obj_class(arg));
     }
     return qresult;
 }
@@ -128,7 +129,8 @@ value_to_complex(VALUE arg)
         cresult = qqtoc(value_to_number(arg, 0), &_qzero_);
     }
     else {
-        rb_raise(rb_eArgError, "Can't convert %s to Calc::C", rb_class2name(CLASS_OF(arg)));
+        rb_raise(rb_eArgError, "%" PRIsVALUE " (%" PRIsVALUE ") can't be converted to Calc::C",
+                 arg, rb_obj_class(arg));
     }
 
     return cresult;

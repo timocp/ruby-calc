@@ -170,8 +170,9 @@ numeric_op(VALUE self, VALUE other,
         return rb_funcall(RARRAY_AREF(ary, 0), func, 1, RARRAY_AREF(ary, 1));
     }
     else {
-        rb_raise(rb_eTypeError, "%" PRIsVALUE " can't (!) be coerced into %" PRIsVALUE,
-                 other, rb_obj_class(self));
+        rb_raise(rb_eTypeError,
+                 "%" PRIsVALUE " (%" PRIsVALUE ") can't be coerced into %" PRIsVALUE, other,
+                 rb_obj_class(other), rb_obj_class(self));
     }
     return wrap_number(qresult);
 }
