@@ -97,6 +97,14 @@ class TestCalc < Minitest::Test
     assert_raises(ArgumentError) { Calc.poly }
   end
 
+  def test_ssq
+    assert_rational_and_equal 14, Calc.ssq(1, 2, 3)
+    assert_complex_parts [-21, 40], Calc.ssq(Calc::C(1, 2), Calc::C(3, -4), Calc::C(5, 6))
+    assert_rational_and_equal 87, Calc.ssq([2, 3, 5], 7)
+    assert_rational_and_equal 204, Calc.ssq(1, 2, 3, 4, 5, 6, 7, 8)
+    assert_rational_and_equal 204, Calc.ssq(1, 2, [3, 4, [5, 6]], [], 7, 8)
+  end
+
   # following tests are for checking that Calc.foo(x) correctly calls x.foo
 
   def check_delegation_value(m, ruby_n, calc_n, extra_args_count)

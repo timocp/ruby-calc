@@ -20,7 +20,7 @@ module Calc
 
   # builtins implemented as module methods on Calc
   BUILTINS2 = %i(
-    avg config freebernoulli freeeuler hean hnrmod max min pi polar
+    avg config freebernoulli freeeuler hean hnrmod max min pi polar ssq
   ).freeze
 
   ALL_BUILTINS = BUILTINS1 + BUILTINS2
@@ -178,6 +178,20 @@ module Calc
     end
   end
   private_class_method :evp
+
+  # Returns the sum of squares.
+  #
+  # Nil values are ignored.  If any argument is am array, it contributes
+  # the sum of squares of its contents recursively.
+  #
+  # @return [Calc::C,Calc::Q]
+  # @raise [ArgumentError] if any argument can't be converted to a Calc class
+  # @example
+  #  Calc.ssq(1, 2, 3)       #=> Calc::Q(14)
+  #  Calc.ssq(1+2i, 3-4i, 5) #=> Calc::C(15-20i)
+  def self.ssq(*args)
+    args.map { |term| term.respond_to?(:each) ? ssq(*term) : to_calc_x(term)**2 }.compact.inject(:+)
+  end
 
   # returns a Calc::Q or Calc::C object, converting if necessary
   def self.to_calc_x(n)
