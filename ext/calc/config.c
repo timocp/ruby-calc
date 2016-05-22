@@ -95,7 +95,7 @@ value_to_nametype_long(VALUE v, nametype2 * set)
 long
 value_to_mode(VALUE v)
 {
-    int n;
+    long n;
 
     n = value_to_nametype_long(v, modes);
     if (n < 0) {
@@ -139,7 +139,7 @@ value_to_len(VALUE v, const char *name)
         qfree(q);
         rb_raise(e_MathError, "Integer too big for %s", name);
     }
-    len = ztoi(q->num);
+    len = (LEN) ztoi(q->num);
     qfree(q);
     if (len < 0)
         rb_raise(e_MathError, "Negative value for %s", name);
@@ -175,7 +175,7 @@ calc_config(int argc, VALUE * argv, VALUE klass)
     case CONFIG_MODE:
         old_value = mode_to_string(conf->outmode);
         if (args == 2)
-            math_setmode(value_to_mode(new_value));
+            math_setmode((int) value_to_mode(new_value));
         break;
 
     case CONFIG_EPSILON:

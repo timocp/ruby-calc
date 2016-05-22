@@ -306,7 +306,7 @@ cand_navigation(int argc, VALUE * argv, VALUE self,
     qfree(qmodulus);
 
     if (error) {
-        rb_raise(e_MathError, error);
+        rb_raise(e_MathError, "%s", error);
     }
     else if (qresult) {
         return wrap_number(qresult);
@@ -2263,7 +2263,7 @@ cq_quomod(int argc, VALUE * argv, VALUE self)
 {
     VALUE other, rnd;
     NUMBER *qother, *qquo, *qmod;
-    int r;
+    long r;
     setup_math_error();
 
     if (rb_scan_args(argc, argv, "11", &other, &rnd) == 2) {
@@ -2496,7 +2496,7 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
         qprintnum(qself, MODE_DEFAULT);
     }
     else {
-        qprintnum(qself, value_to_mode(mode));
+        qprintnum(qself, (int) value_to_mode(mode));
     }
     s = math_getdivertedio();
     rs = rb_str_new2(s);
