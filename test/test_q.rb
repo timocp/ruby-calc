@@ -1443,4 +1443,13 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-3, Calc::Q("-11.5").div(4))
     assert_rational_and_equal 2, Calc::Q("-11.5").div(-4)
   end
+
+  def test_fdiv
+    assert_rational_in_epsilon 47.6528293642124, Calc::Q(654321).fdiv(13731)
+    assert_rational_in_epsilon 47.6519964693647, Calc::Q(654321).fdiv(13731.24)
+    assert_rational_in_epsilon 0.6666666666666666, Calc::Q(2, 3).fdiv(1)
+    assert_rational_in_epsilon 1.3333333333333333, Calc::Q(2, 3).fdiv(0.5)
+    assert_rational_in_epsilon 0.6666666666666666, Calc::Q(2).fdiv(3)
+    assert_raises(Calc::MathError) { Calc::Q(2).fdiv(0) }
+  end
 end

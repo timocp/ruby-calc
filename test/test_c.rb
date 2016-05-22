@@ -514,4 +514,9 @@ class TestC < MiniTest::Test
     assert_rational_and_equal 1, Calc::C(-1).abs2
     assert_rational_and_equal 25, Calc::C(3, -4).abs2
   end
+
+  def test_fdiv
+    assert_complex_parts [3.6666666666666665, 7.333333333333333], Calc::C(11, 22).fdiv(3)
+    assert_raises(Calc::MathError) { Calc::C(11, 22).fdiv(0) }
+  end
 end

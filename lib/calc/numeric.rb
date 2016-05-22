@@ -51,6 +51,21 @@ module Calc
       appr(1, 1)
     end
 
+    # Division
+    #
+    # This method exists for ruby compatibility.  Note that Fixnum#fdiv will
+    # return a Float, however Q#div returns another Q.
+    #
+    # @param y [Numeric]
+    # @return [Calc::C,Calc::Q]
+    # @raise [Calc::MathError] if y is 0
+    # @example
+    #  Calc::Q(2, 3).fdiv(0.5) #=> Calc::Q(~1.33333333333333333333)
+    #  Calc::C(11, 22).fdiv(3) #=> Calc::C(~3.66666666666666666667+~7.33333333333333333333i)
+    def fdiv(y)
+      self / y
+    end
+
     # Floor
     #
     # For real self, returns the greatest integer not greater than self.
