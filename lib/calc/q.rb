@@ -133,6 +133,15 @@ module Calc
       r.real? ? r.re : r
     end
 
+    # Returns the corresponding imaginary number
+    #
+    # @return [Calc::C]
+    # @example
+    #  Calc::Q(1).i #=> Calc::C(1i)
+    def i
+      Calc::C(ZERO, self)
+    end
+
     def im
       ZERO
     end

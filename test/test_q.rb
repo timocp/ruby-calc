@@ -1452,4 +1452,10 @@ class TestQ < MiniTest::Test
     assert_rational_in_epsilon 0.6666666666666666, Calc::Q(2).fdiv(3)
     assert_raises(Calc::MathError) { Calc::Q(2).fdiv(0) }
   end
+
+  def test_i
+    assert_complex_parts [0, 0], Calc::Q(0).i
+    assert_complex_parts [0, 1], Calc::Q(1).i
+    assert_complex_parts [0, -1], Calc::Q(-1).i
+  end
 end
