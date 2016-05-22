@@ -57,11 +57,15 @@ class TestConfig < Minitest::Test
   end
 
   def test_mod
-    assert_equal 1, Calc::Q(11).minv(5)
-    assert_equal 1, Calc::Q(11) % 5
+    assert_rational_and_equal 1, Calc::Q(11).minv(5)
+    assert_rational_and_equal 1, Calc::Q(11) % 5
+    assert_rational_and_equal 1, Calc::Q(11).modulo(5)
+    assert_rational_and_equal 1, Calc::Q(11).remainder(5)
     with_config(:mod, 0, 1) do
-      assert_equal(-4, Calc::Q(11).minv(5))
-      assert_equal(-4, Calc::Q(11) % 5)
+      assert_rational_and_equal(-4, Calc::Q(11).minv(5))
+      assert_rational_and_equal(-4, Calc::Q(11) % 5)
+      assert_rational_and_equal 1, Calc::Q(11).modulo(5)
+      assert_rational_and_equal 1, Calc::Q(11).remainder(5)
     end
     assert_raises(Calc::MathError) { Calc.config(:mod, 0.5) }
     assert_raises(Calc::MathError) { Calc.config(:mod, -1) }
@@ -83,6 +87,17 @@ class TestConfig < Minitest::Test
     end
     assert_raises(Calc::MathError) { Calc.config(:quo, 0.5) }
     assert_raises(Calc::MathError) { Calc.config(:quo, -1) }
+  end
+
+  def test_quomod
+    assert_equal [-4, -2], Calc::Q(10).quomod(-3)
+    assert_equal [-4, -2], Calc::Q(10).divmod(-3)
+    with_config(:quomod, 0, 1) do
+      assert_equal [-3, 1], Calc::Q(10).quomod(-3)
+      assert_equal [-4, -2], Calc::Q(10).divmod(-3)
+    end
+    assert_raises(Calc::MathError) { Calc.config(:quomod, 0.5) }
+    assert_raises(Calc::MathError) { Calc.config(:quomod, -1) }
   end
 
   def test_round

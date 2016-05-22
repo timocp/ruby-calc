@@ -34,6 +34,7 @@ static nametype2 configs[] = {
     {"mode", CONFIG_MODE},
     {"display", CONFIG_DISPLAY},
     {"epsilon", CONFIG_EPSILON},
+    {"quomod", CONFIG_QUOMOD},
     {"quo", CONFIG_QUO},
     {"mod", CONFIG_MOD},
     {"sqrt", CONFIG_SQRT},
@@ -181,6 +182,12 @@ calc_config(int argc, VALUE * argv, VALUE klass)
         old_value = wrap_number(qlink(conf->epsilon));
         if (args == 2)
             setepsilon(value_to_number(new_value, 1));
+        break;
+
+    case CONFIG_QUOMOD:
+        old_value = INT2FIX(conf->quomod);
+        if (args == 2)
+            conf->quomod = value_to_len(new_value, "quomod");
         break;
 
     case CONFIG_QUO:

@@ -140,7 +140,7 @@ btrunc | x [, p]    | truncate x to p binary places
 catalan| x          | Catalan number for index x
 cbrt   | x [, b]    | cube root of x within accuracy b
 ceil   | x          | smallest integer greater than or equal to x
-cfappr | x [, e|n, r] | approximate x within accuracy e using continued fractions
+cfappr | x [, ...]  | approximate x within accuracy e using continued fractions
 cfsim  | x [, r]    | simplify x using continued fractions
 char   | x          | character corresponding to integer x
 cmp    | x, y       | compare values returning -1, 0 or 1 real or complex
@@ -365,6 +365,7 @@ epsilon   | 1e-20   | default precision for transcendental functions
 mod       | 0       | rounding mode for `%`, default for `mod`
 mode      | :real   | default output mode when converting to string
 quo       | 2       | rounding mode for `quo`
+quomod    | 0       | rounding mode for `quomod`
 round     | 24      | rounding mode for `bround` and `round`
 sqrt      | 24      | rounding mode and sign for `sqrt`
 

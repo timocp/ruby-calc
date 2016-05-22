@@ -80,6 +80,35 @@ module Calc
     end
     alias conjugate conj
 
+    # Ruby compatible integer division
+    #
+    # Calls `quo` to get the quotient of integer division, with rounding mode
+    # which specifies behaviour compatible with ruby's Numeric#div
+    #
+    # @param y [Numeric]
+    # @example
+    #  Calc::Q(13).div(4)     #=> Calc::Q(3)
+    #  Calc::Q("11.5").div(4) #=> Calc::Q(2)
+    # @see Calc::Q#quo
+    def div(y)
+      quo(y, ZERO)
+    end
+
+    # Ruby compatible quotient/modulus
+    #
+    # Returns an array containing the quotient and modulus by dividing `self`
+    # by `y`.  Rounding is compatible with the ruby method `Numeric#divmod`.
+    #
+    # Unlike `quomod`, this is not affected by `Calc.config(:quomod)`.
+    #
+    # @param y [Numeric]
+    # @example
+    #   Calc::Q(11).divmod(3)  #=> [Calc::Q(3), Calc::Q(2)]
+    #   Calc::Q(11).divmod(-3) #=> [Calc::Q(-4), Calc::Q(-1)]
+    def divmod(y)
+      quomod(y, ZERO)
+    end
+
     # Returns a string which if evaluated creates a new object with the original value
     #
     # @return [String]
@@ -244,6 +273,21 @@ module Calc
       !meq?(y, md)
     end
 
+    # Ruby compatible modulus
+    #
+    # Returns the modulus of `self` divided by `y`.
+    #
+    # Rounding is compatible with the ruby method Numeric#modulo.  Unlike
+    # `mod`, this is not affected by `Calc.confg(:mod)`.
+    #
+    # @param y [Numeric]
+    # @example
+    #  Calc::Q(13).modulo(4)  #=> Calc::Q(1)
+    #  Calc::Q(13).modulo(-4) #=> Calc::Q(-3)
+    def modulo(y)
+      mod(y, ZERO)
+    end
+
     # Probabilistic primacy test
     #
     # Returns 1 if ptest? would have returned true, otherwise 0.
@@ -268,6 +312,25 @@ module Calc
     #  Calc::Q(1).real? #=> true
     def real?
       true
+    end
+
+    # Remainder of `self` divided by `y`
+    #
+    # This method is provided for compatibility with ruby's
+    # `Numeric#remainder`.  Unlike `%` and `mod`, this method behaves the same
+    # as the ruby version, unaffected by `Calc.config(:mod).
+    #
+    # @param y [Numeric]
+    # @return [Calc::C,Calc::Q]
+    # @example
+    #  Calc::Q(13).remainder(4) #=> Calc::Q(1)
+    def remainder(y)
+      z = modulo(y)
+      if !z.zero? && ((self < 0 && y > 0) || (self > 0 && y < 0))
+        z - y
+      else
+        z
+      end
     end
 
     # Returns a ruby Complex number with self as the real part and zero

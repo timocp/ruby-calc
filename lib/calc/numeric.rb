@@ -117,15 +117,6 @@ module Calc
       mod md, 16
     end
 
-    def remainder(y)
-      z = self % y
-      if !z.zero? && ((self < 0 && y > 0) || (self > 0 && y < 0))
-        z - y
-      else
-        z
-      end
-    end
-
     # Provides support for Ruby type coercion.
     def coerce(other)
       [self.class.new(other), self]

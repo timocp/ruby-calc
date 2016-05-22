@@ -2251,19 +2251,28 @@ cq_ptestp(int argc, VALUE * argv, VALUE self)
 /* Returns the quotient and remainder from division
  *
  * @param y [Numeric,Calc::Q] number to divide by
+ * @param rnd [Integer] optional rounding mode, default Calc.config(:quomod)
  * @return [Array<Calc::Q>] Array containing quotient and remainder
  * @todo add parameter to control rounding
  * @example
  *  Calc::Q(13).quomod(5) #=> [Calc::Q(2), Calc::Q(3)]
  */
 static VALUE
-cq_quomod(VALUE self, VALUE other)
+cq_quomod(int argc, VALUE * argv, VALUE self)
 {
+    VALUE other, rnd;
     NUMBER *qother, *qquo, *qmod;
+    int r;
     setup_math_error();
 
+    if (rb_scan_args(argc, argv, "11", &other, &rnd) == 2) {
+        r = value_to_long(rnd);
+    }
+    else {
+        r = conf->quomod;
+    }
     qother = value_to_number(other, 0);
-    qquomod(DATA_PTR(self), qother, &qquo, &qmod, 0);
+    qquomod(DATA_PTR(self), qother, &qquo, &qmod, r);
     qfree(qother);
     return rb_assoc_new(wrap_number(qquo), wrap_number(qmod));
 }
@@ -2620,7 +2629,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "prevprime", cq_prevprime, 0);
     rb_define_method(cQ, "prime?", cq_primep, 0);
     rb_define_method(cQ, "ptest?", cq_ptestp, -1);
-    rb_define_method(cQ, "quomod", cq_quomod, 1);
+    rb_define_method(cQ, "quomod", cq_quomod, -1);
     rb_define_method(cQ, "rel?", cq_relp, 1);
     rb_define_method(cQ, "round", cq_round, -1);
     rb_define_method(cQ, "sec", cq_sec, -1);
@@ -2639,9 +2648,7 @@ define_calc_q(VALUE m)
     rb_include_module(cQ, rb_mComparable);
 
     rb_define_alias(cQ, "denominator", "den");
-    rb_define_alias(cQ, "divmod", "quomod");
     rb_define_alias(cQ, "magnitude", "abs");
-    rb_define_alias(cQ, "modulo", "mod");
     rb_define_alias(cQ, "numerator", "num");
 
     id_add = rb_intern("+");

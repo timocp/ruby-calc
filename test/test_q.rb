@@ -229,6 +229,7 @@ class TestQ < MiniTest::Test
     assert_equal [-4, -2], Calc::Q(10).quomod(-3)
 
     assert_equal [3, 1], Calc::Q(13).quomod(4)
+    assert_equal [3, 1], Calc::Q(13).quomod(4, 0)
     assert_equal [-4, -3], Calc::Q(13).quomod(-4)
     assert_equal [-4, 3], Calc::Q(-13).quomod(4)
     assert_equal [3, -1], Calc::Q(-13).quomod(-4)
@@ -236,16 +237,38 @@ class TestQ < MiniTest::Test
     assert_equal [-3, Calc::Q(-1, 2)], Calc::Q(23, 2).quomod(-4)
     assert_equal [-3, Calc::Q(1, 2)], Calc::Q(-23, 2).quomod(4)
     assert_equal [2, Calc::Q(-7, 2)], Calc::Q(-23, 2).quomod(-4)
+  end
 
-    assert_alias Calc::Q(1), :quomod, :divmod
+  def test_divmod
+    r = Calc::Q(13).divmod(4)
+    assert_instance_of Array, r
+    assert_equal 2, r.size
+    assert_rational_and_equal 3, r.first
+    assert_rational_and_equal 1, r.last
+
+    assert_equal [3, 1], Calc::Q(13).divmod(4)
+    assert_equal [-4, -3], Calc::Q(13).divmod(-4)
+    assert_equal [-4, 3], Calc::Q(-13).divmod(4)
+    assert_equal [3, -1], Calc::Q(-13).divmod(-4)
+    assert_equal [2, Calc::Q("3.5")], Calc::Q("11.5").divmod(4)
+    assert_equal [-3, Calc::Q("-0.5")], Calc::Q("11.5").divmod(-4)
+    assert_equal [-3, Calc::Q("0.5")], Calc::Q("-11.5").divmod(4)
+    assert_equal [2, Calc::Q("-3.5")], Calc::Q("-11.5").divmod(-4)
   end
 
   def test_modulo_and_remainder
-    assert_equal  1, Calc::Q(13).modulo(4)
-    assert_equal  1, Calc::Q(13).remainder(4)
-    assert_equal(-3, Calc::Q(13).modulo(-4))
-    assert_equal 1, Calc::Q(13).remainder(-4)
-    assert_equal 3.5, Calc::Q(11.5).modulo(4)
+    assert_rational_and_equal  1, Calc::Q(13).modulo(4)
+    assert_rational_and_equal  1, Calc::Q(13).remainder(4)
+    assert_rational_and_equal(-3, Calc::Q(13).modulo(-4))
+    assert_rational_and_equal 1, Calc::Q(13).remainder(-4)
+    assert_rational_and_equal Calc::Q("3.5"), Calc::Q("11.5").modulo(4)
+    assert_rational_and_equal Calc::Q("3.5"), Calc::Q("11.5").remainder(4)
+    assert_rational_and_equal Calc::Q("-0.5"), Calc::Q("11.5").modulo(-4)
+    assert_rational_and_equal Calc::Q("3.5"), Calc::Q("11.5").remainder(-4)
+    assert_rational_and_equal Calc::Q("0.5"), Calc::Q("-11.5").modulo(4)
+    assert_rational_and_equal Calc::Q("-3.5"), Calc::Q("-11.5").remainder(4)
+    assert_rational_and_equal Calc::Q("-3.5"), Calc::Q("-11.5").modulo(-4)
+    assert_rational_and_equal Calc::Q("-3.5"), Calc::Q("-11.5").remainder(-4)
   end
 
   def test_power
@@ -1406,5 +1429,18 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 25, Calc::Q(-5).abs2
     assert_rational_and_equal Calc::Q("25/4"), Calc::Q(5, 2).abs2
     assert_rational_and_equal Calc::Q("25/4"), Calc::Q(-5, 2).abs2
+  end
+
+  def test_div
+    assert_rational_and_equal 0, Calc::Q("1/2").div(6)
+    assert_rational_and_equal 1, Calc::Q(8).div(6)
+    assert_rational_and_equal 3, Calc::Q(13).div(4)
+    assert_rational_and_equal(-4, Calc::Q(13).div(-4))
+    assert_rational_and_equal(-4, Calc::Q(-13).div(4))
+    assert_rational_and_equal 3, Calc::Q(-13).div(-4)
+    assert_rational_and_equal 2, Calc::Q("11.5").div(4)
+    assert_rational_and_equal(-3, Calc::Q("11.5").div(-4))
+    assert_rational_and_equal(-3, Calc::Q("-11.5").div(4))
+    assert_rational_and_equal 2, Calc::Q("-11.5").div(-4)
   end
 end
