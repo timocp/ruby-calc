@@ -382,6 +382,7 @@ class TestC < MiniTest::Test
 
   def test_conj
     assert_complex_parts [3, -4], Calc::C(3, 4).conj
+    assert_alias Calc::C(1, 1), :conj, :conjugate
   end
 
   def test_estr

@@ -71,6 +71,7 @@ module Calc
     def conj
       Calc::C.new(re, -im)
     end
+    alias conjugate conj
 
     # Trigonometric cotangent
     #

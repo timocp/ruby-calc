@@ -882,6 +882,7 @@ class TestQ < MiniTest::Test
 
   def test_conj
     assert_rational_and_equal 3, Calc::Q(3).conj
+    assert_alias Calc::Q(1), :conj, :conjugate
   end
 
   def test_digit

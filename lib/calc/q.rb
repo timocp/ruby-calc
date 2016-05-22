@@ -78,6 +78,7 @@ module Calc
     def conj
       self
     end
+    alias conjugate conj
 
     # Returns a string which if evaluated creates a new object with the original value
     #
