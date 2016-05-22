@@ -32,7 +32,7 @@ extern void define_calc_math_error();
 #ifdef JUMP_ON_MATH_ERROR
 extern void setup_math_error();
 #else
-#define setup_math_error()
+#define setup_math_error() ((void)0)
 #endif
 
 /* numeric.c */

@@ -1969,7 +1969,8 @@ cq_places(int argc, VALUE * argv, VALUE self)
 {
     VALUE base;
     NUMBER *qbase;
-    long places setup_math_error();
+    long places;
+    setup_math_error();
 
     if (rb_scan_args(argc, argv, "01", &base) == 0) {
         places = qdecplaces(DATA_PTR(self));
