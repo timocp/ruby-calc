@@ -549,6 +549,7 @@ class TestQ < MiniTest::Test
     assert_instance_of Calc::Q, Calc::Q(1).arg
     assert_in_epsilon Calc.pi, Calc::Q(-1).arg
     assert_equal 0, Calc::Q(1).arg
+    assert_alias Calc::Q(1), :arg, :angle
   end
 
   def test_bernoulli

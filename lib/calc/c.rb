@@ -34,13 +34,14 @@ module Calc
     # @param eps [Calc::Q] (optional) calculation accuracy
     # @return [Calc::Q]
     # @example
-    #  Calc::C(1,0)  #=> 0
-    #  Calc::C(-1,0) #=> -pi
-    #  Calc::C(1,1)  #=> Calc::Q(0.78539816339744830962)
+    #  Calc::C(1,0).arg  #=> 0
+    #  Calc::C(-1,0).arg #=> -pi
+    #  Calc::C(1,1).arg  #=> Calc::Q(0.78539816339744830962)
     def arg(*args)
       # see f_arg() in func.c
       im.atan2(re, *args)
     end
+    alias angle arg
 
     # Round real and imaginary parts to the specified number of binary digits
     #

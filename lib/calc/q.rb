@@ -19,10 +19,10 @@ module Calc
       r.real? ? r.re : r
     end
 
-    # Returns the argument (the angle or phase) of a complex number in radians.
+    # Returns the argument (the angle or phase) of a complex number in radians
     #
-    # This this method is used by non-complex classes, it will be 0 for
-    # positive values, pi() otherwise
+    # This method is used by non-complex classes, it will be 0 for positive
+    # values, pi() otherwise.
     #
     # @param eps [Calc::Q] (optional) calculation accuracy
     # @return [Calc::Q]
@@ -36,6 +36,7 @@ module Calc
         ZERO
       end
     end
+    alias angle arg
 
     # Returns 1 if binary bit y is set in self, otherwise 0.
     #
