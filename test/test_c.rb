@@ -172,12 +172,12 @@ class TestC < MiniTest::Test
   end
 
   def test_arg
-    assert_instance_of Calc::Q, Calc::C(1, 1).arg
-    assert_equal 0, Calc::C(2).arg
-    assert_in_epsilon Calc.pi, Calc::C(-2).arg
-    assert_in_epsilon 0.98279372324732906799, Calc::C(2, 3).arg
-    assert_in_epsilon 0.98279, Calc::C(2, 3).arg("1e-5")
+    assert_rational_and_equal 0, Calc::C(2).arg
+    assert_rational_in_epsilon Calc.pi, Calc::C(-2).arg
+    assert_rational_in_epsilon 0.98279372324732906799, Calc::C(2, 3).arg
+    assert_rational_in_epsilon 0.98279, Calc::C(2, 3).arg("1e-5")
     assert_alias Calc::C(1, 1), :arg, :angle
+    assert_alias Calc::C(1, 1), :arg, :phase
   end
 
   def test_cos

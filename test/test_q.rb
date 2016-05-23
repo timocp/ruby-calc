@@ -569,10 +569,10 @@ class TestQ < MiniTest::Test
   end
 
   def test_arg
-    assert_instance_of Calc::Q, Calc::Q(1).arg
-    assert_in_epsilon Calc.pi, Calc::Q(-1).arg
-    assert_equal 0, Calc::Q(1).arg
+    assert_rational_in_epsilon Calc.pi, Calc::Q(-1).arg
+    assert_rational_and_equal 0, Calc::Q(1).arg
     assert_alias Calc::Q(1), :arg, :angle
+    assert_alias Calc::Q(1), :arg, :phase
   end
 
   def test_bernoulli

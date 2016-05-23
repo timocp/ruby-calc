@@ -37,6 +37,7 @@ module Calc
       end
     end
     alias angle arg
+    alias phase arg
 
     # Returns 1 if binary bit y is set in self, otherwise 0.
     #

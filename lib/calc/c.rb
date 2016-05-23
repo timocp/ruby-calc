@@ -42,6 +42,7 @@ module Calc
       im.atan2(re, *args)
     end
     alias angle arg
+    alias phase arg
 
     # Round real and imaginary parts to the specified number of binary digits
     #
