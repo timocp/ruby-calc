@@ -540,4 +540,9 @@ class TestC < MiniTest::Test
     assert_rational_and_equal 1, r.first
     assert_rational_and_equal 2, r.last
   end
+
+  def test_rationalize
+    assert_rational_and_equal Calc::Q(1, 3), Calc::C(Calc::Q(1, 3), 0).rationalize
+    assert_raises(RangeError) { Calc::C(1, 2).rationalize }
+  end
 end

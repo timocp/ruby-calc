@@ -1489,4 +1489,10 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 2, r.first
     assert_rational_and_equal 0, r.last
   end
+
+  def test_rationalize
+    assert_rational_and_equal Calc::Q(5033165, 16777216), Calc::Q(5033165, 16777216).rationalize
+    assert_rational_and_equal Calc::Q(3, 10), Calc::Q(5033165, 16777216).rationalize(0.01)
+    assert_rational_and_equal Calc::Q(1, 3), Calc::Q(5033165, 16777216).rationalize(0.1)
+  end
 end

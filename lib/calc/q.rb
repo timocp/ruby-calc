@@ -337,6 +337,22 @@ module Calc
       ptest?(*args) ? ONE : ZERO
     end
 
+    # Returns a simpler approximation of the value if the optional argument eps
+    # is given (rat-|eps| <= result <= rat+|eps|), self otherwise.
+    #
+    # Note that this method exists for ruby Numeric compatibility.  Libcalc has
+    # an alternative approximation method with different semantics, see `appr`.
+    #
+    # @param eps [Float,Rational]
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(5033165, 16777216).rationalize                   #=> Calc::Q(5033165/16777216)
+    #  Calc::Q(5033165, 16777216).rationalize(Rational('0.01')) #=> Calc::Q(3/10)
+    #  Calc::Q(5033165, 16777216).rationalize(Rational('0.1'))  #=> Calc::Q(1/3)
+    def rationalize(eps = nil)
+      eps ? Calc::Q.new(to_r.rationalize(eps)) : self
+    end
+
     def re
       self
     end

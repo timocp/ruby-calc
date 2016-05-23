@@ -194,6 +194,23 @@ module Calc
       end
     end
 
+    # Returns the real part of the value as a rational
+    #
+    # If this number is non-imaginary, equivalent to re.rationalize(eps).
+    #
+    # Note that this method exists for ruby Numeric compatibility.  Libcalc has
+    # an alternative approximation method with different semantics, see `appr`.
+    #
+    # @param eps [Float,Rational]
+    # @return [Calc::Q]
+    # @example
+    #  Calc::C("1/3", 0).rationalize #=> Calc::Q(1/3)
+    #  Calc::C(1, 2).rationalize     # RangeError
+    def rationalize(eps = nil)
+      raise RangeError, "Can't convert #{ self } into Rational" if im.nonzero?
+      re.rationalize(eps)
+    end
+
     # Round real and imaginary parts to the specified number of decimal digits
     #
     # @return [Calc::C,Calc::Q]
