@@ -1459,4 +1459,16 @@ class TestQ < MiniTest::Test
     assert_complex_parts [0, 1], Calc::Q(1).i
     assert_complex_parts [0, -1], Calc::Q(-1).i
   end
+
+  def test_negative
+    assert Calc::Q(-1).negative?
+    refute Calc::Q(0).negative?
+    refute Calc::Q(1).negative?
+  end
+
+  def test_positive
+    refute Calc::Q(-1).positive?
+    refute Calc::Q(0).positive?
+    assert Calc::Q(1).positive?
+  end
 end

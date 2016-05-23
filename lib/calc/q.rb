@@ -298,6 +298,32 @@ module Calc
       mod(y, ZERO)
     end
 
+    # Return true if `self` is less than zero.
+    #
+    # This method exists for ruby Fixnum/Rational compatibility
+    #
+    # @return [Boolean]
+    # @example
+    #  Calc::Q(-1).negative? #=> true
+    #  Calc::Q(0).negative?  #=> false
+    #  Calc::Q(1).negative?  #=> false
+    def negative?
+      self < ZERO
+    end
+
+    # Return true if `self` is greater than zero.
+    #
+    # This method exists for ruby Fixnum/Rational compatibility
+    #
+    # @return [Boolean]
+    # @example
+    #  Calc::Q(-1).positive? #=> false
+    #  Calc::Q(0).positive?  #=> false
+    #  Calc::Q(1).positive?  #=> true
+    def positive?
+      self > ZERO
+    end
+
     # Probabilistic primacy test
     #
     # Returns 1 if ptest? would have returned true, otherwise 0.
