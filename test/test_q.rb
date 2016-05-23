@@ -1481,4 +1481,12 @@ class TestQ < MiniTest::Test
     refute Calc::Q(0).nonzero?
     assert Calc::Q(1).nonzero?
   end
+
+  def test_polar
+    r = Calc::Q(2).polar
+    assert_instance_of Array, r
+    assert_equal 2, r.size
+    assert_rational_and_equal 2, r.first
+    assert_rational_and_equal 0, r.last
+  end
 end

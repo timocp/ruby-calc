@@ -146,6 +146,20 @@ module Calc
       !zero?
     end
 
+    # Returns an array containing the absolute value and the argument (angle).
+    # This method exists for compatiblity with ruby's Numeric class.
+    #
+    # Note that: Calc.polar(a, b).polar == [a, b]
+    #
+    # @return [Array]
+    # @example
+    #  Calc::Q(2).polar       #=> [Calc::Q(2), Calc::Q(0)]
+    #  Calc::C(1, 2).polar    #=> [Calc::Q(2.23606797749978969641), Calc::Q(1.10714871779409050302)]
+    #  Calc.polar(1, 2).polar #=> [Calc::Q(1), Calc::Q(2)]
+    def polar
+      [abs, arg]
+    end
+
     # Provides support for Ruby type coercion.
     def coerce(other)
       [self.class.new(other), self]
