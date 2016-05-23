@@ -620,6 +620,7 @@ class TestQ < MiniTest::Test
   def test_im
     assert_rational_and_equal 0, Calc::Q(5).im
     assert_alias Calc::Q(5), :im, :imag
+    assert_alias Calc::Q(5), :im, :imaginary
   end
 
   def test_inverse

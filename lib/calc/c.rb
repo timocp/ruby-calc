@@ -141,6 +141,8 @@ module Calc
       im.zero? ? re.int? : false
     end
 
+    alias imaginary im
+
     def iseven
       even? ? Q::ONE : Q::ZERO
     end

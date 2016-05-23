@@ -145,6 +145,7 @@ module Calc
     def im
       ZERO
     end
+    alias imaginary im
 
     # Returns true if the number is imaginary.  Instances of this class always
     # return false.

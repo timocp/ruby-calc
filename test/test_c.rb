@@ -43,6 +43,7 @@ class TestC < MiniTest::Test
     assert_instance_of Calc::Q, Calc::C(1, 2).im
     assert_equal 2, Calc::C(1, 2).im
     assert_alias Calc::C(1, 2), :im, :imag
+    assert_alias Calc::C(1, 2), :im, :imaginary
   end
 
   def test_equal
