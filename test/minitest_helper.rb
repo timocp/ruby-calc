@@ -28,24 +28,32 @@ module Minitest::Assertions
     refute_equal expected, actual
   end
 
+  def assert_rational_array(expected, actual)
+    assert_instance_of Array, actual
+    assert_equal expected.size, actual.size
+    expected.zip(actual) do |e, a|
+      assert_rational_value e, a
+    end
+  end
+
   def assert_rational_in_epsilon(expected, actual)
     assert_instance_of Calc::Q, actual
     assert_in_epsilon expected, actual
   end
 
+  def assert_rational_value(expected, actual)
+    if expected.integer?
+      assert_rational_and_equal expected, actual
+    else
+      assert_rational_in_epsilon expected, actual
+    end
+  end
+
   # expected is an array of [real_part, imag_part]
   def assert_complex_parts(expected, actual)
     assert_instance_of Calc::C, actual
-    if expected.first.integer?
-      assert_equal expected.first, actual.re
-    else
-      assert_in_epsilon expected.first, actual.re
-    end
-    if expected.last.integer?
-      assert_equal expected.last, actual.im
-    else
-      assert_in_epsilon expected.last, actual.im
-    end
+    assert_rational_value expected.first, actual.re
+    assert_rational_value expected.last, actual.im
   end
 
   # check a pair of methods return 1/true

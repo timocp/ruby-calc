@@ -534,11 +534,7 @@ class TestC < MiniTest::Test
   end
 
   def test_polar
-    r = Calc.polar(1, 2).polar
-    assert_instance_of Array, r
-    assert_equal 2, r.size
-    assert_rational_and_equal 1, r.first
-    assert_rational_and_equal 2, r.last
+    assert_rational_array [1, 2], Calc.polar(1, 2).polar
   end
 
   def test_rationalize
@@ -547,11 +543,7 @@ class TestC < MiniTest::Test
   end
 
   def test_rectangular
-    r = Calc::C(1, 2).rectangular
-    assert_instance_of Array, r
-    assert_equal 2, r.size
-    assert_rational_and_equal 1, r.first
-    assert_rational_and_equal 2, r.last
+    assert_rational_array [1, 2], Calc::C(1, 2).rectangular
     assert_alias Calc::C(1, 1), :rectangular, :rect
   end
 end
