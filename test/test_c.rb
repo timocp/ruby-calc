@@ -545,4 +545,13 @@ class TestC < MiniTest::Test
     assert_rational_and_equal Calc::Q(1, 3), Calc::C(Calc::Q(1, 3), 0).rationalize
     assert_raises(RangeError) { Calc::C(1, 2).rationalize }
   end
+
+  def test_rectangular
+    r = Calc::C(1, 2).rectangular
+    assert_instance_of Array, r
+    assert_equal 2, r.size
+    assert_rational_and_equal 1, r.first
+    assert_rational_and_equal 2, r.last
+    assert_alias Calc::C(1, 1), :rectangular, :rect
+  end
 end

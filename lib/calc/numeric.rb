@@ -160,6 +160,18 @@ module Calc
       [abs, arg]
     end
 
+    # Rerurns an array containing the real and imaginary parts as elements.
+    # This method exists for compatibility with ruby's Numeric class.
+    #
+    # @return [Array]
+    # @example
+    #   Calc::Q(2).rectangular    #=> [Calc::Q(2), Calc::Q(0)]
+    #   Calc::C(1, 2).rectangular #=> [Calc::Q(1), Calc::Q(2)]
+    def rectangular
+      [re, im]
+    end
+    alias rect rectangular
+
     # Provides support for Ruby type coercion.
     def coerce(other)
       [self.class.new(other), self]

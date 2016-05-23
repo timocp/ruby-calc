@@ -1495,4 +1495,13 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q(3, 10), Calc::Q(5033165, 16777216).rationalize(0.01)
     assert_rational_and_equal Calc::Q(1, 3), Calc::Q(5033165, 16777216).rationalize(0.1)
   end
+
+  def test_rectangular
+    r = Calc::Q(2).rectangular
+    assert_instance_of Array, r
+    assert_equal 2, r.size
+    assert_rational_and_equal 2, r.first
+    assert_rational_and_equal 0, r.last
+    assert_alias Calc::Q(1), :rectangular, :rect
+  end
 end
