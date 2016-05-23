@@ -520,4 +520,16 @@ class TestC < MiniTest::Test
     assert_complex_parts [3.6666666666666665, 7.333333333333333], Calc::C(11, 22).fdiv(3)
     assert_raises(Calc::MathError) { Calc::C(11, 22).fdiv(0) }
   end
+
+  def test_zero
+    assert Calc::C(0, 0).zero?
+    refute Calc::C(0, 1).zero?
+    refute Calc::C(1, 0).zero?
+  end
+
+  def test_nonzero
+    refute Calc::C(0, 0).nonzero?
+    assert Calc::C(0, 1).nonzero?
+    assert Calc::C(1, 0).nonzero?
+  end
 end

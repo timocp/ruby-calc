@@ -1471,4 +1471,14 @@ class TestQ < MiniTest::Test
     refute Calc::Q(0).positive?
     assert Calc::Q(1).positive?
   end
+
+  def test_zero
+    assert Calc::Q(0).zero?
+    refute Calc::Q(1).zero?
+  end
+
+  def test_nonzero
+    refute Calc::Q(0).nonzero?
+    assert Calc::Q(1).nonzero?
+  end
 end

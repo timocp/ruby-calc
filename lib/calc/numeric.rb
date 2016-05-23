@@ -132,6 +132,20 @@ module Calc
       mod md, 16
     end
 
+    # Returns true if the number is not zero.  For complex `self`, this means
+    # that either the real or imaginary parts are not zero.
+    #
+    # @return [Boolean]
+    # @example
+    #  Calc::Q(0).nonzero?    #=> false
+    #  Calc::Q(1).nonzero?    #=> true
+    #  Calc::C(0, 0).nonzero? #=> false
+    #  Calc::C(1, 0).nonzero? #=> true
+    #  Calc::C(0, 1).nonzero? #=> true
+    def nonzero?
+      !zero?
+    end
+
     # Provides support for Ruby type coercion.
     def coerce(other)
       [self.class.new(other), self]
