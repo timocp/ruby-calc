@@ -9,6 +9,7 @@ all = [Calc, q, c]
 rat = [Calc, q]
 builtins = Calc::Q(0)
 builtins_done = Calc::Q(0)
+exclude = [:singleton_method_added]
 
 # this is a list of all calc builtin functions which we want to implement.
 # doesn't include functions where there is a ruby way to do it already (files,
@@ -341,9 +342,9 @@ end
 
 # check for compatibility with built in ruby equivalents
 
-rat_methods = Rational(1, 2).methods
-com_methods = Complex(1, 2).methods
-fix_methods = 1.methods
+rat_methods = Rational(1, 2).methods - exclude
+com_methods = Complex(1, 2).methods - exclude
+fix_methods = 1.methods - exclude
 q_methods = Calc::Q(1).methods
 c_methods = Calc::C(1, 1).methods
 
