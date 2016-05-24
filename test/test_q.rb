@@ -1519,4 +1519,12 @@ class TestQ < MiniTest::Test
     assert_instance_of Fixnum, Calc::Q(2, 3).to_int
     assert_equal 0, Calc::Q(2, 3).to_int
   end
+
+  def test_truncate
+    assert_rational_and_equal 3, Calc::Q(3).truncate
+    assert_rational_and_equal 0, Calc::Q(2, 3).truncate
+    assert_rational_and_equal(-1, Calc::Q(-3, 2).truncate)
+    assert_rational_and_equal Calc::Q("-123.4"), Calc::Q("-123.456").truncate(+1)
+    assert_rational_and_equal Calc::Q("-120."), Calc::Q("-123.456").truncate(-1)
+  end
 end

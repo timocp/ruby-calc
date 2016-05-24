@@ -478,6 +478,8 @@ module Calc
       Rational(numerator.to_i, denominator.to_i)
     end
 
+    alias truncate trunc
+
     # Bitwise exclusive or of a set of integers
     #
     # xor(a, b, c, ...) is equivalent to (((a ^ b) ^ c) ... )
