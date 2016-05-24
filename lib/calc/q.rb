@@ -386,6 +386,66 @@ module Calc
       end
     end
 
+    # Invokes the given block with the sequence of numbers starting at self
+    # incrementing by step (default 1) on each call.
+    #
+    # In the first format, uses keyword parameters:
+    #   x.step(by: step, to: limit)
+    #
+    # In the second format, uses positional parameters:
+    #   x.step(limit = nil, step = 1)
+    #
+    # If step is negative, the sequence decrements instead of incrementing.
+    # If step is zero, the sequence will yield self forever.
+    #
+    # If limit exists, the sequence will stop once the next item yielded would
+    # be higher than limit (if step is positive) or lower than limit (if step
+    # is negative).  If limit is nil, the sequence never stops.
+    #
+    # If no block is givem, an Enumerator is returned instead.
+    #
+    # This method was added for ruby Numeric compatibiliy; unlike Numeric#step,
+    # it is not an error for step to be zero in the positional format.
+    #
+    # @param by [Numeric] amount to add to sequence each iteration
+    # @param to [Numeric] end of sequence value
+    # @return [Enumerator,nil]
+    # @example
+    #  Calc::Q(1).step(10, 3).to_a      #=> [Calc::Q(1), Calc::Q(4), Calc::Q(7), Calc::Q(10)]
+    #  Calc::Q(10).step(by: -2).take(4) #=> [Calc::Q(10), Calc::Q(8), Calc::Q(6), Calc::Q(4)]
+    #  Calc::Q(1).exp.step(to: Calc.pi, by: "0.2") { |q| print q, " " } #=> nil
+    # prints:
+    #  2.71828182845904523536 2.91828182845904523536 3.11828182845904523536
+    def step(a1 = nil, a2 = ONE)
+      return to_enum(:step, a1, a2) unless block_given?
+      to, by = step_args(a1, a2)
+      loop { yield self } if by.zero?
+      i = self
+      loop do
+        break if to && ((by.positive? && i > to) || (by.negative? && i < to))
+        yield i
+        i += by
+      end
+    end
+
+    # work out what the caller meant with their args to #step
+    # returns an array of [to, by] parameters
+    def step_args(a1, a2)
+      if a1.is_a?(Hash)
+        # fake keywords style
+        badkeys = a1.keys - %i(to by)
+        raise ArgumentError, "Unknown keywords: #{ badkeys.join(", ") }" if badkeys.any?
+        to = a1.fetch(:to, nil)
+        by = a1.fetch(:by, ONE)
+      else
+        # positional style (limit, step)
+        to = a1
+        by = a2
+      end
+      [to ? self.class.new(to) : nil, self.class.new(by)]
+    end
+    private :step_args
+
     # Returns a ruby Complex number with self as the real part and zero
     # imaginary part.
     #

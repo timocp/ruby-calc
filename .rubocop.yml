@@ -29,6 +29,13 @@ Metrics/ModuleLength:
 Metrics/LineLength:
   Max: 100
 
+# increase default complexity metrics
+Metrics/CyclomaticComplexity:
+  Max: 8
+
+Metrics/PerceivedComplexity:
+  Max: 8
+
 Style/GlobalVars:
   Exclude: [ "ext/**/extconf.rb" ]
 

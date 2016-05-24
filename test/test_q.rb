@@ -1483,4 +1483,30 @@ class TestQ < MiniTest::Test
     assert_rational_array [2, 0], Calc::Q(2).rectangular
     assert_alias Calc::Q(1), :rectangular, :rect
   end
+
+  def test_step
+    assert_instance_of Enumerator, Calc::Q(1).step
+    assert_rational_array [1, 2, 3, 4], Calc::Q(1).step.take(4)
+    assert_rational_array [1, 3, 5, 7], Calc::Q(1).step(by: 2).take(4)
+    assert_rational_array [10, 9, 8, 7], Calc::Q(10).step(by: -1).take(4)
+    assert_rational_array [], Calc::Q(1).step(-5).to_a
+    assert_rational_array [], Calc::Q(1).step(5, -1).to_a
+    assert_rational_array [2, 2, 2, 2, 2, 2], Calc::Q(2).step(by: 0).take(6)
+
+    a = []
+    Calc::Q(3).step(to: 5) { |i| a << i }
+    assert_rational_array [3, 4, 5], a
+
+    a = []
+    Calc::Q(1).step(10, 2) { |i| a << i }
+    assert_rational_array [1, 3, 5, 7, 9], a
+
+    a = []
+    Calc::Q(1).exp.step(to: Calc.pi, by: "0.2") { |f| a << f }
+    assert_rational_array [2.71828182845905, 2.91828182845905, 3.11828182845905], a
+
+    a = []
+    Calc.pi.step(to: Calc::Q(1).exp, by: "-0.2") { |f| a << f }
+    assert_rational_array [3.141592653589793, 2.941592653589793, 2.741592653589793], a
+  end
 end
