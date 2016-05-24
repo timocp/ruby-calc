@@ -1527,4 +1527,20 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("-123.4"), Calc::Q("-123.456").truncate(+1)
     assert_rational_and_equal Calc::Q("-120."), Calc::Q("-123.456").truncate(-1)
   end
+
+  def test_and
+    assert_rational_and_equal 16, Calc::Q(18) & 20
+    assert_rational_and_equal 0, Calc::Q(18) & -20
+    assert_rational_and_equal 4, Calc::Q(-18) & 20
+    assert_rational_and_equal(-20, Calc::Q(-18) & -20)
+    assert_raises(Calc::MathError) { Calc::Q(18) & 0.5 }
+  end
+
+  def test_or
+    assert_rational_and_equal 22, Calc::Q(18) | 20
+    assert_rational_and_equal(-2, Calc::Q(18) | -20)
+    assert_rational_and_equal(-2, Calc::Q(-18) | 20)
+    assert_rational_and_equal(-18, Calc::Q(-18) | -20)
+    assert_raises(Calc::MathError) { Calc::Q(18) | 0.5 }
+  end
 end

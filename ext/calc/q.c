@@ -17,10 +17,12 @@ VALUE cQ;
  *****************************************************************************/
 
 static ID id_add;
+static ID id_and;
 static ID id_coerce;
 static ID id_divide;
 static ID id_multiply;
 static ID id_new;
+static ID id_or;
 static ID id_spaceship;
 static ID id_subtract;
 static ID id_xor;
@@ -336,6 +338,19 @@ trunc_function(int argc, VALUE * argv, VALUE self, NUMBER * (f) (NUMBER *, NUMBE
  * instance method implementations                                           *
  *****************************************************************************/
 
+/* Bitwise AND
+ *
+ * @param y [Integer]
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(18) & 20 #=> Calc::Q(16)
+ */
+static VALUE
+cq_and(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &qand, NULL, id_and);
+}
+
 /* Performs multiplication.
  *
  * @param y [Numeric,Calc::Q]
@@ -472,6 +487,19 @@ static VALUE
 cq_xor(VALUE x, VALUE y)
 {
     return numeric_op(x, y, &qxor, NULL, id_xor);
+}
+
+/* Bitwise OR
+ *
+ * @param y [Integer]
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(18) | 20 #=> Calc::Q(22)
+ */
+static VALUE
+cq_or(VALUE x, VALUE y)
+{
+    return numeric_op(x, y, &qor, NULL, id_or);
 }
 
 /* Absolute value
@@ -2551,6 +2579,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "initialize", cq_initialize, -1);
     rb_define_method(cQ, "initialize_copy", cq_initialize_copy, 1);
 
+    rb_define_method(cQ, "&", cq_and, 1);
     rb_define_method(cQ, "*", cq_multiply, 1);
     rb_define_method(cQ, "+", cq_add, 1);
     rb_define_method(cQ, "-", cq_subtract, 1);
@@ -2558,6 +2587,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "/", cq_divide, 1);
     rb_define_method(cQ, "<=>", cq_spaceship, 1);
     rb_define_method(cQ, "^", cq_xor, 1);
+    rb_define_method(cQ, "|", cq_or, 1);
     rb_define_method(cQ, "abs", cq_abs, 0);
     rb_define_method(cQ, "acos", cq_acos, -1);
     rb_define_method(cQ, "acosh", cq_acosh, -1);
@@ -2657,10 +2687,12 @@ define_calc_q(VALUE m)
     rb_define_alias(cQ, "numerator", "num");
 
     id_add = rb_intern("+");
+    id_and = rb_intern("&");
     id_coerce = rb_intern("coerce");
     id_divide = rb_intern("/");
     id_multiply = rb_intern("*");
     id_new = rb_intern("new");
+    id_or = rb_intern("|");
     id_spaceship = rb_intern("<=>");
     id_subtract = rb_intern("-");
     id_xor = rb_intern("^");
