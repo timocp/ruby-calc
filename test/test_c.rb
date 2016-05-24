@@ -546,4 +546,15 @@ class TestC < MiniTest::Test
     assert_rational_array [1, 2], Calc::C(1, 2).rectangular
     assert_alias Calc::C(1, 1), :rectangular, :rect
   end
+
+  def test_to_i
+    assert_instance_of Fixnum, Calc::C(1, 0).to_i
+    assert_equal 1, Calc::C(1, 0).to_i
+    assert_raises(RangeError) { Calc::C(1, 2).to_i }
+  end
+
+  def test_to_int
+    assert_instance_of Fixnum, Calc::C(1, 0).to_int
+    assert_equal 1, Calc::C(1, 0).to_int
+  end
 end

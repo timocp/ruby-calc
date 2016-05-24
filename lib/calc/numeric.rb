@@ -172,6 +172,21 @@ module Calc
     end
     alias rect rectangular
 
+    # Invokes the child class's `to_i` method to convert self to an integer.
+    #
+    # Note that the return value is a ruby Fixnum or Bignum.  If you want to
+    # convert to an integer but have the result be a `Calc::Q` object, use
+    # `trunc` or `round`.
+    #
+    # @return [Fixnum,Bignum]
+    # @raise [RangeError] if self is complex with non-zero imaginary part
+    # @example
+    #  Calc::Q("5/2").to_int #=> 2
+    #  Calc::C(2, 0).to_int  #=> 2
+    def to_int
+      to_i
+    end
+
     # Provides support for Ruby type coercion.
     def coerce(other)
       [self.class.new(other), self]

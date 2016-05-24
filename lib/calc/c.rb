@@ -271,6 +271,22 @@ module Calc
       sinh(*args) / cosh(*args)
     end
 
+    # Convert a wholly real number to an integer.
+    #
+    # Note that the return value is a ruby Fixnum or Bignum.  If you want to
+    # convert to an integer but have the result be a `Calc::Q` object, use
+    # `trunc` or `round`.
+    #
+    # @return [Fixnum,Bugnum]
+    # @raise [RangeError] if imaginary part is non-zero
+    # @example
+    #   Calc::C(2, 0).to_i #=> 2
+    #   Calc::C(2, 2).to_i # RangeError
+    def to_i
+      raise RangeError, "can't convert #{ self } into Integer" if im.nonzero?
+      re.to_i
+    end
+
     def to_s(*args)
       if im.zero?
         re.to_s(*args)

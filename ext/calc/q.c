@@ -2430,6 +2430,10 @@ cq_tanh(int argc, VALUE * argv, VALUE self)
  *
  * If self is a fraction, the fractional part is truncated.
  *
+ * Note that the return value is a ruby Fixnum or Bignum.  If you want to
+ * convert to an integer but have the result be a `Calc::Q` object, use
+ * `trunc` or `round`.
+ *
  * @return [Fixnum,Bignum]
  * @example
  *  Calc::Q(42).to_i     #=> 42

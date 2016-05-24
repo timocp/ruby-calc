@@ -328,10 +328,15 @@ class TestQ < MiniTest::Test
     assert_instance_of Fixnum, Calc::Q(5, 1).to_i
     assert_equal 0, Calc::Q(1, 4).to_i
     assert_equal 5, Calc::Q(5, 1).to_i
+    assert_equal 0, Calc::Q(2, 3).to_i
+    assert_equal 3, Calc::Q(3).to_i
+    assert_equal 300, Calc::Q("300.6").to_i
+    assert_equal 1, Calc::Q(98, 71).to_i
+    assert_equal(-15, Calc::Q(-30, 2).to_i)
 
     # numbers larger than MAXLONG
-    assert_equal 90438207500880449001, (Calc::Q(99, 2)**10).numerator
-    assert_equal 1024,                 (Calc::Q(99, 2)**10).denominator
+    assert_equal 90438207500880449001, (Calc::Q(99, 2)**10).numerator.to_i
+    assert_equal 1024,                 (Calc::Q(99, 2)**10).denominator.to_i
   end
 
   def test_to_r
@@ -1508,5 +1513,10 @@ class TestQ < MiniTest::Test
     a = []
     Calc.pi.step(to: Calc::Q(1).exp, by: "-0.2") { |f| a << f }
     assert_rational_array [3.141592653589793, 2.941592653589793, 2.741592653589793], a
+  end
+
+  def test_to_int
+    assert_instance_of Fixnum, Calc::Q(2, 3).to_int
+    assert_equal 0, Calc::Q(2, 3).to_int
   end
 end
