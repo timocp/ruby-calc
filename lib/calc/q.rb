@@ -2,6 +2,7 @@ module Calc
   class Q
     ZERO = new(0)
     ONE = new(1)
+    TWO = new(2)
 
     def **(other)
       power(other)
@@ -51,6 +52,21 @@ module Calc
       bit?(y) ? ONE : ZERO
     end
     alias [] bit
+
+    # Returns the number of bits in the integer part of `self`
+    #
+    # Note that this is compatible with ruby's Fixnum#bit_length.  Libcalc
+    # provides a similar function called `highbit` with different semantics.
+    #
+    # This returns the bit position of the highest bit which is different to
+    # the sign bit.  If there is no such bit (zero or -1), zero is returned.
+    #
+    # @return [Calc::Q]
+    # @example
+    #   Calc::Q(0xff).bit_length #=> Calc::Q(8)
+    def bit_length
+      (negative? ? -self : self + ONE).log2.ceil
+    end
 
     # Returns a string containing the character corresponding to a value
     #

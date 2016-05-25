@@ -1550,4 +1550,32 @@ class TestQ < MiniTest::Test
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0
     ], 30.downto(0).map { |n| a[n] }
   end
+
+  def test_bit_length
+    assert_rational_and_equal 13, Calc::Q(-2**12 - 1).bit_length
+    assert_rational_and_equal 12, Calc::Q(-2**12).bit_length
+    assert_rational_and_equal 12, Calc::Q(-2**12 + 1).bit_length
+    assert_rational_and_equal 9, Calc::Q(-0x101).bit_length
+    assert_rational_and_equal 8, Calc::Q(-0x100).bit_length
+    assert_rational_and_equal 8, Calc::Q(-0xff).bit_length
+    assert_rational_and_equal 1, Calc::Q(-2).bit_length
+    assert_rational_and_equal 0, Calc::Q(-1).bit_length
+    assert_rational_and_equal 0, Calc::Q(0).bit_length
+    assert_rational_and_equal 1, Calc::Q(1).bit_length
+    assert_rational_and_equal 8, Calc::Q(0xff).bit_length
+    assert_rational_and_equal 9, Calc::Q(0x100).bit_length
+    assert_rational_and_equal 12, Calc::Q(2**12 - 1).bit_length
+    assert_rational_and_equal 13, Calc::Q(2**12).bit_length
+    assert_rational_and_equal 13, Calc::Q(2**12 + 1).bit_length
+  end
+
+  def test_log2
+    assert_rational_and_equal 0, Calc::Q(1).log2
+    assert_rational_and_equal 1, Calc::Q(2).log2
+    assert_rational_in_epsilon 15, Calc::Q(32768).log2
+    assert_rational_in_epsilon 16, Calc::Q(65536).log2
+    assert_complex_parts [0, 4.5323601418], Calc::Q(-1).log2
+    assert_complex_parts [1, 4.5323601418], Calc::Q(-2).log2
+    assert_complex_parts [1.5849625007, 4.5323601418], Calc::Q(-3).log2
+  end
 end

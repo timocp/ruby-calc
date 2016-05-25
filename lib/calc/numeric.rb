@@ -119,6 +119,19 @@ module Calc
       int? ? Q::ONE : Q::ZERO
     end
 
+    # Base 2 logarithm
+    #
+    # @return [Calc::Q]
+    # @example
+    #  Calc::Q(1).log2    #=> Calc::Q(0)
+    #  Calc::Q(2).log2    #=> Calc::Q(1)
+    #  Calc::Q(10).log2   #=> Calc::Q(~3.32192809488736234786)
+    #  Calc::Q(-2).log2   #=> Calc::C(1+~4.53236014182719380961i)
+    #  Calc::C(1, 2).log2 #=> Calc::C(~1.16096404744368117393+~1.59727796468810880664i)
+    def log2(*args)
+      ln(*args) / Q::TWO.ln(*args)
+    end
+
     # least-absol;ute-value residues modulo a specified number
     #
     # x.mmin(md) is equivalent to x.mod(md, 16)

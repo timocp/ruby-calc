@@ -557,4 +557,8 @@ class TestC < MiniTest::Test
     assert_instance_of Fixnum, Calc::C(1, 0).to_int
     assert_equal 1, Calc::C(1, 0).to_int
   end
+
+  def test_log2
+    assert_complex_parts [1.1609640474, 1.5972779647], Calc::C(1, 2).log2
+  end
 end
