@@ -50,6 +50,7 @@ module Calc
     def bit(y)
       bit?(y) ? ONE : ZERO
     end
+    alias [] bit
 
     # Returns a string containing the character corresponding to a value
     #

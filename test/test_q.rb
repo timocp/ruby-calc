@@ -1543,4 +1543,11 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-18, Calc::Q(-18) | -20)
     assert_raises(Calc::MathError) { Calc::Q(18) | 0.5 }
   end
+
+  def test_bitref
+    a = Calc::Q(0b11001100101010)
+    assert_rational_array [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0
+    ], 30.downto(0).map { |n| a[n] }
+  end
 end
