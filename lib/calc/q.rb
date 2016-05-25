@@ -1,5 +1,6 @@
 module Calc
   class Q
+    NEGONE = new(-1)
     ZERO = new(0)
     ONE = new(1)
     TWO = new(2)
@@ -140,6 +141,21 @@ module Calc
     #   Calc::Q(11).divmod(-3) #=> [Calc::Q(-4), Calc::Q(-1)]
     def divmod(y)
       quomod(y, ZERO)
+    end
+
+    # Iterates the given block, yielding values from `self` decreasing by 1
+    # down to and including `limit`
+    #
+    # x.downto(limit) is equivalent to x.step(by: -1, to: limit)
+    #
+    # If no block is given, an Enumerator is returned instead.
+    #
+    # @return [Enumerator,nil]
+    # @param limit [Numeric] lowest value to return
+    # @example
+    #   Calc::Q(10).downto(5) { |i| print i, " " } #=> 10 9 8 7 6 5
+    def downto(limit, &block)
+      step(limit, NEGONE, &block)
     end
 
     # Returns a string which if evaluated creates a new object with the original value
@@ -511,6 +527,21 @@ module Calc
     end
 
     alias truncate trunc
+
+    # Iterates the given block, yielding values from `self` increasing by 1
+    # up to and including `limit`
+    #
+    # x.upto(limit) is equivalent to x.step(by: 1, to: limit)
+    #
+    # If no block is given, an Enumerator is returned instead.
+    #
+    # @return [Enumerator,nil]
+    # @param limit [Numeric] highest value to return
+    # @example
+    #   Calc::Q(5).upto(10) { |i| print i, " " } #=> 5 6 7 8 9 10
+    def upto(limit, &block)
+      step(limit, ONE, &block)
+    end
 
     # Bitwise exclusive or of a set of integers
     #

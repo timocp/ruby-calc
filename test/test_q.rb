@@ -1586,4 +1586,24 @@ class TestQ < MiniTest::Test
     assert_equal "\xC3\xBF", Calc::Q(255).chr(Encoding::UTF_8)
     assert_equal "\u{1F4A9}", Calc::Q(128169).chr(Encoding::UTF_8)
   end
+
+  def test_downto
+    assert_instance_of Enumerator, Calc::Q(5).downto(1)
+    assert_rational_array [5, 4, 3, 2, 1], Calc::Q(5).downto(1).to_a
+    assert_rational_array [5, 4, 3], Calc::Q(5).downto(1).take(3)
+    assert_rational_array [], Calc::Q(5).downto(6).to_a
+    a = []
+    Calc::Q(5).downto(1) { |i| a << i }
+    assert_rational_array [5, 4, 3, 2, 1], a
+  end
+
+  def test_upto
+    assert_instance_of Enumerator, Calc::Q(5).upto(10)
+    assert_rational_array [5, 6, 7, 8, 9, 10], Calc::Q(5).upto(10).to_a
+    assert_rational_array [5, 6, 7], Calc::Q(5).upto(10).take(3)
+    assert_rational_array [], Calc::Q(5).upto(4).to_a
+    a = []
+    Calc::Q(5).upto(10) { |i| a << i }
+    assert_rational_array [5, 6, 7, 8, 9, 10], a
+  end
 end
