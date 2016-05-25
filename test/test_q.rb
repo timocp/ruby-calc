@@ -1578,4 +1578,12 @@ class TestQ < MiniTest::Test
     assert_complex_parts [1, 4.5323601418], Calc::Q(-2).log2
     assert_complex_parts [1.5849625007, 4.5323601418], Calc::Q(-3).log2
   end
+
+  def test_chr
+    assert_equal "A".encode(Encoding::US_ASCII), Calc::Q(65).chr
+    assert_equal "\xE6".force_encoding(Encoding::ASCII_8BIT), Calc::Q(230).chr
+    assert_equal "\xFF".force_encoding(Encoding::ASCII_8BIT), Calc::Q(255).chr
+    assert_equal "\xC3\xBF", Calc::Q(255).chr(Encoding::UTF_8)
+    assert_equal "\u{1F4A9}", Calc::Q(128169).chr(Encoding::UTF_8)
+  end
 end

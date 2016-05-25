@@ -86,6 +86,21 @@ module Calc
       end
     end
 
+    # Returns a string containing the character represented by `self` value
+    # according to encoding.
+    #
+    # Unlike the calc version (`char`), this allows numbers greater than 255
+    # if an encoding is specified.
+    #
+    # @return [String]
+    # @param encoding [Encoding]
+    # @example
+    #  Calc::Q(88).chr                   #=> "X"
+    #  Calc::Q(300).chr(Encoding::UTF_8) #=> Unicode I-breve
+    def chr(*args)
+      to_i.chr(*args)
+    end
+
     # Complex conjugate
     #
     # As the conjugate of real x is x, this method returns self.
