@@ -118,6 +118,18 @@ module Calc
       sinh(*args).inverse
     end
 
+    # Denominator of a complex number
+    #
+    # The denominator is the lowest common denominator of the real and
+    # imaginary parts
+    #
+    # @return [Calc::Q]
+    # @example
+    #   Calc::C("1/2", "2/3").denominator #=> Calc::Q(6)
+    def denominator
+      re.den.lcm(im.den)
+    end
+
     # Returns a string which if evaluated creates a new object with the original value
     #
     # @return [String]
@@ -192,6 +204,15 @@ module Calc
       else
         Calc::C(q1, q2)
       end
+    end
+
+    # Numerator of a complex number
+    #
+    # @return [Calc::C]
+    # @example
+    #   Calc::C("1/2", "2/3").numerator #=> Calc::C(3+4i)
+    def numerator
+      C.new(re.num * denominator / re.den, im.num * denominator / im.den)
     end
 
     # Returns the real part of the value as a rational

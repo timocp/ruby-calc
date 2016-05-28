@@ -561,4 +561,12 @@ class TestC < MiniTest::Test
   def test_log2
     assert_complex_parts [1.1609640474, 1.5972779647], Calc::C(1, 2).log2
   end
+
+  def test_numerator
+    assert_complex_parts [3, 4], Calc::C("1/2", "2/3").numerator
+  end
+
+  def test_denominator
+    assert_rational_and_equal 6, Calc::C("1/2", "2/3").denominator
+  end
 end
