@@ -374,6 +374,15 @@ module Calc
       self < ZERO
     end
 
+    # Returns self.
+    #
+    # This method is for ruby Integer compatibility
+    #
+    # @return [Calc::Q]
+    def ord
+      self
+    end
+
     # Return true if `self` is greater than zero.
     #
     # This method exists for ruby Fixnum/Rational compatibility

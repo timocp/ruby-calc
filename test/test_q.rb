@@ -1624,4 +1624,8 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 0, Calc::Q(1).pred
     assert_rational_and_equal(-2, Calc::Q(-1).pred)
   end
+
+  def test_ord
+    assert_rational_and_equal 1, Calc::Q(1).ord
+  end
 end
