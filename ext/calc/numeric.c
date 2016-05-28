@@ -384,6 +384,10 @@ cn_quo(int argc, VALUE * argv, VALUE self)
         r = conf->quo;
     }
     qy = value_to_number(y, 1);
+    if (qiszero(qy)) {
+        qfree(qy);
+        rb_raise(rb_eZeroDivError, "division by zero in quo");
+    }
     if (CALC_Q_P(self)) {
         qresult = qquo(DATA_PTR(self), qy, r);
         qfree(qy);

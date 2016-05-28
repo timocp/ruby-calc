@@ -454,6 +454,8 @@ class TestC < MiniTest::Test
     assert_complex_parts [0, -4], Calc::C(0, 11) % -5
     assert_complex_parts [0, 4], Calc::C(0, -11) % 5
     assert_complex_parts [0, -1], Calc::C(0, -11) % -5
+    assert_raises(ZeroDivisionError) { Calc::C(2, 3).mod(0) }
+    assert_raises(ZeroDivisionError) { Calc::C(2, 3) % 0 }
   end
 
   def test_mmin
@@ -474,6 +476,7 @@ class TestC < MiniTest::Test
     assert_rational_and_equal 0, Calc::C(4, 4).quo(5, 0)
     assert_complex_parts [2, 2], Calc::C(11, 11).quo(5, 0)
     assert_complex_parts [3, 3], Calc::C(11, 11).quo(5, 1)
+    assert_raises(ZeroDivisionError) { Calc::C(2, 3).quo(0) }
   end
 
   def test_root

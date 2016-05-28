@@ -181,6 +181,7 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q(5, 3),  Calc::Q(1, 3) / Rational(1, 5)
     assert_complex_parts [0, -1], Calc::Q(2) / Complex(0, 2)
     assert_complex_parts [0, -1], Calc::Q(2) / Calc::C(0, 2)
+    assert_raises(Calc::MathError) { Calc::Q(2) / 0 }
   end
 
   def test_mod
@@ -194,8 +195,8 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q(1, 12), Calc::Q(11, 4) % Rational(1, 3)
     assert_rational_and_equal Calc::Q(1, 4), Calc::Q(1, 4) % BIG2
 
-    # unlike Z and ruby, q % 0 == q
-    assert_rational_and_equal Calc::Q(1, 4), Calc::Q(1, 4) % 0
+    # unlike in calc, q % 0 is an exception
+    assert_raises(ZeroDivisionError) { Calc::Q(1, 4) % 0 }
 
     # function version; 2nd arg is rounding mode, defaults to Calc.config(:mod)
     assert_rational_and_equal 1, Calc::Q(11).mod(5)
@@ -207,6 +208,7 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("-2.5"), Calc::Q("12.5").mod(5, 17)
     assert_rational_and_equal Calc::Q("2.5"), Calc::Q("12.5").mod(5, 24)
     assert_rational_and_equal Calc::Q("2.5"), Calc::Q("-7.5").mod(-5, 24)
+    assert_raises(ZeroDivisionError) { Calc::Q(11).mod(0) }
   end
 
   def test_abs
@@ -230,6 +232,7 @@ class TestQ < MiniTest::Test
     assert_rational_array [-3, Calc::Q(-1, 2)], Calc::Q(23, 2).quomod(-4)
     assert_rational_array [-3, Calc::Q(1, 2)], Calc::Q(-23, 2).quomod(4)
     assert_rational_array [2, Calc::Q(-7, 2)], Calc::Q(-23, 2).quomod(-4)
+    assert_raises(ZeroDivisionError) { Calc::Q(13).quomod(0) }
   end
 
   def test_divmod
@@ -241,6 +244,7 @@ class TestQ < MiniTest::Test
     assert_rational_array [-3, Calc::Q("-0.5")], Calc::Q("11.5").divmod(-4)
     assert_rational_array [-3, Calc::Q("0.5")], Calc::Q("-11.5").divmod(4)
     assert_rational_array [2, Calc::Q("-3.5")], Calc::Q("-11.5").divmod(-4)
+    assert_raises(ZeroDivisionError) { Calc::Q(13).divmod(0) }
   end
 
   def test_modulo_and_remainder
@@ -256,6 +260,8 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("-3.5"), Calc::Q("-11.5").remainder(4)
     assert_rational_and_equal Calc::Q("-3.5"), Calc::Q("-11.5").modulo(-4)
     assert_rational_and_equal Calc::Q("-3.5"), Calc::Q("-11.5").remainder(-4)
+    assert_raises(ZeroDivisionError) { Calc::Q(11).modulo(0) }
+    assert_raises(ZeroDivisionError) { Calc::Q(11).remainder(0) }
   end
 
   def test_power
@@ -1362,6 +1368,7 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 3, Calc::Q("12.5").quo(5, 17)
     assert_rational_and_equal 2, Calc::Q("12.5").quo(5, 24)
     assert_rational_and_equal 2, Calc::Q("-7.5").quo(-5, 24)
+    assert_raises(ZeroDivisionError) { Calc::Q(11).quo(0) }
   end
 
   def test_scale
@@ -1435,6 +1442,7 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-3, Calc::Q("11.5").div(-4))
     assert_rational_and_equal(-3, Calc::Q("-11.5").div(4))
     assert_rational_and_equal 2, Calc::Q("-11.5").div(-4)
+    assert_raises(ZeroDivisionError) { Calc::Q(2).div(0) }
   end
 
   def test_fdiv

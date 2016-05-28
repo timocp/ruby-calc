@@ -462,6 +462,7 @@ If you want to raise to a power, use `**`, which behaves the same in both calc a
 
 ### Other Differences
 
+* Calc builtins `mod`, `quo`, `quomod` and operator `%` allow division by zero; ruby-calc raises a ZeroDivisonError in these cases
 * `estr` return format is different, intended to be eval'd by ruby rather than calc
 * `nextcand` and `prevcand` return nil instead of 0 if a candidate prime is not found
 * `prevprime` returns nil instead of 0 for arguments <= 2

@@ -1761,6 +1761,10 @@ cq_mod(int argc, VALUE * argv, VALUE self)
 
     n = rb_scan_args(argc, argv, "11", &other, &rnd);
     qother = value_to_number(other, 0);
+    if (qiszero(qother)) {
+        qfree(qother);
+        rb_raise(rb_eZeroDivError, "division by zero in mod");
+    }
     qresult = qmod(DATA_PTR(self), qother, (n == 2) ? value_to_long(rnd) : conf->mod);
     qfree(qother);
     return wrap_number(qresult);
@@ -2316,6 +2320,10 @@ cq_quomod(int argc, VALUE * argv, VALUE self)
         r = conf->quomod;
     }
     qother = value_to_number(other, 0);
+    if (qiszero(qother)) {
+        qfree(qother);
+        rb_raise(rb_eZeroDivError, "division by zero in quomod");
+    }
     qquomod(DATA_PTR(self), qother, &qquo, &qmod, r);
     qfree(qother);
     return rb_assoc_new(wrap_number(qquo), wrap_number(qmod));
