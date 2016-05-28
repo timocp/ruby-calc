@@ -171,6 +171,20 @@ module Calc
       s
     end
 
+    # Returns an array; [gcd, lcm]
+    #
+    # This method exists for compatibility with ruby's Integer class, however
+    # note that the libcalc version works on rational numbers and the lcm can
+    # be negative.  You can also pass more than one value.
+    #
+    # @return [Array]
+    # @example
+    #   Calc::Q(2).gcdlcm(2)  #=> [Calc::Q(2), Calc::Q(2)]
+    #   Calc::Q(3).gcdlcm(-7) #=> [Calc::Q(1), Calc::Q(-21)]
+    def gcdlcm(*args)
+      [gcd(*args), lcm(*args)]
+    end
+
     # Gudermannian function
     #
     # @param eps [Calc::Q] (optional) calculation accuracy

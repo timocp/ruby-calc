@@ -1606,4 +1606,11 @@ class TestQ < MiniTest::Test
     Calc::Q(5).upto(10) { |i| a << i }
     assert_rational_array [5, 6, 7, 8, 9, 10], a
   end
+
+  def test_gcdlcm
+    assert_rational_array [2, 2], Calc::Q(2).gcdlcm(2)
+    assert_rational_array [1, -21], Calc::Q(3).gcdlcm(-7)
+    assert_rational_array [1, 4951760154835678088235319297],
+                          Calc::Q((1 << 31) - 1).gcdlcm((1 << 61) - 1)
+  end
 end
