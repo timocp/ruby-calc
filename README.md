@@ -474,6 +474,10 @@ If you want to raise to a power, use `**`, which behaves the same in both calc a
 * You can't define/call calc functions (ie, eval() is not implemented)
 * Libcalc provides an integer type (ZVALUE) which ruby-calc doesn't provide access to (because ruby already has arbitrary size integers and libcalc's interesting functions are all for Rational or Complex numbers)
 
+## Licence
+
+This gem is under the MIT licence (see LICENSE.txt).  However libcalc is distributed under the LGPL.  Therefore a compiled version of this library (`calc.so` or `calc.bundle`) may also be under the LGPL.
+
 ## Development
 
 ruby-calc requires ruby 2.0.0 or newer.
