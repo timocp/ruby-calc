@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Tim Peters"]
   spec.email         = ["zomg.tim@gmail.com"]
 
-  spec.summary       = "ruby bindings for calc"
-  spec.description   = "ruby bindings for calc, an arbitrary precision maths library"
+  spec.summary       = "Ruby bindings for calc"
+  spec.description   = "Ruby bindings for calc, an arbitrary precision maths library.  ruby-calc provides access to a the large number of mathematical functions that come with calc."
   spec.homepage      = "https://github.com/timpeters/ruby-calc"
   spec.license       = "MIT"
 
