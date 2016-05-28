@@ -293,6 +293,26 @@ module Calc
       sinh(*args) / cosh(*args)
     end
 
+    # Converts a Calc::C object into a ruby Complex object
+    #
+    # @return [Complex]
+    # @example
+    #   Calc::C(2, 3).to_c #=> ((2/1)+(3/1)*i)
+    def to_c
+      Complex(re.to_r, im.to_r)
+    end
+
+    # Convert a complex number with zero imaginary part into a ruby Float
+    #
+    # @return [Float]
+    # @raise [RangeError] if imaginary part is non-zero
+    # @example
+    #   Calc::C("2/3", 0).to_f #=> 0.6666666666666666
+    def to_f
+      raise RangeError, "can't convert #{ self } into Float" if im.nonzero?
+      re.to_f
+    end
+
     # Convert a wholly real number to an integer.
     #
     # Note that the return value is a ruby Fixnum or Bignum.  If you want to
@@ -307,6 +327,17 @@ module Calc
     def to_i
       raise RangeError, "can't convert #{ self } into Integer" if im.nonzero?
       re.to_i
+    end
+
+    # Convert a complex number with zero imaginary part into a ruby Rational
+    #
+    # @return [Rational]
+    # @raise [RangeError] if imaginary part is non-zero
+    # @example
+    #   Calc::C("2/3", 0).to_r #=> (2/3)
+    def to_r
+      raise RangeError, "can't convert #{ self } into Rational" if im.nonzero?
+      re.to_r
     end
 
     def to_s(*args)

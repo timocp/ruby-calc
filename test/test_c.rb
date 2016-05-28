@@ -570,4 +570,23 @@ class TestC < MiniTest::Test
   def test_denominator
     assert_rational_and_equal 6, Calc::C("1/2", "2/3").denominator
   end
+
+  def test_to_c
+    assert_instance_of Complex, Calc::C(2, 3).to_c
+    assert_equal 2, Calc::C(2, 3).to_c.real
+    assert_equal 3, Calc::C(2, 3).to_c.imag
+  end
+
+  def test_to_f
+    assert_instance_of Float, Calc::C(2, 0).to_f
+    assert_equal 2.0, Calc::C(2, 0).to_f
+    assert_raises(RangeError) { Calc::C(2, 3).to_f }
+  end
+
+  def test_to_r
+    assert_instance_of Rational, Calc::C("2/3", 0).to_r
+    assert_equal 2, Calc::C("2/3", 0).to_r.numerator
+    assert_equal 3, Calc::C("2/3", 0).to_r.denominator
+    assert_raises(RangeError) { Calc::C("2/3", 2).to_r }
+  end
 end

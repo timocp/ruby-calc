@@ -315,7 +315,9 @@ Calc::Q#to_r       | Converts to ruby Rational
 Calc::Q#to_c       | Converts to ruby Complex
 Calc::Q#to_complex | Converts to a Calc::C with zero imaginary part
 Calc::C#to_c       | Converts to ruby Complex
+Calc::C#to_f       | Converts to ruby Float, error if imaginary part is non-zero
 Calc::C#to_i       | Converts to ruby Fixnum/Bignum, error if imaginary part is non-zero
+Calc::C#to_r       | Converts to ruby Rational, error if imaginary part is non-zero
 
 #### Converting to strings
 
