@@ -15,6 +15,7 @@ module Calc
       # see absvalue() in value.c
       re.hypot(im, *args)
     end
+    alias magnitude abs
 
     # Approximate numbers of multiples of a specific number.
     #

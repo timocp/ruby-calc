@@ -157,6 +157,7 @@ class TestC < MiniTest::Test
     assert_equal 0, Calc::C(0, 0).abs
     assert_equal 1, Calc::C(-1).abs
     assert_equal 5, Calc::C(3, -4).abs
+    assert_alias Calc::C(1, 2), :abs, :magnitude
   end
 
   def test_real
