@@ -26,7 +26,7 @@ module Calc
       if q2.zero?
         q1
       else
-        self.class.new(q1, q2)
+        C.new(q1, q2)
       end
     end
 
@@ -58,7 +58,7 @@ module Calc
       if q2.zero?
         q1
       else
-        Calc::C.new(q1, q2)
+        C.new(q1, q2)
       end
     end
 
@@ -71,7 +71,7 @@ module Calc
     # @example
     #  Calc::C(3,3).conj #=> Calc::C(3-3i)
     def conj
-      Calc::C.new(re, -im)
+      C.new(re, -im)
     end
     alias conjugate conj
 
@@ -245,7 +245,7 @@ module Calc
       if q2.zero?
         q1
       else
-        Calc::C.new(q1, q2)
+        C.new(q1, q2)
       end
     end
 

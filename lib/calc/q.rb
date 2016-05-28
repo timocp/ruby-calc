@@ -432,7 +432,7 @@ module Calc
     #  Calc::Q(5033165, 16777216).rationalize(Rational('0.01')) #=> Calc::Q(3/10)
     #  Calc::Q(5033165, 16777216).rationalize(Rational('0.1'))  #=> Calc::Q(1/3)
     def rationalize(eps = nil)
-      eps ? Calc::Q.new(to_r.rationalize(eps)) : self
+      eps ? Q.new(to_r.rationalize(eps)) : self
     end
 
     def re
@@ -524,7 +524,7 @@ module Calc
         to = a1
         by = a2
       end
-      [to ? self.class.new(to) : nil, self.class.new(by)]
+      [to ? Q.new(to) : nil, Q.new(by)]
     end
     private :step_args
 
