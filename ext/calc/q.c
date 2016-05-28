@@ -502,6 +502,21 @@ cq_or(VALUE x, VALUE y)
     return numeric_op(x, y, &qor, NULL, id_or);
 }
 
+/* Bitwise NOT (complement)
+ *
+ * This is `-self - 1` if self is an integer, `-self` otherwise.
+ *
+ * @example
+ *  ~Calc::Q(7)   #=> Calc::Q(-8)
+ *  ~Calc::Q(0.5) #=> Calc::Q(-0.5)
+ */
+static VALUE
+cq_comp(VALUE self)
+{
+    setup_math_error();
+    return wrap_number(qcomp(DATA_PTR(self)));
+}
+
 /* Absolute value
  *
  * @return [Calc::Q]
@@ -2619,6 +2634,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "<=>", cq_spaceship, 1);
     rb_define_method(cQ, "^", cq_xor, 1);
     rb_define_method(cQ, "|", cq_or, 1);
+    rb_define_method(cQ, "~", cq_comp, 0);
     rb_define_method(cQ, "abs", cq_abs, 0);
     rb_define_method(cQ, "acos", cq_acos, -1);
     rb_define_method(cQ, "acosh", cq_acosh, -1);

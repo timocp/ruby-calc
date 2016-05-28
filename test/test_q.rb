@@ -1647,4 +1647,13 @@ class TestQ < MiniTest::Test
     Calc::Q(5).times { |i| a << i }
     assert_rational_array [0, 1, 2, 3, 4], a
   end
+
+  def test_comp
+    assert_rational_and_equal 4, ~Calc::Q(-5)
+    assert_rational_and_equal(-6, ~Calc::Q(5))
+    assert_rational_and_equal(-73588229206, ~Calc::Q(73588229205))
+    assert_rational_and_equal 73588229205, ~Calc::Q(-73588229206)
+    assert_rational_and_equal Calc::Q("-0.5"), ~Calc::Q("0.5")
+    assert_rational_and_equal Calc::Q("0.5"), ~Calc::Q("-0.5")
+  end
 end
