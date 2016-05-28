@@ -223,6 +223,7 @@ prevcand| x [, ...] | previous candidate prime
 prevprime| x        | previous small prime before x
 ptest  | n, [, c [, s] | probabilistic test of primality (also: #ptest?)
 quo    | x, y [, r] | integer quotient of a by b with rounding r
+quomod | x, y       | quotient and remainder of x divided by y
 root   | x, n [, b] | nth root of x within accuracy b
 round  | x [, p, r] | round x to p decimal places with rounding r
 scale  | x, y       | scale value up or down by a power of two
