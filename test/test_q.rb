@@ -1628,4 +1628,13 @@ class TestQ < MiniTest::Test
   def test_ord
     assert_rational_and_equal 1, Calc::Q(1).ord
   end
+
+  def test_size
+    assert_rational_and_equal 4, Calc::Q(1).size
+    assert_rational_and_equal 4, Calc::Q(-1).size
+    assert_rational_and_equal 4, Calc::Q(2147483647).size
+    assert_rational_and_equal 8, Calc::Q(2**32).size
+    assert_rational_and_equal 8, Calc::Q("1/3").size
+    assert_rational_and_equal 8, Calc::Q("2/3").size
+  end
 end

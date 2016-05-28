@@ -2403,6 +2403,37 @@ cq_sinh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qsinh, NULL);
 }
 
+/* Returns the number of bytes in the machine representation of `self`
+ *
+ * This method acts like ruby's Fixnum#size, except that is works on fractions
+ * in which case the result is the number of bytes for both the numerator and
+ * denominator.  As the internal representation of numbers differs between
+ * ruby and libcalc, it wil not necessary return the same values as
+ * Fixnum#size.
+ *
+ * @return [Calc::Q]
+ * @example
+ *  Calc::Q(1).size     #=> Calc;:Q(4)
+ *  Calc::Q(2**32).size #=> Calc::Q(8)
+ *  Calc::Q("1/3").size #=> Calc::Q(8)
+ */
+static VALUE
+cq_size(VALUE self)
+{
+    NUMBER *qself;
+    size_t s;
+    setup_math_error();
+
+    qself = DATA_PTR(self);
+    if (qisint(qself)) {
+        s = qself->num.len * sizeof(HALF);
+    }
+    else {
+        s = (qself->num.len + qself->den.len) * sizeof(HALF);
+    }
+    return wrap_number(itoq(s));
+}
+
 /* Return true if this value is a square
  *
  * Returns true if there exists integers, b such that:
@@ -2671,6 +2702,7 @@ define_calc_q(VALUE m)
     rb_define_method(cQ, "sech", cq_sech, -1);
     rb_define_method(cQ, "sin", cq_sin, -1);
     rb_define_method(cQ, "sinh", cq_sinh, -1);
+    rb_define_method(cQ, "size", cq_size, 0);
     rb_define_method(cQ, "sq?", cq_sqp, 0);
     rb_define_method(cQ, "tan", cq_tan, -1);
     rb_define_method(cQ, "tanh", cq_tanh, -1);
