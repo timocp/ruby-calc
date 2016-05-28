@@ -1613,4 +1613,15 @@ class TestQ < MiniTest::Test
     assert_rational_array [1, 4951760154835678088235319297],
                           Calc::Q((1 << 31) - 1).gcdlcm((1 << 61) - 1)
   end
+
+  def test_succ
+    assert_rational_and_equal 2, Calc::Q(1).succ
+    assert_rational_and_equal 0, Calc::Q(-1).succ
+    assert_alias Calc::Q(1), :succ, :next
+  end
+
+  def test_pred
+    assert_rational_and_equal 0, Calc::Q(1).pred
+    assert_rational_and_equal(-2, Calc::Q(-1).pred)
+  end
 end

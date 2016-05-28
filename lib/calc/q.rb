@@ -387,6 +387,17 @@ module Calc
       self > ZERO
     end
 
+    # Returns one less than self.
+    #
+    # This method exists for ruby Fixnum/Integer compatibility.
+    #
+    # @return [Calc::Q]
+    # @example
+    #   Calc::Q(1).pred #=> Calc::Q(0)
+    def pred
+      self - ONE
+    end
+
     # Probabilistic primacy test
     #
     # Returns 1 if ptest? would have returned true, otherwise 0.
@@ -507,6 +518,18 @@ module Calc
       [to ? self.class.new(to) : nil, self.class.new(by)]
     end
     private :step_args
+
+    # Returns one more than self.
+    #
+    # This method exists for ruby Fixnum/Integer compatibility.
+    #
+    # @return [Calc::Q]
+    # @example
+    #   Calc::Q(1).pred #=> Calc::Q(2)
+    def succ
+      self + ONE
+    end
+    alias next succ
 
     # Returns a ruby Complex number with self as the real part and zero
     # imaginary part.
