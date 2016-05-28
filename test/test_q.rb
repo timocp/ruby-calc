@@ -1637,4 +1637,14 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 8, Calc::Q("1/3").size
     assert_rational_and_equal 8, Calc::Q("2/3").size
   end
+
+  def test_times
+    assert_instance_of Enumerator, Calc::Q(5).times
+    assert_rational_array [0, 1, 2, 3, 4], Calc::Q(5).times.to_a
+    assert_rational_array [], Calc::Q(0).times.to_a
+    assert_rational_array [0, 1, 2], Calc::Q(5).times.take(3)
+    a = []
+    Calc::Q(5).times { |i| a << i }
+    assert_rational_array [0, 1, 2, 3, 4], a
+  end
 end

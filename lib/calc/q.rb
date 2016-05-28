@@ -540,6 +540,24 @@ module Calc
     end
     alias next succ
 
+    # Iterates the given block `self` times, passing in values from zero to
+    # self - 1
+    #
+    # If no block is given, an Enumerator is returned instead.
+    #
+    # @return [Enumerator,nil]
+    # @example
+    #   Calc::Q(5).times { |i| print i, " " }
+    #   #=> 0 1 2 3 4
+    def times
+      return to_enum(:times) unless block_given?
+      i = ZERO
+      while i < self
+        yield i
+        i += ONE
+      end
+    end
+
     # Returns a ruby Complex number with self as the real part and zero
     # imaginary part.
     #
