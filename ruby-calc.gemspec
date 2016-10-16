@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Ruby bindings for calc"
   spec.description   = "Ruby bindings for calc, an arbitrary precision maths library.  ruby-calc provides access to a the large number of mathematical functions that come with calc."
-  spec.homepage      = "https://github.com/timpeters/ruby-calc"
+  spec.homepage      = "https://github.com/timocp/ruby-calc"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f[/^(test|spec|features)/] }

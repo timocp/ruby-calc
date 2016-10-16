@@ -1,4 +1,4 @@
-# ruby-calc [![Build Status](https://travis-ci.org/timpeters/ruby-calc.svg?branch=master)](https://travis-ci.org/timpeters/ruby-calc)
+# ruby-calc [![Build Status](https://travis-ci.org/timocp/ruby-calc.svg?branch=master)](https://travis-ci.org/timocp/ruby-calc)
 
 ruby-calc provides ruby bindings for calc, a c-style arbitrary precision calculator.
 
@@ -18,7 +18,7 @@ Manual | Download and install calc yourself by referring to the calc website, or
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ruby-calc', git: 'git://github.com/timpeters/ruby-calc.git'
+gem 'ruby-calc', git: 'git://github.com/timocp/ruby-calc.git'
 ```
 
 And then execute:
@@ -490,7 +490,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-1. Fork it ( https://github.com/timpeters/ruby-calc/fork )
+1. Fork it ( https://github.com/timocp/ruby-calc/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
