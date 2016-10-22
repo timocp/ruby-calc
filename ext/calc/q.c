@@ -2560,12 +2560,13 @@ cq_to_i(VALUE self)
  * Format depends on the configuration parameters "mode" and "display.  The
  * mode can be overridden for individual calls.
  *
- * @param mode [String,Symbol] (optional) output mode, see [Calc::Config]
+ * @param mode [String,Symbol,Integer] (optional) output mode, see [Calc::Config]
  * @return [String]
  * @example
  *  Calc::Q(1,2).to_s        #=> "0.5"
  *  Calc::Q(1,2).to_s(:frac) #=> "1/2"
  *  Calc::Q(42).to_s(:hex)   #=> "0x2a"
+ *  Calc::Q(42).to_s(8)      #=> "52"
  */
 static VALUE
 cq_to_s(int argc, VALUE * argv, VALUE self)
@@ -2577,16 +2578,26 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
     setup_math_error();
 
     args = rb_scan_args(argc, argv, "01", &mode);
-    math_divertio();
-    if (args == 0) {
-        qprintnum(qself, MODE_DEFAULT);
+    if (args == 1 && FIXNUM_P(mode)) {
+        if (qisint((NUMBER *) DATA_PTR(self))) {
+            rs = rb_funcall(cq_to_i(self), rb_intern("to_s"), 1, mode);
+        }
+        else {
+            rb_raise(rb_eArgError, "can't convert non-integer to string with base");
+        }
     }
     else {
-        qprintnum(qself, (int) value_to_mode(mode));
+        math_divertio();
+        if (args == 0) {
+            qprintnum(qself, MODE_DEFAULT);
+        }
+        else {
+            qprintnum(qself, (int) value_to_mode(mode));
+        }
+        s = math_getdivertedio();
+        rs = rb_str_new2(s);
+        free(s);
     }
-    s = math_getdivertedio();
-    rs = rb_str_new2(s);
-    free(s);
 
     return rs;
 }

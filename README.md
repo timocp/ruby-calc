@@ -349,6 +349,13 @@ Calc::Q(1,20).to_s(:bin)      #=> "1/0b10100    base 2 fractions
 
 The default output mode can be set with [Calc::Config].  The output of `inspect` will match whatever the current default is.
 
+The argument to `to_s` may also be an integer.  In this case, it acts like ruby `Fixnum#to_s`, and treats the argument as a base.  This only works for integers.
+
+```ruby
+Calc::Q(12345).to_s(2)  #=> "11000000111001"
+Calc::Q(12345).to_s(36) #=> "9ix"
+```
+
 Note that you can also provide `Calc::Q` objects to the ruby printf method.  The format string parameter will coerce the number to the right internal type first (eg %d will display as an integer, %f as a floating point number).  The display may have lost precision in this conversion.
 
 ### Configuration

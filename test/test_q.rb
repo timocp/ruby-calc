@@ -374,6 +374,15 @@ class TestQ < MiniTest::Test
     assert_equal "1/0x14",    Calc::Q(1, 20).to_s(:hex)
     assert_equal "1/024",     Calc::Q(1, 20).to_s(:oct)
     assert_equal "1/0b10100", Calc::Q(1, 20).to_s(:bin)
+
+    # for compatibility with ruby Fixnum#to_s, an integer argument is a base
+    assert_equal "12345", Calc::Q(12345).to_s
+    assert_equal "11000000111001", Calc::Q(12345).to_s(2)
+    assert_equal "30071", Calc::Q(12345).to_s(8)
+    assert_equal "12345", Calc::Q(12345).to_s(10)
+    assert_equal "3039", Calc::Q(12345).to_s(16)
+    assert_equal "9ix", Calc::Q(12345).to_s(36)
+    assert_raises(ArgumentError) { Calc::Q(1, 2).to_s(10) }
   end
 
   def test_acos
