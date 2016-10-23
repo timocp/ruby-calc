@@ -64,8 +64,7 @@ cq_alloc(VALUE klass)
  *
  * Arguments are either a numerator/denominator pair, or a single numerator.
  * With a single parameter, a denominator of 1 is implied.  Valid types are:
- * * Fixnum
- * * Bignum
+ * * Integer
  * * Rational
  * * Calc::Q
  * * String
@@ -427,7 +426,7 @@ cq_divide(VALUE x, VALUE y)
  * nil is returned if the two values are incomparable.
  *
  * @param other [Numeric,Calc::Q]
- * @return [Fixnum,nil]
+ * @return [Integer,nil]
  * @example:
  *  Calc::Q(5) <=> 4     #=> 1
  *  Calc::Q(5) <=> 5.1   #=> -1
@@ -2428,15 +2427,15 @@ cq_sinh(int argc, VALUE * argv, VALUE self)
 
 /* Returns the number of bytes in the machine representation of `self`
  *
- * This method acts like ruby's Fixnum#size, except that is works on fractions
+ * This method acts like ruby's Integer#size, except that is works on fractions
  * in which case the result is the number of bytes for both the numerator and
  * denominator.  As the internal representation of numbers differs between
  * ruby and libcalc, it wil not necessary return the same values as
- * Fixnum#size.
+ * Integer#size.
  *
  * @return [Calc::Q]
  * @example
- *  Calc::Q(1).size     #=> Calc;:Q(4)
+ *  Calc::Q(1).size     #=> Calc::Q(4)
  *  Calc::Q(2**32).size #=> Calc::Q(8)
  *  Calc::Q("1/3").size #=> Calc::Q(8)
  */
@@ -2508,15 +2507,15 @@ cq_tanh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qtanh, NULL);
 }
 
-/* Converts this number to a core ruby integer (Fixnum or Bignum).
+/* Converts this number to a core ruby Integer.
  *
  * If self is a fraction, the fractional part is truncated.
  *
- * Note that the return value is a ruby Fixnum or Bignum.  If you want to
+ * Note that the return value is a ruby Integer.  If you want to
  * convert to an integer but have the result be a `Calc::Q` object, use
  * `trunc` or `round`.
  *
- * @return [Fixnum,Bignum]
+ * @return [Integer]
  * @example
  *  Calc::Q(42).to_i     #=> 42
  *  Calc::Q("1e19").to_i #=> 10000000000000000000

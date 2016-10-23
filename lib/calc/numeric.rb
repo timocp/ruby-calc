@@ -53,7 +53,7 @@ module Calc
 
     # Division
     #
-    # This method exists for ruby compatibility.  Note that Fixnum#fdiv will
+    # This method exists for ruby compatibility.  Note that Integer#fdiv will
     # return a Float, however Q#div returns another Q.
     #
     # @param y [Numeric]
@@ -187,11 +187,11 @@ module Calc
 
     # Invokes the child class's `to_i` method to convert self to an integer.
     #
-    # Note that the return value is a ruby Fixnum or Bignum.  If you want to
+    # Note that the return value is a ruby Integer.  If you want to
     # convert to an integer but have the result be a `Calc::Q` object, use
     # `trunc` or `round`.
     #
-    # @return [Fixnum,Bignum]
+    # @return [Integer]
     # @raise [RangeError] if self is complex with non-zero imaginary part
     # @example
     #  Calc::Q("5/2").to_int #=> 2

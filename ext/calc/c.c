@@ -37,7 +37,7 @@ cc_alloc(VALUE klass)
  * If a single param of type Complex or Calc::C, returns a new complex number
  * with the same real and imaginary parts.
  *
- * If a single param of other numeric types (Fixnum, Bignum, Rational, Float,
+ * If a single param of other numeric types (Integer, Rational, Float,
  * Calc::Q), returns a complex number with the specified real part and zero
  * imaginary part.
  *
@@ -238,7 +238,7 @@ cc_divide(VALUE x, VALUE y)
  * If the other value is complex (Calc::C or Complex), returns true if the
  * real an imaginary parts of both numbers are the same.
  *
- * The other value is some other numberic type (Fixnum, Bignum, Calc::Q,
+ * The other value is some other numberic type (Integer, Calc::Q,
  * Rational or Float) then returns true if the complex part of this number is
  * zero and the real part is equal to the other.
  *

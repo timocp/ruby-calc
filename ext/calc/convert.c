@@ -50,8 +50,7 @@ rational_to_number(VALUE arg)
 }
 
 /* converts a ruby value into a NUMBER*.  Allowed types:
- *  - Fixnum
- *  - Bignum
+ *  - Integer
  *  - Calc::Q
  *  - Rational
  *  - String (using libcalc str2q)

@@ -56,7 +56,7 @@ module Calc
 
     # Returns the number of bits in the integer part of `self`
     #
-    # Note that this is compatible with ruby's Fixnum#bit_length.  Libcalc
+    # Note that this is compatible with ruby's Integer#bit_length.  Libcalc
     # provides a similar function called `highbit` with different semantics.
     #
     # This returns the bit position of the highest bit which is different to
@@ -363,7 +363,7 @@ module Calc
 
     # Return true if `self` is less than zero.
     #
-    # This method exists for ruby Fixnum/Rational compatibility
+    # This method exists for ruby Integer/Rational compatibility
     #
     # @return [Boolean]
     # @example
@@ -385,7 +385,7 @@ module Calc
 
     # Return true if `self` is greater than zero.
     #
-    # This method exists for ruby Fixnum/Rational compatibility
+    # This method exists for ruby Integer/Rational compatibility
     #
     # @return [Boolean]
     # @example
@@ -398,7 +398,7 @@ module Calc
 
     # Returns one less than self.
     #
-    # This method exists for ruby Fixnum/Integer compatibility.
+    # This method exists for ruby Integer compatibility.
     #
     # @return [Calc::Q]
     # @example
@@ -530,7 +530,7 @@ module Calc
 
     # Returns one more than self.
     #
-    # This method exists for ruby Fixnum/Integer compatibility.
+    # This method exists for ruby Integer compatibility.
     #
     # @return [Calc::Q]
     # @example
@@ -620,7 +620,7 @@ module Calc
       args.inject(self, :^)
     end
 
-    # aliases for compatibility with ruby Fixnum/Bignum/Rational
+    # aliases for compatibility with ruby Integer/Rational
     alias imag im
     alias integer? int?
     alias real re
