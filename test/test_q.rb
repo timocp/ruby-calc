@@ -330,8 +330,8 @@ class TestQ < MiniTest::Test
   end
 
   def test_to_i
-    assert_instance_of Fixnum, Calc::Q(1, 4).to_i
-    assert_instance_of Fixnum, Calc::Q(5, 1).to_i
+    assert_instance_of fixnum_class, Calc::Q(1, 4).to_i
+    assert_instance_of fixnum_class, Calc::Q(5, 1).to_i
     assert_equal 0, Calc::Q(1, 4).to_i
     assert_equal 5, Calc::Q(5, 1).to_i
     assert_equal 0, Calc::Q(2, 3).to_i
@@ -375,7 +375,7 @@ class TestQ < MiniTest::Test
     assert_equal "1/024",     Calc::Q(1, 20).to_s(:oct)
     assert_equal "1/0b10100", Calc::Q(1, 20).to_s(:bin)
 
-    # for compatibility with ruby Fixnum#to_s, an integer argument is a base
+    # for compatibility with ruby Integer#to_s, an integer argument is a base
     assert_equal "12345", Calc::Q(12345).to_s
     assert_equal "11000000111001", Calc::Q(12345).to_s(2)
     assert_equal "30071", Calc::Q(12345).to_s(8)
@@ -1533,7 +1533,7 @@ class TestQ < MiniTest::Test
   end
 
   def test_to_int
-    assert_instance_of Fixnum, Calc::Q(2, 3).to_int
+    assert_instance_of fixnum_class, Calc::Q(2, 3).to_int
     assert_equal 0, Calc::Q(2, 3).to_int
   end
 

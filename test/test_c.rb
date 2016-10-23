@@ -552,13 +552,13 @@ class TestC < MiniTest::Test
   end
 
   def test_to_i
-    assert_instance_of Fixnum, Calc::C(1, 0).to_i
+    assert_instance_of fixnum_class, Calc::C(1, 0).to_i
     assert_equal 1, Calc::C(1, 0).to_i
     assert_raises(RangeError) { Calc::C(1, 2).to_i }
   end
 
   def test_to_int
-    assert_instance_of Fixnum, Calc::C(1, 0).to_int
+    assert_instance_of fixnum_class, Calc::C(1, 0).to_int
     assert_equal 1, Calc::C(1, 0).to_int
   end
 
