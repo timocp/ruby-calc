@@ -102,6 +102,14 @@ module Calc
       to_i.chr(*args)
     end
 
+    # if clamp has been inherited from <=>, make sure its return value is the
+    # correct class
+    if instance_methods.include?(:clamp)
+      def clamp(min, max)
+        super(Q.new(min), Q.new(max))
+      end
+    end
+
     # Complex conjugate
     #
     # As the conjugate of real x is x, this method returns self.

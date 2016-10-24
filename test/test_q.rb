@@ -1673,4 +1673,13 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal Calc::Q("-0.5"), ~Calc::Q("0.5")
     assert_rational_and_equal Calc::Q("0.5"), ~Calc::Q("-0.5")
   end
+
+  # Comparable#clamp is added in 2.4
+  if Calc::Q.instance_methods.include?(:clamp)
+    def test_clamp
+      assert_rational_and_equal 12, Calc::Q(12).clamp(0, 100)
+      assert_rational_and_equal 12, Calc::Q(12).clamp(Calc::Q(0), Calc::Q(100))
+      assert_rational_and_equal 100, Calc::Q(523).clamp(0, 100)
+    end
+  end
 end
