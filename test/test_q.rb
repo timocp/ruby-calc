@@ -330,8 +330,8 @@ class TestQ < MiniTest::Test
   end
 
   def test_to_i
-    assert_instance_of fixnum_class, Calc::Q(1, 4).to_i
-    assert_instance_of fixnum_class, Calc::Q(5, 1).to_i
+    assert_instance_of 0.class, Calc::Q(1, 4).to_i
+    assert_instance_of 0.class, Calc::Q(5, 1).to_i
     assert_equal 0, Calc::Q(1, 4).to_i
     assert_equal 5, Calc::Q(5, 1).to_i
     assert_equal 0, Calc::Q(2, 3).to_i
@@ -1533,7 +1533,7 @@ class TestQ < MiniTest::Test
   end
 
   def test_to_int
-    assert_instance_of fixnum_class, Calc::Q(2, 3).to_int
+    assert_instance_of 0.class, Calc::Q(2, 3).to_int
     assert_equal 0, Calc::Q(2, 3).to_int
   end
 

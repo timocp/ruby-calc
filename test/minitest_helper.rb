@@ -68,14 +68,6 @@ module Minitest::Assertions
     assert_instance_of FalseClass, v.__send__(*([bmethod] + args))
   end
 
-  def fixnum_class
-    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.4.0")
-      Integer
-    else
-      Fixnum
-    end
-  end
-
   def with_config(name, value)
     orig = Calc.config(name, value)
     yield
