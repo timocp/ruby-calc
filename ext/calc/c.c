@@ -56,7 +56,7 @@ cc_initialize(int argc, VALUE * argv, VALUE self)
         if (CALC_C_P(re)) {
             cself = clink((COMPLEX *) DATA_PTR(re));
         }
-        else if (TYPE(re) == T_COMPLEX) {
+        else if (RB_TYPE_P(re, T_COMPLEX)) {
             cself = value_to_complex(re);
         }
         else {
@@ -262,13 +262,13 @@ cc_equal(VALUE self, VALUE other)
     if (CALC_C_P(other)) {
         result = !c_cmp(cself, DATA_PTR(other));
     }
-    else if (TYPE(other) == T_COMPLEX) {
+    else if (RB_TYPE_P(other, T_COMPLEX)) {
         cother = value_to_complex(other);
         result = !c_cmp(cself, cother);
         comfree(cother);
     }
-    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_RATIONAL ||
-             TYPE(other) == T_FLOAT || CALC_Q_P(other)) {
+    else if (FIXNUM_P(other) || RB_TYPE_P(other, T_BIGNUM) || RB_TYPE_P(other, T_RATIONAL) ||
+             RB_TYPE_P(other, T_FLOAT) || CALC_Q_P(other)) {
         cother = qqtoc(value_to_number(other, 0), &_qzero_);
         result = !c_cmp(cself, cother);
         comfree(cother);

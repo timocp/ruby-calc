@@ -146,7 +146,7 @@ cn_cmp(VALUE self, VALUE other)
 
     if (CALC_Q_P(self)) {
         qself = DATA_PTR(self);
-        if (CALC_C_P(other) || TYPE(other) == T_COMPLEX) {
+        if (CALC_C_P(other) || RB_TYPE_P(other, T_COMPLEX)) {
             cother = value_to_complex(other);
             r = qrel(qself, cother->real);
             i = qrel(&_qzero_, cother->imag);
@@ -161,7 +161,7 @@ cn_cmp(VALUE self, VALUE other)
     }
     else if (CALC_C_P(self)) {
         cself = DATA_PTR(self);
-        if (CALC_C_P(other) || TYPE(other) == T_COMPLEX) {
+        if (CALC_C_P(other) || RB_TYPE_P(other, T_COMPLEX)) {
             cother = value_to_complex(other);
             r = qrel(cself->real, cother->real);
             i = qrel(cself->imag, cother->imag);

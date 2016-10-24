@@ -149,20 +149,21 @@ numeric_op(VALUE self, VALUE other,
     VALUE ary;
     setup_math_error();
 
-    if (fql && TYPE(other) == T_FIXNUM) {
+    if (fql && FIXNUM_P(other)) {
         qresult = (*fql) (DATA_PTR(self), NUM2LONG(other));
     }
     else if (CALC_Q_P(other)) {
         qresult = (*fqq) (DATA_PTR(self), DATA_PTR(other));
     }
-    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL) {
+    else if (RB_TYPE_P(other, T_FIXNUM) || RB_TYPE_P(other, T_BIGNUM)
+             || RB_TYPE_P(other, T_FLOAT)
+             || RB_TYPE_P(other, T_RATIONAL)) {
         qother = value_to_number(other, 0);
         qresult = (*fqq) (DATA_PTR(self), qother);
         qfree(qother);
     }
     else if (rb_respond_to(other, id_coerce)) {
-        if (TYPE(other) == T_COMPLEX) {
+        if (RB_TYPE_P(other, T_COMPLEX)) {
             other = rb_funcall(cC, id_new, 1, other);
         }
         ary = rb_funcall(other, id_coerce, 1, self);
@@ -443,21 +444,21 @@ cq_spaceship(VALUE self, VALUE other)
 
     qself = DATA_PTR(self);
     /* qreli returns incorrect results if self > 0 and other == 0
-       if (TYPE(other) == T_FIXNUM) {
+       if (FIXNUM_P(other)) {
        result = qreli(qself, NUM2LONG(other));
        }
      */
     if (CALC_Q_P(other)) {
         result = qrel(qself, DATA_PTR(other));
     }
-    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL) {
+    else if (FIXNUM_P(other) || RB_TYPE_P(other, T_BIGNUM) || RB_TYPE_P(other, T_FLOAT)
+             || RB_TYPE_P(other, T_RATIONAL)) {
         qother = value_to_number(other, 0);
         result = qrel(qself, qother);
         qfree(qother);
     }
     else if (rb_respond_to(other, id_coerce)) {
-        if (TYPE(other) == T_COMPLEX) {
+        if (RB_TYPE_P(other, T_COMPLEX)) {
             other = rb_funcall(cC, id_new, 1, other);
         }
         ary = rb_funcall(other, id_coerce, 1, self);
@@ -2127,11 +2128,11 @@ cq_power(int argc, VALUE * argv, VALUE self)
         qepsilon = value_to_number(epsilon, 1);
     }
     qself = DATA_PTR(self);
-    if (CALC_C_P(arg) || TYPE(arg) == T_COMPLEX || qisneg(qself)) {
+    if (CALC_C_P(arg) || RB_TYPE_P(arg, T_COMPLEX) || qisneg(qself)) {
         cself = comalloc();
         qfree(cself->real);
         cself->real = qlink(qself);
-        if (TYPE(arg) == T_STRING) {
+        if (RB_TYPE_P(arg, T_STRING)) {
             carg = comalloc();
             qfree(carg->real);
             carg->real = value_to_number(arg, 1);
