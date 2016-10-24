@@ -785,12 +785,16 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 27, Calc::Q(27).ceil
     assert_rational_and_equal 2, Calc::Q(1.23).ceil
     assert_rational_and_equal(-4, Calc::Q(-4.56).ceil)
+    assert_rational_and_equal Calc::Q("7.778"), Calc::Q("7.77777").ceil(3)
+    assert_rational_and_equal Calc::Q("-7.777"), Calc::Q("-7.77777").ceil(3)
   end
 
   def test_floor
     assert_rational_and_equal 27, Calc::Q(27).floor
     assert_rational_and_equal 1, Calc::Q(1.23).floor
     assert_rational_and_equal(-5, Calc::Q(-4.56).floor)
+    assert_rational_and_equal Calc::Q("7.777"), Calc::Q("7.77777").floor(3)
+    assert_rational_and_equal Calc::Q("-7.778"), Calc::Q("-7.77777").floor(3)
   end
 
   def test_isint
@@ -1543,6 +1547,10 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-1, Calc::Q(-3, 2).truncate)
     assert_rational_and_equal Calc::Q("-123.4"), Calc::Q("-123.456").truncate(+1)
     assert_rational_and_equal Calc::Q("-120."), Calc::Q("-123.456").truncate(-1)
+    assert_rational_and_equal Calc::Q(7), Calc::Q("7.77777").truncate
+    assert_rational_and_equal Calc::Q(7), Calc::Q("7.77777").truncate(0)
+    assert_rational_and_equal Calc::Q("7.7"), Calc::Q("7.77777").truncate(1)
+    assert_rational_and_equal Calc::Q("7.77"), Calc::Q("7.77777").truncate(2)
   end
 
   def test_and

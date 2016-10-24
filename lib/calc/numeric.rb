@@ -43,12 +43,17 @@ module Calc
     # For complex self, returns a complex number composed of the ceiling
     # of the real and imaginary parts separately.
     #
+    # If ndigits is present, the ceiling is calculated at the nth digit instead
+    # of returning an integer.
+    #
+    # @param ndigits [Integer]
     # @return [Calc::Q,Calc::C]
     # @example
     #   Calc::Q(1.23).ceil      #=> Calc::Q(2)
+    #   Calc::Q(1.23).ceil(1)   #=> Calc::Q(1.3)
     #   Calc::C(7.8, 9.1).ceil  #=> Calc::C(8+10i)
-    def ceil
-      appr(1, 1)
+    def ceil(ndigits = 0)
+      appr(Q.new(10)**-ndigits, 1)
     end
 
     # Division
@@ -73,12 +78,16 @@ module Calc
     # For complex self, returns a complex number composed of the floor of the
     # real and imaginary parts separately.
     #
+    # If ndigits is present, the floor is calculated at the nth digit instead
+    # of returning an integer.
+    #
+    # @param ndigits [Integer]
     # @return [Calc::Q,Calc::C]
     # @example
     #   Calc::Q(1.23).floor     #=> Calc::Q(1)
     #   Calc::C(7.8, 9.1).floor #=> Calc::C(7+9i)
-    def floor
-      appr(1, 0)
+    def floor(ndigits = 0)
+      appr(Q.new(10)**-ndigits, 0)
     end
 
     # Floor of logarithm to base 10
