@@ -1690,4 +1690,9 @@ class TestQ < MiniTest::Test
       assert_rational_and_equal 100, Calc::Q(523).clamp(0, 100)
     end
   end
+
+  def test_finite
+    assert Calc::Q(BIG).finite?
+    assert_nil Calc::Q(BIG).infinite?
+  end
 end

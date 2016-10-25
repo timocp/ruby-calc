@@ -592,4 +592,9 @@ class TestC < MiniTest::Test
     assert_equal 3, Calc::C("2/3", 0).to_r.denominator
     assert_raises(RangeError) { Calc::C("2/3", 2).to_r }
   end
+
+  def test_finite
+    assert Calc::C(BIG, BIG2).finite?
+    assert_nil Calc::C(BIG, BIG2).infinite?
+  end
 end

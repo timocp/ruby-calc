@@ -71,6 +71,16 @@ module Calc
       self / y
     end
 
+    # Returns true - calc values are always finite
+    #
+    # @return [true]
+    # @example
+    #   Calc::Q(1).finite?    #=> true
+    #   Calc::C(1, 1).finite? #=> true
+    def finite?
+      true
+    end
+
     # Floor
     #
     # For real self, returns the greatest integer not greater than self.
@@ -116,6 +126,16 @@ module Calc
     #   Calc::C(10, 10).ilog2 #=> Calc::Q(3)
     def ilog2
       ilog 2
+    end
+
+    # Returns nil - calc values are never inifinite.
+    #
+    # @return [nil]
+    # @example
+    #   Calc::Q(1).infinite?    #=> nil
+    #   Calc::C(1, 1).infinite? #=> nil
+    def infinite?
+      nil
     end
 
     # Returns 1 if self is an integer, otherwise 0.
