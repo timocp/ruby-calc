@@ -1105,6 +1105,9 @@ cq_digit(int argc, VALUE * argv, VALUE self)
 
 /* Returns the number of digits of the integral part of self in decimal or another base
  *
+ * Note that this is unlike the ruby's `Integer#digits`.  For an equivalent,
+ * see `Q#digits_r`.
+ *
  * @return [Calc::Q]
  * @param b [Integer] (optional) base >= 2 (default 10)
  * @example

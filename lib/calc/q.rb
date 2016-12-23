@@ -122,6 +122,26 @@ module Calc
     end
     alias conjugate conj
 
+    if 0.class.instance_methods.include?(:digits)
+      # Returns an array of digits in base b making up self
+      #
+      # This is compatible with ruby's `Integer#digits`.  Note that `Q#digits`
+      # implements the libcalc function `digits`, which is different.  Any
+      # fractional part of self is truncated.
+      #
+      # Requires ruby 2.4.
+      #
+      # @param b [Integer] (optional) base, default 10
+      # @return [Array]
+      # @example
+      #   Calc::Q(1234).digits_r      #=> [Calc::Q(4), Calc::Q(3), Calc::Q(2), Calc::Q(1)]
+      #   Calc::Q(1234).digits_r(7)   #=> [Calc::Q(2), Calc::Q(1), Calc::Q(4), Calc::Q(3)]
+      #   Calc::Q(1234).digits_r(100) #=> [Calc::Q(34), Calc::Q(12)]
+      def digits_r(b = 10)
+        to_i.digits(b).map { |d| Q.new(d) }
+      end
+    end
+
     # Ruby compatible integer division
     #
     # Calls `quo` to get the quotient of integer division, with rounding mode

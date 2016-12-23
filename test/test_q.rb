@@ -1695,4 +1695,15 @@ class TestQ < MiniTest::Test
     assert Calc::Q(BIG).finite?
     assert_nil Calc::Q(BIG).infinite?
   end
+
+  # digits_r is for compatibility with ruby's Integer#digits.  it uses ruby's
+  # implementation, so this is only valid in ruby 2.4
+  if 0.class.instance_methods.include?(:digits)
+    def test_digits_r
+      assert_rational_array [5, 4, 3, 2, 1], Calc::Q(12345).digits_r
+      assert_rational_array [4, 6, 6, 0, 5], Calc::Q(12345).digits_r(7)
+      assert_rational_array [45, 23, 1], Calc::Q(12345).digits_r(100)
+      assert_raises(Math::DomainError) { Calc::Q(-12345).digits_r(7) }
+    end
+  end
 end
