@@ -37,7 +37,7 @@ cc_alloc(VALUE klass)
  * If a single param of type Complex or Calc::C, returns a new complex number
  * with the same real and imaginary parts.
  *
- * If a single param of other numeric types (Fixnum, Bignum, Rational, Float,
+ * If a single param of other numeric types (Integer, Rational, Float,
  * Calc::Q), returns a complex number with the specified real part and zero
  * imaginary part.
  *
@@ -56,7 +56,7 @@ cc_initialize(int argc, VALUE * argv, VALUE self)
         if (CALC_C_P(re)) {
             cself = clink((COMPLEX *) DATA_PTR(re));
         }
-        else if (TYPE(re) == T_COMPLEX) {
+        else if (RB_TYPE_P(re, T_COMPLEX)) {
             cself = value_to_complex(re);
         }
         else {
@@ -238,7 +238,7 @@ cc_divide(VALUE x, VALUE y)
  * If the other value is complex (Calc::C or Complex), returns true if the
  * real an imaginary parts of both numbers are the same.
  *
- * The other value is some other numberic type (Fixnum, Bignum, Calc::Q,
+ * The other value is some other numberic type (Integer, Calc::Q,
  * Rational or Float) then returns true if the complex part of this number is
  * zero and the real part is equal to the other.
  *
@@ -262,13 +262,13 @@ cc_equal(VALUE self, VALUE other)
     if (CALC_C_P(other)) {
         result = !c_cmp(cself, DATA_PTR(other));
     }
-    else if (TYPE(other) == T_COMPLEX) {
+    else if (RB_TYPE_P(other, T_COMPLEX)) {
         cother = value_to_complex(other);
         result = !c_cmp(cself, cother);
         comfree(cother);
     }
-    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_RATIONAL ||
-             TYPE(other) == T_FLOAT || CALC_Q_P(other)) {
+    else if (FIXNUM_P(other) || RB_TYPE_P(other, T_BIGNUM) || RB_TYPE_P(other, T_RATIONAL) ||
+             RB_TYPE_P(other, T_FLOAT) || CALC_Q_P(other)) {
         cother = qqtoc(value_to_number(other, 0), &_qzero_);
         result = !c_cmp(cself, cother);
         comfree(cother);
