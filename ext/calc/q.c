@@ -64,8 +64,7 @@ cq_alloc(VALUE klass)
  *
  * Arguments are either a numerator/denominator pair, or a single numerator.
  * With a single parameter, a denominator of 1 is implied.  Valid types are:
- * * Fixnum
- * * Bignum
+ * * Integer
  * * Rational
  * * Calc::Q
  * * String
@@ -150,20 +149,21 @@ numeric_op(VALUE self, VALUE other,
     VALUE ary;
     setup_math_error();
 
-    if (fql && TYPE(other) == T_FIXNUM) {
+    if (fql && FIXNUM_P(other)) {
         qresult = (*fql) (DATA_PTR(self), NUM2LONG(other));
     }
     else if (CALC_Q_P(other)) {
         qresult = (*fqq) (DATA_PTR(self), DATA_PTR(other));
     }
-    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL) {
+    else if (RB_TYPE_P(other, T_FIXNUM) || RB_TYPE_P(other, T_BIGNUM)
+             || RB_TYPE_P(other, T_FLOAT)
+             || RB_TYPE_P(other, T_RATIONAL)) {
         qother = value_to_number(other, 0);
         qresult = (*fqq) (DATA_PTR(self), qother);
         qfree(qother);
     }
     else if (rb_respond_to(other, id_coerce)) {
-        if (TYPE(other) == T_COMPLEX) {
+        if (RB_TYPE_P(other, T_COMPLEX)) {
             other = rb_funcall(cC, id_new, 1, other);
         }
         ary = rb_funcall(other, id_coerce, 1, self);
@@ -427,7 +427,7 @@ cq_divide(VALUE x, VALUE y)
  * nil is returned if the two values are incomparable.
  *
  * @param other [Numeric,Calc::Q]
- * @return [Fixnum,nil]
+ * @return [Integer,nil]
  * @example:
  *  Calc::Q(5) <=> 4     #=> 1
  *  Calc::Q(5) <=> 5.1   #=> -1
@@ -444,21 +444,21 @@ cq_spaceship(VALUE self, VALUE other)
 
     qself = DATA_PTR(self);
     /* qreli returns incorrect results if self > 0 and other == 0
-       if (TYPE(other) == T_FIXNUM) {
+       if (FIXNUM_P(other)) {
        result = qreli(qself, NUM2LONG(other));
        }
      */
     if (CALC_Q_P(other)) {
         result = qrel(qself, DATA_PTR(other));
     }
-    else if (TYPE(other) == T_FIXNUM || TYPE(other) == T_BIGNUM || TYPE(other) == T_FLOAT
-             || TYPE(other) == T_RATIONAL) {
+    else if (FIXNUM_P(other) || RB_TYPE_P(other, T_BIGNUM) || RB_TYPE_P(other, T_FLOAT)
+             || RB_TYPE_P(other, T_RATIONAL)) {
         qother = value_to_number(other, 0);
         result = qrel(qself, qother);
         qfree(qother);
     }
     else if (rb_respond_to(other, id_coerce)) {
-        if (TYPE(other) == T_COMPLEX) {
+        if (RB_TYPE_P(other, T_COMPLEX)) {
             other = rb_funcall(cC, id_new, 1, other);
         }
         ary = rb_funcall(other, id_coerce, 1, self);
@@ -1104,6 +1104,9 @@ cq_digit(int argc, VALUE * argv, VALUE self)
 }
 
 /* Returns the number of digits of the integral part of self in decimal or another base
+ *
+ * Note that this is unlike the ruby's `Integer#digits`.  For an equivalent,
+ * see `Q#digits_r`.
  *
  * @return [Calc::Q]
  * @param b [Integer] (optional) base >= 2 (default 10)
@@ -2128,11 +2131,11 @@ cq_power(int argc, VALUE * argv, VALUE self)
         qepsilon = value_to_number(epsilon, 1);
     }
     qself = DATA_PTR(self);
-    if (CALC_C_P(arg) || TYPE(arg) == T_COMPLEX || qisneg(qself)) {
+    if (CALC_C_P(arg) || RB_TYPE_P(arg, T_COMPLEX) || qisneg(qself)) {
         cself = comalloc();
         qfree(cself->real);
         cself->real = qlink(qself);
-        if (TYPE(arg) == T_STRING) {
+        if (RB_TYPE_P(arg, T_STRING)) {
             carg = comalloc();
             qfree(carg->real);
             carg->real = value_to_number(arg, 1);
@@ -2428,15 +2431,15 @@ cq_sinh(int argc, VALUE * argv, VALUE self)
 
 /* Returns the number of bytes in the machine representation of `self`
  *
- * This method acts like ruby's Fixnum#size, except that is works on fractions
+ * This method acts like ruby's Integer#size, except that is works on fractions
  * in which case the result is the number of bytes for both the numerator and
  * denominator.  As the internal representation of numbers differs between
  * ruby and libcalc, it wil not necessary return the same values as
- * Fixnum#size.
+ * Integer#size.
  *
  * @return [Calc::Q]
  * @example
- *  Calc::Q(1).size     #=> Calc;:Q(4)
+ *  Calc::Q(1).size     #=> Calc::Q(4)
  *  Calc::Q(2**32).size #=> Calc::Q(8)
  *  Calc::Q("1/3").size #=> Calc::Q(8)
  */
@@ -2508,15 +2511,15 @@ cq_tanh(int argc, VALUE * argv, VALUE self)
     return trans_function(argc, argv, self, &qtanh, NULL);
 }
 
-/* Converts this number to a core ruby integer (Fixnum or Bignum).
+/* Converts this number to a core ruby Integer.
  *
  * If self is a fraction, the fractional part is truncated.
  *
- * Note that the return value is a ruby Fixnum or Bignum.  If you want to
+ * Note that the return value is a ruby Integer.  If you want to
  * convert to an integer but have the result be a `Calc::Q` object, use
  * `trunc` or `round`.
  *
- * @return [Fixnum,Bignum]
+ * @return [Integer]
  * @example
  *  Calc::Q(42).to_i     #=> 42
  *  Calc::Q("1e19").to_i #=> 10000000000000000000

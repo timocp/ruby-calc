@@ -43,17 +43,22 @@ module Calc
     # For complex self, returns a complex number composed of the ceiling
     # of the real and imaginary parts separately.
     #
+    # If ndigits is present, the ceiling is calculated at the nth digit instead
+    # of returning an integer.
+    #
+    # @param ndigits [Integer]
     # @return [Calc::Q,Calc::C]
     # @example
     #   Calc::Q(1.23).ceil      #=> Calc::Q(2)
+    #   Calc::Q(1.23).ceil(1)   #=> Calc::Q(1.3)
     #   Calc::C(7.8, 9.1).ceil  #=> Calc::C(8+10i)
-    def ceil
-      appr(1, 1)
+    def ceil(ndigits = 0)
+      appr(Q.new(10)**-ndigits, 1)
     end
 
     # Division
     #
-    # This method exists for ruby compatibility.  Note that Fixnum#fdiv will
+    # This method exists for ruby compatibility.  Note that Integer#fdiv will
     # return a Float, however Q#div returns another Q.
     #
     # @param y [Numeric]
@@ -66,6 +71,16 @@ module Calc
       self / y
     end
 
+    # Returns true - calc values are always finite
+    #
+    # @return [true]
+    # @example
+    #   Calc::Q(1).finite?    #=> true
+    #   Calc::C(1, 1).finite? #=> true
+    def finite?
+      true
+    end
+
     # Floor
     #
     # For real self, returns the greatest integer not greater than self.
@@ -73,12 +88,16 @@ module Calc
     # For complex self, returns a complex number composed of the floor of the
     # real and imaginary parts separately.
     #
+    # If ndigits is present, the floor is calculated at the nth digit instead
+    # of returning an integer.
+    #
+    # @param ndigits [Integer]
     # @return [Calc::Q,Calc::C]
     # @example
     #   Calc::Q(1.23).floor     #=> Calc::Q(1)
     #   Calc::C(7.8, 9.1).floor #=> Calc::C(7+9i)
-    def floor
-      appr(1, 0)
+    def floor(ndigits = 0)
+      appr(Q.new(10)**-ndigits, 0)
     end
 
     # Floor of logarithm to base 10
@@ -107,6 +126,16 @@ module Calc
     #   Calc::C(10, 10).ilog2 #=> Calc::Q(3)
     def ilog2
       ilog 2
+    end
+
+    # Returns nil - calc values are never inifinite.
+    #
+    # @return [nil]
+    # @example
+    #   Calc::Q(1).infinite?    #=> nil
+    #   Calc::C(1, 1).infinite? #=> nil
+    def infinite?
+      nil
     end
 
     # Returns 1 if self is an integer, otherwise 0.
@@ -187,11 +216,11 @@ module Calc
 
     # Invokes the child class's `to_i` method to convert self to an integer.
     #
-    # Note that the return value is a ruby Fixnum or Bignum.  If you want to
+    # Note that the return value is a ruby Integer.  If you want to
     # convert to an integer but have the result be a `Calc::Q` object, use
     # `trunc` or `round`.
     #
-    # @return [Fixnum,Bignum]
+    # @return [Integer]
     # @raise [RangeError] if self is complex with non-zero imaginary part
     # @example
     #  Calc::Q("5/2").to_int #=> 2

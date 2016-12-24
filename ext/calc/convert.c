@@ -50,8 +50,7 @@ rational_to_number(VALUE arg)
 }
 
 /* converts a ruby value into a NUMBER*.  Allowed types:
- *  - Fixnum
- *  - Bignum
+ *  - Integer
  *  - Calc::Q
  *  - Rational
  *  - String (using libcalc str2q)
@@ -66,24 +65,24 @@ value_to_number(VALUE arg, int string_allowed)
     NUMBER *qresult;
     VALUE num, tmp;
 
-    if (TYPE(arg) == T_FIXNUM) {
+    if (FIXNUM_P(arg)) {
         qresult = itoq(NUM2LONG(arg));
     }
-    else if (TYPE(arg) == T_BIGNUM) {
+    else if (RB_TYPE_P(arg, T_BIGNUM)) {
         num = bignum_to_calc_q(arg);
         qresult = qlink((NUMBER *) DATA_PTR(num));
     }
     else if (CALC_Q_P(arg)) {
         qresult = qlink((NUMBER *) DATA_PTR(arg));
     }
-    else if (TYPE(arg) == T_RATIONAL) {
+    else if (RB_TYPE_P(arg, T_RATIONAL)) {
         qresult = rational_to_number(arg);
     }
-    else if (TYPE(arg) == T_FLOAT) {
+    else if (RB_TYPE_P(arg, T_FLOAT)) {
         tmp = rb_funcall(arg, rb_intern("to_r"), 0);
         qresult = rational_to_number(tmp);
     }
-    else if (string_allowed && TYPE(arg) == T_STRING) {
+    else if (string_allowed && RB_TYPE_P(arg, T_STRING)) {
         qresult = str2q(StringValueCStr(arg));
         /* libcalc str2q allows a 0 denominator */
         if (ziszero(qresult->den)) {
@@ -116,7 +115,7 @@ value_to_complex(VALUE arg)
     if (CALC_C_P(arg)) {
         cresult = clink((COMPLEX *) DATA_PTR(arg));
     }
-    else if (TYPE(arg) == T_COMPLEX) {
+    else if (RB_TYPE_P(arg, T_COMPLEX)) {
         real = rb_funcall(arg, rb_intern("real"), 0);
         imag = rb_funcall(arg, rb_intern("imag"), 0);
         cresult = qqtoc(value_to_number(real, 0), value_to_number(imag, 0));
@@ -124,8 +123,8 @@ value_to_complex(VALUE arg)
     else if (CALC_Q_P(arg)) {
         cresult = qqtoc(DATA_PTR(arg), &_qzero_);
     }
-    else if (FIXNUM_P(arg) || TYPE(arg) == T_BIGNUM || TYPE(arg) == T_RATIONAL
-             || TYPE(arg) == T_FLOAT) {
+    else if (FIXNUM_P(arg) || RB_TYPE_P(arg, T_BIGNUM) || RB_TYPE_P(arg, T_RATIONAL)
+             || RB_TYPE_P(arg, T_FLOAT)) {
         cresult = qqtoc(value_to_number(arg, 0), &_qzero_);
     }
     else {

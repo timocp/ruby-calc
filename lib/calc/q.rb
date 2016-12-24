@@ -56,7 +56,7 @@ module Calc
 
     # Returns the number of bits in the integer part of `self`
     #
-    # Note that this is compatible with ruby's Fixnum#bit_length.  Libcalc
+    # Note that this is compatible with ruby's Integer#bit_length.  Libcalc
     # provides a similar function called `highbit` with different semantics.
     #
     # This returns the bit position of the highest bit which is different to
@@ -102,6 +102,14 @@ module Calc
       to_i.chr(*args)
     end
 
+    # if clamp has been inherited from <=>, make sure its return value is the
+    # correct class
+    if instance_methods.include?(:clamp)
+      def clamp(min, max)
+        super(Q.new(min), Q.new(max))
+      end
+    end
+
     # Complex conjugate
     #
     # As the conjugate of real x is x, this method returns self.
@@ -113,6 +121,26 @@ module Calc
       self
     end
     alias conjugate conj
+
+    if 0.class.instance_methods.include?(:digits)
+      # Returns an array of digits in base b making up self
+      #
+      # This is compatible with ruby's `Integer#digits`.  Note that `Q#digits`
+      # implements the libcalc function `digits`, which is different.  Any
+      # fractional part of self is truncated.
+      #
+      # Requires ruby 2.4.
+      #
+      # @param b [Integer] (optional) base, default 10
+      # @return [Array]
+      # @example
+      #   Calc::Q(1234).digits_r      #=> [Calc::Q(4), Calc::Q(3), Calc::Q(2), Calc::Q(1)]
+      #   Calc::Q(1234).digits_r(7)   #=> [Calc::Q(2), Calc::Q(1), Calc::Q(4), Calc::Q(3)]
+      #   Calc::Q(1234).digits_r(100) #=> [Calc::Q(34), Calc::Q(12)]
+      def digits_r(b = 10)
+        to_i.digits(b).map { |d| Q.new(d) }
+      end
+    end
 
     # Ruby compatible integer division
     #
@@ -363,7 +391,7 @@ module Calc
 
     # Return true if `self` is less than zero.
     #
-    # This method exists for ruby Fixnum/Rational compatibility
+    # This method exists for ruby Integer/Rational compatibility
     #
     # @return [Boolean]
     # @example
@@ -385,7 +413,7 @@ module Calc
 
     # Return true if `self` is greater than zero.
     #
-    # This method exists for ruby Fixnum/Rational compatibility
+    # This method exists for ruby Integer/Rational compatibility
     #
     # @return [Boolean]
     # @example
@@ -398,7 +426,7 @@ module Calc
 
     # Returns one less than self.
     #
-    # This method exists for ruby Fixnum/Integer compatibility.
+    # This method exists for ruby Integer compatibility.
     #
     # @return [Calc::Q]
     # @example
@@ -530,7 +558,7 @@ module Calc
 
     # Returns one more than self.
     #
-    # This method exists for ruby Fixnum/Integer compatibility.
+    # This method exists for ruby Integer compatibility.
     #
     # @return [Calc::Q]
     # @example
@@ -620,7 +648,7 @@ module Calc
       args.inject(self, :^)
     end
 
-    # aliases for compatibility with ruby Fixnum/Bignum/Rational
+    # aliases for compatibility with ruby Integer/Rational
     alias imag im
     alias integer? int?
     alias real re

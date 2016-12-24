@@ -552,13 +552,13 @@ class TestC < MiniTest::Test
   end
 
   def test_to_i
-    assert_instance_of Fixnum, Calc::C(1, 0).to_i
+    assert_instance_of 0.class, Calc::C(1, 0).to_i
     assert_equal 1, Calc::C(1, 0).to_i
     assert_raises(RangeError) { Calc::C(1, 2).to_i }
   end
 
   def test_to_int
-    assert_instance_of Fixnum, Calc::C(1, 0).to_int
+    assert_instance_of 0.class, Calc::C(1, 0).to_int
     assert_equal 1, Calc::C(1, 0).to_int
   end
 
@@ -591,5 +591,10 @@ class TestC < MiniTest::Test
     assert_equal 2, Calc::C("2/3", 0).to_r.numerator
     assert_equal 3, Calc::C("2/3", 0).to_r.denominator
     assert_raises(RangeError) { Calc::C("2/3", 2).to_r }
+  end
+
+  def test_finite
+    assert Calc::C(BIG, BIG2).finite?
+    assert_nil Calc::C(BIG, BIG2).infinite?
   end
 end

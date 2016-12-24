@@ -77,10 +77,10 @@ value_to_nametype_long(VALUE v, nametype2 * set)
     VALUE tmp;
     char *str;
 
-    if (TYPE(v) == T_STRING) {
+    if (RB_TYPE_P(v, T_STRING)) {
         str = StringValueCStr(v);
     }
-    else if (TYPE(v) == T_SYMBOL) {
+    else if (RB_TYPE_P(v, T_SYMBOL)) {
         tmp = rb_funcall(v, rb_intern("to_s"), 0);
         str = StringValueCStr(tmp);
     }

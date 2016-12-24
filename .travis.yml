@@ -5,6 +5,7 @@ rvm:
   - 2.1
   - 2.2
   - 2.3.0
+  - ruby-head
 env:
   - CALC_VERSION=2.12.5.0   # latest stable    (12-Oct-2014)
   - CALC_VERSION=2.12.5.4   # latest unstable  (22-Feb-2016)

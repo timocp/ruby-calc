@@ -315,11 +315,11 @@ module Calc
 
     # Convert a wholly real number to an integer.
     #
-    # Note that the return value is a ruby Fixnum or Bignum.  If you want to
+    # Note that the return value is a ruby Integer.  If you want to
     # convert to an integer but have the result be a `Calc::Q` object, use
     # `trunc` or `round`.
     #
-    # @return [Fixnum,Bugnum]
+    # @return [Integer]
     # @raise [RangeError] if imaginary part is non-zero
     # @example
     #   Calc::C(2, 0).to_i #=> 2

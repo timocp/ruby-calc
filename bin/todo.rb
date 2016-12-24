@@ -344,20 +344,20 @@ end
 
 rat_methods = Rational(1, 2).methods - exclude
 com_methods = Complex(1, 2).methods - exclude
-fix_methods = 1.methods - exclude
+int_methods = 1.methods - exclude
 q_methods = Calc::Q(1).methods
 c_methods = Calc::C(1, 1).methods
 
-((rat_methods & fix_methods) - q_methods).sort.each do |m|
-  puts "Calc::Q needs method #{ m } for Rational and Fixnum compatibility"
+((rat_methods & int_methods) - q_methods).sort.each do |m|
+  puts "Calc::Q needs method #{ m } for Rational and #{ 1.class } compatibility"
 end
 
-(rat_methods - fix_methods - q_methods).sort.each do |m|
+(rat_methods - int_methods - q_methods).sort.each do |m|
   puts "Calc::Q needs method #{ m } for Rational compatibility"
 end
 
-(fix_methods - rat_methods - q_methods).sort.each do |m|
-  puts "Calc::Q needs method #{ m } for Fixnum compatibility"
+(int_methods - rat_methods - q_methods).sort.each do |m|
+  puts "Calc::Q needs method #{ m } for #{ 1.class } compatibility"
 end
 
 (com_methods - c_methods).sort.each do |m|
@@ -367,7 +367,7 @@ end
 [
   ["ruby-calc builtins", builtins_done, builtins],
   ["Rational compatibility", (rat_methods & q_methods).size, rat_methods.size.to_f],
-  ["Fixnum compatibility", (fix_methods & q_methods).size, fix_methods.size.to_f],
+  ["#{ 1.class } compatibility", (int_methods & q_methods).size, int_methods.size.to_f],
   ["Complex compatibility", (com_methods & c_methods).size, com_methods.size.to_f]
 ].each do |goal, done, total|
   printf "%25s:  %3d/%3d (%3.1f%%)\n", goal, done, total, done / total * 100

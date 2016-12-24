@@ -330,8 +330,8 @@ class TestQ < MiniTest::Test
   end
 
   def test_to_i
-    assert_instance_of Fixnum, Calc::Q(1, 4).to_i
-    assert_instance_of Fixnum, Calc::Q(5, 1).to_i
+    assert_instance_of 0.class, Calc::Q(1, 4).to_i
+    assert_instance_of 0.class, Calc::Q(5, 1).to_i
     assert_equal 0, Calc::Q(1, 4).to_i
     assert_equal 5, Calc::Q(5, 1).to_i
     assert_equal 0, Calc::Q(2, 3).to_i
@@ -375,7 +375,7 @@ class TestQ < MiniTest::Test
     assert_equal "1/024",     Calc::Q(1, 20).to_s(:oct)
     assert_equal "1/0b10100", Calc::Q(1, 20).to_s(:bin)
 
-    # for compatibility with ruby Fixnum#to_s, an integer argument is a base
+    # for compatibility with ruby Integer#to_s, an integer argument is a base
     assert_equal "12345", Calc::Q(12345).to_s
     assert_equal "11000000111001", Calc::Q(12345).to_s(2)
     assert_equal "30071", Calc::Q(12345).to_s(8)
@@ -785,12 +785,16 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 27, Calc::Q(27).ceil
     assert_rational_and_equal 2, Calc::Q(1.23).ceil
     assert_rational_and_equal(-4, Calc::Q(-4.56).ceil)
+    assert_rational_and_equal Calc::Q("7.778"), Calc::Q("7.77777").ceil(3)
+    assert_rational_and_equal Calc::Q("-7.777"), Calc::Q("-7.77777").ceil(3)
   end
 
   def test_floor
     assert_rational_and_equal 27, Calc::Q(27).floor
     assert_rational_and_equal 1, Calc::Q(1.23).floor
     assert_rational_and_equal(-5, Calc::Q(-4.56).floor)
+    assert_rational_and_equal Calc::Q("7.777"), Calc::Q("7.77777").floor(3)
+    assert_rational_and_equal Calc::Q("-7.778"), Calc::Q("-7.77777").floor(3)
   end
 
   def test_isint
@@ -1533,7 +1537,7 @@ class TestQ < MiniTest::Test
   end
 
   def test_to_int
-    assert_instance_of Fixnum, Calc::Q(2, 3).to_int
+    assert_instance_of 0.class, Calc::Q(2, 3).to_int
     assert_equal 0, Calc::Q(2, 3).to_int
   end
 
@@ -1543,6 +1547,10 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal(-1, Calc::Q(-3, 2).truncate)
     assert_rational_and_equal Calc::Q("-123.4"), Calc::Q("-123.456").truncate(+1)
     assert_rational_and_equal Calc::Q("-120."), Calc::Q("-123.456").truncate(-1)
+    assert_rational_and_equal Calc::Q(7), Calc::Q("7.77777").truncate
+    assert_rational_and_equal Calc::Q(7), Calc::Q("7.77777").truncate(0)
+    assert_rational_and_equal Calc::Q("7.7"), Calc::Q("7.77777").truncate(1)
+    assert_rational_and_equal Calc::Q("7.77"), Calc::Q("7.77777").truncate(2)
   end
 
   def test_and
@@ -1672,5 +1680,30 @@ class TestQ < MiniTest::Test
     assert_rational_and_equal 73588229205, ~Calc::Q(-73588229206)
     assert_rational_and_equal Calc::Q("-0.5"), ~Calc::Q("0.5")
     assert_rational_and_equal Calc::Q("0.5"), ~Calc::Q("-0.5")
+  end
+
+  # Comparable#clamp is added in 2.4
+  if Calc::Q.instance_methods.include?(:clamp)
+    def test_clamp
+      assert_rational_and_equal 12, Calc::Q(12).clamp(0, 100)
+      assert_rational_and_equal 12, Calc::Q(12).clamp(Calc::Q(0), Calc::Q(100))
+      assert_rational_and_equal 100, Calc::Q(523).clamp(0, 100)
+    end
+  end
+
+  def test_finite
+    assert Calc::Q(BIG).finite?
+    assert_nil Calc::Q(BIG).infinite?
+  end
+
+  # digits_r is for compatibility with ruby's Integer#digits.  it uses ruby's
+  # implementation, so this is only valid in ruby 2.4
+  if 0.class.instance_methods.include?(:digits)
+    def test_digits_r
+      assert_rational_array [5, 4, 3, 2, 1], Calc::Q(12345).digits_r
+      assert_rational_array [4, 6, 6, 0, 5], Calc::Q(12345).digits_r(7)
+      assert_rational_array [45, 23, 1], Calc::Q(12345).digits_r(100)
+      assert_raises(Math::DomainError) { Calc::Q(-12345).digits_r(7) }
+    end
   end
 end
