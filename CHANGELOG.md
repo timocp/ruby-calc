@@ -23,5 +23,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Conversion to/from libcalc and ruby classes
 - Compatibility methods with ruby numeric classes
 
-[Unreleased]: https://github.com/timocp/ruby-calc/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/timocp/ruby-calc/compare/v0.1.0...v0.2.0
+[Unreleased]: https://github.com/timocp/ruby-calc/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/timocp/ruby-calc/compare/0.1.0...0.2.0
