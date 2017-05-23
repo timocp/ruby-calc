@@ -3,7 +3,7 @@
 
 set -x
 
-version=calc-${CALC_VERSION-2.12.5.4}
+version=calc-${CALC_VERSION-2.12.5.6}
 patch=$PWD/$(dirname $0)/makefile.patch
 
 cd /tmp
