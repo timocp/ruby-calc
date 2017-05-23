@@ -143,7 +143,11 @@ class TestCalc < Minitest::Test
     else
       actual = Calc.__send__(*([m, ruby_n] + extra_args))
       assert_instance_of expected.class, actual
-      assert_equal expected, actual
+      if expected.nil?
+        assert_nil actual
+      else
+        assert_equal expected, actual
+      end
     end
   end
 
