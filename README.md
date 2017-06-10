@@ -2,11 +2,12 @@
 
 ruby-calc provides ruby bindings for calc, a c-style arbitrary precision calculator.
 
+Calc and libcalc's source code is available at https://github.com/lcn2/calc
 For information about calc, see: http://www.isthe.com/chongo/tech/comp/calc/index.html
 
 ## Installation
 
-Calc must be installed.
+Calc must be installed first.
 
 OS  | Instructions
 --- | ------------
@@ -18,7 +19,7 @@ Manual | Download and install calc yourself by referring to the calc website, or
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ruby-calc', git: 'git://github.com/timocp/ruby-calc.git'
+gem 'ruby-calc', '0.2.0'
 ```
 
 And then execute:
