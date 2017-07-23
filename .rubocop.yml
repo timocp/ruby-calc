@@ -1,5 +1,3 @@
-inherit_from: .rubocop_todo.yml
-
 AllCops:
   TargetRubyVersion: 2.0
 
@@ -7,10 +5,10 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
-Style/FirstArrayElementLineBreak:
+Layout/FirstArrayElementLineBreak:
   Enabled: true
 
-Style/SpaceInsideStringInterpolation:
+Layout/SpaceInsideStringInterpolation:
   EnforcedStyle: space
 
 Style/StringLiterals:
@@ -35,6 +33,11 @@ Metrics/CyclomaticComplexity:
 
 Metrics/PerceivedComplexity:
   Max: 8
+  Exclude: [ "test/*.rb" ]
+
+Metrics/AbcSize:
+  Max: 24
+  Exclude: [ "test/*.rb" ]
 
 Style/GlobalVars:
   Exclude: [ "ext/**/extconf.rb" ]
@@ -42,10 +45,10 @@ Style/GlobalVars:
 Style/NumericLiterals:
   Exclude: [ "test/*.rb" ]
 
-Style/ClassAndModuleChildren:
+Style/YodaCondition:
   Exclude: [ "test/*.rb" ]
 
-Metrics/AbcSize:
+Style/ClassAndModuleChildren:
   Exclude: [ "test/*.rb" ]
 
 Metrics/MethodLength:

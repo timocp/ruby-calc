@@ -6,7 +6,7 @@ require "calc/c"
 
 module Calc
   # builtins implemented as instance methods on Calc::Q or Calc::C
-  BUILTINS1 = %i(
+  BUILTINS1 = %i[
     abs acos acosh acot acoth acsc acsch agd appr arg asec asech asin asinh
     atan atan2 atanh bernoulli bit bround btrunc catalan ceil cfappr cfsim char
     cmp comb conj cos cosh cot coth csc csch den digit digits estr euler exp
@@ -16,13 +16,13 @@ module Calc
     minv mmin mne mod near nextcand nextprime norm num perm pfact pix places
     pmod popcnt power prevcand prevprime ptest quo quomod re root round scale
     sec sech sgn sin sinh sqrt tan tanh trunc xor
-  ).freeze
+  ].freeze
 
   # builtins implemented as module methods on Calc
-  BUILTINS2 = %i(
+  BUILTINS2 = %i[
     avg config freebernoulli freeeuler hean hnrmod max min pi polar ssq sum
     version
-  ).freeze
+  ].freeze
 
   ALL_BUILTINS = BUILTINS1 + BUILTINS2
 

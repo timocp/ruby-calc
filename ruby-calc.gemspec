@@ -1,4 +1,5 @@
 # coding: utf-8
+
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "calc/version"
@@ -10,7 +11,8 @@ Gem::Specification.new do |spec|
   spec.email         = ["zomg.tim@gmail.com"]
 
   spec.summary       = "Ruby bindings for calc"
-  spec.description   = "Ruby bindings for calc, an arbitrary precision maths library.  ruby-calc provides access to a the large number of mathematical functions that come with calc."
+  spec.description   = "Ruby bindings for calc, an arbitrary precision maths library.  Provides " \
+                       "access to a the large number of mathematical functions that come with calc."
   spec.homepage      = "https://github.com/timocp/ruby-calc"
   spec.license       = "MIT"
 

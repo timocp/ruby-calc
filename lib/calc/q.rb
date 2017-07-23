@@ -543,7 +543,7 @@ module Calc
     def step_args(a1, a2)
       if a1.is_a?(Hash)
         # fake keywords style
-        badkeys = a1.keys - %i(to by)
+        badkeys = a1.keys - %i[to by]
         raise ArgumentError, "Unknown keywords: #{ badkeys.join(", ") }" if badkeys.any?
         to = a1.fetch(:to, nil)
         by = a1.fetch(:by, ONE)
