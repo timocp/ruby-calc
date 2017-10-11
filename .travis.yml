@@ -6,6 +6,7 @@ rvm:
   - 2.2
   - 2.3
   - 2.4
+  - 2.5.0-preview1
 env:
   - CALC_VERSION=2.12.5.0   # version in deb 8 (12-Oct-2014)
   - CALC_VERSION=2.12.5.6   # latest unstable  (22-May-2017)
