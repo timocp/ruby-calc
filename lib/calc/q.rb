@@ -192,11 +192,8 @@ module Calc
     # @example
     #  Calc::Q(0.5).estr #=> "Calc::Q(1,2)"
     def estr
-      s = self.class.name
-      s << "("
-      s << (int? ? num.to_s : "#{ num },#{ den }")
-      s << ")"
-      s
+      s = int? ? num : "#{num},#{den}"
+      "#{self.class.name}(#{s})"
     end
 
     # Returns an array; [gcd, lcm]
