@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.extensions    = ["ext/calc/extconf.rb"]
   spec.required_ruby_version = "~> 2.0"
 
-  spec.add_development_dependency "bundler", "~> 1.8"
+  spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 12.3.3"
   spec.add_development_dependency "rake-compiler", "~> 0"
   spec.add_development_dependency "minitest", "~> 5.8", ">= 5.8.2"
