@@ -10,8 +10,8 @@ rvm:
   - 2.6.0
   - 2.7.0
 env:
-  - CALC_VERSION=2.12.5.6
-  - CALC_VERSION=2.12.6.3
+  - CALC_VERSION=2.12.7.1
+  - CALC_VERSION=2.12.7.2
 before_install:
   - gem install bundler     # travis ruby 2.0.0 installs bundler 1.7, update it
   - bin/install_calc.sh

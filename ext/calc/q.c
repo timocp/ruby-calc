@@ -2592,10 +2592,10 @@ cq_to_s(int argc, VALUE * argv, VALUE self)
     else {
         math_divertio();
         if (args == 0) {
-            qprintnum(qself, MODE_DEFAULT);
+            qprintnum(qself, MODE_DEFAULT, conf->outdigits);
         }
         else {
-            qprintnum(qself, (int) value_to_mode(mode));
+            qprintnum(qself, (int) value_to_mode(mode), conf->outdigits);
         }
         s = math_getdivertedio();
         rs = rb_str_new2(s);
