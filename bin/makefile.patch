@@ -1,28 +1,39 @@
---- Makefile.orig	2015-11-06 17:52:22.984273873 +1030
-+++ Makefile	2015-11-06 18:00:02.632273873 +1030
-@@ -610,25 +610,25 @@
- #	LIBDIR= /usr/lib
- #	CALC_SHAREDIR= /usr/share/calc
- #
+--- Makefile.orig	2018-11-06 02:05:46.000000000 +1030
++++ Makefile	2020-05-04 21:06:06.000000000 +0930
+@@ -644,8 +644,8 @@
+ #endif	/* end of skip for non-Gnu makefiles */
+ 
+ # default BINDIR for non-macOS
+-BINDIR= /usr/bin
 -#BINDIR= /usr/local/bin
++#BINDIR= /usr/bin
 +BINDIR= /usr/local/bin
  #BINDIR= /dev/env/DJDIR/bin
--BINDIR= /usr/bin
-+#BINDIR= /usr/bin
  
+ #if 0	/* start of skip for non-Gnu makefiles */
+@@ -660,8 +660,8 @@
+ #endif	/* end of skip for non-Gnu makefiles */
+ 
+ # default LIBDIR for non-macOS
+-LIBDIR= /usr/lib
 -#LIBDIR= /usr/local/lib
++#LIBDIR= /usr/lib
 +LIBDIR= /usr/local/lib
  #LIBDIR= /dev/env/DJDIR/lib
--LIBDIR= /usr/lib
-+#LIBDIR= /usr/lib
  
+ #if 0	/* start of skip for non-Gnu makefiles */
+@@ -676,8 +676,8 @@
+ #endif	/* end of skip for non-Gnu makefiles */
+ 
+ # default CALC_SHAREDIR for non-macOS
+-CALC_SHAREDIR= /usr/share/calc
 -#CALC_SHAREDIR= /usr/local/lib/calc
++#CALC_SHAREDIR= /usr/share/calc
 +CALC_SHAREDIR= /usr/local/lib/calc
  #CALC_SHAREDIR= /dev/env/DJDIR/share/calc
--CALC_SHAREDIR= /usr/share/calc
-+#CALC_SHAREDIR= /usr/share/calc
  
- # NOTE: Do not set CALC_INCDIR to /usr/include or /usr/local/include!!!
+ #if 0	/* start of skip for non-Gnu makefiles */
+@@ -688,9 +688,9 @@
  #	Always be sure that the CALC_INCDIR path ends in /calc to avoid
  #	conflicts with system or other application include files!!!
  #
@@ -34,7 +45,7 @@
  
  # By default, these values are based CALC_SHAREDIR, INCDIR, BINDIR
  # ---------------------------------------------------------------
-@@ -696,9 +696,9 @@
+@@ -758,9 +758,9 @@
  # Use MANDIR= to disable installation of the calc man (source) page.
  #
  #MANDIR=

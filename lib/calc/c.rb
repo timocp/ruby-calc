@@ -137,12 +137,9 @@ module Calc
     # @example
     #   Calc::C(0.5,-2).estr #=> "Calc::C(Calc::Q(1,2),-2)"
     def estr
-      s = self.class.name
-      s << "("
-      s << (re.int? ? re.to_s : re.estr)
-      s << "," + (im.int? ? im.to_s : im.estr) unless im.zero?
-      s << ")"
-      s
+      s = (re.int? ? re.to_s : re.estr)
+      s = s + "," + (im.int? ? im.to_s : im.estr) unless im.zero?
+      "#{self.class.name}(#{s})"
     end
 
     # Returns true if self has integer real part and zero imaginary part
