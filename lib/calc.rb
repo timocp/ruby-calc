@@ -200,6 +200,18 @@ module Calc
     args.flatten.map { |t| to_calc_x(t) }.compact.inject(:+)
   end
 
+ 
+  def self.fib(n)
+    x, y = 0, 1
+    list = Array.new
+    while x < n
+      list << x 
+      x, y = y, x + y
+     
+    end
+    print "#{list}\n"
+  end
+
   # returns a Calc::Q or Calc::C object, converting if necessary
   def self.to_calc_x(n)
     if n.is_a?(Calc::Q) || n.is_a?(Calc::C)
