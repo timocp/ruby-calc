@@ -201,7 +201,7 @@ module Calc
   end
 
  
-  def self.fib(n)
+  def self.fiblist(n)
     x, y = 0, 1
     list = Array.new
     while x < n
