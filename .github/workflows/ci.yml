@@ -1,0 +1,37 @@
+---
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: ruby ${{ matrix.ruby }} calc ${{ matrix.calc }}
+    strategy:
+      matrix:
+        calc:
+          # http://www.isthe.com/chongo/src/calc/
+          - "2.12.7.1"  # latest stable
+        ruby:
+          - "2.1"
+          - "2.2"
+          - "2.3"
+          - "2.4"
+          - "2.5"
+          - "2.6"
+          - "2.7"
+    env:
+      CALC_VERSION: ${{ matrix.calc }}
+      CI: true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      # cannot use ubuntu's packages as they don't include a shared library
+      # - run: sudo apt-get install apcalc apcalc-dev
+      - run: bin/install_calc.sh
+      - run: calc -v
+      - run: bin/setup
+      - run: bundle exec rake test
+      - run: bin/todo.rb
