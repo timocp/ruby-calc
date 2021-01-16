@@ -1,4 +1,4 @@
-# ruby-calc ![Build Status](https://github.com/timocp/ruby-calc/workflows/CI/badge.svg)
+# ruby-calc [![Build Status](https://github.com/timocp/ruby-calc/workflows/CI/badge.svg)](https://github.com/timocp/ruby-calc/actions)
 
 ruby-calc provides ruby bindings for calc, a c-style arbitrary precision calculator.
 
